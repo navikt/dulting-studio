@@ -7,6 +7,7 @@ import {
   Tag,
   VStack,
 } from "@navikt/ds-react";
+import { loadStudioCaseBundle } from "@/lib/studio-data/repository";
 
 const focusAreas = [
   {
@@ -25,11 +26,14 @@ const focusAreas = [
 
 const boundaries = [
   "Ingen persondata eller produksjonsdata i repoet eller appen",
-  "Ingen konkrete tiltak eller seed-data før dette er faglig avklart",
+  "Kun illustrative seed-data på konseptnivå, aldri Mural-data eller enkeltsaker",
   "Ingen produksjonsintegrasjoner, database eller GitHub API i MVP",
 ];
 
-export default function Home() {
+export default async function Home() {
+  const studioCase = await loadStudioCaseBundle("oppfolgingsplan");
+  const firstPackage = studioCase.tiltakspakker[0];
+
   return (
     <main className="page-shell">
       <div className="page-container">
@@ -109,6 +113,50 @@ export default function Home() {
               Se README og dokumentasjonen i <code>docs/</code> for mer
               kontekst.
             </BodyLong>
+          </section>
+
+          <section
+            className="section-grid"
+            aria-label="Illustrative eksempeldata"
+          >
+            <article className="info-card">
+              <Heading level="2" size="medium" spacing>
+                Domenemodell i repoet
+              </Heading>
+              <BodyLong spacing>
+                Oppfølgingsplan er nå lagt inn som første case i et validert,
+                filbasert datalag.
+              </BodyLong>
+              <ul>
+                <li>
+                  <BodyShort size="medium">
+                    Case: {studioCase.case.name}
+                  </BodyShort>
+                </li>
+                <li>
+                  <BodyShort size="medium">
+                    Tiltak: {studioCase.tiltak.length}
+                  </BodyShort>
+                </li>
+                <li>
+                  <BodyShort size="medium">
+                    Tiltakspakker: {studioCase.tiltakspakker.length}
+                  </BodyShort>
+                </li>
+              </ul>
+            </article>
+
+            <article className="info-card">
+              <Heading level="2" size="medium" spacing>
+                Illustrativ pakke
+              </Heading>
+              <BodyLong spacing>{firstPackage?.name}</BodyLong>
+              <BodyLong className="muted">
+                Seed-dataene er kun ment for struktur, validering og tidlig UI.
+                De beskriver ikke reelle tiltak, konkrete saker eller sårbare
+                grupper.
+              </BodyLong>
+            </article>
           </section>
         </VStack>
       </div>

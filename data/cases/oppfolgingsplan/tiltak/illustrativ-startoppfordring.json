@@ -1,0 +1,96 @@
+{
+  "entityType": "tiltak",
+  "id": "illustrativ-startoppfordring",
+  "caseId": "oppfolgingsplan",
+  "name": "Illustrativt tiltak A: tydelig startoppfordring",
+  "summary": "Vis ett tydelig førstevalg som hjelper brukeren i gang uten å styre alle til samme løsning.",
+  "status": "vurderes",
+  "targetAudiences": ["arbeidsgiver"],
+  "journeyPhases": ["komme-i-gang"],
+  "surfaces": ["inngangsside"],
+  "hypothesis": {
+    "id": "startvalg-reduserer-friksjon",
+    "statement": "Hvis første steg blir tydeligere, senkes friksjonen for å starte planarbeidet.",
+    "expectedEffect": "Flere starter et planutkast uten ekstra veiledning.",
+    "signal": "Flere klikker seg videre til første steg på første besøk."
+  },
+  "metrics": [
+    {
+      "id": "andel-videre-til-forste-steg",
+      "label": "Andel videre til første steg",
+      "kind": "ledende",
+      "measurementGap": "ingen",
+      "description": "Brukes som enkel indikator på om oppfordringen gjør det lettere å komme i gang."
+    },
+    {
+      "id": "andel-avbrutte-starter",
+      "label": "Andel avbrutte starter",
+      "kind": "guardrail",
+      "measurementGap": "delvis",
+      "description": "Skal følge med på om startoppfordringen blir for sterk eller uklar."
+    }
+  ],
+  "east": ["easy", "timely"],
+  "fogg": {
+    "target": "ability",
+    "rationale": "Tiltaket prøver å gjøre neste steg enklere akkurat når brukeren vurderer å starte."
+  },
+  "forgood": {
+    "fairness": {
+      "level": "obs",
+      "rationale": "Startvalget må ikke anta at alle har samme tid, kapasitet eller ansvar i planarbeidet."
+    },
+    "openness": {
+      "level": "styrke",
+      "rationale": "Tiltaket er synlig og forklarer hvorfor første steg anbefales."
+    },
+    "respect": {
+      "level": "styrke",
+      "rationale": "Brukeren beholder full valgfrihet og kan se andre veier videre."
+    },
+    "goals": {
+      "level": "styrke",
+      "rationale": "Målet er å redusere startfriksjon i en lovpålagt oppgave som brukeren allerede må løse."
+    },
+    "opinions": {
+      "level": "obs",
+      "rationale": "Vi må bekrefte at brukerne opplever oppfordringen som hjelpende og ikke formanende."
+    },
+    "options": {
+      "level": "styrke",
+      "rationale": "Andre handlingsvalg er fortsatt tilgjengelige uten ekstra klikk."
+    },
+    "delegation": {
+      "level": "styrke",
+      "rationale": "Oppfordringen ligger i en flate som allerede hjelper brukeren med planarbeidet."
+    }
+  },
+  "governance": {
+    "decisionOwnerRole": "Produkteier for oppfølgingsplan",
+    "editorRole": "Team eSyfo",
+    "stakeholders": [
+      "Berørt produkteier",
+      "Fasilitator for innholdsstruktur",
+      "Personvern- og sikkerhetsrolle"
+    ],
+    "privacyReview": "under-avklaring",
+    "ethicsReview": "under-avklaring",
+    "nextDecisionGate": "Vurdere om startoppfordringen er tydelig nok uten å love effekt vi ikke kan måle ennå."
+  },
+  "dependencies": [
+    {
+      "id": "tekstprinsipp",
+      "description": "Vi må bli enige om hvilken tone som er tydelig uten å virke normerende.",
+      "ownerRole": "Innholdsdesigner",
+      "status": "aapen"
+    }
+  ],
+  "openQuestions": [
+    {
+      "id": "alternativer",
+      "question": "Hvordan viser vi flere valgmuligheter uten å gjøre første steg utydelig?",
+      "ownerRole": "Design- og innholdsrolle",
+      "status": "aapen"
+    }
+  ]
+}

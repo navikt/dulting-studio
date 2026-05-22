@@ -1,0 +1,96 @@
+{
+  "entityType": "tiltak",
+  "id": "illustrativ-framdriftspaminnelse",
+  "caseId": "oppfolgingsplan",
+  "name": "Illustrativt tiltak B: nøktern framdriftspåminnelse",
+  "summary": "Vis en kort påminnelse om neste steg når et utkast har stått stille en stund.",
+  "status": "forslag",
+  "targetAudiences": ["arbeidsgiver"],
+  "journeyPhases": ["holde-fremdrift"],
+  "surfaces": ["påminnelse", "planoversikt"],
+  "hypothesis": {
+    "id": "paminnelse-aktiverer-neste-steg",
+    "statement": "Hvis brukeren får en nøktern påminnelse når framdriften stopper opp, blir det lettere å ta neste steg.",
+    "expectedEffect": "Flere kommer tilbake til planen før den blir glemt.",
+    "signal": "Flere utkast får aktivitet igjen innen kort tid etter påminnelsen."
+  },
+  "metrics": [
+    {
+      "id": "andel-gjenopptatte-utkast",
+      "label": "Andel gjenopptatte utkast",
+      "kind": "ledende",
+      "measurementGap": "delvis",
+      "description": "Måler om påminnelsen gjør at flere vender tilbake til utkastet."
+    },
+    {
+      "id": "andel-stoppede-utkast",
+      "label": "Andel stoppede utkast",
+      "kind": "guardrail",
+      "measurementGap": "delvis",
+      "description": "Brukes for å følge med på om tiltaket oppleves masete eller skaper friksjon."
+    }
+  ],
+  "east": ["timely", "easy"],
+  "fogg": {
+    "target": "prompt",
+    "rationale": "Tiltaket skal trigge handling når intensjonen allerede finnes, men neste steg er glemt."
+  },
+  "forgood": {
+    "fairness": {
+      "level": "obs",
+      "rationale": "Påminnelsen må fungere likt uten å forutsette samme arbeidshverdag for alle."
+    },
+    "openness": {
+      "level": "styrke",
+      "rationale": "Det er tydelig hvorfor påminnelsen vises og hva brukeren kan gjøre nå."
+    },
+    "respect": {
+      "level": "styrke",
+      "rationale": "Påminnelsen er lavmælt og lar brukeren velge om de vil fortsette senere."
+    },
+    "goals": {
+      "level": "styrke",
+      "rationale": "Målet er å støtte framdrift i en oppgave brukeren allerede har startet."
+    },
+    "opinions": {
+      "level": "obs",
+      "rationale": "Vi bør teste om brukerne opplever tonen som hjelpende og ikke som press."
+    },
+    "options": {
+      "level": "styrke",
+      "rationale": "Brukeren kan lukke påminnelsen uten ekstra friksjon."
+    },
+    "delegation": {
+      "level": "obs",
+      "rationale": "Det må være tydelig at avsender har legitim rolle i å minne om oppgaven."
+    }
+  },
+  "governance": {
+    "decisionOwnerRole": "Produkteier for oppfølgingsplan",
+    "editorRole": "Team eSyfo",
+    "stakeholders": [
+      "Berørt produkteier",
+      "Innholdsdesigner",
+      "Personvern- og sikkerhetsrolle"
+    ],
+    "privacyReview": "under-avklaring",
+    "ethicsReview": "under-avklaring",
+    "nextDecisionGate": "Vurdere om timing og tone kan beskrives tydelig nok uten reelle brukereksempler."
+  },
+  "dependencies": [
+    {
+      "id": "tidsvindu",
+      "description": "Vi må velge et nøkternt tidsvindu for påminnelsen før tiltaket kan vurderes videre.",
+      "ownerRole": "Produkteier",
+      "status": "aapen"
+    }
+  ],
+  "openQuestions": [
+    {
+      "id": "frekvens",
+      "question": "Hvor sjelden må påminnelsen vises for å støtte framdrift uten å bli oppfattet som mas?",
+      "ownerRole": "Innholdsdesigner",
+      "status": "aapen"
+    }
+  ]
+}
