@@ -1,0 +1,31 @@
+{
+  "name": "dulting-studio",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.32.1",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "check": "biome check . && tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@navikt/aksel-icons": "^8.11.0",
+    "@navikt/ds-css": "^8.11.0",
+    "@navikt/ds-react": "^8.11.0",
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5",
+    "vitest": "^4.1.7"
+  }
+}

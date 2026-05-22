@@ -1,0 +1,5 @@
+* @navikt/team-esyfo
+
+# Keep automergeable dependency PRs outside CODEOWNERS review
+package.json
+pnpm-lock.yaml

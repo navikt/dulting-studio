@@ -1,0 +1,61 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: dulting-studio
+  namespace: team-esyfo
+  labels:
+    team: team-esyfo
+spec:
+  image: {{image}}
+  port: 3000
+  replicas:
+    min: 1
+    max: 1
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+      allowAllUsers: false
+      claims:
+        groups:
+          - id: "5066bb56-7f19-4b49-ae48-f1ba66abf546"
+          - id: "ef4e9824-6f3a-4933-8f40-6edf5233d4d2"
+    sidecar:
+      enabled: true
+      autoLogin: true
+      autoLoginIgnorePaths:
+        - /api/isAlive
+        - /api/isReady
+        - /api/metrics
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
+  liveness:
+    path: /api/isAlive
+    initialDelay: 10
+    timeout: 5
+    periodSeconds: 10
+    failureThreshold: 10
+  readiness:
+    path: /api/isReady
+    initialDelay: 10
+    timeout: 5
+    periodSeconds: 10
+  prometheus:
+    enabled: true
+    path: /api/metrics
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+  ingresses:
+    - https://dulting-studio.intern.dev.nav.no
+  accessPolicy:
+    inbound:
+      rules: []
+    outbound:
+      rules: []
+      external: []
