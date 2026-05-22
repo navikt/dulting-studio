@@ -1,0 +1,71 @@
+{
+  "entityType": "tiltak",
+  "id": "broken-tiltak",
+  "caseId": "oppfolgingsplan",
+  "name": "Ugyldig tiltak",
+  "summary": "Kontakt ugyldig@example.no for å se at e-post blir stoppet.",
+  "status": "forslag",
+  "targetAudiences": ["arbeidsgiver"],
+  "journeyPhases": ["komme-i-gang"],
+  "surfaces": ["inngangsside"],
+  "hypothesis": {
+    "id": "broken-hypothesis",
+    "statement": "Validatoren skal stoppe e-post i fritekst.",
+    "expectedEffect": "Tydelig feilmelding.",
+    "signal": "Ingen ugyldige filer slipper gjennom."
+  },
+  "metrics": [
+    {
+      "id": "broken-metric",
+      "label": "Ugyldig metrikk",
+      "kind": "guardrail",
+      "measurementGap": "delvis",
+      "description": "Brukes kun i test."
+    }
+  ],
+  "east": ["easy"],
+  "fogg": {
+    "target": "ability",
+    "rationale": "Testdata."
+  },
+  "forgood": {
+    "fairness": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "openness": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "respect": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "goals": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "opinions": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "options": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "delegation": {
+      "level": "obs",
+      "rationale": "Testdata."
+    }
+  },
+  "governance": {
+    "decisionOwnerRole": "Produkteier",
+    "editorRole": "Team eSyfo",
+    "stakeholders": ["Berørt produkteier"],
+    "privacyReview": "under-avklaring",
+    "ethicsReview": "under-avklaring",
+    "nextDecisionGate": "Ikke relevant."
+  },
+  "dependencies": [],
+  "openQuestions": []
+}

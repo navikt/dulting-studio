@@ -10,6 +10,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "check": "biome check . && tsc --noEmit",
+    "validate:data": "vitest run src/lib/studio-data/repository.test.ts",
     "test": "vitest run"
   },
   "dependencies": {

@@ -1,0 +1,69 @@
+{
+  "entityType": "case",
+  "id": "oppfolgingsplan",
+  "name": "Oppfølgingsplan",
+  "summary": "Illustrativt case for å vurdere dultingtiltak i oppfølgingsplanen uten persondata.",
+  "problemStatement": "Teamet trenger et trygt grunnlag for å vurdere tiltak som kan gjøre det enklere å komme i gang og holde framdrift i oppfølgingsplanen.",
+  "status": "vurderes",
+  "boundariesConfirmed": true,
+  "sourceBasis": [
+    "offentlig-regelverk",
+    "aggregert-innsikt",
+    "redaksjonell-vurdering"
+  ],
+  "targetAudiences": ["arbeidsgiver", "sykmeldt"],
+  "journeyPhases": ["forsta-oppgaven", "komme-i-gang", "holde-fremdrift"],
+  "surfaces": ["inngangsside", "planoversikt", "påminnelse"],
+  "hypotheses": [
+    {
+      "id": "tydelig-start-senker-friksjon",
+      "statement": "Hvis første steg blir tydeligere, blir det enklere å starte arbeidet med planen.",
+      "expectedEffect": "Flere kommer i gang uten å måtte lete etter neste steg.",
+      "signal": "Flere utkast blir startet samme dag som brukeren åpner flaten."
+    }
+  ],
+  "metrics": [
+    {
+      "id": "andel-startede-utkast",
+      "label": "Andel startede utkast",
+      "kind": "ledende",
+      "measurementGap": "delvis",
+      "description": "Måler om flere starter planutkast etter at tiltakene er synlige."
+    },
+    {
+      "id": "andel-fullforte-planer",
+      "label": "Andel fullførte planer",
+      "kind": "etterfolgende",
+      "measurementGap": "stor",
+      "description": "Langsiktig effekt som krever senere måleoppsett før eksperiment."
+    }
+  ],
+  "governance": {
+    "decisionOwnerRole": "Produkteier for oppfølgingsplan",
+    "editorRole": "Team eSyfo",
+    "stakeholders": [
+      "Berørt produkteier",
+      "Personvern- og sikkerhetsrolle",
+      "Fasilitator for innholdsstruktur"
+    ],
+    "privacyReview": "under-avklaring",
+    "ethicsReview": "under-avklaring",
+    "nextDecisionGate": "Vurdere om illustrativ tiltakspakke er tydelig nok for videre designarbeid."
+  },
+  "dependencies": [
+    {
+      "id": "rolleavklaring",
+      "description": "Beslutningseier og veto-roller må være tydelige før status kan løftes videre.",
+      "ownerRole": "Produkteier",
+      "status": "aapen"
+    }
+  ],
+  "openQuestions": [
+    {
+      "id": "maalekilde",
+      "question": "Hvordan kan vi beskrive målegap uten å koble oss til produksjonsdata i MVP?",
+      "ownerRole": "Analyse- og innholdsrolle",
+      "status": "aapen"
+    }
+  ]
+}

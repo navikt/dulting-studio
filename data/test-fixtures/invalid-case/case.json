@@ -1,0 +1,40 @@
+{
+  "entityType": "case",
+  "id": "Oppfolgingsplan Invalid",
+  "name": "Ugyldig case",
+  "summary": "Denne filen brukes bare for å teste tydelige valideringsfeil.",
+  "problemStatement": "Dette eksempelet nevner diagnose for å sikre at validatoren stopper ugyldig innhold.",
+  "status": "vurderes",
+  "boundariesConfirmed": true,
+  "sourceBasis": ["offentlig-regelverk"],
+  "targetAudiences": ["arbeidsgiver"],
+  "journeyPhases": ["komme-i-gang"],
+  "surfaces": ["inngangsside"],
+  "hypotheses": [
+    {
+      "id": "ugyldig-hypotese",
+      "statement": "Hvis vi gjør noe uklart, skal testen fortsatt stoppe.",
+      "expectedEffect": "Validatoren finner feil tidlig.",
+      "signal": "Tydelig feilmelding."
+    }
+  ],
+  "metrics": [
+    {
+      "id": "ugyldig-metrikk",
+      "label": "Ugyldig metrikk",
+      "kind": "ledende",
+      "measurementGap": "ingen",
+      "description": "Metrikken er her bare for at resten av strukturen skal være komplett."
+    }
+  ],
+  "governance": {
+    "decisionOwnerRole": "Produkteier",
+    "editorRole": "Team eSyfo",
+    "stakeholders": ["Berørt produkteier"],
+    "privacyReview": "under-avklaring",
+    "ethicsReview": "under-avklaring",
+    "nextDecisionGate": "Ikke relevant."
+  },
+  "dependencies": [],
+  "openQuestions": []
+}

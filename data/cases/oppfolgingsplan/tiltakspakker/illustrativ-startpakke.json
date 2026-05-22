@@ -1,0 +1,97 @@
+{
+  "entityType": "tiltakspakke",
+  "id": "illustrativ-startpakke",
+  "caseId": "oppfolgingsplan",
+  "name": "Illustrativ pakke: komme i gang og holde framdrift",
+  "summary": "Kombinerer et tydelig startpunkt med en nøktern påminnelse for å støtte framdrift i oppfølgingsplanen.",
+  "status": "vurderes",
+  "targetAudiences": ["arbeidsgiver"],
+  "journeyPhases": ["komme-i-gang", "holde-fremdrift"],
+  "surfaces": ["inngangsside", "planoversikt", "påminnelse"],
+  "tiltakIds": [
+    "illustrativ-startoppfordring",
+    "illustrativ-framdriftspaminnelse"
+  ],
+  "hypotheses": [
+    {
+      "id": "pakke-senker-friksjon-og-holder-fremdrift",
+      "statement": "Hvis brukeren både får en tydelig start og en nøktern påminnelse, blir det enklere å komme i gang og lettere å holde framdriften.",
+      "expectedEffect": "Flere starter og gjenopptar planarbeidet uten at løsningen blir masete.",
+      "signal": "Både startaktivitet og gjenopptak peker i riktig retning samtidig som guardrails holder seg stabile."
+    }
+  ],
+  "metrics": [
+    {
+      "id": "pakke-andel-start-og-gjenopptak",
+      "label": "Samlet start og gjenopptak",
+      "kind": "ledende",
+      "measurementGap": "delvis",
+      "description": "Brukes for å se om tiltakene støtter hverandre i stedet for å trekke i hver sin retning."
+    },
+    {
+      "id": "pakke-opplevd-press",
+      "label": "Opplevd press",
+      "kind": "guardrail",
+      "measurementGap": "stor",
+      "description": "Må beskrives tydelig før eksperiment slik at pakken ikke skaper unødig press."
+    }
+  ],
+  "aggregatedForgood": {
+    "fairness": {
+      "level": "obs",
+      "rationale": "Pakken må fungere for ulike arbeidshverdager og ikke bare for brukere med høy kapasitet."
+    },
+    "openness": {
+      "level": "styrke",
+      "rationale": "Begge tiltakene er synlige og begrunner hvorfor de vises."
+    },
+    "respect": {
+      "level": "styrke",
+      "rationale": "Pakken bevarer valgmuligheter og legger ikke inn skjulte hindringer."
+    },
+    "goals": {
+      "level": "styrke",
+      "rationale": "Pakken støtter framdrift i en legitim oppgave og gir ikke falsk presisjon om effekt."
+    },
+    "opinions": {
+      "level": "obs",
+      "rationale": "Vi bør undersøke om kombinasjonen oppleves støttende når begge tiltakene vises over tid."
+    },
+    "options": {
+      "level": "styrke",
+      "rationale": "Tiltakene gir hjelp uten å låse brukeren til én vei videre."
+    },
+    "delegation": {
+      "level": "obs",
+      "rationale": "Pakken krever tydelig ansvar for timing, tekst og avsenderrolle før den kan løftes videre."
+    }
+  },
+  "governance": {
+    "decisionOwnerRole": "Produkteier for oppfølgingsplan",
+    "editorRole": "Team eSyfo",
+    "stakeholders": [
+      "Berørt produkteier",
+      "Personvern- og sikkerhetsrolle",
+      "Analyse- og innholdsrolle"
+    ],
+    "privacyReview": "under-avklaring",
+    "ethicsReview": "under-avklaring",
+    "nextDecisionGate": "Vurdere om pakka har tydelig nok måleopplegg og stoppkriterier for et senere eksperiment."
+  },
+  "dependencies": [
+    {
+      "id": "felles-stoppsignal",
+      "description": "Guardrails for opplevd press må være beskrevet før pakken kan regnes som klar for eksperiment.",
+      "ownerRole": "Analyse- og innholdsrolle",
+      "status": "aapen"
+    }
+  ],
+  "openQuestions": [
+    {
+      "id": "pakkeprioritering",
+      "question": "Hvilke signaler er gode nok til å avgjøre om kombinasjonen faktisk bør testes videre?",
+      "ownerRole": "Produkteier",
+      "status": "aapen"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "entityType": "tiltakspakke",
+  "id": "broken-package",
+  "caseId": "oppfolgingsplan",
+  "name": "Ugyldig pakke",
+  "summary": "Denne pakken refererer til et ukjent tiltak for å teste kryssvalidering.",
+  "status": "vurderes",
+  "targetAudiences": ["arbeidsgiver"],
+  "journeyPhases": ["komme-i-gang"],
+  "surfaces": ["inngangsside"],
+  "tiltakIds": ["ukjent-tiltak"],
+  "hypotheses": [
+    {
+      "id": "broken-package-hypothesis",
+      "statement": "Pakken skal være ugyldig.",
+      "expectedEffect": "Tydelig feilmelding.",
+      "signal": "Ukjent tiltak blir oppdaget."
+    }
+  ],
+  "metrics": [
+    {
+      "id": "broken-package-metric",
+      "label": "Ugyldig pakke-metrikk",
+      "kind": "ledende",
+      "measurementGap": "ingen",
+      "description": "Brukes kun i test."
+    }
+  ],
+  "aggregatedForgood": {
+    "fairness": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "openness": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "respect": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "goals": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "opinions": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "options": {
+      "level": "obs",
+      "rationale": "Testdata."
+    },
+    "delegation": {
+      "level": "obs",
+      "rationale": "Testdata."
+    }
+  },
+  "governance": {
+    "decisionOwnerRole": "Produkteier",
+    "editorRole": "Team eSyfo",
+    "stakeholders": ["Berørt produkteier"],
+    "privacyReview": "under-avklaring",
+    "ethicsReview": "under-avklaring",
+    "nextDecisionGate": "Ikke relevant."
+  },
+  "dependencies": [],
+  "openQuestions": []
+}
