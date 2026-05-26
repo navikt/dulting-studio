@@ -54,6 +54,11 @@ ha syntetiske eller saniterte fixtures under `fixtures/`.
 - `.github/skills/dulting-redaktor/` kan brukes som bearbeidingsmotor både for
   Mural-first arbeid og for Studio inbox-items.
 
+## Kildekart for tiltakssporet
+
+Se [`docs/dulting-kildekart.md`](dulting-kildekart.md) for forklaring av
+`DULT-*` og `TK-*` kilde-IDer som brukes i Mural og arbeidsfiler.
+
 ## Neste anbefalte issues
 
 1. Bruk `docs/local-import-e2e.md` for å verifisere lokal import med Postgres,
