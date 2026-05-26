@@ -40,7 +40,7 @@ ha syntetiske eller saniterte fixtures under `fixtures/`.
 ## Viktige produktbeslutninger
 
 - Første produkt må støtte import og bearbeiding av faktisk Mural-volum.
-- Muralen er ikke bare en flat lappeliste. Den uttrykker brukerreise,
+- Muralen uttrykker mer enn en flat lappeliste: brukerreise,
   aktørspor, workshop-grupper, problemområder/analyse, tiltak, målinger,
   parkering og oppsummeringer.
 - MVP skal støtte minst to aktørspor: arbeidsgiver/nærmeste leder og
@@ -58,6 +58,21 @@ ha syntetiske eller saniterte fixtures under `fixtures/`.
 
 Se [`docs/dulting-tiltaksregister.md`](dulting-tiltaksregister.md) for råkort,
 intensjon, tiltaksklynge, status og mapping for DULT-kortene.
+
+## Nåværende Mural-first arbeidsmodell
+
+Mural er arbeidsflaten for å sortere tiltakspakke, tiltaksklynger og DULT-kort
+visuelt. Repoet skal gi sporbarhet, bakgrunn og beslutningsgrunnlag, ikke være en
+ekstern fasit som erstatter Mural-arbeidet.
+
+- **Tiltakspakke** er den samlede pakken med mange tiltak, klynger, målinger og
+  avklaringer.
+- **Tiltaksklynge** grupperer tiltak som hører sammen funksjonelt eller
+  atferdsmessig.
+- **DULT-kort** er råkort eller dult-forslag fra dulting-raden, ikke sekundære
+  referanser.
+- **Tiltaksregisteret** viser råkorttekst, intensjon, aktør, status og mapping,
+  slik at bakgrunnen for en bearbeidet lapp ikke forsvinner.
 
 ## Neste anbefalte issues
 

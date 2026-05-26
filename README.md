@@ -8,15 +8,15 @@
 
 ## Formålet med repoet
 
-`dulting-studio` er en intern beslutningsapp for Team eSyfo. Appen skal hjelpe
-teamet og berørte produkteiere med å utvikle, vurdere og prioritere
+`dulting-studio` er en intern arbeidsflate for Team eSyfo. Appen skal hjelpe
+teamet og berørte produkteiere med å importere, sortere og vurdere
 dultingtiltak og tiltakspakker med tydelig datagrunnlag, synlige datagrenser og
-klar etisk risiko.
+klar etisk risiko. Første case er oppfølgingsplan.
 
-Første case er oppfølgingsplan. MVP-en er bevisst avgrenset:
+MVP-en er bevisst avgrenset:
 
 - ingen persondata eller produksjonsdata
-- ingen database i fase 0
+- ingen rå Mural-JSON i repo, database eller serverlogger
 - ingen produksjonsintegrasjoner eller GitHub API
 - ingen admin-UI eller dashboards
 
@@ -26,10 +26,10 @@ Første case er oppfølgingsplan. MVP-en er bevisst avgrenset:
 graph LR
     Ansatt["Nav-ansatt"] --> Azure["Azure AD / Wonderwall"]
     Azure --> App["dulting-studio"]
-    App --> Files["Filbasert data i repoet"]
-    App --> Shell["Health, metrics og auth-boundary"]
-    App --> Docs["ADR / PRD / README"]
-    App -. neste fase .-> Db["Drizzle + SQL-migrasjoner"]
+    App --> Api["Beskyttede Next.js API-ruter"]
+    Api --> Db["Postgres via Drizzle"]
+    App --> Import["Dataminimert Mural-import"]
+    App --> Docs["Tiltaksregister og beslutningsdokumentasjon"]
 ```
 
 ## Miljøer
@@ -48,9 +48,9 @@ Repoet og appen skal ikke inneholde:
 - små eller sårbare segmenter
 - produksjonsdata
 
-Filstrukturen under `data/` inneholder nå en validert JSON-modell med
-illustrative seed-data for oppfølgingsplan. Innholdet er på konseptnivå og skal
-ikke beskrive enkeltsaker, diagnoser eller konkrete personer.
+JSON-strukturen under `data/` inneholder illustrative seed-data for
+oppfølgingsplan. Innholdet er på konseptnivå og skal ikke beskrive enkeltsaker,
+diagnoser eller konkrete personer.
 
 ## Dokumentasjon
 
@@ -59,9 +59,10 @@ ikke beskrive enkeltsaker, diagnoser eller konkrete personer.
 - [ADR-003: Drizzle ORM og SQL-migrasjoner for MVP](docs/adr/ADR-003-orm-og-migrasjon.md)
 - [ADR-004: Konfigurerbare lane-typer og ikke-skårbasert FORGOOD](docs/adr/ADR-004-konfigurerbare-lane-typer.md)
 - [PRD: dulting-studio MVP](docs/PRD-dulting-studio-mvp.md)
-- [MVP-handoff: status, lokale Mural-artefakter og neste issues](docs/mvp-handoff.md)
+- [MVP-handoff: status, Mural-first arbeid og neste issues](docs/mvp-handoff.md)
+- [Dulting tiltaksregister](docs/dulting-tiltaksregister.md)
 - [Lokal importflyt ende-til-ende](docs/local-import-e2e.md)
-- [Data: struktur og grenser](data/README.md)
+- [Illustrativt datalag: struktur og grenser](data/README.md)
 
 ## Utvikling
 
@@ -81,9 +82,9 @@ fortsatt før API-et får en bruker. Juster eventuelle grupper med
 `LOCAL_AUTH_MOCK_GROUPS=gruppe-1,gruppe-2`.
 
 Se [lokal importflyt ende-til-ende](docs/local-import-e2e.md) for Postgres,
-migrasjoner og smoke-test av Mural-import.
+migrasjoner, lokal auth-mock og smoke-test av Mural-import.
 
-### Plattformgrunnmur i fase 1.1
+### Plattformgrunnmur
 
 - Azure AD og Wonderwall beskytter appen i dev-miljøet
 - `nais/nais-dev.yaml` har eksplisitt tom `accessPolicy` fordi appen foreløpig
@@ -98,11 +99,11 @@ migrasjoner og smoke-test av Mural-import.
   allerede ligger i `nais/nais-dev.yaml`, og hold manifest og app-side allowlist
   samkjørt
 
-Dette repoet er derfor klart for neste fase med database, migrasjoner og
-dataminimert import, uten at dagens app-shell trenger å lagre rå Mural-data
-eller åpne nye integrasjoner på forhånd.
+Repoet bruker database og migrasjoner for importerte prosjekter, widgets og
+klassifiseringer. Det skal fortsatt ikke lagre rå Mural-data eller åpne nye
+integrasjoner uten ny beslutning.
 
-### Database og migrasjoner i fase 1.2
+### Database og migrasjoner
 
 - `src/db/schema.ts` er source of truth for Drizzle-skjemaet.
 - `migrations/` skal inneholde reviewbare SQL-migrasjoner som sjekkes inn i git.
@@ -113,7 +114,7 @@ eller åpne nye integrasjoner på forhånd.
 - Følg ADR-003: bruk SQL-migrasjoner i repoet og ikke `drizzle-kit push` som
   mønster i delte miljøer eller produksjon.
 
-### Dataminimert Mural-import i fase 1.3
+### Dataminimert Mural-import
 
 - Parseren i `src/lib/mural-parser.ts` skal bare produsere dataminimert DTO for
   API-et. Rå Mural JSON skal ikke lagres på server, i database eller i repoet.
@@ -134,9 +135,10 @@ eller åpne nye integrasjoner på forhånd.
   første migrasjon kun for bakoverkompatibilitet med eldre lokale Postgres-oppsett;
   på Postgres 14+ er `gen_random_uuid()` innebygget og krever ikke extension.
 
-### Datalag for case, tiltak og tiltakspakker
+### Illustrativt datalag for case, tiltak og tiltakspakker
 
-Det filbaserte datalaget ligger under `data/cases/<case-id>/`:
+JSON-datalaget under `data/cases/<case-id>/` er illustrativt og brukes
+til modell, validering og tidlig UI:
 
 - `case.json` beskriver case, problem, hypotesegrunnlag og governance
 - `tiltak/*.json` beskriver enkelttiltak med EAST, Fogg og FORGOOD
@@ -146,14 +148,14 @@ Valideringen ligger i `src/lib/studio-data/` og brukes både i tester og når
 forsiden bygger. Ugyldig struktur eller innhold skal derfor stoppe før endringer
 blir en del av appen.
 
-### Slik legger Copilot/Hovmester inn nye tiltak trygt
+### Slik legger Copilot/Hovmester inn illustrative tiltak trygt
 
-1. Legg nye JSON-filer i riktig mappe under `data/cases/<case-id>/`.
+1. Legg nye illustrative JSON-filer i riktig mappe under `data/cases/<case-id>/`.
 2. Hold deg til etablerte felter og enum-verdier i `src/lib/studio-data/model.ts`.
 3. Skriv bare generisk, redaksjonelt bearbeidet innhold på konseptnivå.
 4. Ikke legg inn persondata, diagnoser, konkrete saker, saksnære historier,
    små segmenter, e-postadresser eller lange tallsekvenser.
-5. Kjør `pnpm validate:data`, `pnpm check` og `pnpm test` før commit.
+5. Bruk validerings-, type- og testskriptene fra `pnpm run` før commit.
 6. Be om vanlig faglig review i pull request før data regnes som godkjent.
 
 ## For Nav-ansatte

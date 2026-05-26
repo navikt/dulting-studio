@@ -1,6 +1,8 @@
-# Filbasert datalag
+# Illustrativt datalag
 
-`data/` er reservert for strukturert, versjonert innhold i MVP-en.
+`data/` inneholder strukturert, versjonert eksempelinnhold for modell,
+validering og tidlig UI. Reelle Mural-rådata og workshopnotater skal ikke legges
+her.
 
 ## Grenser
 
@@ -12,7 +14,7 @@
 
 ## Retning
 
-MVP-en bruker JSON for strukturert innhold. Valideringen ligger i
+Eksempelinnholdet bruker JSON. Valideringen ligger i
 `src/lib/studio-data/` og håndhever:
 
 - faste felter og enum-verdier
@@ -37,7 +39,7 @@ data/
 ## Seed-data
 
 Repoet inneholder illustrative seed-data for oppfølgingsplan. De er laget for å
-teste modell, validering og tidlig UI — ikke for å beskrive reelle tiltak,
+teste modell, validering og tidlig UI, ikke for å beskrive reelle tiltak,
 workshopfunn eller konkrete brukerhistorier.
 
 ## Trygg arbeidsflyt for nye tiltak
@@ -46,5 +48,4 @@ workshopfunn eller konkrete brukerhistorier.
 2. Hold deg til konseptnivå: problem, hypotese, måling og vurdering.
 3. Ikke legg inn Mural-utdrag, rå workshopnotater eller produksjonsnære
    beskrivelser.
-4. Kjør `pnpm validate:data` for datalaget.
-5. Kjør deretter `pnpm check`, `pnpm test` og `pnpm build`.
+4. Bruk validerings-, type-, test- og byggeskriptene fra `pnpm run` før commit.

@@ -1,8 +1,12 @@
 # ADR-001: Egen intern app og eget repo for dulting-studio
 
 **Dato:** 2026-05-22  
-**Status:** Foreslått  
+**Status:** Delvis erstattet av ADR-002 og ADR-003
 **Beslutningstakere:** Team eSyfo, med råd fra berørte produkteiere og sikkerhet/personvern-roller (konkrete personer: TBD)
+
+> Datagrense- og repo-beslutningen står fortsatt. Antakelsen om filbasert
+> lagring som eneste MVP-datalag er erstattet av dataminimert Mural-import og
+> Postgres/Drizzle-migrasjoner, se ADR-002 og ADR-003.
 
 ## Kontekst
 

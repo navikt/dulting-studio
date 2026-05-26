@@ -73,12 +73,29 @@ Hver tiltaksklynge har åpne spørsmål som må avklares før implementering.
 
 | Tiltaksklynge | Avklaringer |
 |---|---|
-| Tidsriktig signal | Hva er triggeren? Forventet fire uker, faktisk passert fire uker, eller annet? Hvem er relevant populasjon? Hvilken fristregel skal vises? Hvordan unngå støy for korte sykmeldinger? |
-| Behovsvurdering | Hva er minste trygge vurdering arbeidsgiver kan gjøre? Hvilken valgstruktur: ja/nei, flervalg, fritekst? Hvordan formulere «plan trengs ikke» uten å undergrave plikt? |
-| Støttende tekst | Hvilke tekster er faktisk dulting (atferdspåvirkning), og hvilke er ren informasjon? Hvor skal de ligge — i signal, i behovsvurdering, eller som egen flate? |
+| Tidsriktig signal | Hva er riktig trigger? Forventet fire uker, faktisk passert fire uker eller noe annet? Hvem er relevant populasjon? Hvilken fristregel skal vises? Hvordan unngå støy for korte sykmeldinger? |
+| Behovsvurdering | Hva er minste trygge vurdering arbeidsgiver kan gjøre? Hvilken valgstruktur bør brukes: ja/nei, flervalg eller fritekst? Hvordan formulere «plan trengs ikke nå» uten å undergrave oppfølgingsplikten? Dette krever juridisk og faglig avklaring. |
+| Støttende tekst | Hvilke tekster påvirker handling, og hvilke er nøytral informasjon om rettigheter og plikter? Hvor skal tekstene ligge: i signal, i behovsvurdering eller som egen flate? |
 | Stegvis hjelp | Parkert nå. Neste steg hvis første test gir planstart uten fullføring. |
 | Evaluering og påminnelser | Parkert, men ikke glemt. Aktuell når planer finnes og trenger kontinuitet. |
 | Avklaring | Legebeskjed (DULT-04): juridisk og datamessig avklaring. Deep-link (DULT-23): teknisk avklaring. Deling med Nav/sykmeldt (DULT-16): mottaker og fritekst. |
+
+## Målemodell for første test
+
+Målinger bør landes på bearbeidede tiltaksklynger, ikke på alle råkortene.
+Kontrollgruppen bør få dagens uendrede opplevelse.
+
+Tiltakskolonnen viser DULT-råkortene som inngår i hver klynge. Kortene er
+foreløpige dult-forslag, ikke ferdig besluttede tiltak.
+
+| Tiltaksklynge | Tiltak i klyngen (DULT-råkort) | Primært mål | Tidlige indikatorer | Guardrails |
+|---|---|---|---|---|
+| Tidsriktig signal | DULT-06: signal eller informasjon når fraværet nærmer seg fire uker. DULT-20: frist for oppfølgingsplan på riktig person. | Flere oppfølgingsplaner kommer inn. | Arbeidsgiver åpner varselet eller den sykmeldtes side, starter vurdering eller plan, og starter før frist. | Varsling blir for bred eller for tidlig, signalet oppleves som kontroll, eller varsler lukkes uten handling. |
+| Behovsvurdering i Dine sykmeldte | DULT-01: kartlegge behov for oppfølgingsplan. DULT-07: konkret oppgave. DULT-15: svare at plan ikke trengs nå. Støtte: DULT-11 for riktig person og kontekst. | Flere oppfølgingsplaner kommer inn, tolket sammen med «plan trengs ikke nå». | Arbeidsgiver gjennomfører behovsvurdering, velger mellom plan og ikke-behov, og starter etter signal. | Høy andel «plan trengs ikke nå», unødvendige planer, helseopplysninger i fritekst eller vage begrunnelser. |
+| Støttende tekst og forståelse | DULT-02: forklare verdien av oppfølging. DULT-10: tydeliggjøre plikt og ansvar. Eventuelt DULT-13: rydde tekst på berørt skjerm. | Ikke egen KPI i første test. Måles som støtte til de to andre klyngene. | Arbeidsgiver forstår hva neste steg er, og når plan trengs eller ikke trengs. | Teksten presser feil handling, bruker truende eller moraliserende tone, eller gjør viktig informasjon vanskeligere å få med seg. |
+
+Langsiktige hypoteser som sykefravær, gradert sykmelding, medvirkningsplikt og
+tilretteleggingsplikt bør ikke være primær KPI i første test.
 
 ## Første foreslåtte tiltakspakke
 
@@ -94,6 +111,6 @@ skjermene som berøres, men ikke behandles som egne tiltaksklynger.
 
 ## Bruk sammen med Mural
 
-Mural bør vise tiltakspakke, tiltaksklynger og DULT-kort visuelt. Dette
-registeret gir bakgrunn, råkorttekst og mapping. Oppdater registeret når et
-DULT-kort flyttes til en annen klynge eller får ny status.
+Mural bør vise tiltakspakke, tiltaksklynger, tiltak i hver klynge og målinger
+visuelt. Dette registeret gir bakgrunn, råkorttekst og mapping. Oppdater
+registeret når et DULT-kort flyttes til en annen klynge eller får ny status.
