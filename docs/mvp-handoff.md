@@ -54,10 +54,10 @@ ha syntetiske eller saniterte fixtures under `fixtures/`.
 - `.github/skills/dulting-redaktor/` kan brukes som bearbeidingsmotor både for
   Mural-first arbeid og for Studio inbox-items.
 
-## Kildekart for tiltakssporet
+## Tiltaksregister for dulting-raden
 
-Se [`docs/dulting-kildekart.md`](dulting-kildekart.md) for forklaring av
-`DULT-*` og `TK-*` kilde-IDer som brukes i Mural og arbeidsfiler.
+Se [`docs/dulting-tiltaksregister.md`](dulting-tiltaksregister.md) for råkort,
+intensjon, tiltaksklynge, status og mapping for DULT-kortene.
 
 ## Neste anbefalte issues
 
