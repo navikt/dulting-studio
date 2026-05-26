@@ -43,6 +43,9 @@ yarn-error.log*
 
 # local Mural exports must never be committed
 /local-mural-exports/
+/mural-*.json
+/mural-*.png
+/.playwright-mcp/
 
 # local planning/research notes
 /.local-notes/

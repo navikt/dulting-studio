@@ -17,11 +17,29 @@ sporbarhet.
 
 | Begrep | Betydning |
 |---|---|
-| DULT-* | Råkort eller dult-forslag fra dulting-raden. |
+| DULT-* | Råkort eller dult-forslag fra dulting-raden. Dette er foreløpige forslag, ikke ferdig besluttede tiltak. |
+| Tiltak | En handling som kan påvirke atferd. Et DULT-råkort er et forslag til tiltak. Etter bearbeiding kan det bli et kanonisk tiltak i en tiltakspakke. |
 | Aktør | Hvem tiltaket primært retter seg mot: arbeidsgiver, sykmeldt, begge eller ukjent. |
 | Tiltaksklynge | Gruppe av tiltak som hører sammen funksjonelt eller atferdsmessig. |
 | Tiltakspakke | Samlet pakke av mange tiltak, klynger, målinger og avklaringer. |
-| Status | Viser om kortet er med i første test, støtte, avklaring, senere eller ute. |
+| Ønsket atferd | Hva arbeidsgiver skal gjøre annerledes hvis klyngen virker. |
+| Målepåvirkning | Hvordan vi tror klyngen påvirker atferd og effektmål. Måles først på nærliggende handlinger, deretter på oppfølgingsplaner som kommer inn. |
+| Guardrails | Uønskede bieffekter vi må følge med på, for eksempel snarvei bort fra oppfølgingsplikt eller helseopplysninger i fritekst. |
+| Åpne spørsmål | Avklaringer som må løses før første test eller implementering. |
+| «Plan trengs ikke nå» | Arbeidsnavn for et mulig utfall i behovsvurderingen. Det er ikke en endelig konklusjon og må ikke undergrave arbeidsgivers oppfølgingsplikt. |
+| Status | Viser om kortet er med i første test, støtte, avklaring, senere, utenfor første pakke, kontekst eller ute. |
+
+### Statusverdier
+
+| Status | Betydning |
+|---|---|
+| Med i første test | Kortet inngår som egen del av første testpakke. |
+| Støtte | Kortet er ikke en egen testbar enhet, men bør inn hvis berørt skjerm eller flyt endres. |
+| Avklaring | Kortet krever juridisk, faglig, teknisk eller datamessig avklaring før det kan bli tiltak. |
+| Senere | Aktuelt etter første test eller i en senere tiltakspakke. |
+| Utenfor første pakke | Relevant bakgrunns- eller grunnarbeid, men ikke del av første test. |
+| Kontekst | Bakgrunn eller premiss, ikke selvstendig tiltak. |
+| Ute | Ikke tiltak eller ikke relevant for første pakke. |
 
 ## Tiltaksklynger
 
@@ -52,20 +70,20 @@ sporbarhet.
 | DULT-09 | Gjenbruke godt innhold inne på innloggede sider | Arbeidsgiver møter relevant innhold på riktig flate. | Arbeidsgiver | Innhold og IA | Utenfor første pakke | Støtter senere innholdsarbeid. |
 | DULT-10 | Det bør stå noe om arbeidsgiver sin plikt, slik at de er obs på ansvar. | Arbeidsgiver forstår plikten til oppfølging og tilrettelegging. | Arbeidsgiver | Støttende tekst og forståelse | Støtte | Bør inn som mikrotekst, men må formuleres uten å presse feil handling. |
 | DULT-11 | Når arbeidsgiver logger seg inn på Dine sykmeldte når hen mottar en sykmelding, burde de komme rett inn på personen det gjelder for å se sykmeldingen. Eller i hvert fall tydeliggjøre hvor man skal trykke for å se eller gjøre noe. | Arbeidsgiver kommer raskt til riktig kontekst for handling. | Arbeidsgiver | Behovsvurdering i Dine sykmeldte | Støtte | Støtter behovsvurderingen, men er ikke hovedproblemet alene. |
-| DULT-12 | Bruke kalenderavtale til evaluering av oppfølgingsplan | Arbeidsgiver og sykmeldt avtaler evaluering av planen. | Arbeidsgiver | Evaluering og påminnelser | Senere | Kontinuitet etter plan, ikke første test. Kan berøre sykmeldt senere. |
+| DULT-12 | Bruke kalenderavtale til evaluering av oppfølgingsplan | Arbeidsgiver og sykmeldt avtaler evaluering av planen. | Arbeidsgiver, berører sykmeldt | Evaluering og påminnelser | Senere | Kontinuitet etter plan, ikke første test. Berører sykmeldt og må vurderes i sykmeldt-sporet senere. |
 | DULT-13 | Kan vi få lov å endre teksten her? Vi har fått vite?... av hvem? og i denne virksomheten kan det endres til i din virksomhet, og er virksomhet det ordet man bruker? at alle føler at det er naturlig? Det er også skrivefeil i medarbeiderne (som ikke brukes ellers som begrep). Håper vi kan få skrive om denne boksen. | Arbeidsgiver forstår tekst og begreper uten friksjon. | Arbeidsgiver | Tekst og skjermrydding | Støtte | Bør håndteres hvis første test berører samme skjerm eller boks. |
 | DULT-14 | Dette er det som står om oppfølging sm. Sykmeldingen for arbeidsgiver eier vi. | Viser eksisterende innhold og eierskap. | Arbeidsgiver | Utenfor første pakke | Kontekst | Brukes som bakgrunn, ikke som selvstendig tiltak. |
 | DULT-15 | Det burde være funksjonalitet for at arbeidsgiver kan oppgi at det ikke er behov for oppfølgingsplan | Arbeidsgiver kan velge riktig handling når plan ikke trengs. | Arbeidsgiver | Behovsvurdering i Dine sykmeldte | Med i første test | Må ha guardrails så valget ikke blir en snarvei bort fra plikt. |
-| DULT-16 | Når Nav ber om oppfølgingsplan og arbeidsgiver vurderer at det ikke er aktuelt, bør de kunne begrunne dette med avhuking av årsak og fritekst og dele med Nav (ligger til grunn at vi har et vurderingsskjema) | Arbeidsgiver gir strukturert begrunnelse når plan ikke er aktuell. | Arbeidsgiver | Behovsvurdering i Dine sykmeldte | Avklaring | Tyngre variant av DULT-15. Krever avklaring om mottaker, deling og fritekst. |
+| DULT-16 | Når Nav ber om oppfølgingsplan og arbeidsgiver vurderer at det ikke er aktuelt, bør de kunne begrunne dette med avhuking av årsak og fritekst og dele med Nav (ligger til grunn at vi har et vurderingsskjema) | Arbeidsgiver gir strukturert begrunnelse når plan ikke er aktuell. | Arbeidsgiver | Behovsvurdering i Dine sykmeldte | Avklaring | Tyngre variant av DULT-15. Fritekst skal ikke inn i første test uten juridisk avklaring, DPIA-vurdering og PII-/helsedata-guardrails. |
 | DULT-17 | Når arbeidsgiver behandler sykmeldingen, kan det ligge en sjekkliste/guide hvor vi informerer om plikter med tips og råd om hvordan de bør følge opp sykmeldte. Vi bør kanskje skille på gradering/full sykmelding og tilpasse guiden slik at den kan komme med eksempler basert på yrkesgrupper. | Arbeidsgiver får plikter, tips og råd som konkret guide ved sykmeldingsbehandling. | Arbeidsgiver | Stegvis hjelp i planflyt | Senere | Overlapper DULT-05 og DULT-24. Aktuell etter første test. |
 | DULT-18 | Vurdere om skal tas med | Marker behov for sortering. | Arbeidsgiver | Utenfor første pakke | Ute | Meta-lapp, ikke tiltak. |
-| DULT-19 | Utkast lagret kan flyttes opp | Arbeidsgiver ser status for utkast tydeligere. | Arbeidsgiver | Tekst og skjermrydding | Utenfor første pakke | UI-rydding, ikke dulting-kjerne nå. |
+| DULT-19 | Utkast lagret kan flyttes opp | Arbeidsgiver ser status for utkast tydeligere. | Arbeidsgiver | Stegvis hjelp i planflyt | Senere | Salience og gjenopptak av påbegynt arbeid. Aktuelt hvis første test gir planstart, men lav fullføring. |
 | DULT-20 | "frist for oppfølgingsplan: x dager" på en person i "Dine sykmeldte", dersom sykmeldingsperioden tilsier det | Arbeidsgiver ser frist for oppfølgingsplan på riktig person. | Arbeidsgiver | Tidsriktig signal | Med i første test | Henger tett sammen med DULT-06. Krever presis fristregel. |
 | DULT-21 | Dette kan vi scope ned til tilretteleggingsplikt | Avgrenser pliktsporet. | Arbeidsgiver | Støttende tekst og forståelse | Avklaring | Avgrensningspremiss, ikke selvstendig tiltak. |
-| DULT-22 | Mulighet for å generere kalenderavtale før en person selv velger å lage en plan, foreslå om de vil ha påminnelse | Arbeidsgiver og sykmeldt får påminnelse om oppfølging før planarbeidet starter. | Arbeidsgiver | Evaluering og påminnelser | Senere | Parkert til senere fordi første test bør måle behovsvurdering og planstart først. Kan berøre sykmeldt senere. |
-| DULT-23 | Vi må finne ut hvor vanskelig det er å kunne ta arbeidsgiver helt inn på riktig side | Avklarer om arbeidsgiver kan lande direkte i relevant kontekst. | Arbeidsgiver | Avklaring | Teknisk avklaring | Avhengighet for DULT-11 og behovsvurderingen, ikke brukerrettet tiltak alene. |
+| DULT-22 | Mulighet for å generere kalenderavtale før en person selv velger å lage en plan, foreslå om de vil ha påminnelse | Arbeidsgiver og sykmeldt får påminnelse om oppfølging før planarbeidet starter. | Arbeidsgiver, berører sykmeldt | Evaluering og påminnelser | Senere | Parkert til senere fordi første test bør måle behovsvurdering og planstart først. Berører sykmeldt og må vurderes i sykmeldt-sporet senere. |
+| DULT-23 | Vi må finne ut hvor vanskelig det er å kunne ta arbeidsgiver helt inn på riktig side | Avklarer om arbeidsgiver kan lande direkte i relevant kontekst. | Arbeidsgiver | Avklaring | Avklaring | Teknisk avhengighet for DULT-11 og behovsvurderingen, ikke brukerrettet tiltak alene. |
 | DULT-24 | Når arbeidsgiver kommer inn på oppfølgingsplansiden er det bedre informasjon og en stegvis forklaring av hvordan følge opp den ansatte og lage en plan | Arbeidsgiver forstår hvordan de følger opp den ansatte og lager plan. | Arbeidsgiver | Stegvis hjelp i planflyt | Senere | Aktuell når planflyten skal forbedres etter behovsvurdering. |
-| DULT-25 | Fare for banner blindness + mye tekst (plassering) og at informasjon ikke leses. Bør redesigne skjermbildet "oppfølgingsplaner". Teksten bør også revideres. | Arbeidsgiver legger merke til og forstår viktig informasjon. | Arbeidsgiver | Tekst og skjermrydding | Senere | Bredere UX-spor, ikke første test uten skjermavgrensning. |
+| DULT-25 | Fare for banner blindness + mye tekst (plassering) og at informasjon ikke leses. Bør redesigne skjermbildet "oppfølgingsplaner". Teksten bør også revideres. | Arbeidsgiver legger merke til og forstår viktig informasjon. | Arbeidsgiver | Tekst og skjermrydding | Senere | Bør brukes som guardrail hvis første test legger signal eller tekst på samme flate. |
 
 ## Avklaringer før første test
 
@@ -74,7 +92,7 @@ Hver tiltaksklynge har åpne spørsmål som må avklares før implementering.
 | Tiltaksklynge | Avklaringer |
 |---|---|
 | Tidsriktig signal | Hva er riktig trigger? Forventet fire uker, faktisk passert fire uker eller noe annet? Hvem er relevant populasjon? Hvilken fristregel skal vises? Hvordan unngå støy for korte sykmeldinger? |
-| Behovsvurdering | Hva er minste trygge vurdering arbeidsgiver kan gjøre? Hvilken valgstruktur bør brukes: ja/nei, flervalg eller fritekst? Hvordan formulere «plan trengs ikke nå» uten å undergrave oppfølgingsplikten? Dette krever juridisk og faglig avklaring. |
+| Behovsvurdering | Hva er minste trygge vurdering arbeidsgiver kan gjøre? Hvilken valgstruktur bør brukes: ja/nei eller flervalg? Fritekst fra DULT-16 skal ikke inn i første test uten juridisk avklaring, DPIA-vurdering og PII-/helsedata-guardrails. Hvordan formulere «plan trengs ikke nå» uten å undergrave oppfølgingsplikten? |
 | Støttende tekst | Hvilke tekster påvirker handling, og hvilke er nøytral informasjon om rettigheter og plikter? Hvor skal tekstene ligge: i signal, i behovsvurdering eller som egen flate? |
 | Stegvis hjelp | Parkert nå. Neste steg hvis første test gir planstart uten fullføring. |
 | Evaluering og påminnelser | Parkert, men ikke glemt. Aktuell når planer finnes og trenger kontinuitet. |
@@ -88,20 +106,21 @@ Kontrollgruppen bør få dagens uendrede opplevelse.
 Tiltakskolonnen viser DULT-råkortene som inngår i hver klynge. Kortene er
 foreløpige dult-forslag, ikke ferdig besluttede tiltak.
 
-| Tiltaksklynge | Tiltak i klyngen (DULT-råkort) | Primært mål | Tidlige indikatorer | Guardrails |
-|---|---|---|---|---|
-| Tidsriktig signal | DULT-06: signal eller informasjon når fraværet nærmer seg fire uker. DULT-20: frist for oppfølgingsplan på riktig person. | Flere oppfølgingsplaner kommer inn. | Arbeidsgiver åpner varselet eller den sykmeldtes side, starter vurdering eller plan, og starter før frist. | Varsling blir for bred eller for tidlig, signalet oppleves som kontroll, eller varsler lukkes uten handling. |
-| Behovsvurdering i Dine sykmeldte | DULT-01: kartlegge behov for oppfølgingsplan. DULT-07: konkret oppgave. DULT-15: svare at plan ikke trengs nå. Støtte: DULT-11 for riktig person og kontekst. | Flere oppfølgingsplaner kommer inn, tolket sammen med «plan trengs ikke nå». | Arbeidsgiver gjennomfører behovsvurdering, velger mellom plan og ikke-behov, og starter etter signal. | Høy andel «plan trengs ikke nå», unødvendige planer, helseopplysninger i fritekst eller vage begrunnelser. |
-| Støttende tekst og forståelse | DULT-02: forklare verdien av oppfølging. DULT-10: tydeliggjøre plikt og ansvar. Eventuelt DULT-13: rydde tekst på berørt skjerm. | Ikke egen KPI i første test. Måles som støtte til de to andre klyngene. | Arbeidsgiver forstår hva neste steg er, og når plan trengs eller ikke trengs. | Teksten presser feil handling, bruker truende eller moraliserende tone, eller gjør viktig informasjon vanskeligere å få med seg. |
+| Tiltaksklynge | Tiltak i klyngen (DULT-råkort) | Ønsket atferd | Målepåvirkning | Guardrails | Åpne spørsmål |
+|---|---|---|---|---|---|
+| Tidsriktig signal | DULT-06: signal eller informasjon når fraværet nærmer seg fire uker. DULT-20: frist for oppfølgingsplan på riktig person. | Arbeidsgiver blir oppmerksom i tide og går videre til behovsvurdering eller plan før fristen. | Mål først nærliggende handlinger: signal vises, varsel eller personside åpnes, vurdering eller plan startes før frist. Bruk flere oppfølgingsplaner inn som effektmål, ikke eneste suksessmål. | Varsling blir for bred eller for tidlig, signalet oppleves som kontroll, eller varsler lukkes uten handling. | Hva er riktig trigger? Hvem er relevant populasjon? Hvilken fristregel skal vises? Hvordan unngå duplikat hvis plan er startet? |
+| Behovsvurdering i Dine sykmeldte | DULT-01: kartlegge behov for oppfølgingsplan. DULT-07: konkret oppgave. DULT-15: svare at plan ikke trengs nå. Støtte: DULT-11 for riktig person og kontekst. | Arbeidsgiver tar stilling til behovet og velger riktig handling: lage plan, eller bekrefte at plan ikke trengs nå. | Mål først fullført behovsvurdering, fordeling mellom «lag plan» og «plan trengs ikke nå», og overgang fra signal til vurdering. Tolk oppfølgingsplaner inn sammen med «plan trengs ikke nå». | Høy andel «plan trengs ikke nå», unødvendige planer, helseopplysninger i fritekst eller vage begrunnelser. Ingen default på «plan trengs ikke nå». | Hva er minste trygge vurdering? Hvilke strukturerte årsaker er trygge? Hvordan formulere valget uten å undergrave oppfølgingsplikten? |
+| Støttende tekst og forståelse | DULT-02: forklare verdien av oppfølging. DULT-10: tydeliggjøre plikt og ansvar. Eventuelt DULT-13: rydde tekst på berørt skjerm. | Arbeidsgiver forstår hvorfor oppfølging er viktig, hva oppfølgingsplikten innebærer, og hva neste steg er. | Måles som støtte, ikke egen KPI: forståelse av neste steg, forståelse av når plan trengs eller ikke trengs, og mindre frafall i vurdering eller planstart. | Teksten presser feil handling, bruker truende eller moraliserende tone, eller gjør viktig informasjon vanskeligere å få med seg. | Hvilke tekster påvirker handling? Hvilke tekster er nøytral informasjon? Hvor skal tekstene ligge, og hvordan måles de ulikt? |
 
 Langsiktige hypoteser som sykefravær, gradert sykmelding, medvirkningsplikt og
 tilretteleggingsplikt bør ikke være primær KPI i første test.
 
-## Første foreslåtte tiltakspakke
+## Tiltakspakke for første test
 
 Arbeidsnavn: **Oppgave- og veiledningslag for oppfølgingsplan**.
 
-Første test bør bestå av to hovedklynger:
+Dette er en avgrenset testpakke, ikke en full tiltakspakke slik Nudgelab kan
+omtale pakker med 30–40 tiltak. Første test bør bestå av to hovedklynger:
 
 1. **Tidsriktig signal**: DULT-06 og DULT-20.
 2. **Behovsvurdering i Dine sykmeldte**: DULT-01, DULT-07 og DULT-15, med DULT-11 som støtte og DULT-16/DULT-23 som avklaringer.
@@ -114,3 +133,5 @@ skjermene som berøres, men ikke behandles som egne tiltaksklynger.
 Mural bør vise tiltakspakke, tiltaksklynger, tiltak i hver klynge og målinger
 visuelt. Dette registeret gir bakgrunn, råkorttekst og mapping. Oppdater
 registeret når et DULT-kort flyttes til en annen klynge eller får ny status.
+Kolonnen «Åpne spørsmål» i Mural tilsvarer avklaringstabellen i dette
+registeret og må holdes synkronisert.

@@ -14,13 +14,20 @@ Team eSyfo skal levere beslutningsgrunnlag og senere eksperimenter som kan bedre
 
 Vi trenger et verktøy som kan samle forslag til dultingtiltak, dokumentere datagrunnlag, vise etisk og personvernmessig risiko, og gjøre det mulig å ta beslutninger om tiltakspakker. Brukeren har valgt app framfor GitHub Pages eller ren dokumentasjon fordi dette er et hovedspor for året og kan få stor effekt.
 
-MVP-en skal være en intern beslutningsapp. Den skal ikke være en tung admin-app. Den skal ikke ha produksjonsintegrasjoner, ikke bruke produksjonsdata og ikke bygge database i første omgang. Innhold og vurderinger skal lagres som strukturerte filer i repoet og bearbeides med Copilot/Hovmester som arbeidsmotor.
+MVP-en skal være en intern beslutningsapp. Den skal ikke være en tung admin-app.
+Den skal ikke ha produksjonsintegrasjoner eller bruke produksjonsdata.
+Antakelsen om å ikke bygge database i første omgang er erstattet av ADR-003:
+import, triage og klassifisering lagres i Postgres, mens godkjente
+beslutningsgrunnlag fortsatt kan eksporteres til reviewbare Markdown- eller
+JSON-filer.
 
 ## Beslutning
 
 Vi har besluttet å etablere `dulting-studio` som en egen intern app i eget repo, med egen produktidentitet, egen CODEOWNERS og egen deploy til Nais.
 
-MVP-en bygges som en intern Nav-app bak Azure AD-innlogging. Den skal bruke et strukturert, filbasert datalag i repoet, ikke database. Den skal ikke koble seg til produksjonssystemer eller hente produksjonsdata i MVP.
+MVP-en bygges som en intern Nav-app bak Azure AD-innlogging. Den bruker
+Postgres/Drizzle til dataminimert Mural-import og arbeidsversjoner, og skal
+fortsatt ikke koble seg til produksjonssystemer eller hente produksjonsdata.
 
 ## 3-perspektiv-review
 
@@ -34,7 +41,7 @@ MVP-en kan holdes på dataklassifisering **intern** så lenge vi håndhever tyde
 
 ### Plattform
 
-Nais er riktig plattform for en intern app med behov for tilgangsstyring, logging, CODEOWNERS og vanlig CI/CD. MVP-en kan starte uten database, uten outbound-integrasjoner og med enkel observerbarhet. Det gir lav plattformkostnad og enkel rollback.
+Nais er riktig plattform for en intern app med behov for tilgangsstyring, logging, CODEOWNERS og vanlig CI/CD. MVP-en kan starte uten outbound-integrasjoner og med enkel observerbarhet. Database- og migrasjonsvalg er senere presisert i ADR-003.
 
 ## Alternativer vurdert
 
@@ -70,14 +77,14 @@ Nais er riktig plattform for en intern app med behov for tilgangsstyring, loggin
 
 ### Alternativ C: Egen intern app og eget repo `dulting-studio` (valgt)
 
-**Beskrivelse:** Etablere et eget repo og en egen intern app med strukturert filbasert datalag, AI-assistert arbeidsflyt og tydelig governance.
+**Beskrivelse:** Etablere et eget repo og en egen intern app med strukturert datalag, AI-assistert arbeidsflyt og tydelig governance.
 
 **Fordeler:**
 - Tydelig produktgrense og tydelig eierskap.
 - Kan starte smalt med oppfølgingsplan og utvides videre uten å arve feil domenekoblinger.
 - Gir plass til egne CODEOWNERS, egen backlog og egne arkitekturbeslutninger.
 - Passer godt med intern tilgang via Azure AD og deploy på Nais.
-- Filbasert lagring holder MVP-en enkel og gjør innhold lett å se over i pull requests.
+- SQL-migrasjoner og eksportbare beslutningsgrunnlag gjør endringer synlige i pull requests.
 
 **Ulemper:**
 - Krever nytt repo, ny CI/CD og ny grunnoppsett.
@@ -111,7 +118,7 @@ Nais er riktig plattform for en intern app med behov for tilgangsstyring, loggin
 
 ### Plattform (Nais/GCP)
 
-- **Infrastrukturkrav:** Nais-app for intern bruk. Ingen Cloud SQL, Kafka, Redis eller bucket i MVP med mindre et konkret behov oppstår og dokumenteres.
+- **Infrastrukturkrav:** Nais-app for intern bruk. Cloud SQL for Postgres er aktuelt når datalaget deployes, se ADR-003. Ingen Kafka, Redis eller bucket i MVP med mindre et konkret behov oppstår og dokumenteres.
 - **Ressursbehov:** Lavt. Appen kan starte med standard requests og minnegrense. Ingen CPU-limits.
 - **Observerbarhet:** Strukturert logging, grunnleggende helsesjekker og enkel metrikk for sidevisninger og statusfordeling. Ingen logging av innholdsfelt.
 - **CI/CD-endringer:** Eget repo med standard GitHub Actions, deploy til dev først, senere prod når governance og tilgang er klare.
@@ -132,19 +139,19 @@ Nais er riktig plattform for en intern app med behov for tilgangsstyring, loggin
 - Dulting-studio får tydelig mandat og egen produktflate.
 - Arkitektur, tilgang og governance kan formes for intern beslutningsstøtte fra start.
 - Teamet unngår å binde satsingen til oppfølgingsplan-repoet eller GitHub Pages-formatet.
-- Filbasert lagring og pull requests gjør vurderinger enkle å se over og kvalitetssikre.
+- SQL-migrasjoner, eksportbare beslutningsgrunnlag og pull requests gjør vurderinger enkle å se over og kvalitetssikre.
 
 ### Negative
 
 - Nytt repo gir mer oppstartsarbeid.
 - Flere repos gir litt mer forvaltningskostnad.
-- Filbasert lagring kan bli tungvint hvis teamet senere prøver å bruke appen som driftsverktøy eller dataplattform.
+- Et app- og databasedrevet datalag kan bli tungvint hvis teamet senere prøver å bruke appen som driftsverktøy eller bred dataplattform.
 
 ### Risiko
 
 | Risiko | Sannsynlighet | Konsekvens | Mitigering |
 |--------|--------------|------------|-----------|
-| MVP-en glir over i admin-app | Middels | Høy | Lås MVP-en til beslutningsstøtte, filbasert datalag og tydelige ikke-mål |
+| MVP-en glir over i admin-app | Middels | Høy | Lås MVP-en til beslutningsstøtte, dataminimert datalag og tydelige ikke-mål |
 | Fritekst brukes til å beskrive enkeltsaker | Middels | Høy | Validering, tydelige skrivefeltgrenser og manuell review i pull request |
 | Uklare roller stopper beslutninger | Middels | Middels | Definer beslutningseier, veto-roller og statusflyt før første eksperiment |
 | For sterk kobling til første case | Middels | Middels | Modellér oppfølgingsplan som første case, ikke som hele produktet |
@@ -154,5 +161,5 @@ Nais er riktig plattform for en intern app med behov for tilgangsstyring, loggin
 - [ ] Bekreft beslutning om eget repo og egen app i teamet (eier: Team eSyfo, frist: TBD)
 - [ ] Pek ut beslutningseier og veto-roller på rollenivå (eier: produktledelse, frist: TBD)
 - [ ] Opprett repo med CODEOWNERS, README og standard Nais-oppsett (eier: teamet, frist: TBD)
-- [ ] Beskriv filstruktur, statusflyt og valideringsregler før første implementasjon (eier: teamet, frist: TBD)
+- [ ] Beskriv datamodell, statusflyt og valideringsregler før første implementasjon (eier: teamet, frist: TBD)
 - [ ] Del ADR-utkastet med berørte produkteiere og sikkerhet/personvern for råd (eier: teamet, frist: TBD)

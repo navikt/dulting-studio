@@ -69,10 +69,18 @@ ekstern fasit som erstatter Mural-arbeidet.
   avklaringer.
 - **Tiltaksklynge** grupperer tiltak som hører sammen funksjonelt eller
   atferdsmessig.
-- **DULT-kort** er råkort eller dult-forslag fra dulting-raden, ikke sekundære
-  referanser.
+- **DULT-kort** er råkort eller dult-forslag fra dulting-raden, ikke ferdig
+  besluttede tiltak.
 - **Tiltaksregisteret** viser råkorttekst, intensjon, aktør, status og mapping,
   slik at bakgrunnen for en bearbeidet lapp ikke forsvinner.
+- **Målepåvirkning** beskriver først nærliggende atferd, som åpning av varsel,
+  fullført behovsvurdering og planstart før frist. Flere planer inn er
+  effektmål, ikke eneste suksessmål.
+- **Guardrails** beskriver uønskede bieffekter som må følges med på, for
+  eksempel snarvei bort fra oppfølgingsplikt, helseopplysninger i fritekst eller
+  unødvendig støy.
+- **Åpne spørsmål** er avklaringer som må løses før første test eller
+  implementering.
 
 ## Neste anbefalte issues
 
@@ -83,7 +91,9 @@ ekstern fasit som erstatter Mural-arbeidet.
    workshop-grupper.
 4. Gjør inboxen bedre for store datasett: foreldreløse items, side-ved-side
    gruppevisning og tydelig batcharbeid.
-5. Promoter inbox-items til kanoniske tiltak.
+5. Bearbeid validerte DULT-kort videre til kanoniske tiltak. Et kanonisk tiltak
+   er et DULT-kort som er avklart, omskrevet og godkjent for bruk i en
+   tiltakspakke.
 6. Bygg tiltakspakkevisning med dekning på aktørspor og brukerreisesteg.
 7. Eksporter godkjent tiltakspakke til Markdown/JSON etter PII-bekreftelse.
 8. Dokumenter manuelle PII-stoppunkter før import, promotering og eksport.
