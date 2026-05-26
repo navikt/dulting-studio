@@ -43,3 +43,6 @@ yarn-error.log*
 
 # local Mural exports must never be committed
 /local-mural-exports/
+
+# local planning/research notes
+/.local-notes/

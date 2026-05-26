@@ -1,5 +1,15 @@
 # PRD for dulting-studio MVP
 
+> **Status 2026-05-26:** Dette dokumentet startet som fase 0-PRD med
+> filbasert lagring som antakelse. Etter Mural-analysen og første
+> vertikalslice er MVP-retningen oppdatert: dataminimert Mural-import,
+> database-backed arbeidsflate og videre bearbeiding til tiltak/tiltakspakker
+> er del av første fungerende produkt. Se også
+> [ADR-002](adr/ADR-002-personvern-dataminimering.md),
+> [ADR-003](adr/ADR-003-orm-og-migrasjon.md),
+> [ADR-004](adr/ADR-004-konfigurerbare-lane-typer.md) og
+> [MVP-handoff](mvp-handoff.md).
+
 ## Kort beskrivelse
 
 `dulting-studio` er en intern beslutningsapp for Team eSyfo. Appen skal hjelpe teamet og berørte produkteiere med å utvikle, vurdere og prioritere dultingtiltak med tydelig datagrunnlag, klare datagrenser og synlig etisk risiko.
@@ -36,11 +46,13 @@ Vi trenger derfor ett sted der forslag kan beskrives likt, vurderes likt og samm
 
 MVP-en skal gjøre det mulig å:
 
-1. registrere forslag til dultingtiltak i en fast struktur
-2. vise hva som er hypotese, hva som er dokumentert og hva som mangler
-3. synliggjøre personvern-, etikk- og trygghetsrisiko per tiltak og samlet per tiltakspakke
-4. styre forslag gjennom en enkel statusflyt fram til klar for eksperiment
-5. gjøre dette uten personopplysninger, produksjonsdata eller database
+1. importere workshop-/Mural-forslag som dataminimert grunnlag
+2. bearbeide importerte forslag i en inbox med søk, filter og status
+3. promotere relevante forslag til tiltak i en fast struktur
+4. vise hva som er hypotese, hva som er dokumentert og hva som mangler
+5. synliggjøre personvern-, etikk- og trygghetsrisiko per tiltak og samlet per tiltakspakke
+6. styre forslag gjennom en enkel statusflyt fram til klar for eksperiment
+7. gjøre dette uten personopplysninger, produksjonsdata eller rå Mural-JSON i repo/database
 
 ## Ikke-mål
 
@@ -48,7 +60,7 @@ MVP-en skal ikke:
 
 - være en admin-app for drift av produksjonsflater
 - koble seg til produksjonssystemer eller produksjonsdata
-- bygge database eller eget analysegrunnlag
+- lagre rå Mural-eksport, persondata eller saksnært analysegrunnlag
 - ha dashboards for brukstall eller effektmåling
 - ha GitHub API-integrasjon
 - automatisk publisere endringer til andre systemer
@@ -70,17 +82,20 @@ MVP-en skal derfor inneholde:
 - forslag til tiltakspakker som består av flere enkelttiltak
 - FORGOOD-visualisering for enkelttiltak og tiltakspakke
 
-## AI-assistert og filbasert arbeidsflyt
+## AI-assistert arbeidsflyt og lagring
 
-MVP-en skal bruke et strukturert filbasert datalag i repoet. Det betyr at innhold ligger i versjonerte filer, ikke i database.
+MVP-en bruker database som arbeidsflate for import, triage og klassifisering.
+Git/PR og eksportert Markdown/JSON skal fortsatt være beslutningsprotokoll når
+tiltakspakker er klare for review.
 
 ### Arbeidsflyt i MVP
 
 1. Teamet beskriver et forslag i en fast mal.
 2. Copilot/Hovmester kan hjelpe med å strukturere teksten og foreslå manglende felter.
-3. Forslaget lagres som fil i repoet, for eksempel YAML eller JSON for struktur og Markdown for begrunnelser.
-4. Appen leser filene og viser dem som case, tiltak og tiltakspakker.
-5. Endringer kvalitetssikres i pull request med CODEOWNERS.
+3. Forslaget kan komme fra dataminimert Mural-import eller manuell registrering.
+4. Appen lagrer arbeidsversjoner i database og viser dem som inbox, tiltak og tiltakspakker.
+5. Godkjente tiltakspakker eksporteres til reviewbart Markdown/JSON.
+6. Endringer kvalitetssikres faglig før eksperiment eller implementering.
 
 ### AI-guardrails i MVP
 
@@ -99,7 +114,7 @@ MVP-en skal bruke et strukturert filbasert datalag i repoet. Det betyr at innhol
 
 ### Hva dette ikke gir
 
-- direkte redigering i GitHub fra appen
+- rå Mural-arkiv i appen
 - sanntids-samarbeid
 - automatisk kobling til effektdata eller produksjonssystemer
 
@@ -258,10 +273,11 @@ Forslaget kan tas videre til produktteamets eksperiment- eller implementasjonsl�
 MVP-en er vellykket når teamet kan:
 
 - beskrive minst ett oppfølgingsplan-case med full struktur
-- registrere og sammenligne flere tiltak uten å bruke persondata
+- importere og bearbeide teamets Mural-forslag uten å lagre rå eksport
+- registrere, klassifisere og sammenligne flere tiltak uten å bruke persondata
 - vise en tiltakspakke med FORGOOD-profil uten totalscore
 - dokumentere hvorfor tiltak er vurdert, forkastet eller klare for eksperiment
-- gjennomføre review i pull request uten behov for database eller GitHub API
+- eksportere beslutningsgrunnlag til reviewbart format uten GitHub API-integrasjon
 
 ## Hva som må være på plass før Tiltakspakke 1 kan besluttes
 
@@ -278,10 +294,10 @@ Før Tiltakspakke 1 kan besluttes, må følgende være på plass:
 9. Måleplan og stoppkriterier for eksperiment er skrevet.
 10. Tiltaket er fortsatt innenfor ikke-målene for MVP.
 
-## Åpne spørsmål etter Fase 0
+## Åpne spørsmål etter første vertikalslice
 
-- Hvilken filstruktur er best for tiltak, pakker og beslutningslogger?
-- Skal appen kun lese repo-filer i første versjon, eller også støtte lokal import av filer?
 - Hvilke interne roller skal ha tilgang i første prod-versjon?
 - Hvilken visualisering er lettest å forstå uten å gi falsk trygghet?
 - Hvordan dokumenterer vi datagrunnlag på en enkel og lik måte på tvers av case?
+- Hvilket eksportformat skal være første beslutningsprotokoll: Markdown, JSON eller begge?
+- Hvordan skal Mural-importen mappe faktisk aktørspor, brukerreise, lanes og workshop-grupper med lav nok manuell opprydding?

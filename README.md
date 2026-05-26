@@ -59,6 +59,7 @@ ikke beskrive enkeltsaker, diagnoser eller konkrete personer.
 - [ADR-003: Drizzle ORM og SQL-migrasjoner for MVP](docs/adr/ADR-003-orm-og-migrasjon.md)
 - [ADR-004: Konfigurerbare lane-typer og ikke-skårbasert FORGOOD](docs/adr/ADR-004-konfigurerbare-lane-typer.md)
 - [PRD: dulting-studio MVP](docs/PRD-dulting-studio-mvp.md)
+- [MVP-handoff: status, lokale Mural-artefakter og neste issues](docs/mvp-handoff.md)
 - [Data: struktur og grenser](data/README.md)
 
 ## Utvikling
