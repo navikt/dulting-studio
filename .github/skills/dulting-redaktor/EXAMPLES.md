@@ -69,43 +69,43 @@ varselet?
 - PII-stoppunkt: ingen synlig PII, men én lapp må språkvaskes for saksnær tekst.
 ```
 
-## Eksempel 3: Tiltakspakkeutkast
+## Eksempel 3: Klyngeforslag, ikke tiltakspakke
 
 ```md
-## Tiltakspakke: Tidlig og enkel start på oppfølgingsplan
+## Klynge: Tidlig forståelse og lav terskel for oppfølgingsplan
 
-**Formål:** Øke andelen arbeidsgivere som vurderer og starter oppfølgingsplan
-før uke 10.
+**Felles tema:** Flere lapper handler om at arbeidsgiver får signal tidlig,
+men ikke forstår hvorfor de skal handle eller hvordan de kommer i gang.
 
-### Tiltak
+### Kilder
 
-1. **Uke 4-varsel med tydelig hvorfor**
-   - Treffer: arbeidsgiver, uke 4
-   - Atferdsbarriere: lav motivasjon / uklar relevans
+1. `item-12` — arbeidsgiver forstår ikke hvorfor uke 4-varselet kommer
+2. `item-18` — behov for tydeligere neste steg etter varsel
+3. `item-21` — usikkerhet om hva oppfølgingsplanen skal inneholde
 
-2. **Startmal med tre første steg**
-   - Treffer: arbeidsgiver, uke 4–6
-   - Atferdsbarriere: lav ability / høy friksjon
+### Mulig tiltakskandidat
 
-3. **Påminnelse etter kartleggingsspørsmål**
-   - Treffer: sykmeldt og arbeidsgiver, uke 6
-   - Atferdsbarriere: manglende prompt
+Forklar uke 4-varselet som tidlig hjelp og gi arbeidsgiver et konkret første
+steg for å starte oppfølgingsplan.
+
+**Status:** tiltakskandidat, må valideres av teamet  
+**Konfidens:** middels  
+**Treffer trolig:** arbeidsgiver, uke 4  
+**Atferdsbarriere:** lav motivation og lav ability
+
+### Overlapp og konflikt
+
+- `item-12` og `item-18` overlapper og bør kanskje slås sammen.
+- `item-21` kan være egen undertematikk om innhold i planen.
 
 ### Hull
 
-- Lite dekning for sykmeldtes medvirkningsplikt.
-- Måling er uavklart.
+- Ingen tydelig lapp om sykmeldtes medvirkning i denne klyngen.
+- Målepunkt er ikke beskrevet.
 
-### FORGOOD
+### Før dette kan bli tiltakspakke
 
-- Openness: må forklare hvorfor Nav ber om handling.
-- Respect/Options: må ikke oppleves som press til aktivitet som ikke passer
-  situasjonen.
-
-### Før review
-
-- Sjekk PII/saksnær tekst.
-- Avklar juridisk formulering av plikt.
-- Velg målepunkt.
+- Teamet må velge mål for pakken.
+- Juridisk formulering av plikt må avklares.
+- PII/saksnær tekst må sjekkes manuelt.
 ```
-

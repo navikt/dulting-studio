@@ -9,7 +9,7 @@ når de er ukjente, men usikkerhet skal markeres eksplisitt.
 {
   "source": {
     "sourceId": "mural-widget-id eller studio-item-id",
-    "originalText": "original lappetekst",
+    "originalText": "original lappetekst, kun hvis ingen synlig PII-/saksnær risiko",
     "sourceContext": "gruppe, farge, posisjon, lane eller annen kjent kontekst"
   },
   "classification": {
@@ -52,36 +52,44 @@ når de er ukjente, men usikkerhet skal markeres eksplisitt.
   "piiReview": {
     "risk": "ingen synlig | mulig | sannsynlig",
     "reason": "kort begrunnelse",
-    "action": "behold | rediger | avvis | eskaler"
+    "action": "behold | avvis | eskaler"
   },
-  "statusSuggestion": "foreslått | trenger-avklaring | parkert | forkastet"
+  "statusSuggestion": "uklassifisert | foreslått | trenger-avklaring | parkert | forkastet"
 }
 ```
 
-## Tiltakspakkeutkast
+Ved `piiReview.risk = mulig | sannsynlig` skal output ikke gjengi
+originalteksten ordrett. Bruk `sourceId`, kort risikobegrunnelse og anbefalt
+manuell håndtering.
+
+## Klyngeforslag
 
 ```json
 {
-  "packageTitle": "kort navn",
-  "purpose": "hvilket mål pakken skal støtte",
-  "includedMeasures": [
+  "clusterTitle": "kort navn",
+  "commonTheme": "hva kildene ser ut til å handle om",
+  "sourceItems": [
     {
-      "title": "tiltak",
-      "sourceIds": ["kilde-id"],
-      "actorTracks": ["arbeidsgiver"],
-      "journeySteps": ["uke 4"],
-      "whyIncluded": "kort begrunnelse"
+      "sourceId": "kilde-id",
+      "excerpt": "kort utdrag, ikke ordrett ved PII-risiko",
+      "itemType": "tiltak | barriere | motivasjon | måling | annet"
     }
   ],
+  "similarityReason": "hvorfor disse hører sammen",
+  "overlapOrConflict": "duplikat, overlapp, motstrid eller ukjent",
+  "candidateCanonicalMeasure": "mulig tiltakskandidat, ikke beslutning",
   "coverage": {
-    "actorTracks": "hva treffer pakken / hva mangler",
-    "journeySteps": "hva treffer pakken / hva mangler"
+    "actorTracks": "hva klyngen ser ut til å treffe / hva mangler",
+    "journeySteps": "hva klyngen ser ut til å treffe / hva mangler"
   },
-  "openQuestions": ["må avklares før beslutning"],
-  "forgoodRisks": ["viktigste kvalitative flagg"],
-  "piiStopPoint": "hva må sjekkes manuelt før eksport"
+  "confidence": "høy | middels | lav",
+  "openQuestions": ["må avklares før tiltak eller pakke"],
+  "piiRiskSummary": "ingen synlig | mulig | sannsynlig"
 }
 ```
+
+Klynger er forarbeid. De er ikke tiltakspakker før teamet har valgt mål,
+avgrensning og hvilke tiltak som faktisk skal inngå.
 
 ## Tillatte statusord
 
@@ -90,7 +98,4 @@ når de er ukjente, men usikkerhet skal markeres eksplisitt.
 - `trenger-avklaring`
 - `parkert`
 - `forkastet`
-- `i-tiltak`
-- `i-tiltakspakke`
-- `klar-for-review`
-
+- `tiltakskandidat`
