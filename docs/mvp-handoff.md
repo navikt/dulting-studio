@@ -56,7 +56,8 @@ ha syntetiske eller saniterte fixtures under `fixtures/`.
 
 ## Neste anbefalte issues
 
-1. Gjør lokal import testbar ende-til-ende med Postgres og lokal auth-mock.
+1. Bruk `docs/local-import-e2e.md` for å verifisere lokal import med Postgres,
+   migrasjoner og auth-mock.
 2. Lag prosjektoversikt for importerte Mural-brett.
 3. Forbedre Mural-mapping til aktørspor, brukerreisesteg, lanes og
    workshop-grupper.

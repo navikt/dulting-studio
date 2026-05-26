@@ -10,8 +10,12 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "check": "biome check . && tsc --noEmit",
+    "db:up": "docker compose up --wait postgres",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v && docker compose up --wait postgres && pnpm db:migrate",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "smoke:local-import": "node scripts/local-import-smoke.mjs",
     "validate:data": "vitest run src/lib/studio-data/repository.test.ts",
     "test": "vitest run"
   },

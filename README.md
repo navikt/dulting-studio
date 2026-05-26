@@ -60,6 +60,7 @@ ikke beskrive enkeltsaker, diagnoser eller konkrete personer.
 - [ADR-004: Konfigurerbare lane-typer og ikke-skårbasert FORGOOD](docs/adr/ADR-004-konfigurerbare-lane-typer.md)
 - [PRD: dulting-studio MVP](docs/PRD-dulting-studio-mvp.md)
 - [MVP-handoff: status, lokale Mural-artefakter og neste issues](docs/mvp-handoff.md)
+- [Lokal importflyt ende-til-ende](docs/local-import-e2e.md)
 - [Data: struktur og grenser](data/README.md)
 
 ## Utvikling
@@ -78,6 +79,9 @@ LOCAL_AUTH_MOCK_ENABLED=true pnpm dev
 Mocken er kun aktiv utenfor `NODE_ENV=production`, og same-origin-sjekken kjøres
 fortsatt før API-et får en bruker. Juster eventuelle grupper med
 `LOCAL_AUTH_MOCK_GROUPS=gruppe-1,gruppe-2`.
+
+Se [lokal importflyt ende-til-ende](docs/local-import-e2e.md) for Postgres,
+migrasjoner og smoke-test av Mural-import.
 
 ### Plattformgrunnmur i fase 1.1
 
