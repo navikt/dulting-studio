@@ -1,5 +1,6 @@
 import { Theme } from "@navikt/ds-react";
 import type { Metadata } from "next";
+import { AppShell } from "@/components/AppShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="no">
       <body>
-        <Theme>{children}</Theme>
+        <Theme>
+          <AppShell>{children}</AppShell>
+        </Theme>
       </body>
     </html>
   );

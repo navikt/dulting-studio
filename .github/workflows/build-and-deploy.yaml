@@ -7,18 +7,26 @@ on:
       - main
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   test-and-verify:
     name: Test and verify
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 15
     steps:
-      - uses: navikt/teamesyfo-github-actions-workflows/actions/setup-pnpm@main
+      - uses: navikt/teamesyfo-github-actions-workflows/actions/setup-pnpm@eea7c65b525dfc94332000d3737a5a51207643df # main
         with:
           NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           node-version: 24.x
-      - run: pnpm run lint
-      - run: pnpm run test
-      - run: pnpm run build
+      - name: Run lint
+        run: pnpm run lint
+      - name: Run tests
+        run: pnpm run test
+      - name: Run build
+        run: pnpm run build
 
   build-dev:
     if: github.event_name != 'pull_request' && github.actor != 'dependabot[bot]'
@@ -29,10 +37,11 @@ jobs:
       contents: read
       id-token: write
       packages: write
+    timeout-minutes: 15
     outputs:
       image: ${{ steps.build-and-publish.outputs.image }}
     steps:
-      - uses: navikt/teamesyfo-github-actions-workflows/actions/build-next-app@main
+      - uses: navikt/teamesyfo-github-actions-workflows/actions/build-next-app@eea7c65b525dfc94332000d3737a5a51207643df # main
         id: build-and-publish
         with:
           app: dulting-studio
@@ -50,6 +59,13 @@ jobs:
     needs:
       - test-and-verify
       - build-dev
+    permissions:
+      contents: read
+      id-token: write
+    timeout-minutes: 10
+    concurrency:
+      group: dulting-studio-deploy-dev
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: nais/deploy/actions/deploy@fa754451577294aae42872a69b888b3470478ec1 # v2

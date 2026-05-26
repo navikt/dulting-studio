@@ -18,6 +18,7 @@ spec:
       allowAllUsers: false
       claims:
         groups:
+          # Hold disse gruppe-IDene i sync med eventuell app-side allowlist i withProtectedApiRoute().
           - id: "5066bb56-7f19-4b49-ae48-f1ba66abf546"
           - id: "ef4e9824-6f3a-4933-8f40-6edf5233d4d2"
     sidecar:
@@ -55,7 +56,9 @@ spec:
     - https://dulting-studio.intern.dev.nav.no
   accessPolicy:
     inbound:
+      # Ingen app-til-app-kall inn i fase 1.1. Tilgang går via ingress og Wonderwall.
       rules: []
     outbound:
+      # Ingen downstream-tjenester eller eksterne hoster før database/import-fasen er avklart.
       rules: []
       external: []

@@ -16,7 +16,7 @@ klar etisk risiko.
 Første case er oppfølgingsplan. MVP-en er bevisst avgrenset:
 
 - ingen persondata eller produksjonsdata
-- ingen database
+- ingen database i fase 0
 - ingen produksjonsintegrasjoner eller GitHub API
 - ingen admin-UI eller dashboards
 
@@ -27,7 +27,9 @@ graph LR
     Ansatt["Nav-ansatt"] --> Azure["Azure AD / Wonderwall"]
     Azure --> App["dulting-studio"]
     App --> Files["Filbasert data i repoet"]
+    App --> Shell["Health, metrics og auth-boundary"]
     App --> Docs["ADR / PRD / README"]
+    App -. neste fase .-> Db["Drizzle + SQL-migrasjoner"]
 ```
 
 ## Miljøer
@@ -53,6 +55,9 @@ ikke beskrive enkeltsaker, diagnoser eller konkrete personer.
 ## Dokumentasjon
 
 - [ADR-001: Egen intern app og eget repo for dulting-studio](docs/adr/ADR-001-dulting-studio.md)
+- [ADR-002: Dataminimert Mural-import i MVP](docs/adr/ADR-002-personvern-dataminimering.md)
+- [ADR-003: Drizzle ORM og SQL-migrasjoner for MVP](docs/adr/ADR-003-orm-og-migrasjon.md)
+- [ADR-004: Konfigurerbare lane-typer og ikke-skårbasert FORGOOD](docs/adr/ADR-004-konfigurerbare-lane-typer.md)
 - [PRD: dulting-studio MVP](docs/PRD-dulting-studio-mvp.md)
 - [Data: struktur og grenser](data/README.md)
 
@@ -61,6 +66,68 @@ ikke beskrive enkeltsaker, diagnoser eller konkrete personer.
 Installer avhengigheter med pnpm, og bruk `pnpm run` for å se oppdatert liste
 over tilgjengelige skript. Appen kjører lokalt på
 [http://localhost:3000](http://localhost:3000).
+
+For å teste beskyttede API-kall lokalt uten Wonderwall/Azure AD kan du slå på
+en eksplisitt lokal mock-bruker:
+
+```bash
+LOCAL_AUTH_MOCK_ENABLED=true pnpm dev
+```
+
+Mocken er kun aktiv utenfor `NODE_ENV=production`, og same-origin-sjekken kjøres
+fortsatt før API-et får en bruker. Juster eventuelle grupper med
+`LOCAL_AUTH_MOCK_GROUPS=gruppe-1,gruppe-2`.
+
+### Plattformgrunnmur i fase 1.1
+
+- Azure AD og Wonderwall beskytter appen i dev-miljøet
+- `nais/nais-dev.yaml` har eksplisitt tom `accessPolicy` fordi appen foreløpig
+  ikke skal ta imot kall fra andre apper eller kalle ut til andre tjenester
+- health (`/api/isAlive`), readiness (`/api/isReady`) og metrics
+  (`/api/metrics`) er åpne for NAIS-prober og Prometheus
+- nye server-endepunkter for data, import og klassifisering skal bruke
+  `withProtectedApiRoute()` fra `src/lib/auth.ts` for Azure-tokenvalidering og
+  same-origin-sjekk på usikre HTTP-metoder
+- endepunkter som krever særskilt tilgang kan i tillegg sette
+  `requiredAzureAdGroups` i `withProtectedApiRoute()`. Bruk bare gruppe-IDer som
+  allerede ligger i `nais/nais-dev.yaml`, og hold manifest og app-side allowlist
+  samkjørt
+
+Dette repoet er derfor klart for neste fase med database, migrasjoner og
+dataminimert import, uten at dagens app-shell trenger å lagre rå Mural-data
+eller åpne nye integrasjoner på forhånd.
+
+### Database og migrasjoner i fase 1.2
+
+- `src/db/schema.ts` er source of truth for Drizzle-skjemaet.
+- `migrations/` skal inneholde reviewbare SQL-migrasjoner som sjekkes inn i git.
+- Lokal utvikling bruker `DATABASE_URL` fra `.env` eller tilsvarende lokal
+  miljøkonfig. Se `.env.example` for kontrakten.
+- Bruk `pnpm run` for å se tilgjengelige scripts. Databaseskriptene er
+  `db:generate` og `db:migrate`.
+- Følg ADR-003: bruk SQL-migrasjoner i repoet og ikke `drizzle-kit push` som
+  mønster i delte miljøer eller produksjon.
+
+### Dataminimert Mural-import i fase 1.3
+
+- Parseren i `src/lib/mural-parser.ts` skal bare produsere dataminimert DTO for
+  API-et. Rå Mural JSON skal ikke lagres på server, i database eller i repoet.
+- `POST /api/projects/import` godtar bare denne DTO-en. Payload med ukjente
+  felter, Mural-owner-data, timestamps, URL-er, tokens eller rå HTML avvises med
+  `400`.
+- MVP-semantikk for reimport er bevisst enkel: samme `sourceId` kan bare
+  importeres én gang. Ny import av samme Mural-kilde avvises med `409`, og
+  eksisterende klassifiseringer overføres ikke.
+- Widget-metadata er strengt begrenset til trygg tabellstruktur
+  (`tableRows`/`tableColumns`). `metadata` skal ikke brukes som bakvei for andre
+  Mural-felter.
+- Reelle Mural-eksporter skal ligge lokalt under `local-mural-exports/`, som er
+  ignorert av git. Repoet skal bare ha syntetiske eller saniterte fixtures.
+- `widgets_text_content_trgm_idx` er nå definert både i SQL-migrasjon og i
+  Drizzle-skjemaet. Det gjør fremtidig `db:generate` mindre tvetydig.
+- `pg_trgm` er fortsatt nødvendig for trigram-indeksen. `pgcrypto` er beholdt i
+  første migrasjon kun for bakoverkompatibilitet med eldre lokale Postgres-oppsett;
+  på Postgres 14+ er `gen_random_uuid()` innebygget og krever ikke extension.
 
 ### Datalag for case, tiltak og tiltakspakker
 

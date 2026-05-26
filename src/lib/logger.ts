@@ -1,15 +1,21 @@
 type LogContext = Record<string, string | number | boolean | null | undefined>;
 
+function pruneContext(context: LogContext) {
+  return Object.fromEntries(
+    Object.entries(context).filter(([, value]) => value !== undefined),
+  );
+}
+
 function log(
-  level: "INFO" | "ERROR",
+  level: "INFO" | "WARN" | "ERROR",
   message: string,
   context: LogContext = {},
 ) {
   const payload = {
+    "@timestamp": new Date().toISOString(),
     level,
     message,
-    timestamp: new Date().toISOString(),
-    ...context,
+    ...pruneContext(context),
   };
 
   const line = JSON.stringify(payload);
@@ -19,11 +25,20 @@ function log(
     return;
   }
 
+  if (level === "WARN") {
+    console.warn(line);
+    return;
+  }
+
   console.info(line);
 }
 
 export function logInfo(message: string, context?: LogContext) {
   log("INFO", message, context);
+}
+
+export function logWarn(message: string, context?: LogContext) {
+  log("WARN", message, context);
 }
 
 export function logError(message: string, context?: LogContext) {

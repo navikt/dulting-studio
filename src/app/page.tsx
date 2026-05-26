@@ -35,7 +35,7 @@ export default async function Home() {
   const firstPackage = studioCase.tiltakspakker[0];
 
   return (
-    <main className="page-shell">
+    <div className="page-shell">
       <div className="page-container">
         <VStack gap="space-32">
           <section className="hero-card">
@@ -160,6 +160,6 @@ export default async function Home() {
           </section>
         </VStack>
       </div>
-    </main>
+    </div>
   );
 }

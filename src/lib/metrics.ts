@@ -2,6 +2,14 @@ export const metricsContentType = "text/plain; version=0.0.4; charset=utf-8";
 
 export const metricsRoute = "/api/metrics";
 
+function sanitizePrometheusLabelValue(value: string) {
+  return value
+    .replaceAll("\\", "\\\\")
+    .replaceAll("\r", " ")
+    .replaceAll("\n", "\\n")
+    .replaceAll('"', '\\"');
+}
+
 export function buildMetricsPayload(route: string) {
   const lines = [
     "# HELP dulting_studio_uptime_seconds Application uptime in seconds",
@@ -9,7 +17,7 @@ export function buildMetricsPayload(route: string) {
     `dulting_studio_uptime_seconds ${Math.round(process.uptime())}`,
     "# HELP dulting_studio_probe_route_info Probe route metadata",
     "# TYPE dulting_studio_probe_route_info gauge",
-    `dulting_studio_probe_route_info{route="${route}"} 1`,
+    `dulting_studio_probe_route_info{route="${sanitizePrometheusLabelValue(route)}"} 1`,
   ];
 
   return `${lines.join("\n")}\n`;

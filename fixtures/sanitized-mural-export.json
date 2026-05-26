@@ -1,0 +1,120 @@
+{
+  "widgets": [
+    {
+      "id": "table-1",
+      "type": "TableWidget",
+      "x": 100,
+      "y": 120,
+      "width": 420,
+      "height": 220,
+      "stackingOrder": 1,
+      "style": {
+        "backgroundColor": "#FFFFFF"
+      },
+      "properties": {
+        "columns": [
+          {
+            "id": "column-1",
+            "name": "<strong>Fase</strong>"
+          },
+          {
+            "id": "column-2",
+            "name": "Tiltak"
+          }
+        ],
+        "rows": [
+          {
+            "id": "row-1",
+            "name": "Rad 1"
+          },
+          {
+            "id": "row-2",
+            "name": "Rad 2"
+          }
+        ],
+        "owner": {
+          "id": "user-123"
+        },
+        "thumbUrl": "https://mural.invalid/thumb.png"
+      }
+    },
+    {
+      "id": "cell-1",
+      "type": "TableCellWidget",
+      "x": 160,
+      "y": 160,
+      "width": 180,
+      "height": 70,
+      "stackingOrder": 2,
+      "style": {
+        "backgroundColor": "#E5F0FF"
+      },
+      "parentId": "table-1",
+      "properties": {
+        "tableId": "table-1",
+        "rowId": "row-1",
+        "columnId": "column-2",
+        "htmlText": "<p>Første <strong>tiltak</strong></p>",
+        "lastUpdateBy": {
+          "id": "user-456"
+        },
+        "updatedAt": "2026-05-25T12:00:00.000Z"
+      }
+    },
+    {
+      "id": "text-1",
+      "type": "TextWidget",
+      "geometry": {
+        "x": 24,
+        "y": 40,
+        "width": 220,
+        "height": 56
+      },
+      "properties": {
+        "htmlText": "<div>Hei&nbsp;<em>verden</em></div>",
+        "token": "should-not-leak"
+      },
+      "style": {
+        "backgroundColor": "#FFF3CD"
+      }
+    },
+    {
+      "id": "shape-1",
+      "type": "ShapeWidget",
+      "x": 36,
+      "y": 240,
+      "width": 220,
+      "height": 90,
+      "properties": {
+        "htmlText": "<p>Boks<br/>tekst</p>",
+        "rawHtml": "<p>Boks<br/>tekst</p>"
+      },
+      "backgroundColor": "#D1FADF"
+    },
+    {
+      "id": "note-empty",
+      "type": "StickyNoteWidget",
+      "x": 320,
+      "y": 240,
+      "width": 120,
+      "height": 120,
+      "style": {
+        "backgroundColor": "#FFFBCC"
+      },
+      "properties": {}
+    },
+    {
+      "id": "connector-1",
+      "type": "ConnectorWidget",
+      "x": 0,
+      "y": 0,
+      "width": 30,
+      "height": 30,
+      "properties": {
+        "owner": {
+          "id": "user-789"
+        }
+      }
+    }
+  ]
+}

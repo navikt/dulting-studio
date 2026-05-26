@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "projects_source_system_source_id_key" ON "projects" USING btree ("source_system","source_id");--> statement-breakpoint

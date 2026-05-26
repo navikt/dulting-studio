@@ -11,4 +11,12 @@ describe("buildMetricsPayload", () => {
     );
     expect(payload.endsWith("\n")).toBe(true);
   });
+
+  it("sanitizes route label values", () => {
+    const payload = buildMetricsPayload('/api/"metrics"\\debug\r\nnext');
+
+    expect(payload).toContain(
+      'dulting_studio_probe_route_info{route="/api/\\"metrics\\"\\\\debug \\nnext"} 1',
+    );
+  });
 });
