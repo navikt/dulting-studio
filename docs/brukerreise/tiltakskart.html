@@ -28,49 +28,66 @@
 
     body {
       font-family: "Source Sans 3", "Source Sans Pro", system-ui, -apple-system, sans-serif;
-      background: var(--nav-light);
+      background: #ffffff;
       color: var(--nav-dark);
       line-height: 1.5;
-      padding: 2rem;
     }
 
-    header {
-      max-width: 1200px;
-      margin: 0 auto 3rem;
+    .hero {
+      background: linear-gradient(135deg, #001f3f 0%, #003366 50%, #0067c5 100%);
+      color: white;
+      padding: 3rem 2rem;
       text-align: center;
     }
 
-    header h1 {
-      font-size: 2rem;
+    .hero h1 {
+      font-size: 2.2rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
     }
 
-    header p {
+    .hero p {
       font-size: 1.1rem;
-      color: var(--nav-gray);
+      opacity: 0.85;
       max-width: 700px;
       margin: 0 auto;
     }
 
-    .meta {
+    .hero .meta {
       display: flex;
       justify-content: center;
       gap: 2rem;
       margin-top: 1rem;
       font-size: 0.85rem;
-      color: var(--nav-gray);
+      opacity: 0.75;
+      flex-wrap: wrap;
     }
 
-    .meta span {
+    .hero .meta span {
       display: flex;
       align-items: center;
       gap: 0.3rem;
     }
 
+    .hero nav {
+      margin-top: 1rem;
+    }
+
+    .hero nav a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .hero nav a:hover {
+      color: white;
+    }
+
     .journey {
       max-width: 1200px;
       margin: 0 auto;
+      padding: 2rem 2rem 0;
       position: relative;
     }
 
@@ -250,8 +267,7 @@
     .support-layer {
       max-width: 1200px;
       margin: 2rem auto 0;
-      padding: 1.5rem;
-      padding-left: 70px;
+      padding: 1.5rem 2rem 1.5rem 70px;
       background: var(--k6);
       border-radius: 8px;
       border: 1px dashed var(--k6-border);
@@ -286,8 +302,8 @@
     .legend {
       max-width: 1200px;
       margin: 3rem auto 0;
-      padding: 1.5rem;
-      background: white;
+      padding: 1.5rem 2rem;
+      background: var(--nav-light);
       border-radius: 8px;
       border: 1px solid #e0e0e0;
     }
@@ -323,9 +339,11 @@
     footer {
       max-width: 1200px;
       margin: 3rem auto 0;
+      padding: 2rem;
       text-align: center;
       font-size: 0.8rem;
       color: var(--nav-gray);
+      border-top: 1px solid #e0e0e0;
     }
 
     footer a {
@@ -334,17 +352,21 @@
     }
 
     @media (max-width: 768px) {
-      body { padding: 1rem; }
+      .hero { padding: 2rem 1rem; }
+      .hero h1 { font-size: 1.6rem; }
+      .hero .meta { gap: 0.75rem; flex-direction: column; align-items: center; }
+      .journey { padding: 1.5rem 1rem 0; }
       .phase { padding-left: 50px; }
       .journey::before { left: 18px; }
       .phase-dot { left: 6px; width: 22px; height: 22px; font-size: 0.6rem; }
       .tiltak-grid { grid-template-columns: 1fr; }
+      .support-layer { padding-left: 1rem; }
     }
   </style>
 </head>
 <body>
 
-<header>
+<header class="hero">
   <h1>Tiltakskart — Nærmeste leder</h1>
   <p>Tiltakspakke for oppfølgingsplan: alle klynger og tiltak fra Ki-dult v3.2</p>
   <div class="meta">
@@ -352,8 +374,8 @@
     <span>📅 Ki-dult v3.2 — mai 2026</span>
     <span>🔢 5 faser · 14 tiltak + 2 støttetiltak</span>
   </div>
-  <nav style="margin-top: 1rem;">
-    <a href="./index.html" style="color: var(--nav-blue); text-decoration: none; font-size: 0.9rem;">← Se interaktiv brukerreise</a>
+  <nav>
+    <a href="./index.html">← Se interaktiv brukerreise</a>
   </nav>
 </header>
 
