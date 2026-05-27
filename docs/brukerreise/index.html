@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brukerreise — Varsel og behovsvurdering for oppfølgingsplan</title>
+  <style>
+    :root {
+      --nav-blue: #0067c5;
+      --nav-blue-light: #e6f0ff;
+      --nav-dark: #1a1a1a;
+      --nav-gray: #6a6a6a;
+      --nav-light: #f7f7f7;
+      --today-color: #b0b0b0;
+      --today-bg: #f5f5f5;
+      --dulting-color: #0067c5;
+      --dulting-bg: #e6f0ff;
+      --dulting-accent: #005aa8;
+      --success-green: #06893a;
+      --success-bg: #e8f5ee;
+      --warning-orange: #b35900;
+      --channel-dsm: #9b7bd4;
+      --channel-msag: #d46b8a;
+      --channel-plan: #d4a843;
+      --channel-email: #6a6a6a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Source Sans 3", "Source Sans Pro", system-ui, -apple-system, sans-serif;
+      background: #ffffff;
+      color: var(--nav-dark);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .hero {
+      background: linear-gradient(135deg, #001f3f 0%, #003366 50%, #0067c5 100%);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .hero .subtitle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      background: rgba(255,255,255,0.12);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    /* Toggle */
+    .toggle-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .toggle-bar label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--nav-gray);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 26px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: var(--today-color);
+      border-radius: 26px;
+      transition: 0.3s;
+    }
+
+    .toggle-slider::before {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background: var(--dulting-color);
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(22px);
+    }
+
+    .toggle-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .toggle-label.active { color: var(--nav-dark); }
+    .toggle-label.inactive { color: var(--today-color); }
+
+    /* Main journey */
+    .journey-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 0;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 26px;
+      top: 60px;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(
+        to bottom,
+        #d4d4d4 0%,
+        #d4d4d4 30%,
+        var(--dulting-color) 45%,
+        var(--dulting-color) 75%,
+        #d4d4d4 90%
+      );
+      border-radius: 2px;
+    }
+
+    /* Time marker */
+    .time-marker {
+      position: relative;
+      margin-bottom: 0.75rem;
+      margin-top: 2.5rem;
+    }
+
+    .time-marker:first-child {
+      margin-top: 0;
+    }
+
+    .time-marker .time-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: white;
+      background: var(--nav-gray);
+      padding: 0.3rem 0.85rem;
+      border-radius: 12px;
+      margin-left: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .time-marker .time-label.dulting-time {
+      background: var(--dulting-color);
+    }
+
+    /* Step */
+    .step {
+      position: relative;
+      margin-bottom: 1.5rem;
+      margin-left: 50px;
+      padding: 1.25rem 1.5rem;
+      border-radius: 10px;
+      border: 1px solid #e8e8e8;
+      background: white;
+      transition: all 0.4s ease;
+    }
+
+    .step::before {
+      content: "";
+      position: absolute;
+      left: -28px;
+      top: 1.4rem;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #ccc;
+      z-index: 2;
+      transition: all 0.3s;
+    }
+
+    /* Step icon */
+    .step-icon {
+      position: absolute;
+      right: 1.25rem;
+      top: 1rem;
+      font-size: 2rem;
+      opacity: 0.3;
+      pointer-events: none;
+      filter: grayscale(20%);
+    }
+
+    .step.dulting .step-icon {
+      opacity: 0.25;
+    }
+
+    .step.today {
+      background: var(--today-bg);
+      border-color: #ddd;
+    }
+
+    .step.today::before {
+      border-color: var(--today-color);
+    }
+
+    .step.dulting {
+      background: var(--dulting-bg);
+      border-color: var(--dulting-color);
+      border-left: 4px solid var(--dulting-color);
+    }
+
+    .step.dulting::before {
+      border-color: var(--dulting-color);
+      background: var(--dulting-color);
+    }
+
+    .step.silence {
+      margin-left: 50px;
+      background: #fafafa;
+      border: 2px dashed #d4d4d4;
+      text-align: center;
+      color: var(--nav-gray);
+      padding: 2.5rem 2rem;
+      position: relative;
+    }
+
+    .step.silence .silence-content {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .step.silence .silence-detail {
+      font-size: 0.82rem;
+      opacity: 0.7;
+      font-style: italic;
+    }
+
+    .step.silence::before {
+      border-color: #ddd;
+      border-style: dashed;
+    }
+
+    .step.decision {
+      margin-left: 50px;
+      background: white;
+      border: 2px solid var(--dulting-color);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .step.decision::before {
+      border-color: var(--dulting-color);
+      background: var(--dulting-color);
+      width: 16px;
+      height: 16px;
+      transform: rotate(45deg);
+      border-radius: 3px;
+      left: -29px;
+    }
+
+    .step.outcome {
+      border-color: var(--success-green);
+      background: var(--success-bg);
+      border-left: 4px solid var(--success-green);
+    }
+
+    .step.outcome::before {
+      border-color: var(--success-green);
+      background: var(--success-green);
+    }
+
+    /* Step content */
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .step-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .step-header .channel {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .channel-email { background: #f0f0f0; color: #555; }
+    .channel-msag { background: #fde8ee; color: var(--channel-msag); }
+    .channel-dsm { background: #f3edff; color: var(--channel-dsm); }
+    .channel-plan { background: #fef6e0; color: var(--channel-plan); }
+
+    .step-body {
+      font-size: 0.9rem;
+      color: var(--nav-gray);
+    }
+
+    .step-body .action {
+      margin-top: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--nav-dark);
+      font-weight: 500;
+    }
+
+    .step-body .action::before {
+      content: "→ ";
+      color: var(--dulting-color);
+      font-weight: 700;
+    }
+
+    /* Dulting badge */
+    .dulting-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--dulting-color);
+      background: white;
+      border: 1px solid var(--dulting-color);
+      padding: 0.1rem 0.5rem;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .dulting-badge::before {
+      content: "⚡";
+    }
+
+    /* Tiltak reference */
+    .tiltak-ref {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: white;
+      background: var(--dulting-color);
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+    }
+
+    /* Decision paths */
+    .decision-header {
+      background: var(--dulting-color);
+      color: white;
+      padding: 0.6rem 1.5rem;
+      margin: -1.25rem -1.5rem 1rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .paths-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .path-card {
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      background: var(--nav-light);
+    }
+
+    .path-card h4 {
+      font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .path-card p {
+      font-size: 0.82rem;
+      color: var(--nav-gray);
+    }
+
+    .path-card .path-steps {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .path-card .path-steps li {
+      margin-bottom: 0.25rem;
+      list-style: none;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+
+    .path-card .path-steps li::before {
+      content: "›";
+      position: absolute;
+      left: 0;
+      color: var(--dulting-color);
+      font-weight: 700;
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+
+    /* Silence section - hidden when dulting is shown */
+    .silence-section {
+      transition: all 0.4s;
+    }
+
+    /* State: show dulting */
+    body.show-dulting .step.dulting {
+      opacity: 1;
+      max-height: 500px;
+      margin-bottom: 2rem;
+    }
+
+    body.show-dulting .step.silence {
+      opacity: 0.3;
+      max-height: 60px;
+      overflow: hidden;
+      padding: 1rem 2rem;
+    }
+
+    /* State: hide dulting (today) */
+    body:not(.show-dulting) .step.dulting {
+      opacity: 0;
+      max-height: 0;
+      margin-bottom: 0;
+      padding: 0 1.5rem;
+      border-width: 0;
+      overflow: hidden;
+    }
+
+    body:not(.show-dulting) .step.dulting::before {
+      opacity: 0;
+    }
+
+    body:not(.show-dulting) .step.decision {
+      opacity: 0;
+      max-height: 0;
+      margin-bottom: 0;
+      padding: 0;
+      border-width: 0;
+      overflow: hidden;
+    }
+
+    body:not(.show-dulting) .step.decision::before {
+      opacity: 0;
+    }
+
+    body:not(.show-dulting) .step.outcome {
+      opacity: 0;
+      max-height: 0;
+      margin-bottom: 0;
+      padding: 0;
+      border-width: 0;
+      overflow: hidden;
+    }
+
+    body:not(.show-dulting) .step.outcome::before {
+      opacity: 0;
+    }
+
+    body:not(.show-dulting) .step.silence {
+      opacity: 1;
+      max-height: 200px;
+    }
+
+    body:not(.show-dulting) .time-marker:has(.dulting-time) {
+      opacity: 0;
+      max-height: 0;
+      margin: 0;
+      overflow: hidden;
+      transition: all 0.4s;
+    }
+
+    body:not(.show-dulting) .later-journey {
+      opacity: 0.7;
+    }
+
+    /* Later journey (what happens in today-mode after silence) */
+    .later-journey .step.today {
+      opacity: 0.7;
+    }
+
+    body.show-dulting .later-journey .step.today {
+      opacity: 0.4;
+      max-height: 80px;
+      overflow: hidden;
+    }
+
+    /* Open questions */
+    .open-questions {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      background: #fff9e6;
+      border: 1px solid #eed388;
+      border-radius: 8px;
+    }
+
+    .open-questions h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--warning-orange);
+    }
+
+    .open-questions ul {
+      list-style: none;
+      font-size: 0.85rem;
+    }
+
+    .open-questions li {
+      padding: 0.3rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .open-questions li::before {
+      content: "?";
+      position: absolute;
+      left: 0;
+      font-weight: 700;
+      color: var(--warning-orange);
+      background: #fff0cc;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.8rem;
+      color: var(--nav-gray);
+      border-top: 1px solid #eee;
+      margin-top: 3rem;
+    }
+
+    footer a {
+      color: var(--nav-blue);
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 2rem 1rem; }
+      .hero h1 { font-size: 1.6rem; }
+      .journey-container { padding: 2rem 1rem; }
+      .step { margin-left: 40px; }
+      .step.silence { margin-left: 40px; }
+      .step.decision { margin-left: 40px; }
+      .timeline::before { left: 16px; }
+      .step::before { left: -22px; width: 12px; height: 12px; }
+      .step.decision::before { left: -23px; width: 14px; height: 14px; }
+      .paths-grid { grid-template-columns: 1fr; }
+      .step-icon { display: none; }
+    }
+  </style>
+</head>
+<body class="show-dulting">
+
+<div class="hero">
+  <h1>Brukerreise — Nærmeste leder</h1>
+  <p>Fra sykmelding til behovsvurdering: hvordan tiltakspakken endrer opplevelsen</p>
+  <div class="subtitle">
+    <span>🎯 Aktør: Nærmeste leder</span>
+    <span>·</span>
+    <span>Tiltakspakke for oppfølgingsplan</span>
+    <span>·</span>
+    <span>Mai 2026</span>
+  </div>
+</div>
+
+<div class="toggle-bar">
+  <span class="toggle-label" id="label-today">I dag</span>
+  <label class="toggle-switch">
+    <input type="checkbox" id="dulting-toggle" checked>
+    <span class="toggle-slider"></span>
+  </label>
+  <span class="toggle-label" id="label-dulting">Med tiltakspakke</span>
+</div>
+
+<div class="journey-container">
+  <div class="timeline">
+
+    <!-- DAG 0-3: Sykmelding -->
+    <div class="time-marker">
+      <span class="time-label">Dag 0–3</span>
+    </div>
+
+    <div class="step today">
+      <span class="step-icon">🤒</span>
+      <div class="step-header">
+        <h3>Ansatt sykmeldes</h3>
+      </div>
+      <div class="step-body">
+        Ansatt får sykmelding fra lege. Logger inn på nav.no og sender sykmeldingen til arbeidsgiver.
+      </div>
+    </div>
+
+    <div class="step today">
+      <span class="step-icon">📩</span>
+      <div class="step-header">
+        <h3>Leder får epost fra Nav</h3>
+        <span class="channel channel-email">Epost</span>
+      </div>
+      <div class="step-body">
+        «En sykmelding er sendt til arbeidsgiver.» Lenke til Dine sykmeldte.
+        <div class="action">Leder klikker lenken og ser sykmeldingen</div>
+      </div>
+    </div>
+
+    <div class="step today">
+      <span class="step-icon">👥</span>
+      <div class="step-header">
+        <h3>Ser sykmelding i Dine sykmeldte</h3>
+        <span class="channel channel-dsm">Dine sykmeldte</span>
+      </div>
+      <div class="step-body">
+        Leder ser hvem som er syk, periode og grad. Kan se søknader, oppfølgingsplan og dialogmøte. Men ingenting ber dem aktivt gjøre noe.
+      </div>
+    </div>
+
+    <!-- UKE 1-3: Stillhet -->
+    <div class="time-marker">
+      <span class="time-label">Uke 1–3</span>
+    </div>
+
+    <div class="step silence silence-section">
+      <div class="silence-content">🔇 Ingenting skjer fra Nav</div>
+      <div class="silence-detail">Ingen påminnelse · ingen oppgave · ingen frist</div>
+      <div class="silence-detail">Store bedrifter har egne rutiner. Små bedrifter har ofte ingenting.</div>
+    </div>
+
+    <!-- UKE ~3-4: DULTING - Varsel -->
+    <div class="time-marker">
+      <span class="time-label dulting-time">Uke ~3–4</span>
+    </div>
+
+    <div class="step dulting">
+      <span class="step-icon">🔔</span>
+      <div class="step-header">
+        <h3>Oppgave på Min side arbeidsgiver</h3>
+        <span class="channel channel-msag">Min side AG</span>
+        <span class="dulting-badge">Nytt</span>
+        <span class="tiltak-ref">T01</span>
+      </div>
+      <div class="step-body">
+        Arbeidsgiver får en oppgave: «Du har en ansatt som har vært sykmeldt i X uker. Har dere behov for en oppfølgingsplan?» Kort forklaring av hva planen er, hvorfor den er nyttig, og hva fristen betyr.
+        <div class="action">Lenke til den aktuelle personen i Dine sykmeldte</div>
+      </div>
+    </div>
+
+    <div class="step dulting">
+      <span class="step-icon">🎯</span>
+      <div class="step-header">
+        <h3>Frist og oppgave på riktig person</h3>
+        <span class="channel channel-dsm">Dine sykmeldte</span>
+        <span class="dulting-badge">Nytt</span>
+        <span class="tiltak-ref">T02</span>
+      </div>
+      <div class="step-body">
+        Inne på den sykmeldte i Dine sykmeldte vises en tydelig oppgave med frist. Ikke bare passiv informasjon — en konkret ting å gjøre, på riktig person.
+        <div class="action">«Vurder om dere trenger en oppfølgingsplan»</div>
+      </div>
+    </div>
+
+    <!-- BEHOVSVURDERING -->
+    <div class="step dulting">
+      <span class="step-icon">📋</span>
+      <div class="step-header">
+        <h3>Behovsvurdering</h3>
+        <span class="channel channel-dsm">Dine sykmeldte</span>
+        <span class="dulting-badge">Nytt</span>
+        <span class="tiltak-ref">T03</span>
+      </div>
+      <div class="step-body">
+        Leder svarer på et kort skjema: Trenger dere en oppfølgingsplan for denne personen?
+        Strukturerte valg — ingen åpent fritekstfelt uten avklaring.
+        <div class="action">Velger «Ja, lag plan» eller «Nei, ikke nå»</div>
+      </div>
+    </div>
+
+    <!-- VEIVALG -->
+    <div class="time-marker">
+      <span class="time-label dulting-time">Veivalg</span>
+    </div>
+
+    <div class="step decision">
+      <div class="decision-header">
+        ◆ Arbeidsgiver har tatt stilling
+      </div>
+      <div style="padding: 1rem 1.5rem;">
+        <div class="paths-grid">
+          <div class="path-card">
+            <h4>✅ «Ja, vi trenger plan»</h4>
+            <p>Leder tas videre til oppfølgingsplan-verktøyet.</p>
+            <ul class="path-steps">
+              <li>Starter oppfølgingsplan</li>
+              <li>Fyller ut stegvis (miniguide)</li>
+              <li>Deler med lege/Nav</li>
+              <li>Oppgave fullføres</li>
+            </ul>
+          </div>
+          <div class="path-card">
+            <h4>🚫 «Ikke behov nå»</h4>
+            <p>Leder oppgir strukturert årsak.</p>
+            <ul class="path-steps">
+              <li>Velger årsak fra liste</li>
+              <li>Sender inn</li>
+              <li>Bekreftelse: «Du kan lage plan senere»</li>
+              <li>Oppgave fullføres</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UTFALL -->
+    <div class="step outcome">
+      <span class="step-icon">✓</span>
+      <div class="step-header">
+        <h3>Oppgave ferdigstilt</h3>
+        <span class="tiltak-ref">T04</span>
+      </div>
+      <div class="step-body">
+        Uansett valg: oppgaven på Min side AG ferdigstilles. Leder har tatt et bevisst valg. Nav har informasjon om behov.
+        <div class="action">Veileder i Modia ser vurderingen. Videre bruk/deling er uavklart.</div>
+      </div>
+    </div>
+
+    <!-- ETTER: Hva skjer i dag (nedtonet) -->
+    <div class="later-journey">
+      <div class="time-marker">
+        <span class="time-label">Uke 7+</span>
+      </div>
+
+      <div class="step today">
+        <span class="step-icon">🤝</span>
+        <div class="step-header">
+          <h3>Dialogmøte 1</h3>
+        </div>
+        <div class="step-body">
+          I dag: mange lager plan først her. Med tiltakspakke: plan er allerede startet eller avklart.
+        </div>
+      </div>
+
+      <div class="step today">
+        <span class="step-icon">💬</span>
+        <div class="step-header">
+          <h3>Veileder ber om plan (Modia)</h3>
+        </div>
+        <div class="step-body">
+          I dag: veileder bruker «be om plan»-knapp rundt aktivitetskrav. Med tiltakspakke: unødvendig for de som har svart.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Åpne spørsmål -->
+  <div class="open-questions">
+    <h3>Åpne avklaringer</h3>
+    <ul>
+      <li>Eksakt uke for varsel — uke 3? Uke 4? Basert på samlet sykefraværslengde?</li>
+      <li>Eksternt varsel (epost/SMS) i tillegg til oppgave på Min side AG?</li>
+      <li>Hvem ser begrunnelsen ved «ikke nå» — kun veileder, eller også lege/sykmeldt?</li>
+      <li>Kandidatkriterier: hvem får varselet? Alle over X uker, eller kun de uten plan?</li>
+      <li>Fritekst i årsak: juridisk/personvernmessig avklaring nødvendig</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p>
+    Kilde: Ki-dult v3.2 · K1 + K2 · Tiltakspakke for oppfølgingsplan<br>
+    <a href="https://github.com/navikt/syfo-oppfolgingsplan-backend/issues/308">Epic #308</a> ·
+    navikt/dulting-studio
+  </p>
+</footer>
+
+<script>
+  const toggle = document.getElementById('dulting-toggle');
+  const labelToday = document.getElementById('label-today');
+  const labelDulting = document.getElementById('label-dulting');
+
+  function updateView() {
+    if (toggle.checked) {
+      document.body.classList.add('show-dulting');
+      document.body.classList.remove('show-today');
+      labelDulting.classList.add('active');
+      labelDulting.classList.remove('inactive');
+      labelToday.classList.remove('active');
+      labelToday.classList.add('inactive');
+    } else {
+      document.body.classList.remove('show-dulting');
+      document.body.classList.add('show-today');
+      labelToday.classList.add('active');
+      labelToday.classList.remove('inactive');
+      labelDulting.classList.remove('active');
+      labelDulting.classList.add('inactive');
+    }
+  }
+
+  toggle.addEventListener('change', updateView);
+  updateView();
+</script>
+
+</body>
+</html>

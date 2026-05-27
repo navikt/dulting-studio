@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiltakskart — Tiltakspakke for oppfølgingsplan</title>
+  <style>
+    :root {
+      --k1: #dff0ff;
+      --k1-border: #7ab8e0;
+      --k2: #d8f5df;
+      --k2-border: #6bc77d;
+      --k3: #fff0c2;
+      --k3-border: #d4a843;
+      --k4: #eadcff;
+      --k4-border: #9b7bd4;
+      --k5: #ffdfe7;
+      --k5-border: #d46b8a;
+      --k6: #f0f0f0;
+      --k6-border: #999;
+      --nav-blue: #0067c5;
+      --nav-dark: #1a1a1a;
+      --nav-gray: #6a6a6a;
+      --nav-light: #f7f7f7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Source Sans 3", "Source Sans Pro", system-ui, -apple-system, sans-serif;
+      background: var(--nav-light);
+      color: var(--nav-dark);
+      line-height: 1.5;
+      padding: 2rem;
+    }
+
+    header {
+      max-width: 1200px;
+      margin: 0 auto 3rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--nav-gray);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--nav-gray);
+    }
+
+    .meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .journey {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .journey::before {
+      content: "";
+      position: absolute;
+      left: 28px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(
+        to bottom,
+        var(--k1-border),
+        var(--k2-border),
+        var(--k3-border),
+        var(--k4-border),
+        var(--k5-border)
+      );
+      border-radius: 2px;
+    }
+
+    .phase {
+      position: relative;
+      margin-bottom: 2.5rem;
+      padding-left: 70px;
+    }
+
+    .phase-dot {
+      position: absolute;
+      left: 16px;
+      top: 1.2rem;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 3px solid;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--nav-dark);
+      z-index: 2;
+    }
+
+    .phase-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .phase-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .phase-behavior {
+      font-size: 0.9rem;
+      color: var(--nav-gray);
+      font-style: italic;
+    }
+
+    .phase-measurement {
+      font-size: 0.8rem;
+      color: var(--nav-gray);
+      margin-bottom: 1rem;
+      padding: 0.5rem 0.75rem;
+      background: white;
+      border-left: 3px solid;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .tiltak-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .tiltak-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.25rem;
+      border: 1px solid #e0e0e0;
+      border-top: 4px solid;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .tiltak-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+
+    .tiltak-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tiltak-card h3 .tiltak-id {
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: var(--nav-light);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--nav-gray);
+    }
+
+    .tiltak-card p {
+      font-size: 0.85rem;
+      color: var(--nav-gray);
+      margin-bottom: 0.5rem;
+    }
+
+    .tiltak-card .signal {
+      font-size: 0.78rem;
+      color: var(--nav-blue);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
+
+    .tiltak-card .signal::before {
+      content: "📊";
+      flex-shrink: 0;
+    }
+
+    .tiltak-card .guardrail {
+      font-size: 0.78rem;
+      color: #b35900;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.3rem;
+      margin-top: 0.3rem;
+    }
+
+    .tiltak-card .guardrail::before {
+      content: "⚠️";
+      flex-shrink: 0;
+    }
+
+    .decision-point {
+      background: white;
+      border: 2px dashed var(--nav-blue);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .decision-point .diamond {
+      width: 24px;
+      height: 24px;
+      background: var(--nav-blue);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+      border-radius: 3px;
+    }
+
+    .decision-point .paths {
+      font-size: 0.85rem;
+    }
+
+    .decision-point .paths strong {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .support-layer {
+      max-width: 1200px;
+      margin: 2rem auto 0;
+      padding: 1.5rem;
+      padding-left: 70px;
+      background: var(--k6);
+      border-radius: 8px;
+      border: 1px dashed var(--k6-border);
+    }
+
+    .support-layer h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .support-layer p {
+      font-size: 0.85rem;
+      color: var(--nav-gray);
+    }
+
+    .support-tiltak {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .support-tiltak .chip {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .legend {
+      max-width: 1200px;
+      margin: 3rem auto 0;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .legend h3 {
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--nav-gray);
+    }
+
+    .legend-items {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+    }
+
+    .legend-item .swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    footer {
+      max-width: 1200px;
+      margin: 3rem auto 0;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--nav-gray);
+    }
+
+    footer a {
+      color: var(--nav-blue);
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      .phase { padding-left: 50px; }
+      .journey::before { left: 18px; }
+      .phase-dot { left: 6px; width: 22px; height: 22px; font-size: 0.6rem; }
+      .tiltak-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Tiltakskart — Nærmeste leder</h1>
+  <p>Tiltakspakke for oppfølgingsplan: alle klynger og tiltak fra Ki-dult v3.2</p>
+  <div class="meta">
+    <span>🎯 Aktør: Nærmeste leder / arbeidsgiver</span>
+    <span>📅 Ki-dult v3.2 — mai 2026</span>
+    <span>🔢 5 faser · 14 tiltak + 2 støttetiltak</span>
+  </div>
+</header>
+
+<div class="journey">
+
+  <!-- K1: Tidlig varsel og frist -->
+  <section class="phase">
+    <div class="phase-dot" style="border-color: var(--k1-border); background: var(--k1);">1</div>
+    <div class="phase-header">
+      <h2 style="color: var(--k1-border);">Varsel og frist</h2>
+      <span class="phase-behavior">Arbeidsgiver blir oppmerksom i tide og går til riktig person før uke 4</span>
+    </div>
+    <div class="phase-measurement" style="border-color: var(--k1-border);">
+      <strong>Klyngemål:</strong> Varsel vises → åpner varsel/person → starter behovsvurdering eller plan før frist
+    </div>
+    <div class="tiltak-grid">
+      <div class="tiltak-card" style="border-top-color: var(--k1-border);">
+        <h3><span class="tiltak-id">T01</span> Varsel før uke 4</h3>
+        <p>Påminnelse som forklarer hva planen er og hvorfor den bør lages nå.</p>
+        <div class="signal">Åpner varsel; starter vurdering/plan før frist</div>
+        <div class="guardrail">Varseltrøtthet og for tidlig press</div>
+      </div>
+      <div class="tiltak-card" style="border-top-color: var(--k1-border);">
+        <h3><span class="tiltak-id">T02</span> Frist på riktig person</h3>
+        <p>Vis frist og relevant planinformasjon på den sykmeldte i Dine sykmeldte.</p>
+        <div class="signal">Åpner riktig person; starter handling</div>
+        <div class="guardrail">Ikke vis frist hvis saken allerede er avklart</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- K2: Behovsvurdering -->
+  <section class="phase">
+    <div class="phase-dot" style="border-color: var(--k2-border); background: var(--k2);">2</div>
+    <div class="phase-header">
+      <h2 style="color: var(--k2-border);">Behovsvurdering</h2>
+      <span class="phase-behavior">Arbeidsgiver tar stilling til om plan trengs før planflyten starter</span>
+    </div>
+    <div class="phase-measurement" style="border-color: var(--k2-border);">
+      <strong>Klyngemål:</strong> Fullført behovsvurdering · fordeling «lag plan» / «ikke nå» · overgang fra varsel til vurdering
+    </div>
+    <div class="tiltak-grid">
+      <div class="tiltak-card" style="border-top-color: var(--k2-border);">
+        <h3><span class="tiltak-id">T03</span> Personnær vurderingsoppgave</h3>
+        <p>Gjør passiv sykmeldingsinformasjon til en konkret oppgave på riktig person.</p>
+        <div class="signal">Starter og fullfører behovsvurdering</div>
+        <div class="guardrail">Ikke mål bare navigasjon som suksess</div>
+      </div>
+      <div class="tiltak-card" style="border-top-color: var(--k2-border);">
+        <h3><span class="tiltak-id">T04</span> Plan trengs ikke nå</h3>
+        <p>Arbeidsgiver kan velge riktig utfall når plan ikke er nødvendig.</p>
+        <div class="signal">Andel «ikke nå» og årsaksfordeling</div>
+        <div class="guardrail">Ingen default; fritekst krever avklaring og PII-vern</div>
+      </div>
+    </div>
+    <div class="decision-point">
+      <div class="diamond"></div>
+      <div class="paths">
+        <strong>Veivalg etter behovsvurdering:</strong>
+        A) «Lag plan» → gå til fase 3 ·
+        B) «Plan trengs ikke nå» → registrér årsak, avslutt
+      </div>
+    </div>
+  </section>
+
+  <!-- K3: Stegvis planflyt -->
+  <section class="phase">
+    <div class="phase-dot" style="border-color: var(--k3-border); background: var(--k3);">3</div>
+    <div class="phase-header">
+      <h2 style="color: var(--k3-border);">Stegvis planflyt</h2>
+      <span class="phase-behavior">Arbeidsgiver kommer gjennom planen og bruker den videre</span>
+    </div>
+    <div class="phase-measurement" style="border-color: var(--k3-border);">
+      <strong>Klyngemål:</strong> Planstart → fullføring → justering/gjenopptak av aktiv plan
+    </div>
+    <div class="tiltak-grid">
+      <div class="tiltak-card" style="border-top-color: var(--k3-border);">
+        <h3><span class="tiltak-id">T05</span> Miniguide og stegvis plan</h3>
+        <p>Bryt planarbeidet ned i tydelige steg med enklere språk og fremdrift.</p>
+        <div class="signal">Frafall i planflyt; fullføring; bruk av steg</div>
+        <div class="guardrail">Ikke overforklar eller gjøre alt til veiviser</div>
+      </div>
+      <div class="tiltak-card" style="border-top-color: var(--k3-border);">
+        <h3><span class="tiltak-id">T06</span> Aktiv plan kan justeres</h3>
+        <p>Vis at planen ikke er hugget i stein og kan oppdateres.</p>
+        <div class="signal">Åpner aktiv plan; bruker endre/juster</div>
+        <div class="guardrail">Ikke skape ekstra dokumentasjonsbyrde</div>
+      </div>
+      <div class="tiltak-card" style="border-top-color: var(--k3-border);">
+        <h3><span class="tiltak-id">T07</span> Utkast og fremdrift</h3>
+        <p>Gjør utkast, gjenstående oppgaver og aktiv plan mer synlig.</p>
+        <div class="signal">Gjenopptar utkast; markerer steg som gjort</div>
+        <div class="guardrail">Ikke forveksle fremdrift med faktisk kvalitet</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- K4: Evaluering -->
+  <section class="phase">
+    <div class="phase-dot" style="border-color: var(--k4-border); background: var(--k4);">4</div>
+    <div class="phase-header">
+      <h2 style="color: var(--k4-border);">Evaluering og påminnelse</h2>
+      <span class="phase-behavior">Arbeidsgiver og sykmeldt avtaler ny samtale og følger opp tilrettelegging</span>
+    </div>
+    <div class="phase-measurement" style="border-color: var(--k4-border);">
+      <strong>Klyngemål:</strong> Evalueringsdato satt → kalender/påminnelse valgt → plan justeres etter evaluering
+    </div>
+    <div class="tiltak-grid">
+      <div class="tiltak-card" style="border-top-color: var(--k4-border);">
+        <h3><span class="tiltak-id">T08</span> Evalueringsdato som ny samtale</h3>
+        <p>Formuler dato-feltet som avtale om å sjekke om tilrettelegging fungerer.</p>
+        <div class="signal">Evalueringsdato satt og forstått</div>
+        <div class="guardrail">Ikke bare en administrativ dato</div>
+      </div>
+      <div class="tiltak-card" style="border-top-color: var(--k4-border);">
+        <h3><span class="tiltak-id">T09</span> Kalender og opt-in påminnelse</h3>
+        <p>La partene legge datoen i kalender og velge påminnelse.</p>
+        <div class="signal">Kalender lagt til; påminnelse valgt</div>
+        <div class="guardrail">Ingen skjult default på varsling</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- K5: Deling -->
+  <section class="phase">
+    <div class="phase-dot" style="border-color: var(--k5-border); background: var(--k5);">5</div>
+    <div class="phase-header">
+      <h2 style="color: var(--k5-border);">Deling med lege og Nav</h2>
+      <span class="phase-behavior">Arbeidsgiver forstår hvem planen skrives til og hvorfor deling er nyttig</span>
+    </div>
+    <div class="phase-measurement" style="border-color: var(--k5-border);">
+      <strong>Klyngemål:</strong> Relevant deling og bedre forståelse av mottaker/verdi
+    </div>
+    <div class="tiltak-grid">
+      <div class="tiltak-card" style="border-top-color: var(--k5-border);">
+        <h3><span class="tiltak-id">T10</span> Hvorfor dele med lege og Nav</h3>
+        <p>Forklar mottaker, formål og nytte av å dele planen tidlig.</p>
+        <div class="signal">Forståelse av deling; deling gjennomført</div>
+        <div class="guardrail">Ikke gjøre deling til press uten kontekst</div>
+      </div>
+      <div class="tiltak-card" style="border-top-color: var(--k5-border);">
+        <h3><span class="tiltak-id">T11</span> Tilrettelegging som virker/ikke virker</h3>
+        <p>Hjelp arbeidsgiver å skrive relevant om tilrettelegging for videre vurdering.</p>
+        <div class="signal">Relevant felt fylt; kvalitet på beskrivelser</div>
+        <div class="guardrail">Ikke be om diagnose eller private forhold</div>
+      </div>
+      <div class="tiltak-card" style="border-top-color: var(--k5-border);">
+        <h3><span class="tiltak-id">T12</span> Lagring og gjenbruk av plan</h3>
+        <p>Forklar hva Nav lagrer, hva arbeidsgiver bør lagre, og gjenbruk av plan.</p>
+        <div class="signal">Forståelse av lagring og gjenbruk</div>
+        <div class="guardrail">Ikke oppfordre til ulovlig lagring</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Support layer (K6) -->
+<div class="support-layer">
+  <h2>🔄 Støttende gjennom hele reisen</h2>
+  <p>Klarspråk, begreper og verdiformidling som følger lederen gjennom hele flyten — ikke en separat fase.</p>
+  <div class="support-tiltak">
+    <span class="chip">T13 — Verdi og plikt i klarspråk</span>
+    <span class="chip">T14 — Samlet innhold og begrepsrydding</span>
+  </div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <h3>Tegnforklaring</h3>
+  <div class="legend-items">
+    <div class="legend-item"><div class="swatch" style="background: var(--k1);"></div> K1 Varsel og frist</div>
+    <div class="legend-item"><div class="swatch" style="background: var(--k2);"></div> K2 Behovsvurdering</div>
+    <div class="legend-item"><div class="swatch" style="background: var(--k3);"></div> K3 Stegvis planflyt</div>
+    <div class="legend-item"><div class="swatch" style="background: var(--k4);"></div> K4 Evaluering</div>
+    <div class="legend-item"><div class="swatch" style="background: var(--k5);"></div> K5 Deling</div>
+    <div class="legend-item"><div class="swatch" style="background: var(--k6);"></div> K6 Støttetekst (gjennom hele)</div>
+    <div class="legend-item"><div class="swatch" style="background: #d7fff7;"></div> K7 Sykmeldt-spor (kommer)</div>
+    <div class="legend-item"><div class="swatch" style="background: #f4f4f4; border-style: dashed;"></div> K8 Parkert/avklaring</div>
+  </div>
+</div>
+
+<footer>
+  <p>
+    Kilde: Ki-dult v3.2-modell · Dulting Studio · navikt/dulting-studio<br>
+    <a href="./index.html">→ Se brukerreisen med toggle (varsel → behovsvurdering → videre)</a>
+  </p>
+</footer>
+
+</body>
+</html>
