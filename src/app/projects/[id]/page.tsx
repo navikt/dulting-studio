@@ -52,6 +52,12 @@ type SuccessMessage = {
   linkText: string;
 };
 
+type TriageFeedback = {
+  status: "success" | "error";
+  text: string;
+  undoWidgetIds?: string[];
+};
+
 function ProjectInboxContent() {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -67,6 +73,12 @@ function ProjectInboxContent() {
   const [successMessage, setSuccessMessage] = useState<SuccessMessage | null>(
     null,
   );
+  const [triageFeedback, setTriageFeedback] = useState<TriageFeedback | null>(
+    null,
+  );
+  const [triageAction, setTriageAction] = useState<
+    "open" | "parked" | "rejected" | null
+  >(null);
 
   const page = Number(searchParams.get("page") || "1");
   const type = searchParams.get("type") || "";
@@ -76,6 +88,7 @@ function ProjectInboxContent() {
   const actorTrack = searchParams.get("actorTrack") || "";
   const journeyStep = searchParams.get("journeyStep") || "";
   const placement = searchParams.get("placement") || "";
+  const triage = searchParams.get("triage") || "";
 
   const fetchWidgets = useCallback(async () => {
     setState({ status: "loading" });
@@ -90,6 +103,7 @@ function ProjectInboxContent() {
     if (actorTrack) queryParams.set("actorTrack", actorTrack);
     if (journeyStep) queryParams.set("journeyStep", journeyStep);
     if (placement) queryParams.set("placement", placement);
+    if (triage) queryParams.set("triage", triage);
 
     try {
       const response = await fetch(
@@ -133,6 +147,7 @@ function ProjectInboxContent() {
     actorTrack,
     journeyStep,
     placement,
+    triage,
   ]);
 
   useEffect(() => {
@@ -144,7 +159,17 @@ function ProjectInboxContent() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally resets on filter/page change
   useEffect(() => {
     setSelectedWidgetIds(new Set());
-  }, [page, type, search, status, lane, actorTrack, journeyStep, placement]);
+  }, [
+    page,
+    type,
+    search,
+    status,
+    lane,
+    actorTrack,
+    journeyStep,
+    placement,
+    triage,
+  ]);
 
   const handleSelectWidget = useCallback((widget: WidgetItem) => {
     setSelectedWidget(widget);
@@ -188,6 +213,66 @@ function ProjectInboxContent() {
       return next;
     });
   }, []);
+
+  const updateWidgetTriage = useCallback(
+    async (
+      nextState: "open" | "parked" | "rejected",
+      widgetIds: string[],
+      options: { undoable?: boolean } = {},
+    ) => {
+      if (widgetIds.length === 0) {
+        return;
+      }
+
+      setTriageAction(nextState);
+      setTriageFeedback(null);
+
+      try {
+        const response = await fetch(
+          `/api/projects/${projectId}/widgets/triage`,
+          {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ widgetIds, state: nextState }),
+          },
+        );
+
+        if (!response.ok) {
+          const body = await response.json().catch(() => null);
+          setTriageFeedback({
+            status: "error",
+            text: body?.message || "Kunne ikke oppdatere triage.",
+          });
+          return;
+        }
+
+        const label =
+          nextState === "open"
+            ? "gjenåpnet"
+            : nextState === "parked"
+              ? "parkert"
+              : "forkastet";
+
+        setSelectedWidgetIds(new Set());
+        setSelectedWidget(null);
+        setTriageFeedback({
+          status: "success",
+          text: `${widgetIds.length} widget${widgetIds.length === 1 ? "" : "s"} ${label}.`,
+          undoWidgetIds:
+            options.undoable && nextState !== "open" ? widgetIds : undefined,
+        });
+        fetchWidgets();
+      } catch {
+        setTriageFeedback({
+          status: "error",
+          text: "Kunne ikke kontakte serveren. Prøv igjen senere.",
+        });
+      } finally {
+        setTriageAction(null);
+      }
+    },
+    [fetchWidgets, projectId],
+  );
 
   // Cleanup timeout for success message on unmount/navigation
   const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -249,7 +334,8 @@ function ProjectInboxContent() {
     lane ||
     actorTrack ||
     journeyStep ||
-    placement
+    placement ||
+    triage
   );
 
   // Get the selected widget items for showing muralWidgetIds
@@ -257,6 +343,9 @@ function ProjectInboxContent() {
     if (state.status !== "success") return [];
     return state.data.items.filter((item) => selectedWidgetIds.has(item.id));
   }, [state, selectedWidgetIds]);
+  const selectedHasInactiveTriage = selectedWidgetItems.some(
+    (item) => item.triage.state !== "open",
+  );
 
   return (
     <div className="project-inbox-layout">
@@ -337,6 +426,34 @@ function ProjectInboxContent() {
           </LocalAlert>
         )}
 
+        {triageFeedback && (
+          <LocalAlert
+            status={triageFeedback.status === "success" ? "success" : "error"}
+          >
+            <LocalAlert.Content>
+              <HStack gap="space-12" align="center" wrap>
+                <span>{triageFeedback.text}</span>
+                {triageFeedback.undoWidgetIds && (
+                  <Button
+                    type="button"
+                    size="xsmall"
+                    variant="secondary"
+                    loading={triageAction === "open"}
+                    onClick={() =>
+                      updateWidgetTriage(
+                        "open",
+                        triageFeedback.undoWidgetIds ?? [],
+                      )
+                    }
+                  >
+                    Angre
+                  </Button>
+                )}
+              </HStack>
+            </LocalAlert.Content>
+          </LocalAlert>
+        )}
+
         <WidgetFilters
           currentType={type}
           currentSearch={search}
@@ -345,6 +462,11 @@ function ProjectInboxContent() {
           currentActorTrack={actorTrack}
           currentJourneyStep={journeyStep}
           currentPlacement={placement}
+          currentTriage={triage}
+          resultCount={state.status === "success" ? state.data.total : null}
+          visibleCount={
+            state.status === "success" ? state.data.items.length : null
+          }
           projectId={projectId}
         />
 
@@ -374,6 +496,46 @@ function ProjectInboxContent() {
                   onClick={() => setShowPromoteModal(true)}
                 >
                   Promoter til tiltak
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="small"
+                  loading={triageAction === "parked"}
+                  onClick={() =>
+                    updateWidgetTriage(
+                      "parked",
+                      Array.from(selectedWidgetIds),
+                      { undoable: true },
+                    )
+                  }
+                >
+                  Parkér
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="small"
+                  data-color="danger"
+                  loading={triageAction === "rejected"}
+                  onClick={() =>
+                    updateWidgetTriage(
+                      "rejected",
+                      Array.from(selectedWidgetIds),
+                      { undoable: true },
+                    )
+                  }
+                >
+                  Forkast
+                </Button>
+                <Button
+                  variant="tertiary"
+                  size="small"
+                  disabled={!selectedHasInactiveTriage}
+                  loading={triageAction === "open"}
+                  onClick={() =>
+                    updateWidgetTriage("open", Array.from(selectedWidgetIds))
+                  }
+                >
+                  Gjenåpne
                 </Button>
                 <Button
                   variant="secondary"

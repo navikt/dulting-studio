@@ -2,7 +2,10 @@
 
 import {
   BodyShort,
+  Box,
   Button,
+  Chips,
+  Heading,
   HStack,
   Search,
   Select,
@@ -20,6 +23,9 @@ type WidgetFiltersProps = {
   currentActorTrack: string;
   currentJourneyStep: string;
   currentPlacement: string;
+  currentTriage: string;
+  resultCount?: number | null;
+  visibleCount?: number | null;
   projectId: string;
 };
 
@@ -53,6 +59,9 @@ export function WidgetFilters({
   currentActorTrack,
   currentJourneyStep,
   currentPlacement,
+  currentTriage,
+  resultCount,
+  visibleCount,
   projectId,
 }: WidgetFiltersProps) {
   const router = useRouter();
@@ -84,6 +93,7 @@ export function WidgetFilters({
         actorTrack: currentActorTrack,
         journeyStep: currentJourneyStep,
         placement: currentPlacement,
+        triage: currentTriage,
         page: "1", // Reset to page 1 on filter change
         ...overrides,
       };
@@ -105,6 +115,7 @@ export function WidgetFilters({
       currentActorTrack,
       currentJourneyStep,
       currentPlacement,
+      currentTriage,
       projectId,
     ],
   );
@@ -119,6 +130,10 @@ export function WidgetFilters({
 
   const handlePlacementChange = (value: string) => {
     router.push(buildUrl({ placement: value }));
+  };
+
+  const handleQuickFilter = (overrides: Record<string, string>) => {
+    router.push(buildUrl(overrides));
   };
 
   const handleSearchSubmit = (value: string) => {
@@ -157,96 +172,39 @@ export function WidgetFilters({
     currentActorTrack,
     currentJourneyStep,
     currentPlacement,
+    currentTriage,
   ].filter(Boolean).length;
 
   return (
-    <VStack gap="space-12">
-      <HStack gap="space-12" align="end" wrap>
-        <div className="widget-filter-search">
-          <Search
-            label="Søk i widgettekst"
-            size="small"
-            variant="simple"
-            value={searchInput}
-            onChange={setSearchInput}
-            onSearchClick={handleSearchSubmit}
-            onClear={handleSearchClear}
-            placeholder="Søk i innhold …"
-          />
-        </div>
+    <Box
+      as="section"
+      aria-labelledby="inbox-filter-heading"
+      background="default"
+      borderColor="neutral-subtle"
+      borderRadius="12"
+      borderWidth="1"
+      padding={{ xs: "space-16", md: "space-20" }}
+      className="inbox-command-bar"
+    >
+      <VStack gap="space-16">
+        <HStack gap="space-12" align="start" justify="space-between" wrap>
+          <VStack gap="space-4">
+            <Heading level="3" size="small" id="inbox-filter-heading">
+              Triage
+            </Heading>
+            <BodyShort size="small" className="muted" aria-live="polite">
+              {resultCount == null
+                ? activeFilterCount === 0
+                  ? "Ingen aktive filtre."
+                  : `${activeFilterCount} aktive filtre.`
+                : `${visibleCount ?? 0} vist av ${resultCount} treff${
+                    activeFilterCount > 0
+                      ? ` med ${activeFilterCount} filtre`
+                      : ""
+                  }.`}
+            </BodyShort>
+          </VStack>
 
-        <Select
-          label="Type"
-          size="small"
-          value={currentType}
-          onChange={(e) => handleTypeChange(e.target.value)}
-          className="widget-filter-select"
-        >
-          {WIDGET_TYPES.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          label="Status"
-          size="small"
-          value={currentStatus}
-          onChange={(e) => handleStatusChange(e.target.value)}
-          className="widget-filter-select"
-        >
-          {STATUS_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          label="Plassering"
-          size="small"
-          value={currentPlacement}
-          onChange={(e) => handlePlacementChange(e.target.value)}
-          className="widget-filter-select"
-        >
-          {PLACEMENT_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </Select>
-      </HStack>
-
-      <form onSubmit={handleTextFiltersSubmit}>
-        <HStack gap="space-12" align="end" wrap>
-          <TextField
-            label="Lane-nøkkel"
-            size="small"
-            value={laneInput}
-            onChange={(e) => setLaneInput(e.target.value)}
-            className="widget-filter-select"
-            placeholder="f.eks. dialog"
-          />
-          <TextField
-            label="Aktørspor"
-            size="small"
-            value={actorTrackInput}
-            onChange={(e) => setActorTrackInput(e.target.value)}
-            className="widget-filter-select"
-            placeholder="f.eks. Arbeidsgiver"
-          />
-          <TextField
-            label="Brukerreisesteg"
-            size="small"
-            value={journeyStepInput}
-            onChange={(e) => setJourneyStepInput(e.target.value)}
-            className="widget-filter-select"
-            placeholder="f.eks. Uke 4"
-          />
-          <Button type="submit" size="small" variant="secondary">
-            Bruk filtre
-          </Button>
           {activeFilterCount > 0 && (
             <Button
               type="button"
@@ -258,12 +216,149 @@ export function WidgetFilters({
             </Button>
           )}
         </HStack>
-      </form>
-      <BodyShort size="small" className="muted" aria-live="polite">
-        {activeFilterCount === 0
-          ? "Ingen aktive filtre."
-          : `${activeFilterCount} aktive filtre.`}
-      </BodyShort>
-    </VStack>
+
+        <Chips size="small" data-color="neutral" aria-label="Hurtigfiltre">
+          <Chips.Toggle
+            selected={currentStatus === "unclassified"}
+            onClick={() =>
+              handleQuickFilter({
+                status: currentStatus === "unclassified" ? "" : "unclassified",
+              })
+            }
+          >
+            Uklassifisert
+          </Chips.Toggle>
+          <Chips.Toggle
+            selected={currentPlacement === "unplaced"}
+            onClick={() =>
+              handleQuickFilter({
+                placement: currentPlacement === "unplaced" ? "" : "unplaced",
+              })
+            }
+          >
+            Uplassert
+          </Chips.Toggle>
+          <Chips.Toggle
+            selected={currentTriage === "open"}
+            onClick={() =>
+              handleQuickFilter({
+                triage: currentTriage === "open" ? "" : "open",
+              })
+            }
+          >
+            Aktive
+          </Chips.Toggle>
+          <Chips.Toggle
+            selected={currentTriage === "parked"}
+            onClick={() =>
+              handleQuickFilter({
+                triage: currentTriage === "parked" ? "" : "parked",
+              })
+            }
+          >
+            Parkert
+          </Chips.Toggle>
+          <Chips.Toggle
+            selected={currentTriage === "rejected"}
+            onClick={() =>
+              handleQuickFilter({
+                triage: currentTriage === "rejected" ? "" : "rejected",
+              })
+            }
+          >
+            Forkastet
+          </Chips.Toggle>
+        </Chips>
+
+        <HStack gap="space-12" align="end" wrap>
+          <div className="widget-filter-search">
+            <Search
+              label="Søk i widgettekst"
+              size="small"
+              variant="simple"
+              value={searchInput}
+              onChange={setSearchInput}
+              onSearchClick={handleSearchSubmit}
+              onClear={handleSearchClear}
+              placeholder="Søk i innhold …"
+            />
+          </div>
+
+          <Select
+            label="Type"
+            size="small"
+            value={currentType}
+            onChange={(e) => handleTypeChange(e.target.value)}
+            className="widget-filter-select"
+          >
+            {WIDGET_TYPES.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            label="Status"
+            size="small"
+            value={currentStatus}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            className="widget-filter-select"
+          >
+            {STATUS_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            label="Plassering"
+            size="small"
+            value={currentPlacement}
+            onChange={(e) => handlePlacementChange(e.target.value)}
+            className="widget-filter-select"
+          >
+            {PLACEMENT_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </Select>
+        </HStack>
+
+        <form onSubmit={handleTextFiltersSubmit}>
+          <HStack gap="space-12" align="end" wrap>
+            <TextField
+              label="Lane-nøkkel"
+              size="small"
+              value={laneInput}
+              onChange={(e) => setLaneInput(e.target.value)}
+              className="widget-filter-select"
+              placeholder="f.eks. dialog"
+            />
+            <TextField
+              label="Aktørspor"
+              size="small"
+              value={actorTrackInput}
+              onChange={(e) => setActorTrackInput(e.target.value)}
+              className="widget-filter-select"
+              placeholder="f.eks. Arbeidsgiver"
+            />
+            <TextField
+              label="Brukerreisesteg"
+              size="small"
+              value={journeyStepInput}
+              onChange={(e) => setJourneyStepInput(e.target.value)}
+              className="widget-filter-select"
+              placeholder="f.eks. Uke 4"
+            />
+            <Button type="submit" size="small" variant="secondary">
+              Bruk filtre
+            </Button>
+          </HStack>
+        </form>
+      </VStack>
+    </Box>
   );
 }

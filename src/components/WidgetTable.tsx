@@ -33,6 +33,10 @@ type WidgetItem = {
   columnIndex: number | null;
   position: { x: number; y: number; width: number; height: number };
   classification: ClassificationItem | null;
+  triage: {
+    state: "open" | "parked" | "rejected";
+    reason: string | null;
+  };
   createdAt: string;
 };
 
@@ -98,6 +102,30 @@ function ClassificationBadge({
       {classification.laneTypeLabel ||
         classification.laneTypeKey ||
         "Klassifisert"}
+    </Tag>
+  );
+}
+
+function TriageBadge({ triage }: { triage: WidgetItem["triage"] }) {
+  if (triage.state === "parked") {
+    return (
+      <Tag variant="warning" size="small">
+        Parkert
+      </Tag>
+    );
+  }
+
+  if (triage.state === "rejected") {
+    return (
+      <Tag variant="error" size="small">
+        Forkastet
+      </Tag>
+    );
+  }
+
+  return (
+    <Tag variant="success" size="small">
+      Aktiv
     </Tag>
   );
 }
@@ -173,7 +201,9 @@ export function WidgetTable({
                   className={
                     selectedWidgetId === item.id
                       ? "widget-table-row--selected"
-                      : undefined
+                      : item.triage.state !== "open"
+                        ? "widget-table-row--muted"
+                        : undefined
                   }
                 >
                   {multiSelectEnabled && (
@@ -207,7 +237,12 @@ export function WidgetTable({
                     <ColorChip color={item.backgroundColor} />
                   </Table.DataCell>
                   <Table.DataCell>
-                    <ClassificationBadge classification={item.classification} />
+                    <VStack gap="space-4">
+                      <ClassificationBadge
+                        classification={item.classification}
+                      />
+                      <TriageBadge triage={item.triage} />
+                    </VStack>
                   </Table.DataCell>
                   <Table.DataCell>
                     <Button

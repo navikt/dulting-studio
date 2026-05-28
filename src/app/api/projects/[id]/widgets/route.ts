@@ -1,6 +1,6 @@
 import { and, count, eq, ilike, isNotNull, isNull, or } from "drizzle-orm";
 import { getDb } from "@/db/client";
-import { classifications, projects, widgets } from "@/db/schema";
+import { classifications, projects, widgets, widgetTriage } from "@/db/schema";
 import { withProtectedApiRoute } from "@/lib/auth";
 import { logError, logInfo } from "@/lib/logger";
 import {
@@ -67,6 +67,7 @@ export const GET = withProtectedApiRoute(async (request, context) => {
       .select({ totalCount: count() })
       .from(widgets)
       .leftJoin(classifications, eq(widgets.id, classifications.widgetId))
+      .leftJoin(widgetTriage, eq(widgets.id, widgetTriage.widgetId))
       .where(and(...conditions));
 
     const total = totalCount ?? 0;
@@ -99,9 +100,12 @@ export const GET = withProtectedApiRoute(async (request, context) => {
         classificationJourneyStep: classifications.journeyStep,
         classificationJourneyIndex: classifications.journeyIndex,
         classificationStatus: classifications.status,
+        triageState: widgetTriage.state,
+        triageReason: widgetTriage.reason,
       })
       .from(widgets)
       .leftJoin(classifications, eq(widgets.id, classifications.widgetId))
+      .leftJoin(widgetTriage, eq(widgets.id, widgetTriage.widgetId))
       .where(and(...conditions))
       .orderBy(widgets.rowIndex, widgets.columnIndex, widgets.createdAt)
       .limit(params.pageSize)
@@ -177,6 +181,12 @@ function buildFilterConditions(projectId: string, params: WidgetQueryParams) {
     }
   }
 
+  if (params.triage === "open") {
+    conditions.push(isNull(widgetTriage.id));
+  } else if (params.triage) {
+    conditions.push(eq(widgetTriage.state, params.triage));
+  }
+
   return conditions;
 }
 
@@ -208,6 +218,8 @@ function formatWidgetItem(row: {
   classificationJourneyStep: string | null;
   classificationJourneyIndex: number | null;
   classificationStatus: string | null;
+  triageState: string | null;
+  triageReason: string | null;
 }) {
   return {
     id: row.id,
@@ -230,6 +242,10 @@ function formatWidgetItem(row: {
           status: row.classificationStatus,
         }
       : null,
+    triage: {
+      state: row.triageState ?? "open",
+      reason: row.triageReason,
+    },
     createdAt: row.createdAt,
   };
 }

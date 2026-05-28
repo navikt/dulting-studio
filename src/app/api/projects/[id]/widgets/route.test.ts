@@ -51,7 +51,9 @@ function createProjectQuery(result: unknown) {
 
 function createCountQuery(result: unknown) {
   const where = vi.fn().mockResolvedValue(result);
-  const leftJoin = vi.fn().mockReturnValue({ where });
+  const chain = { leftJoin: vi.fn(), where };
+  chain.leftJoin.mockReturnValue(chain);
+  const leftJoin = vi.fn().mockReturnValue(chain);
   const from = vi.fn().mockReturnValue({ leftJoin });
   return { from, leftJoin, where };
 }
@@ -61,7 +63,9 @@ function createItemsQuery(result: unknown) {
   const limit = vi.fn().mockReturnValue({ offset });
   const orderBy = vi.fn().mockReturnValue({ limit });
   const where = vi.fn().mockReturnValue({ orderBy });
-  const leftJoin = vi.fn().mockReturnValue({ where });
+  const chain = { leftJoin: vi.fn(), where };
+  chain.leftJoin.mockReturnValue(chain);
+  const leftJoin = vi.fn().mockReturnValue(chain);
   const from = vi.fn().mockReturnValue({ leftJoin });
   return { from, leftJoin, where, orderBy, limit, offset };
 }
@@ -100,6 +104,8 @@ describe("GET /api/projects/[id]/widgets", () => {
         classificationJourneyStep: "oppfølging",
         classificationJourneyIndex: 4,
         classificationStatus: "classified",
+        triageState: "parked",
+        triageReason: "Avventer fagavklaring",
       },
     ]);
 
@@ -144,6 +150,10 @@ describe("GET /api/projects/[id]/widgets", () => {
             journeyStep: "oppfølging",
             journeyIndex: 4,
             status: "classified",
+          },
+          triage: {
+            state: "parked",
+            reason: "Avventer fagavklaring",
           },
           createdAt: "2024-09-01T10:00:00.000Z",
         },

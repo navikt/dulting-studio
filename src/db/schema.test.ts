@@ -4,8 +4,8 @@ import {
   classifications,
   clusterMemberships,
   clusters,
-  interventionCandidates,
   interventionCandidateSources,
+  interventionCandidates,
   interventionPackageExports,
   interventionPackageMembers,
   interventionPackages,
@@ -23,6 +23,7 @@ import {
   type ProjectLaneType,
   projects,
   widgets,
+  widgetTriage,
 } from "./schema";
 
 describe("database schema", () => {
@@ -98,6 +99,19 @@ describe("database schema", () => {
         "status",
         "createdBy",
         "updatedBy",
+        "version",
+      ]),
+    );
+
+    expect(Object.keys(getTableColumns(widgetTriage))).toEqual(
+      expect.arrayContaining([
+        "projectId",
+        "widgetId",
+        "state",
+        "reason",
+        "updatedBy",
+        "createdAt",
+        "updatedAt",
         "version",
       ]),
     );

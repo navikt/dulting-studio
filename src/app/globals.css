@@ -188,6 +188,7 @@ a {
   overflow-x: auto;
   border: 1px solid var(--a-border-subtle);
   border-radius: var(--ax-radius-8);
+  background: var(--a-surface-default);
 }
 
 .widget-text-cell {
@@ -215,6 +216,28 @@ a {
 
 .widget-filter-select {
   min-width: 10rem;
+}
+
+.inbox-command-bar {
+  position: sticky;
+  top: 4.25rem;
+  z-index: 5;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 7%);
+}
+
+.widget-selection-bar {
+  position: sticky;
+  top: 13.5rem;
+  z-index: 4;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--a-border-action);
+  border-radius: var(--ax-radius-12);
+  background: linear-gradient(
+    135deg,
+    var(--a-surface-action-subtle),
+    var(--a-surface-default)
+  );
+  box-shadow: 0 8px 24px rgb(0 0 0 / 8%);
 }
 
 /* Project inbox layout (table + panel side-by-side) */
@@ -268,6 +291,10 @@ a {
 /* Selected row highlight */
 .widget-table-row--selected {
   background: var(--a-surface-action-subtle-hover);
+}
+
+.widget-table-row--muted {
+  background: var(--a-surface-subtle);
 }
 
 @media (max-width: 64rem) {

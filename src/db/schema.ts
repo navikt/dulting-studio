@@ -236,6 +236,37 @@ export const classifications = pgTable(
   ],
 );
 
+export const widgetTriage = pgTable(
+  "widget_triage",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    widgetId: uuid("widget_id")
+      .notNull()
+      .references(() => widgets.id, { onDelete: "cascade" }),
+    state: text("state").notNull(),
+    reason: text("reason"),
+    updatedBy: text("updated_by").notNull(),
+    ...timestamps,
+    version: versionColumn,
+  },
+  (table) => [
+    uniqueIndex("widget_triage_widget_id_key").on(table.widgetId),
+    index("widget_triage_project_state_idx").on(table.projectId, table.state),
+    check(
+      "widget_triage_state_check",
+      sql`${table.state} in ('parked', 'rejected')`,
+    ),
+    check(
+      "widget_triage_reason_length",
+      sql`${table.reason} is null or char_length(${table.reason}) <= 500`,
+    ),
+    check("widget_triage_version_positive", sql`${table.version} > 0`),
+  ],
+);
+
 export const clusters = pgTable(
   "clusters",
   {
@@ -340,7 +371,10 @@ export const interventionCandidates = pgTable(
       "intervention_candidates_journey_step_length",
       sql`${table.journeyStep} is null or char_length(${table.journeyStep}) <= 200`,
     ),
-    check("intervention_candidates_version_positive", sql`${table.version} > 0`),
+    check(
+      "intervention_candidates_version_positive",
+      sql`${table.version} > 0`,
+    ),
   ],
 );
 
@@ -458,7 +492,9 @@ export const interventionPackageMembers = pgTable(
       table.packageId,
       table.candidateId,
     ),
-    index("intervention_package_members_candidate_id_idx").on(table.candidateId),
+    index("intervention_package_members_candidate_id_idx").on(
+      table.candidateId,
+    ),
     check(
       "intervention_package_members_assessment_length",
       sql`char_length(${table.assessment}) <= 2000`,
@@ -530,6 +566,9 @@ export type NewWidget = typeof widgets.$inferInsert;
 
 export type Classification = typeof classifications.$inferSelect;
 export type NewClassification = typeof classifications.$inferInsert;
+
+export type WidgetTriage = typeof widgetTriage.$inferSelect;
+export type NewWidgetTriage = typeof widgetTriage.$inferInsert;
 
 export type Cluster = typeof clusters.$inferSelect;
 export type NewCluster = typeof clusters.$inferInsert;

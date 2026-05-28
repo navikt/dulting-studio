@@ -18,6 +18,7 @@ describe("parseWidgetQueryParams", () => {
         actorTrack: null,
         journeyStep: null,
         placement: null,
+        triage: null,
         status: null,
         search: null,
       },
@@ -214,6 +215,27 @@ describe("parseWidgetQueryParams", () => {
       expect(result.errors[0]).toEqual({
         field: "placement",
         message: "Må være 'unplaced'",
+      });
+    }
+  });
+
+  it("parses triage filter", () => {
+    const result = parseWidgetQueryParams(params({ triage: "parked" }));
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.params.triage).toBe("parked");
+    }
+  });
+
+  it("rejects invalid triage filter", () => {
+    const result = parseWidgetQueryParams(params({ triage: "deleted" }));
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors[0]).toEqual({
+        field: "triage",
+        message: "Må være 'open', 'parked' eller 'rejected'",
       });
     }
   });

@@ -40,6 +40,7 @@ export type WidgetQueryParams = {
   actorTrack: string | null;
   journeyStep: string | null;
   placement: "unplaced" | null;
+  triage: "open" | "parked" | "rejected" | null;
   status: "classified" | "unclassified" | null;
   search: string | null;
 };
@@ -89,6 +90,7 @@ function sanitizeSearchTerm(value: string | null): string | null {
 }
 
 const ALLOWED_STATUSES = new Set(["classified", "unclassified"]);
+const ALLOWED_TRIAGE_STATES = new Set(["open", "parked", "rejected"]);
 
 function parseOptionalFilterText(
   field: string,
@@ -188,6 +190,19 @@ export function parseWidgetQueryParams(
     }
   }
 
+  const triageParam = searchParams.get("triage");
+  let triage: "open" | "parked" | "rejected" | null = null;
+  if (triageParam !== null && triageParam !== "") {
+    if (!ALLOWED_TRIAGE_STATES.has(triageParam)) {
+      errors.push({
+        field: "triage",
+        message: "Må være 'open', 'parked' eller 'rejected'",
+      });
+    } else {
+      triage = triageParam as "open" | "parked" | "rejected";
+    }
+  }
+
   const statusParam = searchParams.get("status");
   let status: "classified" | "unclassified" | null = null;
   if (statusParam !== null && statusParam !== "") {
@@ -217,6 +232,7 @@ export function parseWidgetQueryParams(
       actorTrack,
       journeyStep,
       placement,
+      triage,
       status,
       search,
     },
