@@ -1,6 +1,11 @@
 "use client";
 
-import { FolderIcon, UploadIcon } from "@navikt/aksel-icons";
+import {
+  FolderIcon,
+  LineGraphIcon,
+  TableIcon,
+  UploadIcon,
+} from "@navikt/aksel-icons";
 import { Link as AkselLink, Heading, HStack } from "@navikt/ds-react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,6 +26,16 @@ const navItems: NavItem[] = [
     href: "/projects/import",
     label: "Importer Mural",
     icon: <UploadIcon aria-hidden fontSize="1.25rem" />,
+  },
+  {
+    href: "/brukerreise",
+    label: "Brukerreise",
+    icon: <LineGraphIcon aria-hidden fontSize="1.25rem" />,
+  },
+  {
+    href: "/tiltakskart",
+    label: "Tiltakskart",
+    icon: <TableIcon aria-hidden fontSize="1.25rem" />,
   },
 ];
 

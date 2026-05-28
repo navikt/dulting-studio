@@ -404,3 +404,252 @@ a {
   margin: 0;
   padding: 0;
 }
+
+/* Ki-dult reference visualizations */
+.kidult-reference-header {
+  max-width: 72rem;
+}
+
+.kidult-journey-timeline {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+}
+
+.kidult-journey-timeline::before {
+  content: "";
+  position: absolute;
+  left: 8.2rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 3px;
+  border-radius: var(--ax-radius-full);
+  background: linear-gradient(
+    180deg,
+    var(--a-border-subtle),
+    var(--a-border-action),
+    var(--a-border-subtle)
+  );
+}
+
+.kidult-journey-row {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+  position: relative;
+}
+
+.kidult-journey-time {
+  min-height: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.75rem;
+}
+
+.kidult-journey-step {
+  position: relative;
+  background: var(--a-surface-default);
+  border: 1px solid var(--a-border-subtle);
+  border-radius: var(--ax-radius-12);
+  padding: var(--a-spacing-5);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+}
+
+.kidult-journey-step::before {
+  content: "";
+  position: absolute;
+  left: -1.95rem;
+  top: 1.1rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: var(--ax-radius-full);
+  background: var(--a-surface-default);
+  border: 3px solid var(--a-border-default);
+  z-index: 1;
+}
+
+.kidult-journey-step--dulting {
+  background: var(--a-surface-action-subtle);
+  border-color: var(--a-border-action);
+  border-left-width: 4px;
+}
+
+.kidult-journey-step--dulting::before,
+.kidult-journey-step--decision::before {
+  background: var(--a-border-action);
+  border-color: var(--a-border-action);
+}
+
+.kidult-journey-step--silence {
+  background: var(--a-surface-subtle);
+  border-style: dashed;
+  text-align: center;
+}
+
+.kidult-journey-step--decision {
+  border-color: var(--a-border-action);
+  border-width: 2px;
+}
+
+.kidult-journey-step--decision::before {
+  border-radius: var(--ax-radius-4);
+  transform: rotate(45deg);
+}
+
+.kidult-journey-step--outcome {
+  background: var(--a-surface-success-subtle);
+  border-color: var(--a-border-success);
+  border-left-width: 4px;
+}
+
+.kidult-journey-step--outcome::before {
+  background: var(--a-border-success);
+  border-color: var(--a-border-success);
+}
+
+.kidult-journey-step--muted {
+  opacity: 0.72;
+}
+
+.kidult-plain-list {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.kidult-plain-list li + li {
+  margin-top: 0.35rem;
+}
+
+.kidult-map {
+  position: relative;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.kidult-map::before {
+  content: "";
+  position: absolute;
+  left: 1.4rem;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  width: 3px;
+  border-radius: var(--ax-radius-full);
+  background: linear-gradient(
+    180deg,
+    var(--a-border-info),
+    var(--a-border-success),
+    var(--a-border-warning),
+    var(--a-border-alt-3),
+    var(--a-border-danger)
+  );
+}
+
+.kidult-map-phase {
+  --phase-border: var(--a-border-default);
+  --phase-bg: var(--a-surface-default);
+
+  position: relative;
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.kidult-map-phase[data-phase="k1"] {
+  --phase-border: var(--a-border-info);
+  --phase-bg: var(--a-surface-info-subtle);
+}
+
+.kidult-map-phase[data-phase="k2"] {
+  --phase-border: var(--a-border-success);
+  --phase-bg: var(--a-surface-success-subtle);
+}
+
+.kidult-map-phase[data-phase="k3"] {
+  --phase-border: var(--a-border-warning);
+  --phase-bg: var(--a-surface-warning-subtle);
+}
+
+.kidult-map-phase[data-phase="k4"] {
+  --phase-border: var(--a-border-alt-3);
+  --phase-bg: var(--a-surface-alt-3-subtle);
+}
+
+.kidult-map-phase[data-phase="k5"] {
+  --phase-border: var(--a-border-danger);
+  --phase-bg: var(--a-surface-danger-subtle);
+}
+
+.kidult-map-phase__number {
+  position: relative;
+  z-index: 1;
+  width: 2.8rem;
+  height: 2.8rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--ax-radius-full);
+  border: 3px solid var(--phase-border);
+  background: var(--phase-bg);
+  font-weight: 700;
+}
+
+.kidult-map-phase__body {
+  background: var(--phase-bg);
+  border: 1px solid var(--phase-border);
+  border-radius: var(--ax-radius-12);
+  padding: var(--a-spacing-5);
+}
+
+.kidult-map-tiltak-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+
+.kidult-map-tiltak-card {
+  background: var(--a-surface-default);
+  border: 1px solid var(--a-border-subtle);
+  border-top: 4px solid var(--phase-border);
+  border-radius: var(--ax-radius-8);
+  padding: var(--a-spacing-4);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+}
+
+.kidult-map[data-variant="today"] .kidult-map-phase:nth-of-type(n + 3) {
+  opacity: 0.7;
+}
+
+@media (max-width: 48rem) {
+  .kidult-journey-timeline::before {
+    left: 0.45rem;
+  }
+
+  .kidult-journey-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+    padding-left: 2rem;
+  }
+
+  .kidult-journey-time {
+    justify-content: flex-start;
+    padding-top: 0;
+  }
+
+  .kidult-journey-step::before {
+    left: -1.85rem;
+  }
+
+  .kidult-map::before {
+    left: 1rem;
+  }
+
+  .kidult-map-phase {
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .kidult-map-phase__number {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+}
