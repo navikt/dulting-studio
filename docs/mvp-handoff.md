@@ -57,6 +57,8 @@ ha syntetiske eller saniterte fixtures under `fixtures/`.
 - FORGOOD brukes som kvalitative refleksjoner/flagg, ikke totalscore.
 - EAST og Fogg brukes som diagnostikk, ikke poengmodell.
 - Teamet kan godkjenne tiltakspakker i MVP, med manuelle PII-stoppunkter.
+- [Manuelle PII-stoppunkter](manuelle-pii-stoppunkter.md) gjelder før import,
+  promotering til tiltakskandidat og eksport/godkjenning.
 - [Målmodell og virkningshypotese](maalmodell-virkningshypotese.md) for første
   tiltakspakke brukes som input til #23 og #14.
 - [Analysemodell for bearbeidede tiltak](analysemodell-bearbeidede-tiltak.md)
@@ -119,6 +121,9 @@ eksplisitt opt-in og/eller senere Studio-støtte.
 
 ## Neste anbefalte issues
 
+Følg [manuelle PII-stoppunkter](manuelle-pii-stoppunkter.md) før import,
+promotering og eksport.
+
 1. Bruk `docs/local-import-e2e.md` for å verifisere lokal import med Postgres,
    migrasjoner og auth-mock.
 2. Lag prosjektoversikt for importerte Mural-brett.
@@ -131,7 +136,6 @@ eksplisitt opt-in og/eller senere Studio-støtte.
 6. Bygg visning for tiltakskandidater og tiltakspakker med dekning på
    aktørspor og brukerreisesteg.
 7. Eksporter godkjent tiltakspakke til Markdown/JSON etter PII-bekreftelse.
-8. Dokumenter manuelle PII-stoppunkter før import, promotering og eksport.
 
 ## Ikke flytt inn ennå
 

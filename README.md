@@ -62,6 +62,7 @@ diagnoser eller konkrete personer.
 - [MVP-handoff: status, Mural-first arbeid og neste issues](docs/mvp-handoff.md)
 - [Dulting tiltaksregister](docs/dulting-tiltaksregister.md)
 - [Lokal importflyt ende-til-ende](docs/local-import-e2e.md)
+- [Manuelle PII-stoppunkter](docs/manuelle-pii-stoppunkter.md)
 - [Illustrativt datalag: struktur og grenser](data/README.md)
 
 ## Utvikling
