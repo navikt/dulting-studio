@@ -57,9 +57,11 @@ ha syntetiske eller saniterte fixtures under `fixtures/`.
 - FORGOOD brukes som kvalitative refleksjoner/flagg, ikke totalscore.
 - EAST og Fogg brukes som diagnostikk, ikke poengmodell.
 - Teamet kan godkjenne tiltakspakker i MVP, med manuelle PII-stoppunkter.
-- Målmodell og virkningshypotese for første tiltakspakke er dokumentert i
-  [`docs/maalmodell-virkningshypotese.md`](maalmodell-virkningshypotese.md) og
-  brukes som input til #23 og #14.
+- [Målmodell og virkningshypotese](maalmodell-virkningshypotese.md) for første
+  tiltakspakke brukes som input til #23 og #14.
+- [Analysemodell for bearbeidede tiltak](analysemodell-bearbeidede-tiltak.md)
+  definerer tiltakskandidatnivået mellom Studio-klynger og tiltakspakker,
+  inkludert kildekort, måletegn, guardrails og K6/støtte.
 - `.github/skills/dulting-redaktor/` kan brukes som bearbeidingsmotor både for
   Mural-first arbeid og for Studio inbox-items.
 
@@ -85,8 +87,9 @@ for skjema og konkrete eksempler på den samme modellen.
   (`draft`/`validated`) og medlemskap. Klyngen er forarbeid og sporbarhet, ikke
   et tiltak.
 - **Tiltakskandidat** er et senere bearbeidet forslag med ønsket atferd,
-  hypotese, FORGOOD/EAST/Fogg og måletegn. Dette er ikke del av første slice fra
-  issue #18-#20.
+  hypotese, FORGOOD/EAST/Fogg, måletegn og dataminimerte kildekort. Se
+  [analysemodell for bearbeidede tiltak](analysemodell-bearbeidede-tiltak.md).
+  Dette er ikke del av første slice fra issue #18-#20.
 - **Tiltakspakke** er en senere kuratert pakke med tiltakskandidater og
   beslutningsgrunnlag. Dette er ikke del av første slice.
 - **Målinger** holdes også avgrenset: rå målelapper kan importeres og knyttes

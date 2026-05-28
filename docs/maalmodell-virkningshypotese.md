@@ -1,6 +1,6 @@
 # Målmodell og virkningshypotese for første tiltakspakke
 
-**Beslutning:** Første tiltakspakke måles først på nærliggende handlinger og kvalitetstegn, ikke på dokumentert effekt på sykefravær. Dette dokumentet beskriver virkningshypoteser for første test og brukes som input til analysemodell i #23 og tiltakspakkevisning i #14.
+**Beslutning:** Første tiltakspakke måles først på nærliggende handlinger og kvalitetstegn, ikke på dokumentert effekt på sykefravær. Dette dokumentet beskriver virkningshypoteser for første test og brukes som input til [analysemodell for bearbeidede tiltak](analysemodell-bearbeidede-tiltak.md) i #23 og tiltakspakkevisning i #14.
 
 ## 1. Overordnet mål og oppdragskontekst
 
@@ -135,11 +135,15 @@ Analysemodellen bør minst kunne representere:
 
 - tiltakspakke
 - hovedklynge eller støttekomponent
+- tiltakskandidat med ønsket atferd, kildekort, guardrails og åpne spørsmål
 - målenivå: aktivitet, kvalitet, guardrail, overordnet effekt
 - måletegn
 - datakilde: eksisterende data, ny instrumentering eller survey
 - kobling fra måletegn til én eller flere virkningshypoteser
 - markering av kunnskapshull og hva som må avklares
+
+Se [analysemodell for bearbeidede tiltak](analysemodell-bearbeidede-tiltak.md)
+for hvordan måletegn og sporbarhet knyttes til tiltakskandidater.
 
 ### Input til #14 tiltakspakkevisning
 

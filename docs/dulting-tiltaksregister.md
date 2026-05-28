@@ -21,6 +21,7 @@ sporbarhet.
 | Tiltak | En handling som kan påvirke atferd. Et DULT-råkort er et forslag til tiltak. Etter bearbeiding kan det bli et kanonisk tiltak i en tiltakspakke. |
 | Aktør | Hvem tiltaket primært retter seg mot: arbeidsgiver, sykmeldt, begge eller ukjent. |
 | Tiltaksklynge | Gruppe av tiltak som hører sammen funksjonelt eller atferdsmessig. |
+| Tiltakskandidat | Bearbeidet tiltak som har ønsket atferd, hypotese, måletegn, guardrails, FORGOOD-flagg, åpne spørsmål og kildekort. Se [analysemodell for bearbeidede tiltak](analysemodell-bearbeidede-tiltak.md). |
 | Tiltakspakke | Samlet pakke av mange tiltak, klynger, målinger og avklaringer. |
 | Ønsket atferd | Hva arbeidsgiver skal gjøre annerledes hvis klyngen virker. |
 | Målepåvirkning | Hvordan vi tror klyngen påvirker atferd og effektmål. Måles først på nærliggende handlinger, deretter på oppfølgingsplaner som kommer inn. |
@@ -102,7 +103,9 @@ Hver tiltaksklynge har åpne spørsmål som må avklares før implementering.
 
 Se også [`docs/maalmodell-virkningshypotese.md`](maalmodell-virkningshypotese.md),
 særlig seksjonene **3. Målenivåer** og **4. Klynge til måletegn**, for
-beslutning om virkningshypoteser, datakilder og input til #23 og #14.
+beslutning om virkningshypoteser, datakilder og input til #23 og #14. Bruk
+[analysemodell for bearbeidede tiltak](analysemodell-bearbeidede-tiltak.md) for
+felt, kildekort, status og sporbarhet på tiltakskandidatnivå.
 
 Målinger bør landes på bearbeidede tiltaksklynger, ikke på alle råkortene.
 Kontrollgruppen bør få dagens uendrede opplevelse.
