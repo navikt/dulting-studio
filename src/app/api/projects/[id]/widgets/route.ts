@@ -98,7 +98,6 @@ export const GET = withProtectedApiRoute(async (request, context) => {
         classificationActorTrack: classifications.actorTrack,
         classificationJourneyStep: classifications.journeyStep,
         classificationJourneyIndex: classifications.journeyIndex,
-        classificationNotes: classifications.notes,
         classificationStatus: classifications.status,
       })
       .from(widgets)
@@ -190,11 +189,11 @@ function formatWidgetItem(row: {
   classificationActorTrack: string | null;
   classificationJourneyStep: string | null;
   classificationJourneyIndex: number | null;
-  classificationNotes: string | null;
   classificationStatus: string | null;
 }) {
   return {
     id: row.id,
+    muralWidgetId: row.muralWidgetId,
     widgetType: row.widgetType,
     textContent: truncateText(row.textContent, 200),
     backgroundColor: row.backgroundColor,
@@ -210,7 +209,6 @@ function formatWidgetItem(row: {
           actorTrack: row.classificationActorTrack,
           journeyStep: row.classificationJourneyStep,
           journeyIndex: row.classificationJourneyIndex,
-          notes: row.classificationNotes,
           status: row.classificationStatus,
         }
       : null,

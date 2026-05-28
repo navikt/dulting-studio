@@ -4,13 +4,7 @@ const UUID_REGEX =
 const MAX_CLUSTER_NAME_LENGTH = 200;
 const MAX_CLUSTER_SUMMARY_LENGTH = 2000;
 const CLUSTER_STATUSES = ["draft", "validated"] as const;
-const ALLOWED_KEYS = new Set([
-  "projectId",
-  "name",
-  "summary",
-  "status",
-  "widgetIds",
-]);
+const BODY_ALLOWED_KEYS = new Set(["name", "summary", "widgetIds"]);
 
 export type ClusterStatus = (typeof CLUSTER_STATUSES)[number];
 
@@ -22,13 +16,18 @@ export type CreateClusterInput = {
   widgetIds: string[];
 };
 
+export type CreateClusterBodyInput = Pick<
+  CreateClusterInput,
+  "name" | "summary" | "widgetIds"
+>;
+
 export type ClusterValidationError = {
   field: string;
   message: string;
 };
 
 export type ClusterValidationResult =
-  | { ok: true; data: CreateClusterInput }
+  | { ok: true; data: CreateClusterBodyInput }
   | { ok: false; errors: ClusterValidationError[] };
 
 function containsHtmlMarkup(value: string) {
@@ -53,14 +52,9 @@ export function validateCreateClusterBody(
   const errors: ClusterValidationError[] = [];
 
   for (const key of Object.keys(record)) {
-    if (!ALLOWED_KEYS.has(key)) {
+    if (!BODY_ALLOWED_KEYS.has(key)) {
       errors.push({ field: key, message: "Ukjent felt" });
     }
-  }
-
-  const projectId = record.projectId;
-  if (!isUuid(projectId)) {
-    errors.push({ field: "projectId", message: "Må være en gyldig UUID" });
   }
 
   const nameValue = record.name;
@@ -99,19 +93,6 @@ export function validateCreateClusterBody(
           message: "Må være ren tekst uten HTML",
         });
       }
-    }
-  }
-
-  const statusValue = record.status;
-  let status: ClusterStatus = "draft";
-  if (statusValue !== undefined) {
-    if (statusValue !== "draft" && statusValue !== "validated") {
-      errors.push({
-        field: "status",
-        message: "Må være «draft» eller «validated»",
-      });
-    } else {
-      status = statusValue;
     }
   }
 
@@ -163,15 +144,11 @@ export function validateCreateClusterBody(
     return { ok: false, errors };
   }
 
-  const sanitizedProjectId = isUuid(projectId) ? projectId : "";
-
   return {
     ok: true,
     data: {
-      projectId: sanitizedProjectId,
       name,
       summary,
-      status,
       widgetIds,
     },
   };

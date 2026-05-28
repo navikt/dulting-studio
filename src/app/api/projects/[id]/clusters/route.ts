@@ -177,26 +177,6 @@ export async function handleCreateCluster(
     );
   }
 
-  if (validation.data.projectId !== projectId) {
-    logWarn("Rejected cluster payload with project mismatch", {
-      callId: context.callId,
-      path,
-      method: request.method,
-    });
-
-    return createErrorResponse(
-      context.callId,
-      "projectId i body må matche URL",
-      400,
-      [
-        {
-          field: "projectId",
-          message: "Må matche prosjekt-id i URL",
-        },
-      ],
-    );
-  }
-
   try {
     const project = await dependencies.findActiveProject(projectId);
 
@@ -207,6 +187,7 @@ export async function handleCreateCluster(
     const payload: CreateClusterInput = {
       ...validation.data,
       projectId,
+      status: "draft",
     };
     const result = await dependencies.createCluster(payload, context);
 

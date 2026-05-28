@@ -52,8 +52,36 @@ describe("validateClassifyBody", () => {
       expect(result.data.actorTrack).toBeNull();
       expect(result.data.journeyStep).toBeNull();
       expect(result.data.journeyIndex).toBeNull();
-      expect(result.data.notes).toBeNull();
+      expect(result.data.notes).toBeUndefined();
       expect(result.data.expectedState).toBe("unclassified");
+    }
+  });
+
+  it("preserves missing notes as undefined", () => {
+    const result = validateClassifyBody({
+      laneTypeKey: "test",
+      laneTypeLabel: "Test",
+      version: 1,
+      expectedState: "classified",
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(Object.hasOwn(result.data, "notes")).toBe(false);
+      expect(result.data.notes).toBeUndefined();
+    }
+  });
+
+  it("accepts explicit null notes", () => {
+    const result = validateClassifyBody({
+      ...validBody,
+      notes: null,
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(Object.hasOwn(result.data, "notes")).toBe(true);
+      expect(result.data.notes).toBeNull();
     }
   });
 

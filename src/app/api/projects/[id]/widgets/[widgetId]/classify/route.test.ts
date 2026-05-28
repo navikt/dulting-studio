@@ -159,6 +159,85 @@ describe("PUT /api/projects/[id]/widgets/[widgetId]/classify", () => {
     expect(json.message).toContain("endret av noen andre");
   });
 
+  it("preserves existing notes when update payload omits notes", async () => {
+    mockDb.limit
+      .mockResolvedValueOnce([{ id: validProjectId }])
+      .mockResolvedValueOnce([{ id: validWidgetId, version: 1 }])
+      .mockResolvedValueOnce([{ id: "class-id-1", version: 2 }]);
+    mockDb.returning.mockResolvedValueOnce([{ id: "class-id-1" }]);
+
+    const { PUT } = await import(
+      "@/app/api/projects/[id]/widgets/[widgetId]/classify/route"
+    );
+
+    const response = await (PUT as RouteHandler)(
+      makeRequest({
+        laneTypeKey: "brukerreise",
+        laneTypeLabel: "Brukerreise",
+        version: 2,
+        expectedState: "classified",
+      }),
+      mockContext,
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockDb.set).toHaveBeenCalledTimes(1);
+    expect(mockDb.set.mock.calls[0]?.[0]).not.toHaveProperty("notes");
+  });
+
+  it("clears notes when update payload sets notes to null", async () => {
+    mockDb.limit
+      .mockResolvedValueOnce([{ id: validProjectId }])
+      .mockResolvedValueOnce([{ id: validWidgetId, version: 1 }])
+      .mockResolvedValueOnce([{ id: "class-id-1", version: 2 }]);
+    mockDb.returning.mockResolvedValueOnce([{ id: "class-id-1" }]);
+
+    const { PUT } = await import(
+      "@/app/api/projects/[id]/widgets/[widgetId]/classify/route"
+    );
+
+    const response = await (PUT as RouteHandler)(
+      makeRequest({
+        laneTypeKey: "brukerreise",
+        laneTypeLabel: "Brukerreise",
+        notes: null,
+        version: 2,
+        expectedState: "classified",
+      }),
+      mockContext,
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockDb.set).toHaveBeenCalledTimes(1);
+    expect(mockDb.set.mock.calls[0]?.[0]).toMatchObject({ notes: null });
+  });
+
+  it("stores missing notes as null when creating a classification", async () => {
+    mockDb.limit
+      .mockResolvedValueOnce([{ id: validProjectId }])
+      .mockResolvedValueOnce([{ id: validWidgetId, version: 1 }])
+      .mockResolvedValueOnce([]);
+    mockDb.returning.mockResolvedValueOnce([{ id: "class-id-1", version: 1 }]);
+
+    const { PUT } = await import(
+      "@/app/api/projects/[id]/widgets/[widgetId]/classify/route"
+    );
+
+    const response = await (PUT as RouteHandler)(
+      makeRequest({
+        laneTypeKey: "brukerreise",
+        laneTypeLabel: "Brukerreise",
+        version: 1,
+        expectedState: "unclassified",
+      }),
+      mockContext,
+    );
+
+    expect(response.status).toBe(201);
+    expect(mockDb.values).toHaveBeenCalledTimes(1);
+    expect(mockDb.values.mock.calls[0]?.[0]).toMatchObject({ notes: null });
+  });
+
   it("returns 409 when update attempted but classification was deleted", async () => {
     // Setup: project exists, widget exists, NO classification
     mockDb.limit

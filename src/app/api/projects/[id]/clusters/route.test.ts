@@ -11,7 +11,6 @@ vi.mock("@/lib/logger", () => ({
 }));
 
 const projectId = "11111111-1111-4111-8111-111111111111";
-const otherProjectId = "99999999-9999-4999-8999-999999999999";
 
 const context = {
   callId: "call-123",
@@ -140,13 +139,13 @@ describe("/api/projects/[id]/clusters", () => {
     expect(dependencies.listClusters).not.toHaveBeenCalled();
   });
 
-  it("POST rejects a body projectId that does not match the URL", async () => {
+  it("POST rejects projectId in body as an unknown field", async () => {
     const dependencies = createDependencies();
     const { handleCreateCluster } = await import("./route");
 
     const response = await handleCreateCluster(
       createPostRequest({
-        projectId: otherProjectId,
+        projectId,
         name: "Behov i oppstartsfasen",
         summary: "Skal avvises",
         widgetIds: [
@@ -160,12 +159,44 @@ describe("/api/projects/[id]/clusters", () => {
 
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
-      message: "projectId i body må matche URL",
+      message: "Ugyldig forespørsel",
       callId: "call-123",
       errors: [
         {
           field: "projectId",
-          message: "Må matche prosjekt-id i URL",
+          message: "Ukjent felt",
+        },
+      ],
+    });
+    expect(dependencies.createCluster).not.toHaveBeenCalled();
+  });
+
+  it("POST rejects status in body as an unknown field", async () => {
+    const dependencies = createDependencies();
+    const { handleCreateCluster } = await import("./route");
+
+    const response = await handleCreateCluster(
+      createPostRequest({
+        name: "Behov i oppstartsfasen",
+        summary: "Skal avvises",
+        status: "draft",
+        widgetIds: [
+          "33333333-3333-4333-8333-333333333333",
+          "44444444-4444-4444-8444-444444444444",
+        ],
+      }),
+      context,
+      dependencies,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      message: "Ugyldig forespørsel",
+      callId: "call-123",
+      errors: [
+        {
+          field: "status",
+          message: "Ukjent felt",
         },
       ],
     });
@@ -180,7 +211,6 @@ describe("/api/projects/[id]/clusters", () => {
 
     const response = await handleCreateCluster(
       createPostRequest({
-        projectId,
         name: "Behov i oppstartsfasen",
         summary: "Samler widgets om samme tema",
         widgetIds: [
@@ -232,7 +262,6 @@ describe("/api/projects/[id]/clusters", () => {
 
     const response = await handleCreateCluster(
       createPostRequest({
-        projectId,
         name: "Behov i oppstartsfasen",
         summary: "Samler widgets om samme tema",
         widgetIds: [
@@ -269,7 +298,6 @@ describe("/api/projects/[id]/clusters", () => {
 
     const response = await handleCreateCluster(
       createPostRequest({
-        projectId,
         name: "Behov i oppstartsfasen",
         summary: "Samler widgets om samme tema",
         widgetIds: [
@@ -297,7 +325,6 @@ describe("/api/projects/[id]/clusters", () => {
 
     const response = await handleCreateCluster(
       createPostRequest({
-        projectId,
         name: "Behov i oppstartsfasen",
         summary: "Samler widgets om samme tema",
         widgetIds: [

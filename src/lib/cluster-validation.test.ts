@@ -3,7 +3,6 @@ import { validateCreateClusterBody } from "./cluster-validation";
 
 describe("validateCreateClusterBody", () => {
   const validBody = {
-    projectId: "11111111-1111-4111-8111-111111111111",
     name: "Behov i oppstartsfasen",
     summary: "Samler widgets om samme tema.",
     widgetIds: [
@@ -12,34 +11,30 @@ describe("validateCreateClusterBody", () => {
     ],
   };
 
-  it("accepts a valid payload and defaults status to draft", () => {
+  it("accepts a valid payload for the public API contract", () => {
     const result = validateCreateClusterBody(validBody);
 
     expect(result).toEqual({
       ok: true,
       data: {
-        projectId: validBody.projectId,
         name: validBody.name,
         summary: validBody.summary,
-        status: "draft",
         widgetIds: validBody.widgetIds,
       },
     });
   });
 
-  it("accepts validated status and trims text fields", () => {
+  it("trims text fields", () => {
     const result = validateCreateClusterBody({
       ...validBody,
       name: "  Navn  ",
       summary: "  Oppsummering  ",
-      status: "validated",
     });
 
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.data.name).toBe("Navn");
       expect(result.data.summary).toBe("Oppsummering");
-      expect(result.data.status).toBe("validated");
     }
   });
 
@@ -65,6 +60,36 @@ describe("validateCreateClusterBody", () => {
     if (!result.ok) {
       expect(result.errors).toContainEqual({
         field: "unexpected",
+        message: "Ukjent felt",
+      });
+    }
+  });
+
+  it("rejects projectId because URL projectId is authoritative", () => {
+    const result = validateCreateClusterBody({
+      ...validBody,
+      projectId: "11111111-1111-4111-8111-111111111111",
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors).toContainEqual({
+        field: "projectId",
+        message: "Ukjent felt",
+      });
+    }
+  });
+
+  it("rejects status because status is internal input only", () => {
+    const result = validateCreateClusterBody({
+      ...validBody,
+      status: "draft",
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors).toContainEqual({
+        field: "status",
         message: "Ukjent felt",
       });
     }

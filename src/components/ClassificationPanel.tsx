@@ -22,6 +22,9 @@ import {
   useState,
 } from "react";
 
+/**
+ * Classification as returned by the detail API (includes notes).
+ */
 export type ClassificationData = {
   id?: string;
   laneTypeKey: string | null;
@@ -31,7 +34,22 @@ export type ClassificationData = {
   actorTrack: string | null;
   journeyStep: string | null;
   journeyIndex: number | null;
-  notes: string | null;
+  notes?: string | null;
+  status: string | null;
+};
+
+/**
+ * Classification as exposed by the list API (notes intentionally omitted).
+ */
+export type ClassificationListData = {
+  id?: string;
+  laneTypeKey: string | null;
+  laneTypeLabel: string | null;
+  version: number | null;
+  scenario: string | null;
+  actorTrack: string | null;
+  journeyStep: string | null;
+  journeyIndex: number | null;
   status: string | null;
 };
 
@@ -42,7 +60,7 @@ export type WidgetForPanel = {
   backgroundColor: string | null;
   rowIndex: number | null;
   columnIndex: number | null;
-  classification: ClassificationData | null;
+  classification: ClassificationListData | null;
 };
 
 type WidgetDetailResponse = {
@@ -93,11 +111,30 @@ export function ClassificationPanel({
   const panelRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Ref to track active widget.id for guarding stale async responses
+  const activeWidgetIdRef = useRef(widget.id);
+  activeWidgetIdRef.current = widget.id;
+
   // Blocker 3: Fetch full widget detail when panel opens
   const [detail, setDetail] = useState<DetailState>({ status: "loading" });
 
   useEffect(() => {
     let cancelled = false;
+
+    // Reset to loading immediately so stale data from a previous widget
+    // cannot be used while the new fetch is in-flight.
+    setDetail({ status: "loading" });
+    setSaveState({ status: "idle" });
+
+    // Reset form fields to prevent stale data from previous widget
+    // being visible/submittable while new detail loads.
+    setLaneTypeKey("");
+    setLaneTypeLabel("");
+    setScenario("");
+    setActorTrack("");
+    setJourneyStep("");
+    setJourneyIndex("");
+    setNotes("");
 
     async function fetchDetail() {
       try {
@@ -116,6 +153,7 @@ export function ClassificationPanel({
         }
 
         const data: WidgetDetailResponse = await response.json();
+        if (cancelled) return;
         setDetail({ status: "loaded", data });
       } catch {
         if (!cancelled) {
@@ -133,8 +171,12 @@ export function ClassificationPanel({
     };
   }, [projectId, widget.id]);
 
+  // Guard: detail must be loaded AND belong to the current widget
+  const isCurrentDetailLoaded =
+    detail.status === "loaded" && detail.data.id === widget.id;
+
   // Use detail data when available, fallback to list data
-  const resolvedWidget = detail.status === "loaded" ? detail.data : widget;
+  const resolvedWidget = isCurrentDetailLoaded ? detail.data : widget;
   const existing = resolvedWidget.classification;
 
   const [laneTypeKey, setLaneTypeKey] = useState(existing?.laneTypeKey ?? "");
@@ -147,7 +189,7 @@ export function ClassificationPanel({
   const [journeyIndex, setJourneyIndex] = useState(
     existing?.journeyIndex != null ? String(existing.journeyIndex) : "",
   );
-  const [notes, setNotes] = useState(existing?.notes ?? "");
+  const [notes, setNotes] = useState("");
   const [saveState, setSaveState] = useState<SaveState>({ status: "idle" });
 
   // Sync form fields when detail loads
@@ -200,9 +242,16 @@ export function ClassificationPanel({
   const handleSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault();
+
+      // Guard: only submit if detail for current widget is loaded
+      if (!isCurrentDetailLoaded) {
+        return;
+      }
+
+      const submittedWidgetId = widget.id;
       setSaveState({ status: "saving" });
 
-      const body = {
+      const body: Record<string, unknown> = {
         laneTypeKey: laneTypeKey.trim(),
         laneTypeLabel: laneTypeLabel.trim(),
         scenario: scenario.trim() || null,
@@ -211,14 +260,14 @@ export function ClassificationPanel({
         journeyIndex: journeyIndex.trim()
           ? Number.parseInt(journeyIndex.trim(), 10)
           : null,
-        notes: notes.trim() || null,
         version: currentVersion,
         expectedState: existing ? "classified" : "unclassified",
+        notes: notes.trim() || null,
       };
 
       try {
         const response = await fetch(
-          `/api/projects/${projectId}/widgets/${widget.id}/classify`,
+          `/api/projects/${projectId}/widgets/${submittedWidgetId}/classify`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -226,8 +275,12 @@ export function ClassificationPanel({
           },
         );
 
+        // Guard: if user switched widget during save, discard response
+        if (activeWidgetIdRef.current !== submittedWidgetId) return;
+
         if (response.status === 409) {
           const errorBody = await response.json().catch(() => null);
+          if (activeWidgetIdRef.current !== submittedWidgetId) return;
           setSaveState({
             status: "conflict",
             message:
@@ -239,6 +292,7 @@ export function ClassificationPanel({
 
         if (!response.ok) {
           const errorBody = await response.json().catch(() => null);
+          if (activeWidgetIdRef.current !== submittedWidgetId) return;
           setSaveState({
             status: "error",
             message:
@@ -247,27 +301,39 @@ export function ClassificationPanel({
           return;
         }
 
+        // Guard again before setting success state
+        if (activeWidgetIdRef.current !== submittedWidgetId) return;
+
         setSaveState({ status: "success" });
 
         // Re-fetch widget detail to get fresh state for parent sync
         const refreshed = await fetch(
-          `/api/projects/${projectId}/widgets/${widget.id}`,
+          `/api/projects/${projectId}/widgets/${submittedWidgetId}`,
         );
+
+        // Guard: if user switched widget during refetch, discard
+        if (activeWidgetIdRef.current !== submittedWidgetId) return;
+
         if (refreshed.ok) {
           const updatedData: WidgetDetailResponse = await refreshed.json();
+          if (activeWidgetIdRef.current !== submittedWidgetId) return;
           setDetail({ status: "loaded", data: updatedData });
           onSaved(updatedData);
         } else {
+          if (activeWidgetIdRef.current !== submittedWidgetId) return;
           onSaved();
         }
       } catch {
-        setSaveState({
-          status: "error",
-          message: "Kunne ikke kontakte serveren. Prøv igjen senere.",
-        });
+        if (activeWidgetIdRef.current === submittedWidgetId) {
+          setSaveState({
+            status: "error",
+            message: "Kunne ikke kontakte serveren. Prøv igjen senere.",
+          });
+        }
       }
     },
     [
+      isCurrentDetailLoaded,
       laneTypeKey,
       laneTypeLabel,
       scenario,
@@ -407,6 +473,7 @@ export function ClassificationPanel({
               required
               maxLength={100}
               autoComplete="off"
+              disabled={!isCurrentDetailLoaded}
             />
 
             <TextField
@@ -418,6 +485,7 @@ export function ClassificationPanel({
               required
               maxLength={200}
               autoComplete="off"
+              disabled={!isCurrentDetailLoaded}
             />
 
             <TextField
@@ -428,6 +496,7 @@ export function ClassificationPanel({
               onChange={(e) => setScenario(e.target.value)}
               maxLength={300}
               autoComplete="off"
+              disabled={!isCurrentDetailLoaded}
             />
 
             <TextField
@@ -438,6 +507,7 @@ export function ClassificationPanel({
               onChange={(e) => setActorTrack(e.target.value)}
               maxLength={200}
               autoComplete="off"
+              disabled={!isCurrentDetailLoaded}
             />
 
             <HStack gap="space-8">
@@ -450,6 +520,7 @@ export function ClassificationPanel({
                 maxLength={300}
                 autoComplete="off"
                 className="classification-panel__field--grow"
+                disabled={!isCurrentDetailLoaded}
               />
               <TextField
                 label="Indeks"
@@ -460,6 +531,7 @@ export function ClassificationPanel({
                 type="number"
                 min={0}
                 className="classification-panel__field--index"
+                disabled={!isCurrentDetailLoaded}
               />
             </HStack>
 
@@ -472,10 +544,28 @@ export function ClassificationPanel({
               maxLength={2000}
               minRows={2}
               maxRows={5}
+              disabled={!isCurrentDetailLoaded}
             />
 
             {/* Status messages */}
             <div aria-live="polite" aria-atomic="true">
+              {detail.status === "loading" && (
+                <LocalAlert status="warning">
+                  <LocalAlert.Content>
+                    Henter fullstendig widgetdata …
+                  </LocalAlert.Content>
+                </LocalAlert>
+              )}
+
+              {detail.status === "error" && (
+                <LocalAlert status="error">
+                  <LocalAlert.Content>
+                    Kunne ikke hente widgetdata. Lagring er deaktivert for å
+                    unngå tap av data.
+                  </LocalAlert.Content>
+                </LocalAlert>
+              )}
+
               {saveState.status === "success" && (
                 <LocalAlert status="success">
                   <LocalAlert.Content>
@@ -502,7 +592,9 @@ export function ClassificationPanel({
                 type="submit"
                 size="small"
                 loading={saveState.status === "saving"}
-                disabled={saveState.status === "saving"}
+                disabled={
+                  saveState.status === "saving" || !isCurrentDetailLoaded
+                }
               >
                 {existing ? "Oppdater" : "Lagre"}
               </Button>

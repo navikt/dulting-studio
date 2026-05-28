@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftIcon, TableIcon } from "@navikt/aksel-icons";
+import { ArrowLeftIcon, FolderIcon, TableIcon } from "@navikt/aksel-icons";
 import {
   BodyLong,
   BodyShort,
@@ -9,12 +9,21 @@ import {
   HStack,
   Loader,
   LocalAlert,
+  Tag,
   VStack,
 } from "@navikt/ds-react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ClassificationPanel } from "@/components/ClassificationPanel";
+import { CreateClusterModal } from "@/components/CreateClusterModal";
 import { WidgetFilters } from "@/components/WidgetFilters";
 import { type WidgetItem, WidgetTable } from "@/components/WidgetTable";
 
@@ -38,6 +47,11 @@ function ProjectInboxContent() {
 
   const [state, setState] = useState<FetchState>({ status: "loading" });
   const [selectedWidget, setSelectedWidget] = useState<WidgetItem | null>(null);
+  const [selectedWidgetIds, setSelectedWidgetIds] = useState<Set<string>>(
+    new Set(),
+  );
+  const [showClusterModal, setShowClusterModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const page = Number(searchParams.get("page") || "1");
   const type = searchParams.get("type") || "";
@@ -92,6 +106,13 @@ function ProjectInboxContent() {
     fetchWidgets();
   }, [fetchWidgets]);
 
+  // Clear selection when visible widget set changes (page/filter change)
+  // to avoid selecting widgets that are no longer visible
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally resets on filter/page change
+  useEffect(() => {
+    setSelectedWidgetIds(new Set());
+  }, [page, type, search, status]);
+
   const handleSelectWidget = useCallback((widget: WidgetItem) => {
     setSelectedWidget(widget);
   }, []);
@@ -110,9 +131,7 @@ function ProjectInboxContent() {
       columnIndex: number | null;
       classification: unknown;
     }) => {
-      // Refresh widget list to show updated classification status
       fetchWidgets();
-      // Sync selectedWidget with fresh data to avoid stale state
       if (updatedWidget && selectedWidget?.id === updatedWidget.id) {
         setSelectedWidget({
           ...selectedWidget,
@@ -125,7 +144,53 @@ function ProjectInboxContent() {
     [fetchWidgets, selectedWidget],
   );
 
+  const handleToggleWidgetSelection = useCallback((widgetId: string) => {
+    setSelectedWidgetIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(widgetId)) {
+        next.delete(widgetId);
+      } else {
+        next.add(widgetId);
+      }
+      return next;
+    });
+  }, []);
+
+  // Cleanup timeout for success message on unmount/navigation
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleClusterSuccess = useCallback(
+    (_clusterId: string) => {
+      setShowClusterModal(false);
+      setSelectedWidgetIds(new Set());
+      setSuccessMessage("Klynge opprettet.");
+      // Clear success message after a few seconds
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
+      successTimeoutRef.current = setTimeout(
+        () => setSuccessMessage(null),
+        6000,
+      );
+      fetchWidgets();
+    },
+    [fetchWidgets],
+  );
+
   const hasActiveFilters = !!(type || search || status);
+
+  // Get the selected widget items for showing muralWidgetIds
+  const selectedWidgetItems = useMemo(() => {
+    if (state.status !== "success") return [];
+    return state.data.items.filter((item) => selectedWidgetIds.has(item.id));
+  }, [state, selectedWidgetIds]);
 
   return (
     <div className="project-inbox-layout">
@@ -140,15 +205,26 @@ function ProjectInboxContent() {
           >
             Tilbake
           </Button>
-          <Button
-            as={Link}
-            href={`/projects/${projectId}/matrix`}
-            variant="tertiary"
-            size="small"
-            icon={<TableIcon aria-hidden />}
-          >
-            Matrisevisning
-          </Button>
+          <HStack gap="space-8">
+            <Button
+              as={Link}
+              href={`/projects/${projectId}/clusters`}
+              variant="tertiary"
+              size="small"
+              icon={<FolderIcon aria-hidden />}
+            >
+              Klynger
+            </Button>
+            <Button
+              as={Link}
+              href={`/projects/${projectId}/matrix`}
+              variant="tertiary"
+              size="small"
+              icon={<TableIcon aria-hidden />}
+            >
+              Matrisevisning
+            </Button>
+          </HStack>
         </HStack>
 
         <VStack gap="space-8">
@@ -161,12 +237,83 @@ function ProjectInboxContent() {
           </BodyLong>
         </VStack>
 
+        {successMessage && (
+          <LocalAlert status="success">
+            <LocalAlert.Content>
+              {successMessage}{" "}
+              <Link href={`/projects/${projectId}/clusters`}>
+                Se klyngeliste
+              </Link>
+            </LocalAlert.Content>
+          </LocalAlert>
+        )}
+
         <WidgetFilters
           currentType={type}
           currentSearch={search}
           currentStatus={status}
           projectId={projectId}
         />
+
+        {/* Selection action bar */}
+        {selectedWidgetIds.size > 0 && (
+          <VStack
+            gap="space-8"
+            className="widget-selection-bar"
+            aria-live="polite"
+          >
+            <HStack gap="space-12" align="center" justify="space-between">
+              <BodyShort size="small" weight="semibold">
+                {selectedWidgetIds.size} widget
+                {selectedWidgetIds.size === 1 ? "" : "s"} valgt
+              </BodyShort>
+              <HStack gap="space-8">
+                <Button
+                  variant="tertiary"
+                  size="xsmall"
+                  onClick={() => setSelectedWidgetIds(new Set())}
+                >
+                  Fjern valg
+                </Button>
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={() => setShowClusterModal(true)}
+                  disabled={selectedWidgetIds.size < 2}
+                >
+                  Opprett klynge
+                </Button>
+              </HStack>
+            </HStack>
+            {selectedWidgetItems.length > 0 && (
+              <VStack gap="space-4">
+                <BodyShort size="small" as="span" id="selected-widgets-label">
+                  Kildehenvisninger fra Mural:
+                </BodyShort>
+                <HStack
+                  gap="space-4"
+                  wrap
+                  aria-labelledby="selected-widgets-label"
+                  as="ul"
+                  className="unstyled-list"
+                >
+                  {selectedWidgetItems.map((w) => (
+                    <li key={w.id}>
+                      <Tag variant="info" size="xsmall">
+                        {w.muralWidgetId}
+                      </Tag>
+                    </li>
+                  ))}
+                </HStack>
+              </VStack>
+            )}
+            {selectedWidgetIds.size < 2 && (
+              <BodyShort size="small" className="muted">
+                Velg minst to widgets for å opprette en klynge.
+              </BodyShort>
+            )}
+          </VStack>
+        )}
 
         {state.status === "loading" && (
           <HStack justify="center" padding="space-32">
@@ -200,6 +347,8 @@ function ProjectInboxContent() {
             projectId={projectId}
             onSelectWidget={handleSelectWidget}
             selectedWidgetId={selectedWidget?.id}
+            selectedWidgetIds={selectedWidgetIds}
+            onToggleWidgetSelection={handleToggleWidgetSelection}
           />
         )}
       </VStack>
@@ -210,6 +359,19 @@ function ProjectInboxContent() {
           projectId={projectId}
           onClose={handleClosePanel}
           onSaved={handleClassificationSaved}
+        />
+      )}
+
+      {showClusterModal && (
+        <CreateClusterModal
+          projectId={projectId}
+          widgetIds={Array.from(selectedWidgetIds).filter(
+            (id) =>
+              state.status === "success" &&
+              state.data.items.some((item) => item.id === id),
+          )}
+          onClose={() => setShowClusterModal(false)}
+          onSuccess={handleClusterSuccess}
         />
       )}
     </div>

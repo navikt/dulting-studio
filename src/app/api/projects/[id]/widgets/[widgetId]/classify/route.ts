@@ -151,22 +151,23 @@ export const PUT = withProtectedApiRoute(async (request, context) => {
       }
 
       const newVersion = existing.version + 1;
+      const updateValues = {
+        laneTypeKey: data.laneTypeKey,
+        laneTypeLabel: data.laneTypeLabel,
+        scenario: data.scenario ?? null,
+        actorTrack: data.actorTrack ?? null,
+        journeyStep: data.journeyStep ?? null,
+        journeyIndex: data.journeyIndex ?? null,
+        version: newVersion,
+        updatedBy: context.user.navIdent,
+        updatedAt: new Date(),
+        ...(Object.hasOwn(data, "notes") ? { notes: data.notes ?? null } : {}),
+      };
 
       // Blocker 1: Check actual affected rows via returning()
       const updated = await db
         .update(classifications)
-        .set({
-          laneTypeKey: data.laneTypeKey,
-          laneTypeLabel: data.laneTypeLabel,
-          scenario: data.scenario ?? null,
-          actorTrack: data.actorTrack ?? null,
-          journeyStep: data.journeyStep ?? null,
-          journeyIndex: data.journeyIndex ?? null,
-          notes: data.notes ?? null,
-          version: newVersion,
-          updatedBy: context.user.navIdent,
-          updatedAt: new Date(),
-        })
+        .set(updateValues)
         .where(
           and(
             eq(classifications.id, existing.id),

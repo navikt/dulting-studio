@@ -216,8 +216,14 @@ export function validateClassifyBody(body: unknown): ClassifyValidationResult {
           : null,
       journeyIndex:
         record.journeyIndex != null ? (record.journeyIndex as number) : null,
-      notes:
-        record.notes != null ? (record.notes as string).trim() || null : null,
+      ...(Object.hasOwn(record, "notes")
+        ? {
+            notes:
+              record.notes != null
+                ? (record.notes as string).trim() || null
+                : null,
+          }
+        : {}),
       version: record.version as number,
       expectedState: record.expectedState as "unclassified" | "classified",
     },
