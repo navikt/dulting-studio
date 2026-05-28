@@ -40,6 +40,20 @@ export type WidgetMetadata = {
   tableRows?: WidgetAxisMetadata[];
 };
 
+export type PackageForgoodFlag = {
+  dimension: string;
+  note: string;
+};
+
+export type PackageOpenQuestion = {
+  question: string;
+  category?: string | null;
+};
+
+export type PackageStopCriterion = {
+  criterion: string;
+};
+
 const timestamps = {
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
@@ -372,6 +386,139 @@ export const interventionCandidateSources = pgTable(
   ],
 );
 
+export const interventionPackages = pgTable(
+  "intervention_packages",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    purpose: text("purpose"),
+    status: text("status").notNull().default("draft"),
+    createdBy: text("created_by").notNull(),
+    updatedBy: text("updated_by").notNull(),
+    ...timestamps,
+    version: versionColumn,
+  },
+  (table) => [
+    uniqueIndex("intervention_packages_project_name_key").on(
+      table.projectId,
+      table.name,
+    ),
+    index("intervention_packages_project_status_idx").on(
+      table.projectId,
+      table.status,
+    ),
+    check(
+      "intervention_packages_status_check",
+      sql`${table.status} in ('draft', 'exported')`,
+    ),
+    check(
+      "intervention_packages_name_length",
+      sql`char_length(${table.name}) <= 200`,
+    ),
+    check(
+      "intervention_packages_purpose_length",
+      sql`${table.purpose} is null or char_length(${table.purpose}) <= 2000`,
+    ),
+    check("intervention_packages_version_positive", sql`${table.version} > 0`),
+  ],
+);
+
+export const interventionPackageMembers = pgTable(
+  "intervention_package_members",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    packageId: uuid("package_id")
+      .notNull()
+      .references(() => interventionPackages.id, { onDelete: "cascade" }),
+    candidateId: uuid("candidate_id")
+      .notNull()
+      .references(() => interventionCandidates.id, { onDelete: "cascade" }),
+    assessment: text("assessment").notNull(),
+    forgoodFlags: jsonb("forgood_flags")
+      .$type<PackageForgoodFlag[]>()
+      .default(sql`'[]'::jsonb`)
+      .notNull(),
+    openQuestions: jsonb("open_questions")
+      .$type<PackageOpenQuestion[]>()
+      .default(sql`'[]'::jsonb`)
+      .notNull(),
+    stopCriteria: jsonb("stop_criteria")
+      .$type<PackageStopCriterion[]>()
+      .default(sql`'[]'::jsonb`)
+      .notNull(),
+    addedBy: text("added_by").notNull(),
+    ...timestamps,
+    version: versionColumn,
+  },
+  (table) => [
+    uniqueIndex("intervention_package_members_package_candidate_key").on(
+      table.packageId,
+      table.candidateId,
+    ),
+    index("intervention_package_members_candidate_id_idx").on(table.candidateId),
+    check(
+      "intervention_package_members_assessment_length",
+      sql`char_length(${table.assessment}) <= 2000`,
+    ),
+    check(
+      "intervention_package_members_forgood_flags_array",
+      sql`jsonb_typeof(${table.forgoodFlags}) = 'array'`,
+    ),
+    check(
+      "intervention_package_members_open_questions_array",
+      sql`jsonb_typeof(${table.openQuestions}) = 'array'`,
+    ),
+    check(
+      "intervention_package_members_stop_criteria_array",
+      sql`jsonb_typeof(${table.stopCriteria}) = 'array'`,
+    ),
+    check(
+      "intervention_package_members_version_positive",
+      sql`${table.version} > 0`,
+    ),
+  ],
+);
+
+export const interventionPackageExports = pgTable(
+  "intervention_package_exports",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    packageId: uuid("package_id")
+      .notNull()
+      .references(() => interventionPackages.id, { onDelete: "cascade" }),
+    format: text("format").notNull(),
+    exportedBy: text("exported_by").notNull(),
+    exportedAt: timestamp("exported_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    includedPiiRiskLevels: jsonb("included_pii_risk_levels")
+      .$type<string[]>()
+      .default(sql`'[]'::jsonb`)
+      .notNull(),
+    contentHash: text("content_hash").notNull(),
+    callId: text("call_id").notNull(),
+    version: versionColumn,
+  },
+  (table) => [
+    index("intervention_package_exports_package_id_idx").on(table.packageId),
+    check(
+      "intervention_package_exports_format_check",
+      sql`${table.format} in ('markdown', 'json')`,
+    ),
+    check(
+      "intervention_package_exports_pii_risk_levels_array",
+      sql`jsonb_typeof(${table.includedPiiRiskLevels}) = 'array'`,
+    ),
+    check(
+      "intervention_package_exports_version_positive",
+      sql`${table.version} > 0`,
+    ),
+  ],
+);
+
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
 
@@ -398,3 +545,16 @@ export type InterventionCandidateSource =
   typeof interventionCandidateSources.$inferSelect;
 export type NewInterventionCandidateSource =
   typeof interventionCandidateSources.$inferInsert;
+
+export type InterventionPackage = typeof interventionPackages.$inferSelect;
+export type NewInterventionPackage = typeof interventionPackages.$inferInsert;
+
+export type InterventionPackageMember =
+  typeof interventionPackageMembers.$inferSelect;
+export type NewInterventionPackageMember =
+  typeof interventionPackageMembers.$inferInsert;
+
+export type InterventionPackageExport =
+  typeof interventionPackageExports.$inferSelect;
+export type NewInterventionPackageExport =
+  typeof interventionPackageExports.$inferInsert;

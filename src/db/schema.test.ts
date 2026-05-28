@@ -6,12 +6,20 @@ import {
   clusters,
   interventionCandidates,
   interventionCandidateSources,
+  interventionPackageExports,
+  interventionPackageMembers,
+  interventionPackages,
   muralImports,
   type NewClassification,
   type NewCluster,
   type NewInterventionCandidate,
+  type NewInterventionPackageExport,
+  type NewInterventionPackageMember,
   type NewProject,
   type NewWidget,
+  type PackageForgoodFlag,
+  type PackageOpenQuestion,
+  type PackageStopCriterion,
   type ProjectLaneType,
   projects,
   widgets,
@@ -151,6 +159,48 @@ describe("database schema", () => {
         "version",
       ]),
     );
+
+    expect(Object.keys(getTableColumns(interventionPackages))).toEqual(
+      expect.arrayContaining([
+        "projectId",
+        "name",
+        "purpose",
+        "status",
+        "createdBy",
+        "updatedBy",
+        "createdAt",
+        "updatedAt",
+        "version",
+      ]),
+    );
+
+    expect(Object.keys(getTableColumns(interventionPackageMembers))).toEqual(
+      expect.arrayContaining([
+        "packageId",
+        "candidateId",
+        "assessment",
+        "forgoodFlags",
+        "openQuestions",
+        "stopCriteria",
+        "addedBy",
+        "createdAt",
+        "updatedAt",
+        "version",
+      ]),
+    );
+
+    expect(Object.keys(getTableColumns(interventionPackageExports))).toEqual(
+      expect.arrayContaining([
+        "packageId",
+        "format",
+        "exportedBy",
+        "exportedAt",
+        "includedPiiRiskLevels",
+        "contentHash",
+        "callId",
+        "version",
+      ]),
+    );
   });
 
   it("keeps lane types configurable instead of hardcoded enums", () => {
@@ -168,6 +218,18 @@ describe("database schema", () => {
     expectTypeOf<NewInterventionCandidate["status"]>().toEqualTypeOf<
       string | undefined
     >();
+    expectTypeOf<NewInterventionPackageMember["forgoodFlags"]>().toEqualTypeOf<
+      PackageForgoodFlag[] | undefined
+    >();
+    expectTypeOf<NewInterventionPackageMember["openQuestions"]>().toEqualTypeOf<
+      PackageOpenQuestion[] | undefined
+    >();
+    expectTypeOf<NewInterventionPackageMember["stopCriteria"]>().toEqualTypeOf<
+      PackageStopCriterion[] | undefined
+    >();
+    expectTypeOf<
+      NewInterventionPackageExport["includedPiiRiskLevels"]
+    >().toEqualTypeOf<string[] | undefined>();
   });
 
   it("keeps widget metadata constrained to dataminimized table structure", () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftIcon } from "@navikt/aksel-icons";
+import { ArrowLeftIcon, PackageIcon } from "@navikt/aksel-icons";
 import {
   BodyLong,
   BodyShort,
@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
+import { AddPackageMemberModal } from "@/components/AddPackageMemberModal";
 
 type InterventionCandidateSourceRef = {
   widgetId: string;
@@ -115,6 +116,9 @@ function InterventionCandidatesContent() {
   const projectId = params.id as string;
 
   const [state, setState] = useState<FetchState>({ status: "loading" });
+  const [packageCandidate, setPackageCandidate] =
+    useState<InterventionCandidateListItem | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const fetchCandidates = useCallback(async () => {
     setState({ status: "loading" });
@@ -148,6 +152,11 @@ function InterventionCandidatesContent() {
     fetchCandidates();
   }, [fetchCandidates]);
 
+  const handlePackageSuccess = useCallback(() => {
+    setPackageCandidate(null);
+    setSuccessMessage("Tiltaket er lagt i Tiltakspakke 1.");
+  }, []);
+
   return (
     <VStack gap="space-24" padding="space-24">
       <HStack gap="space-12" align="center">
@@ -159,6 +168,15 @@ function InterventionCandidatesContent() {
           icon={<ArrowLeftIcon aria-hidden />}
         >
           Tilbake til widgets
+        </Button>
+        <Button
+          as={Link}
+          href={`/projects/${projectId}/tiltakspakke`}
+          variant="tertiary"
+          size="small"
+          icon={<PackageIcon aria-hidden />}
+        >
+          Tiltakspakke
         </Button>
       </HStack>
 
@@ -181,6 +199,17 @@ function InterventionCandidatesContent() {
       {state.status === "error" && (
         <LocalAlert status="error">
           <LocalAlert.Content>{state.message}</LocalAlert.Content>
+        </LocalAlert>
+      )}
+
+      {successMessage && (
+        <LocalAlert status="success">
+          <LocalAlert.Content>
+            {successMessage}{" "}
+            <Link href={`/projects/${projectId}/tiltakspakke`}>
+              Se tiltakspakke
+            </Link>
+          </LocalAlert.Content>
         </LocalAlert>
       )}
 
@@ -209,6 +238,7 @@ function InterventionCandidatesContent() {
               <Table.HeaderCell scope="col">Rolle</Table.HeaderCell>
               <Table.HeaderCell scope="col">Kilder</Table.HeaderCell>
               <Table.HeaderCell scope="col">Opprettet</Table.HeaderCell>
+              <Table.HeaderCell scope="col">Pakke</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -251,10 +281,32 @@ function InterventionCandidatesContent() {
                     {formatDate(candidate.createdAt)}
                   </BodyShort>
                 </Table.DataCell>
+                <Table.DataCell>
+                  <Button
+                    variant="secondary"
+                    size="xsmall"
+                    onClick={() => setPackageCandidate(candidate)}
+                    disabled={candidate.status === "rejected"}
+                  >
+                    Legg i pakke
+                  </Button>
+                </Table.DataCell>
               </Table.Row>
             ))}
           </Table.Body>
         </Table>
+      )}
+
+      {packageCandidate && (
+        <AddPackageMemberModal
+          projectId={projectId}
+          candidate={{
+            id: packageCandidate.id,
+            title: packageCandidate.title,
+          }}
+          onClose={() => setPackageCandidate(null)}
+          onSuccess={handlePackageSuccess}
+        />
       )}
     </VStack>
   );
