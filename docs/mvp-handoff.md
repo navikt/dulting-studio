@@ -57,6 +57,9 @@ ha syntetiske eller saniterte fixtures under `fixtures/`.
 - FORGOOD brukes som kvalitative refleksjoner/flagg, ikke totalscore.
 - EAST og Fogg brukes som diagnostikk, ikke poengmodell.
 - Teamet kan godkjenne tiltakspakker i MVP, med manuelle PII-stoppunkter.
+- Målmodell og virkningshypotese for første tiltakspakke er dokumentert i
+  [`docs/maalmodell-virkningshypotese.md`](maalmodell-virkningshypotese.md) og
+  brukes som input til #23 og #14.
 - `.github/skills/dulting-redaktor/` kan brukes som bearbeidingsmotor både for
   Mural-first arbeid og for Studio inbox-items.
 

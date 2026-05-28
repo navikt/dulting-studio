@@ -100,6 +100,10 @@ Hver tiltaksklynge har åpne spørsmål som må avklares før implementering.
 
 ## Målemodell for første test
 
+Se også [`docs/maalmodell-virkningshypotese.md`](maalmodell-virkningshypotese.md),
+særlig seksjonene **3. Målenivåer** og **4. Klynge til måletegn**, for
+beslutning om virkningshypoteser, datakilder og input til #23 og #14.
+
 Målinger bør landes på bearbeidede tiltaksklynger, ikke på alle råkortene.
 Kontrollgruppen bør få dagens uendrede opplevelse.
 
@@ -109,7 +113,7 @@ foreløpige dult-forslag, ikke ferdig besluttede tiltak.
 | Tiltaksklynge | Tiltak i klyngen (DULT-råkort) | Ønsket atferd | Målepåvirkning | Guardrails | Åpne spørsmål |
 |---|---|---|---|---|---|
 | Tidsriktig signal | DULT-06: signal eller informasjon når fraværet nærmer seg fire uker. DULT-20: frist for oppfølgingsplan på riktig person. | Arbeidsgiver blir oppmerksom i tide og går videre til behovsvurdering eller plan før fristen. | Mål først nærliggende handlinger: signal vises, varsel eller personside åpnes, vurdering eller plan startes før frist. Bruk flere oppfølgingsplaner inn som effektmål, ikke eneste suksessmål. | Varsling blir for bred eller for tidlig, signalet oppleves som kontroll, eller varsler lukkes uten handling. | Hva er riktig trigger? Hvem er relevant populasjon? Hvilken fristregel skal vises? Hvordan unngå duplikat hvis plan er startet? |
-| Behovsvurdering i Dine sykmeldte | DULT-01: kartlegge behov for oppfølgingsplan. DULT-07: konkret oppgave. DULT-15: svare at plan ikke trengs nå. Støtte: DULT-11 for riktig person og kontekst. | Arbeidsgiver tar stilling til behovet og velger riktig handling: lage plan, eller bekrefte at plan ikke trengs nå. | Mål først fullført behovsvurdering, fordeling mellom «lag plan» og «plan trengs ikke nå», og overgang fra signal til vurdering. Tolk oppfølgingsplaner inn sammen med «plan trengs ikke nå». | Høy andel «plan trengs ikke nå», unødvendige planer, helseopplysninger i fritekst eller vage begrunnelser. Ingen default på «plan trengs ikke nå». | Hva er minste trygge vurdering? Hvilke strukturerte årsaker er trygge? Hvordan formulere valget uten å undergrave oppfølgingsplikten? |
+| Behovsvurdering i Dine sykmeldte | DULT-01: kartlegge behov for oppfølgingsplan. DULT-07: konkret oppgave. DULT-15: svare at plan ikke trengs nå. Støtte: DULT-11 for riktig person og kontekst. | Arbeidsgiver tar stilling til behovet og velger riktig handling: lage plan, eller bekrefte at plan ikke trengs nå. | Mål først fullført behovsvurdering, fordeling mellom «lag plan» og «plan trengs ikke nå», og overgang fra signal til vurdering. Bruk plan delt med lege eller Nav som det mest nærliggende tegnet på H2, særlig tidlig deling før relevant legekontakt hvis dette kan måles. | Høy andel «plan trengs ikke nå», unødvendige planer, helseopplysninger i fritekst eller vage begrunnelser. Ingen default på «plan trengs ikke nå». | Hva er minste trygge vurdering? Hvilke strukturerte årsaker er trygge? Hvordan formulere valget uten å undergrave oppfølgingsplikten? |
 | Støttende tekst og forståelse | DULT-02: forklare verdien av oppfølging. DULT-10: tydeliggjøre plikt og ansvar. Eventuelt DULT-13: rydde tekst på berørt skjerm. | Arbeidsgiver forstår hvorfor oppfølging er viktig, hva oppfølgingsplikten innebærer, og hva neste steg er. | Måles som støtte, ikke egen KPI: forståelse av neste steg, forståelse av når plan trengs eller ikke trengs, og mindre frafall i vurdering eller planstart. | Teksten presser feil handling, bruker truende eller moraliserende tone, eller gjør viktig informasjon vanskeligere å få med seg. | Hvilke tekster påvirker handling? Hvilke tekster er nøytral informasjon? Hvor skal tekstene ligge, og hvordan måles de ulikt? |
 
 Langsiktige hypoteser som sykefravær, gradert sykmelding, medvirkningsplikt og
