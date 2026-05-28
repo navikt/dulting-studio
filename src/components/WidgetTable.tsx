@@ -41,6 +41,7 @@ type WidgetTableProps = {
   page: number;
   total: number;
   totalPages: number;
+  hasActiveFilters?: boolean;
   projectId: string;
   onSelectWidget: (widget: WidgetItem) => void;
   selectedWidgetId?: string | null;
@@ -116,6 +117,7 @@ export function WidgetTable({
   page,
   total,
   totalPages,
+  hasActiveFilters = false,
   projectId,
   onSelectWidget,
   selectedWidgetId,
@@ -136,6 +138,7 @@ export function WidgetTable({
       <HStack justify="space-between" align="center">
         <BodyShort size="small" className="muted">
           Viser {items.length} av {total} widgets (side {page} av {totalPages})
+          {hasActiveFilters ? " med aktive filtre" : ""}
         </BodyShort>
       </HStack>
 

@@ -1,13 +1,25 @@
 "use client";
 
-import { HStack, Search, Select, VStack } from "@navikt/ds-react";
+import {
+  BodyShort,
+  Button,
+  HStack,
+  Search,
+  Select,
+  TextField,
+  VStack,
+} from "@navikt/ds-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useState } from "react";
 
 type WidgetFiltersProps = {
   currentType: string;
   currentSearch: string;
   currentStatus: string;
+  currentLane: string;
+  currentActorTrack: string;
+  currentJourneyStep: string;
+  currentPlacement: string;
   projectId: string;
 };
 
@@ -28,27 +40,37 @@ const STATUS_OPTIONS = [
   { value: "classified", label: "Klassifisert" },
 ];
 
-/*
- * TODO: Lane-filter (Fase 2)
- * Lane-typer er prosjektkonfigurerbare (se ADR-004). Filteret skal hente
- * tilgjengelige lanes fra prosjektdata/API når det er implementert.
- * API-kontrakten i widget-query.ts er allerede klar (format-validering).
- * Ikke vis hardkodede faser som ikke samsvarer med faktisk prosjektkonfigurasjon.
- */
+const PLACEMENT_OPTIONS = [
+  { value: "", label: "Alle plasseringer" },
+  { value: "unplaced", label: "Uten rad eller kolonne" },
+];
 
 export function WidgetFilters({
   currentType,
   currentSearch,
   currentStatus,
+  currentLane,
+  currentActorTrack,
+  currentJourneyStep,
+  currentPlacement,
   projectId,
 }: WidgetFiltersProps) {
   const router = useRouter();
   const [searchInput, setSearchInput] = useState(currentSearch);
+  const [laneInput, setLaneInput] = useState(currentLane);
+  const [actorTrackInput, setActorTrackInput] = useState(currentActorTrack);
+  const [journeyStepInput, setJourneyStepInput] = useState(currentJourneyStep);
 
   // Sync search input with URL state on back/forward navigation
   useEffect(() => {
     setSearchInput(currentSearch);
   }, [currentSearch]);
+
+  useEffect(() => {
+    setLaneInput(currentLane);
+    setActorTrackInput(currentActorTrack);
+    setJourneyStepInput(currentJourneyStep);
+  }, [currentLane, currentActorTrack, currentJourneyStep]);
 
   const buildUrl = useCallback(
     (overrides: Record<string, string>) => {
@@ -58,6 +80,10 @@ export function WidgetFilters({
         type: currentType,
         search: currentSearch,
         status: currentStatus,
+        lane: currentLane,
+        actorTrack: currentActorTrack,
+        journeyStep: currentJourneyStep,
+        placement: currentPlacement,
         page: "1", // Reset to page 1 on filter change
         ...overrides,
       };
@@ -66,9 +92,21 @@ export function WidgetFilters({
         if (val) params.set(key, val);
       }
 
-      return `/projects/${projectId}?${params.toString()}`;
+      const query = params.toString();
+      return query
+        ? `/projects/${projectId}?${query}`
+        : `/projects/${projectId}`;
     },
-    [currentType, currentSearch, currentStatus, projectId],
+    [
+      currentType,
+      currentSearch,
+      currentStatus,
+      currentLane,
+      currentActorTrack,
+      currentJourneyStep,
+      currentPlacement,
+      projectId,
+    ],
   );
 
   const handleTypeChange = (value: string) => {
@@ -79,6 +117,10 @@ export function WidgetFilters({
     router.push(buildUrl({ status: value }));
   };
 
+  const handlePlacementChange = (value: string) => {
+    router.push(buildUrl({ placement: value }));
+  };
+
   const handleSearchSubmit = (value: string) => {
     router.push(buildUrl({ search: value }));
   };
@@ -87,6 +129,35 @@ export function WidgetFilters({
     setSearchInput("");
     router.push(buildUrl({ search: "" }));
   };
+
+  const handleTextFiltersSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    router.push(
+      buildUrl({
+        lane: laneInput,
+        actorTrack: actorTrackInput,
+        journeyStep: journeyStepInput,
+      }),
+    );
+  };
+
+  const handleResetFilters = () => {
+    setSearchInput("");
+    setLaneInput("");
+    setActorTrackInput("");
+    setJourneyStepInput("");
+    router.push(`/projects/${projectId}`);
+  };
+
+  const activeFilterCount = [
+    currentType,
+    currentSearch,
+    currentStatus,
+    currentLane,
+    currentActorTrack,
+    currentJourneyStep,
+    currentPlacement,
+  ].filter(Boolean).length;
 
   return (
     <VStack gap="space-12">
@@ -131,7 +202,68 @@ export function WidgetFilters({
             </option>
           ))}
         </Select>
+
+        <Select
+          label="Plassering"
+          size="small"
+          value={currentPlacement}
+          onChange={(e) => handlePlacementChange(e.target.value)}
+          className="widget-filter-select"
+        >
+          {PLACEMENT_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </Select>
       </HStack>
+
+      <form onSubmit={handleTextFiltersSubmit}>
+        <HStack gap="space-12" align="end" wrap>
+          <TextField
+            label="Lane-nøkkel"
+            size="small"
+            value={laneInput}
+            onChange={(e) => setLaneInput(e.target.value)}
+            className="widget-filter-select"
+            placeholder="f.eks. dialog"
+          />
+          <TextField
+            label="Aktørspor"
+            size="small"
+            value={actorTrackInput}
+            onChange={(e) => setActorTrackInput(e.target.value)}
+            className="widget-filter-select"
+            placeholder="f.eks. Arbeidsgiver"
+          />
+          <TextField
+            label="Brukerreisesteg"
+            size="small"
+            value={journeyStepInput}
+            onChange={(e) => setJourneyStepInput(e.target.value)}
+            className="widget-filter-select"
+            placeholder="f.eks. Uke 4"
+          />
+          <Button type="submit" size="small" variant="secondary">
+            Bruk filtre
+          </Button>
+          {activeFilterCount > 0 && (
+            <Button
+              type="button"
+              size="small"
+              variant="tertiary"
+              onClick={handleResetFilters}
+            >
+              Nullstill
+            </Button>
+          )}
+        </HStack>
+      </form>
+      <BodyShort size="small" className="muted" aria-live="polite">
+        {activeFilterCount === 0
+          ? "Ingen aktive filtre."
+          : `${activeFilterCount} aktive filtre.`}
+      </BodyShort>
     </VStack>
   );
 }

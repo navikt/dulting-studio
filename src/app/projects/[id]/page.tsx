@@ -72,6 +72,10 @@ function ProjectInboxContent() {
   const type = searchParams.get("type") || "";
   const search = searchParams.get("search") || "";
   const status = searchParams.get("status") || "";
+  const lane = searchParams.get("lane") || "";
+  const actorTrack = searchParams.get("actorTrack") || "";
+  const journeyStep = searchParams.get("journeyStep") || "";
+  const placement = searchParams.get("placement") || "";
 
   const fetchWidgets = useCallback(async () => {
     setState({ status: "loading" });
@@ -82,6 +86,10 @@ function ProjectInboxContent() {
     if (type) queryParams.set("type", type);
     if (search) queryParams.set("search", search);
     if (status) queryParams.set("status", status);
+    if (lane) queryParams.set("lane", lane);
+    if (actorTrack) queryParams.set("actorTrack", actorTrack);
+    if (journeyStep) queryParams.set("journeyStep", journeyStep);
+    if (placement) queryParams.set("placement", placement);
 
     try {
       const response = await fetch(
@@ -115,7 +123,17 @@ function ProjectInboxContent() {
         message: "Kunne ikke kontakte serveren. Prøv igjen senere.",
       });
     }
-  }, [projectId, page, type, search, status]);
+  }, [
+    projectId,
+    page,
+    type,
+    search,
+    status,
+    lane,
+    actorTrack,
+    journeyStep,
+    placement,
+  ]);
 
   useEffect(() => {
     fetchWidgets();
@@ -126,7 +144,7 @@ function ProjectInboxContent() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally resets on filter/page change
   useEffect(() => {
     setSelectedWidgetIds(new Set());
-  }, [page, type, search, status]);
+  }, [page, type, search, status, lane, actorTrack, journeyStep, placement]);
 
   const handleSelectWidget = useCallback((widget: WidgetItem) => {
     setSelectedWidget(widget);
@@ -224,7 +242,15 @@ function ProjectInboxContent() {
     [fetchWidgets, projectId],
   );
 
-  const hasActiveFilters = !!(type || search || status);
+  const hasActiveFilters = !!(
+    type ||
+    search ||
+    status ||
+    lane ||
+    actorTrack ||
+    journeyStep ||
+    placement
+  );
 
   // Get the selected widget items for showing muralWidgetIds
   const selectedWidgetItems = useMemo(() => {
@@ -315,6 +341,10 @@ function ProjectInboxContent() {
           currentType={type}
           currentSearch={search}
           currentStatus={status}
+          currentLane={lane}
+          currentActorTrack={actorTrack}
+          currentJourneyStep={journeyStep}
+          currentPlacement={placement}
           projectId={projectId}
         />
 
@@ -415,6 +445,7 @@ function ProjectInboxContent() {
             page={state.data.page}
             total={state.data.total}
             totalPages={state.data.totalPages}
+            hasActiveFilters={hasActiveFilters}
             projectId={projectId}
             onSelectWidget={handleSelectWidget}
             selectedWidgetId={selectedWidget?.id}

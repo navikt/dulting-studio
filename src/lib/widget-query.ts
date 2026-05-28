@@ -6,6 +6,7 @@
 const MAX_PAGE_SIZE = 200;
 const DEFAULT_PAGE_SIZE = 50;
 const DEFAULT_PAGE = 1;
+const MAX_FILTER_TEXT_LENGTH = 200;
 
 /**
  * Known widget types from Mural imports.
@@ -36,6 +37,9 @@ export type WidgetQueryParams = {
   pageSize: number;
   type: WidgetType | null;
   lane: string | null;
+  actorTrack: string | null;
+  journeyStep: string | null;
+  placement: "unplaced" | null;
   status: "classified" | "unclassified" | null;
   search: string | null;
 };
@@ -85,6 +89,24 @@ function sanitizeSearchTerm(value: string | null): string | null {
 }
 
 const ALLOWED_STATUSES = new Set(["classified", "unclassified"]);
+
+function parseOptionalFilterText(
+  field: string,
+  value: string | null,
+  errors: WidgetQueryValidationError[],
+): string | null {
+  if (value === null || value.trim() === "") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (trimmed.length > MAX_FILTER_TEXT_LENGTH || /[<>]/.test(trimmed)) {
+    errors.push({ field, message: "Ugyldig filterverdi" });
+    return null;
+  }
+
+  return trimmed;
+}
 
 export function parseWidgetQueryParams(
   searchParams: URLSearchParams,
@@ -142,6 +164,30 @@ export function parseWidgetQueryParams(
     }
   }
 
+  const actorTrack = parseOptionalFilterText(
+    "actorTrack",
+    searchParams.get("actorTrack"),
+    errors,
+  );
+  const journeyStep = parseOptionalFilterText(
+    "journeyStep",
+    searchParams.get("journeyStep"),
+    errors,
+  );
+
+  const placementParam = searchParams.get("placement");
+  let placement: "unplaced" | null = null;
+  if (placementParam !== null && placementParam !== "") {
+    if (placementParam !== "unplaced") {
+      errors.push({
+        field: "placement",
+        message: "Må være 'unplaced'",
+      });
+    } else {
+      placement = placementParam;
+    }
+  }
+
   const statusParam = searchParams.get("status");
   let status: "classified" | "unclassified" | null = null;
   if (statusParam !== null && statusParam !== "") {
@@ -168,6 +214,9 @@ export function parseWidgetQueryParams(
       pageSize: pageSize as number,
       type,
       lane,
+      actorTrack,
+      journeyStep,
+      placement,
       status,
       search,
     },

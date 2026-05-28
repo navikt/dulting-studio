@@ -170,4 +170,24 @@ describe("GET /api/projects/[id]/widgets", () => {
       "Et kort widget-utdrag",
     );
   });
+
+  it("rejects invalid triage filter params before database lookup", async () => {
+    const { GET } = await import("./route");
+
+    const response = await (GET as RouteHandler)(
+      new Request(
+        `https://example.com/api/projects/${projectId}/widgets?actorTrack=%3Cscript%3E&placement=floating`,
+        { method: "GET" },
+      ),
+      context,
+    );
+    const payload = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(payload.errors).toEqual([
+      { field: "actorTrack", message: "Ugyldig filterverdi" },
+      { field: "placement", message: "Må være 'unplaced'" },
+    ]);
+    expect(mockDb.select).not.toHaveBeenCalled();
+  });
 });

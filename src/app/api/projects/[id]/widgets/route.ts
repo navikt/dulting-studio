@@ -1,4 +1,4 @@
-import { and, count, eq, ilike, isNotNull, isNull } from "drizzle-orm";
+import { and, count, eq, ilike, isNotNull, isNull, or } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { classifications, projects, widgets } from "@/db/schema";
 import { withProtectedApiRoute } from "@/lib/auth";
@@ -157,6 +157,24 @@ function buildFilterConditions(projectId: string, params: WidgetQueryParams) {
   // Lane filter: match on classification laneTypeKey
   if (params.lane) {
     conditions.push(eq(classifications.laneTypeKey, params.lane));
+  }
+
+  if (params.actorTrack) {
+    conditions.push(eq(classifications.actorTrack, params.actorTrack));
+  }
+
+  if (params.journeyStep) {
+    conditions.push(eq(classifications.journeyStep, params.journeyStep));
+  }
+
+  if (params.placement === "unplaced") {
+    const unplacedCondition = or(
+      isNull(widgets.rowIndex),
+      isNull(widgets.columnIndex),
+    );
+    if (unplacedCondition) {
+      conditions.push(unplacedCondition);
+    }
   }
 
   return conditions;

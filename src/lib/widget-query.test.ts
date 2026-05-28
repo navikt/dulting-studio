@@ -15,6 +15,9 @@ describe("parseWidgetQueryParams", () => {
         pageSize: 50,
         type: null,
         lane: null,
+        actorTrack: null,
+        journeyStep: null,
+        placement: null,
         status: null,
         search: null,
       },
@@ -159,6 +162,59 @@ describe("parseWidgetQueryParams", () => {
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.params.lane).toBeNull();
+    }
+  });
+
+  it("parses actorTrack and journeyStep filters", () => {
+    const result = parseWidgetQueryParams(
+      params({
+        actorTrack: " Arbeidsgiver ",
+        journeyStep: "Uke 4",
+      }),
+    );
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.params.actorTrack).toBe("Arbeidsgiver");
+      expect(result.params.journeyStep).toBe("Uke 4");
+    }
+  });
+
+  it("rejects HTML-like actorTrack and journeyStep filters", () => {
+    const result = parseWidgetQueryParams(
+      params({
+        actorTrack: "<script>",
+        journeyStep: "Uke <b>4</b>",
+      }),
+    );
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors).toEqual([
+        { field: "actorTrack", message: "Ugyldig filterverdi" },
+        { field: "journeyStep", message: "Ugyldig filterverdi" },
+      ]);
+    }
+  });
+
+  it("parses unplaced placement filter", () => {
+    const result = parseWidgetQueryParams(params({ placement: "unplaced" }));
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.params.placement).toBe("unplaced");
+    }
+  });
+
+  it("rejects invalid placement filter", () => {
+    const result = parseWidgetQueryParams(params({ placement: "floating" }));
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors[0]).toEqual({
+        field: "placement",
+        message: "Må være 'unplaced'",
+      });
     }
   });
 
