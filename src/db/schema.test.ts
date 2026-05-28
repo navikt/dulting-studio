@@ -4,9 +4,12 @@ import {
   classifications,
   clusterMemberships,
   clusters,
+  interventionCandidates,
+  interventionCandidateSources,
   muralImports,
   type NewClassification,
   type NewCluster,
+  type NewInterventionCandidate,
   type NewProject,
   type NewWidget,
   type ProjectLaneType,
@@ -114,6 +117,40 @@ describe("database schema", () => {
         "version",
       ]),
     );
+
+    expect(Object.keys(getTableColumns(interventionCandidates))).toEqual(
+      expect.arrayContaining([
+        "projectId",
+        "title",
+        "status",
+        "desiredBehavior",
+        "rationale",
+        "actorTrack",
+        "journeyStep",
+        "placementRole",
+        "piiConfirmedBy",
+        "piiConfirmedAt",
+        "createdBy",
+        "updatedBy",
+        "createdAt",
+        "updatedAt",
+        "version",
+      ]),
+    );
+
+    expect(Object.keys(getTableColumns(interventionCandidateSources))).toEqual(
+      expect.arrayContaining([
+        "candidateId",
+        "widgetId",
+        "muralWidgetId",
+        "piiRisk",
+        "sanitizedExcerpt",
+        "relevanceNote",
+        "createdAt",
+        "updatedAt",
+        "version",
+      ]),
+    );
   });
 
   it("keeps lane types configurable instead of hardcoded enums", () => {
@@ -128,6 +165,9 @@ describe("database schema", () => {
     expectTypeOf<NewClassification["laneTypeKey"]>().toEqualTypeOf<string>();
     expectTypeOf<NewClassification["laneTypeLabel"]>().toEqualTypeOf<string>();
     expectTypeOf<NewCluster["status"]>().toEqualTypeOf<string | undefined>();
+    expectTypeOf<NewInterventionCandidate["status"]>().toEqualTypeOf<
+      string | undefined
+    >();
   });
 
   it("keeps widget metadata constrained to dataminimized table structure", () => {

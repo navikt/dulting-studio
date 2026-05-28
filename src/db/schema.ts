@@ -270,6 +270,108 @@ export const clusterMemberships = pgTable(
   ],
 );
 
+export const interventionCandidates = pgTable(
+  "intervention_candidates",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    status: text("status").notNull().default("proposed"),
+    desiredBehavior: text("desired_behavior"),
+    rationale: text("rationale").notNull(),
+    actorTrack: text("actor_track"),
+    journeyStep: text("journey_step"),
+    placementRole: text("placement_role"),
+    piiConfirmedBy: text("pii_confirmed_by").notNull(),
+    piiConfirmedAt: timestamp("pii_confirmed_at", {
+      withTimezone: true,
+    }).notNull(),
+    createdBy: text("created_by").notNull(),
+    updatedBy: text("updated_by").notNull(),
+    ...timestamps,
+    version: versionColumn,
+  },
+  (table) => [
+    index("intervention_candidates_project_status_idx").on(
+      table.projectId,
+      table.status,
+    ),
+    check(
+      "intervention_candidates_status_check",
+      sql`${table.status} in ('proposed', 'needs_clarification', 'assessed_relevant', 'ready_for_package', 'parked', 'rejected')`,
+    ),
+    check(
+      "intervention_candidates_placement_role_check",
+      sql`${table.placementRole} is null or ${table.placementRole} in ('journey_step', 'cross_cutting_support', 'package_support', 'clarification', 'context')`,
+    ),
+    check(
+      "intervention_candidates_title_length",
+      sql`char_length(${table.title}) <= 200`,
+    ),
+    check(
+      "intervention_candidates_rationale_length",
+      sql`char_length(${table.rationale}) <= 1000`,
+    ),
+    check(
+      "intervention_candidates_desired_behavior_length",
+      sql`${table.desiredBehavior} is null or char_length(${table.desiredBehavior}) <= 2000`,
+    ),
+    check(
+      "intervention_candidates_actor_track_length",
+      sql`${table.actorTrack} is null or char_length(${table.actorTrack}) <= 200`,
+    ),
+    check(
+      "intervention_candidates_journey_step_length",
+      sql`${table.journeyStep} is null or char_length(${table.journeyStep}) <= 200`,
+    ),
+    check("intervention_candidates_version_positive", sql`${table.version} > 0`),
+  ],
+);
+
+export const interventionCandidateSources = pgTable(
+  "intervention_candidate_sources",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    candidateId: uuid("candidate_id")
+      .notNull()
+      .references(() => interventionCandidates.id, { onDelete: "cascade" }),
+    widgetId: uuid("widget_id")
+      .notNull()
+      .references(() => widgets.id, { onDelete: "cascade" }),
+    muralWidgetId: text("mural_widget_id").notNull(),
+    piiRisk: text("pii_risk").notNull().default("none"),
+    sanitizedExcerpt: text("sanitized_excerpt"),
+    relevanceNote: text("relevance_note"),
+    ...timestamps,
+    version: versionColumn,
+  },
+  (table) => [
+    uniqueIndex("intervention_candidate_sources_candidate_widget_key").on(
+      table.candidateId,
+      table.widgetId,
+    ),
+    index("intervention_candidate_sources_widget_id_idx").on(table.widgetId),
+    check(
+      "intervention_candidate_sources_pii_risk_check",
+      sql`${table.piiRisk} in ('none', 'possible', 'probable')`,
+    ),
+    check(
+      "intervention_candidate_sources_sanitized_excerpt_length",
+      sql`${table.sanitizedExcerpt} is null or char_length(${table.sanitizedExcerpt}) <= 500`,
+    ),
+    check(
+      "intervention_candidate_sources_relevance_note_length",
+      sql`${table.relevanceNote} is null or char_length(${table.relevanceNote}) <= 500`,
+    ),
+    check(
+      "intervention_candidate_sources_version_positive",
+      sql`${table.version} > 0`,
+    ),
+  ],
+);
+
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
 
@@ -287,3 +389,12 @@ export type NewCluster = typeof clusters.$inferInsert;
 
 export type ClusterMembership = typeof clusterMemberships.$inferSelect;
 export type NewClusterMembership = typeof clusterMemberships.$inferInsert;
+
+export type InterventionCandidate = typeof interventionCandidates.$inferSelect;
+export type NewInterventionCandidate =
+  typeof interventionCandidates.$inferInsert;
+
+export type InterventionCandidateSource =
+  typeof interventionCandidateSources.$inferSelect;
+export type NewInterventionCandidateSource =
+  typeof interventionCandidateSources.$inferInsert;

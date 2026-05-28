@@ -24,6 +24,7 @@ import {
 } from "react";
 import { ClassificationPanel } from "@/components/ClassificationPanel";
 import { CreateClusterModal } from "@/components/CreateClusterModal";
+import { PromoteInterventionCandidateModal } from "@/components/PromoteInterventionCandidateModal";
 import { WidgetFilters } from "@/components/WidgetFilters";
 import { type WidgetItem, WidgetTable } from "@/components/WidgetTable";
 
@@ -40,6 +41,12 @@ type FetchState =
   | { status: "error"; message: string }
   | { status: "success"; data: WidgetResponse };
 
+type SuccessMessage = {
+  text: string;
+  href: string;
+  linkText: string;
+};
+
 function ProjectInboxContent() {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -51,7 +58,10 @@ function ProjectInboxContent() {
     new Set(),
   );
   const [showClusterModal, setShowClusterModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showPromoteModal, setShowPromoteModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<SuccessMessage | null>(
+    null,
+  );
 
   const page = Number(searchParams.get("page") || "1");
   const type = searchParams.get("type") || "";
@@ -170,7 +180,11 @@ function ProjectInboxContent() {
     (_clusterId: string) => {
       setShowClusterModal(false);
       setSelectedWidgetIds(new Set());
-      setSuccessMessage("Klynge opprettet.");
+      setSuccessMessage({
+        text: "Klynge opprettet.",
+        href: `/projects/${projectId}/clusters`,
+        linkText: "Se klyngeliste",
+      });
       // Clear success message after a few seconds
       if (successTimeoutRef.current) {
         clearTimeout(successTimeoutRef.current);
@@ -181,7 +195,28 @@ function ProjectInboxContent() {
       );
       fetchWidgets();
     },
-    [fetchWidgets],
+    [fetchWidgets, projectId],
+  );
+
+  const handlePromoteSuccess = useCallback(
+    (_candidateId: string) => {
+      setShowPromoteModal(false);
+      setSelectedWidgetIds(new Set());
+      setSuccessMessage({
+        text: "Tiltakskandidat opprettet.",
+        href: `/projects/${projectId}/tiltak`,
+        linkText: "Se tiltakskandidater",
+      });
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
+      successTimeoutRef.current = setTimeout(
+        () => setSuccessMessage(null),
+        6000,
+      );
+      fetchWidgets();
+    },
+    [fetchWidgets, projectId],
   );
 
   const hasActiveFilters = !!(type || search || status);
@@ -206,6 +241,14 @@ function ProjectInboxContent() {
             Tilbake
           </Button>
           <HStack gap="space-8">
+            <Button
+              as={Link}
+              href={`/projects/${projectId}/tiltak`}
+              variant="tertiary"
+              size="small"
+            >
+              Tiltak
+            </Button>
             <Button
               as={Link}
               href={`/projects/${projectId}/clusters`}
@@ -240,10 +283,8 @@ function ProjectInboxContent() {
         {successMessage && (
           <LocalAlert status="success">
             <LocalAlert.Content>
-              {successMessage}{" "}
-              <Link href={`/projects/${projectId}/clusters`}>
-                Se klyngeliste
-              </Link>
+              {successMessage.text}{" "}
+              <Link href={successMessage.href}>{successMessage.linkText}</Link>
             </LocalAlert.Content>
           </LocalAlert>
         )}
@@ -278,6 +319,13 @@ function ProjectInboxContent() {
                 <Button
                   variant="primary"
                   size="small"
+                  onClick={() => setShowPromoteModal(true)}
+                >
+                  Promoter til tiltak
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="small"
                   onClick={() => setShowClusterModal(true)}
                   disabled={selectedWidgetIds.size < 2}
                 >
@@ -309,7 +357,8 @@ function ProjectInboxContent() {
             )}
             {selectedWidgetIds.size < 2 && (
               <BodyShort size="small" className="muted">
-                Velg minst to widgets for å opprette en klynge.
+                Du kan promotere én eller flere widgets til tiltak. Velg minst
+                to widgets for å opprette en klynge.
               </BodyShort>
             )}
           </VStack>
@@ -372,6 +421,18 @@ function ProjectInboxContent() {
           )}
           onClose={() => setShowClusterModal(false)}
           onSuccess={handleClusterSuccess}
+        />
+      )}
+
+      {showPromoteModal && (
+        <PromoteInterventionCandidateModal
+          projectId={projectId}
+          sourceWidgets={selectedWidgetItems.map((item) => ({
+            id: item.id,
+            muralWidgetId: item.muralWidgetId,
+          }))}
+          onClose={() => setShowPromoteModal(false)}
+          onSuccess={handlePromoteSuccess}
         />
       )}
     </div>
