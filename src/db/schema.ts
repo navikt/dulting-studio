@@ -222,6 +222,54 @@ export const classifications = pgTable(
   ],
 );
 
+export const clusters = pgTable(
+  "clusters",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    summary: text("summary"),
+    status: text("status").notNull().default("draft"),
+    createdBy: text("created_by").notNull(),
+    updatedBy: text("updated_by").notNull(),
+    ...timestamps,
+    version: versionColumn,
+  },
+  (table) => [
+    index("clusters_project_status_idx").on(table.projectId, table.status),
+    check(
+      "clusters_status_check",
+      sql`${table.status} in ('draft', 'validated')`,
+    ),
+    check("clusters_version_positive", sql`${table.version} > 0`),
+  ],
+);
+
+export const clusterMemberships = pgTable(
+  "cluster_memberships",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    clusterId: uuid("cluster_id")
+      .notNull()
+      .references(() => clusters.id, { onDelete: "cascade" }),
+    widgetId: uuid("widget_id")
+      .notNull()
+      .references(() => widgets.id, { onDelete: "cascade" }),
+    ...timestamps,
+    version: versionColumn,
+  },
+  (table) => [
+    uniqueIndex("cluster_memberships_cluster_widget_id_key").on(
+      table.clusterId,
+      table.widgetId,
+    ),
+    index("cluster_memberships_widget_id_idx").on(table.widgetId),
+    check("cluster_memberships_version_positive", sql`${table.version} > 0`),
+  ],
+);
+
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
 
@@ -233,3 +281,9 @@ export type NewWidget = typeof widgets.$inferInsert;
 
 export type Classification = typeof classifications.$inferSelect;
 export type NewClassification = typeof classifications.$inferInsert;
+
+export type Cluster = typeof clusters.$inferSelect;
+export type NewCluster = typeof clusters.$inferInsert;
+
+export type ClusterMembership = typeof clusterMemberships.$inferSelect;
+export type NewClusterMembership = typeof clusterMemberships.$inferInsert;

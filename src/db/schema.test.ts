@@ -2,8 +2,11 @@ import { getTableColumns } from "drizzle-orm";
 import { describe, expect, expectTypeOf, it } from "vitest";
 import {
   classifications,
+  clusterMemberships,
+  clusters,
   muralImports,
   type NewClassification,
+  type NewCluster,
   type NewProject,
   type NewWidget,
   type ProjectLaneType,
@@ -87,6 +90,30 @@ describe("database schema", () => {
         "version",
       ]),
     );
+
+    expect(Object.keys(getTableColumns(clusters))).toEqual(
+      expect.arrayContaining([
+        "projectId",
+        "name",
+        "summary",
+        "status",
+        "createdBy",
+        "updatedBy",
+        "createdAt",
+        "updatedAt",
+        "version",
+      ]),
+    );
+
+    expect(Object.keys(getTableColumns(clusterMemberships))).toEqual(
+      expect.arrayContaining([
+        "clusterId",
+        "widgetId",
+        "createdAt",
+        "updatedAt",
+        "version",
+      ]),
+    );
   });
 
   it("keeps lane types configurable instead of hardcoded enums", () => {
@@ -100,6 +127,7 @@ describe("database schema", () => {
     >();
     expectTypeOf<NewClassification["laneTypeKey"]>().toEqualTypeOf<string>();
     expectTypeOf<NewClassification["laneTypeLabel"]>().toEqualTypeOf<string>();
+    expectTypeOf<NewCluster["status"]>().toEqualTypeOf<string | undefined>();
   });
 
   it("keeps widget metadata constrained to dataminimized table structure", () => {
