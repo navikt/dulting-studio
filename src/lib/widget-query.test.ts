@@ -17,6 +17,8 @@ describe("parseWidgetQueryParams", () => {
         lane: null,
         actorTrack: null,
         journeyStep: null,
+        tableRow: null,
+        tableColumn: null,
         placement: null,
         triage: null,
         status: null,
@@ -194,6 +196,38 @@ describe("parseWidgetQueryParams", () => {
       expect(result.errors).toEqual([
         { field: "actorTrack", message: "Ugyldig filterverdi" },
         { field: "journeyStep", message: "Ugyldig filterverdi" },
+      ]);
+    }
+  });
+
+  it("parses valid table axis filters", () => {
+    const result = parseWidgetQueryParams(
+      params({
+        tableRow: "row-1",
+        tableColumn: "column_2",
+      }),
+    );
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.params.tableRow).toBe("row-1");
+      expect(result.params.tableColumn).toBe("column_2");
+    }
+  });
+
+  it("rejects malformed table axis filters", () => {
+    const result = parseWidgetQueryParams(
+      params({
+        tableRow: "row 1",
+        tableColumn: "<column>",
+      }),
+    );
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors).toEqual([
+        { field: "tableRow", message: "Ugyldig Mural-akse-id" },
+        { field: "tableColumn", message: "Ugyldig Mural-akse-id" },
       ]);
     }
   });

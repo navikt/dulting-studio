@@ -22,11 +22,23 @@ type WidgetFiltersProps = {
   currentLane: string;
   currentActorTrack: string;
   currentJourneyStep: string;
+  currentTableRow: string;
+  currentTableColumn: string;
   currentPlacement: string;
   currentTriage: string;
+  axisOptions: {
+    rows: AxisFilterOption[];
+    columns: AxisFilterOption[];
+  };
   resultCount?: number | null;
   visibleCount?: number | null;
   projectId: string;
+};
+
+type AxisFilterOption = {
+  value: string;
+  label: string;
+  tableLabel: string;
 };
 
 const WIDGET_TYPES = [
@@ -58,8 +70,11 @@ export function WidgetFilters({
   currentLane,
   currentActorTrack,
   currentJourneyStep,
+  currentTableRow,
+  currentTableColumn,
   currentPlacement,
   currentTriage,
+  axisOptions,
   resultCount,
   visibleCount,
   projectId,
@@ -92,6 +107,8 @@ export function WidgetFilters({
         lane: currentLane,
         actorTrack: currentActorTrack,
         journeyStep: currentJourneyStep,
+        tableRow: currentTableRow,
+        tableColumn: currentTableColumn,
         placement: currentPlacement,
         triage: currentTriage,
         page: "1", // Reset to page 1 on filter change
@@ -114,6 +131,8 @@ export function WidgetFilters({
       currentLane,
       currentActorTrack,
       currentJourneyStep,
+      currentTableRow,
+      currentTableColumn,
       currentPlacement,
       currentTriage,
       projectId,
@@ -129,7 +148,20 @@ export function WidgetFilters({
   };
 
   const handlePlacementChange = (value: string) => {
-    router.push(buildUrl({ placement: value }));
+    router.push(
+      buildUrl({
+        placement: value,
+        ...(value === "unplaced" ? { tableRow: "", tableColumn: "" } : {}),
+      }),
+    );
+  };
+
+  const handleTableRowChange = (value: string) => {
+    router.push(buildUrl({ tableRow: value, placement: "" }));
+  };
+
+  const handleTableColumnChange = (value: string) => {
+    router.push(buildUrl({ tableColumn: value, placement: "" }));
   };
 
   const handleQuickFilter = (overrides: Record<string, string>) => {
@@ -171,6 +203,8 @@ export function WidgetFilters({
     currentLane,
     currentActorTrack,
     currentJourneyStep,
+    currentTableRow,
+    currentTableColumn,
     currentPlacement,
     currentTriage,
   ].filter(Boolean).length;
@@ -233,6 +267,8 @@ export function WidgetFilters({
             onClick={() =>
               handleQuickFilter({
                 placement: currentPlacement === "unplaced" ? "" : "unplaced",
+                tableRow: "",
+                tableColumn: "",
               })
             }
           >
@@ -322,6 +358,47 @@ export function WidgetFilters({
             {PLACEMENT_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
+              </option>
+            ))}
+          </Select>
+          <Select
+            label="Workshop-rad"
+            size="small"
+            value={currentTableRow}
+            onChange={(e) => handleTableRowChange(e.target.value)}
+            className="widget-filter-select"
+            disabled={
+              currentPlacement === "unplaced" || axisOptions.rows.length === 0
+            }
+          >
+            <option value="">Alle rader</option>
+            {axisOptions.rows.map((option) => (
+              <option
+                key={`${option.tableLabel}-${option.value}`}
+                value={option.value}
+              >
+                {option.label}
+              </option>
+            ))}
+          </Select>
+          <Select
+            label="Workshop-kolonne"
+            size="small"
+            value={currentTableColumn}
+            onChange={(e) => handleTableColumnChange(e.target.value)}
+            className="widget-filter-select"
+            disabled={
+              currentPlacement === "unplaced" ||
+              axisOptions.columns.length === 0
+            }
+          >
+            <option value="">Alle kolonner</option>
+            {axisOptions.columns.map((option) => (
+              <option
+                key={`${option.tableLabel}-${option.value}`}
+                value={option.value}
+              >
+                {option.label}
               </option>
             ))}
           </Select>

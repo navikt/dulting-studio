@@ -29,6 +29,7 @@ const ALLOWED_TYPES_SET = new Set<string>(ALLOWED_WIDGET_TYPES);
  * We validate format rather than a static allowlist.
  */
 const LANE_KEY_PATTERN = /^[a-z0-9æøå][a-z0-9æøå\-_]{0,99}$/;
+const MURAL_AXIS_ID_PATTERN = /^[a-zA-Z0-9_-]{1,100}$/;
 
 export type WidgetType = (typeof ALLOWED_WIDGET_TYPES)[number];
 
@@ -39,6 +40,8 @@ export type WidgetQueryParams = {
   lane: string | null;
   actorTrack: string | null;
   journeyStep: string | null;
+  tableRow: string | null;
+  tableColumn: string | null;
   placement: "unplaced" | null;
   triage: "open" | "parked" | "rejected" | null;
   status: "classified" | "unclassified" | null;
@@ -104,6 +107,24 @@ function parseOptionalFilterText(
   const trimmed = value.trim();
   if (trimmed.length > MAX_FILTER_TEXT_LENGTH || /[<>]/.test(trimmed)) {
     errors.push({ field, message: "Ugyldig filterverdi" });
+    return null;
+  }
+
+  return trimmed;
+}
+
+function parseOptionalAxisId(
+  field: string,
+  value: string | null,
+  errors: WidgetQueryValidationError[],
+): string | null {
+  if (value === null || value.trim() === "") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!MURAL_AXIS_ID_PATTERN.test(trimmed)) {
+    errors.push({ field, message: "Ugyldig Mural-akse-id" });
     return null;
   }
 
@@ -176,6 +197,16 @@ export function parseWidgetQueryParams(
     searchParams.get("journeyStep"),
     errors,
   );
+  const tableRow = parseOptionalAxisId(
+    "tableRow",
+    searchParams.get("tableRow"),
+    errors,
+  );
+  const tableColumn = parseOptionalAxisId(
+    "tableColumn",
+    searchParams.get("tableColumn"),
+    errors,
+  );
 
   const placementParam = searchParams.get("placement");
   let placement: "unplaced" | null = null;
@@ -231,6 +262,8 @@ export function parseWidgetQueryParams(
       lane,
       actorTrack,
       journeyStep,
+      tableRow,
+      tableColumn,
       placement,
       triage,
       status,

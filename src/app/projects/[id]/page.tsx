@@ -35,10 +35,20 @@ import { type WidgetItem, WidgetTable } from "@/components/WidgetTable";
 
 type WidgetResponse = {
   items: WidgetItem[];
+  axisOptions: {
+    rows: AxisFilterOption[];
+    columns: AxisFilterOption[];
+  };
   page: number;
   pageSize: number;
   total: number;
   totalPages: number;
+};
+
+type AxisFilterOption = {
+  value: string;
+  label: string;
+  tableLabel: string;
 };
 
 type FetchState =
@@ -87,6 +97,8 @@ function ProjectInboxContent() {
   const lane = searchParams.get("lane") || "";
   const actorTrack = searchParams.get("actorTrack") || "";
   const journeyStep = searchParams.get("journeyStep") || "";
+  const tableRow = searchParams.get("tableRow") || "";
+  const tableColumn = searchParams.get("tableColumn") || "";
   const placement = searchParams.get("placement") || "";
   const triage = searchParams.get("triage") || "";
 
@@ -102,6 +114,8 @@ function ProjectInboxContent() {
     if (lane) queryParams.set("lane", lane);
     if (actorTrack) queryParams.set("actorTrack", actorTrack);
     if (journeyStep) queryParams.set("journeyStep", journeyStep);
+    if (tableRow) queryParams.set("tableRow", tableRow);
+    if (tableColumn) queryParams.set("tableColumn", tableColumn);
     if (placement) queryParams.set("placement", placement);
     if (triage) queryParams.set("triage", triage);
 
@@ -146,6 +160,8 @@ function ProjectInboxContent() {
     lane,
     actorTrack,
     journeyStep,
+    tableRow,
+    tableColumn,
     placement,
     triage,
   ]);
@@ -167,6 +183,8 @@ function ProjectInboxContent() {
     lane,
     actorTrack,
     journeyStep,
+    tableRow,
+    tableColumn,
     placement,
     triage,
   ]);
@@ -334,6 +352,8 @@ function ProjectInboxContent() {
     lane ||
     actorTrack ||
     journeyStep ||
+    tableRow ||
+    tableColumn ||
     placement ||
     triage
   );
@@ -461,8 +481,15 @@ function ProjectInboxContent() {
           currentLane={lane}
           currentActorTrack={actorTrack}
           currentJourneyStep={journeyStep}
+          currentTableRow={tableRow}
+          currentTableColumn={tableColumn}
           currentPlacement={placement}
           currentTriage={triage}
+          axisOptions={
+            state.status === "success"
+              ? state.data.axisOptions
+              : { rows: [], columns: [] }
+          }
           resultCount={state.status === "success" ? state.data.total : null}
           visibleCount={
             state.status === "success" ? state.data.items.length : null

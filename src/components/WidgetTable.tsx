@@ -31,6 +31,11 @@ type WidgetItem = {
   backgroundColor: string | null;
   rowIndex: number | null;
   columnIndex: number | null;
+  tablePosition: {
+    rowLabel: string | null;
+    columnLabel: string | null;
+    tableLabel: string | null;
+  };
   position: { x: number; y: number; width: number; height: number };
   classification: ClassificationItem | null;
   triage: {
@@ -130,7 +135,17 @@ function TriageBadge({ triage }: { triage: WidgetItem["triage"] }) {
   );
 }
 
-function formatPosition(rowIndex: number | null, columnIndex: number | null) {
+function formatPosition(item: WidgetItem) {
+  const labeledParts = [
+    item.tablePosition.rowLabel,
+    item.tablePosition.columnLabel,
+  ].filter(Boolean);
+
+  if (labeledParts.length > 0) {
+    return labeledParts.join(" / ");
+  }
+
+  const { rowIndex, columnIndex } = item;
   if (rowIndex === null && columnIndex === null) return "–";
   const parts = [];
   if (rowIndex !== null) parts.push(`R${rowIndex}`);
@@ -229,9 +244,7 @@ export function WidgetTable({
                     </Tag>
                   </Table.DataCell>
                   <Table.DataCell>
-                    <BodyShort size="small">
-                      {formatPosition(item.rowIndex, item.columnIndex)}
-                    </BodyShort>
+                    <BodyShort size="small">{formatPosition(item)}</BodyShort>
                   </Table.DataCell>
                   <Table.DataCell>
                     <ColorChip color={item.backgroundColor} />

@@ -70,6 +70,13 @@ function createItemsQuery(result: unknown) {
   return { from, leftJoin, where, orderBy, limit, offset };
 }
 
+function createAxisQuery(result: unknown) {
+  const orderBy = vi.fn().mockResolvedValue(result);
+  const where = vi.fn().mockReturnValue({ orderBy });
+  const from = vi.fn().mockReturnValue({ where });
+  return { from, where, orderBy };
+}
+
 describe("GET /api/projects/[id]/widgets", () => {
   beforeEach(() => {
     vi.resetModules();
@@ -108,11 +115,21 @@ describe("GET /api/projects/[id]/widgets", () => {
         triageReason: "Avventer fagavklaring",
       },
     ]);
+    const axisQuery = createAxisQuery([
+      {
+        muralWidgetId: "table-1",
+        metadata: {
+          tableRows: [{ id: "row-1", index: 0, label: "Arbeidsgiver" }],
+          tableColumns: [{ id: "column-1", index: 0, label: "Uke 4" }],
+        },
+      },
+    ]);
 
     mockDb.select
       .mockReturnValueOnce(projectQuery)
       .mockReturnValueOnce(countQuery)
-      .mockReturnValueOnce(itemsQuery);
+      .mockReturnValueOnce(itemsQuery)
+      .mockReturnValueOnce(axisQuery);
 
     const { GET } = await import("./route");
     const { logInfo } = await import("@/lib/logger");
@@ -135,6 +152,11 @@ describe("GET /api/projects/[id]/widgets", () => {
           backgroundColor: "#FFF3CD",
           rowIndex: 1,
           columnIndex: 2,
+          tablePosition: {
+            rowLabel: "Arbeidsgiver",
+            columnLabel: "Uke 4",
+            tableLabel: "Tabell 1",
+          },
           position: {
             x: 10,
             y: 20,
@@ -158,6 +180,26 @@ describe("GET /api/projects/[id]/widgets", () => {
           createdAt: "2024-09-01T10:00:00.000Z",
         },
       ],
+      axisOptions: {
+        rows: [
+          {
+            value: "row-1",
+            label: "Arbeidsgiver",
+            index: 0,
+            tableLabel: "Tabell 1",
+            tableMuralWidgetId: "table-1",
+          },
+        ],
+        columns: [
+          {
+            value: "column-1",
+            label: "Uke 4",
+            index: 0,
+            tableLabel: "Tabell 1",
+            tableMuralWidgetId: "table-1",
+          },
+        ],
+      },
       page: 1,
       pageSize: 50,
       total: 1,
@@ -165,8 +207,8 @@ describe("GET /api/projects/[id]/widgets", () => {
       callId: "call-123",
     });
     expect(JSON.stringify(payload)).not.toContain("metadata");
-    expect(JSON.stringify(payload)).not.toContain("rowId");
-    expect(JSON.stringify(payload)).not.toContain("columnId");
+    expect(payload.items[0]).not.toHaveProperty("rowId");
+    expect(payload.items[0]).not.toHaveProperty("columnId");
     expect(JSON.stringify(payload)).not.toContain("notes");
     expect(logInfo).toHaveBeenCalledWith("Served widget list", {
       callId: "call-123",

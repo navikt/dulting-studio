@@ -1,6 +1,12 @@
 import { and, count, eq, ilike, isNotNull, isNull, or } from "drizzle-orm";
 import { getDb } from "@/db/client";
-import { classifications, projects, widgets, widgetTriage } from "@/db/schema";
+import {
+  classifications,
+  projects,
+  type WidgetMetadata,
+  widgets,
+  widgetTriage,
+} from "@/db/schema";
 import { withProtectedApiRoute } from "@/lib/auth";
 import { logError, logInfo } from "@/lib/logger";
 import {
@@ -111,6 +117,23 @@ export const GET = withProtectedApiRoute(async (request, context) => {
       .limit(params.pageSize)
       .offset(offset);
 
+    const axisOptions = buildAxisOptions(
+      await db
+        .select({
+          muralWidgetId: widgets.muralWidgetId,
+          metadata: widgets.metadata,
+        })
+        .from(widgets)
+        .where(
+          and(
+            eq(widgets.projectId, projectId),
+            eq(widgets.widgetType, "table"),
+          ),
+        )
+        .orderBy(widgets.createdAt),
+    );
+    const axisLookup = buildAxisLookup(axisOptions);
+
     logInfo("Served widget list", {
       callId: context.callId,
       projectId,
@@ -121,7 +144,8 @@ export const GET = withProtectedApiRoute(async (request, context) => {
     });
 
     return Response.json({
-      items: items.map(formatWidgetItem),
+      items: items.map((item) => formatWidgetItem(item, axisLookup)),
+      axisOptions,
       ...pagination,
       callId: context.callId,
     });
@@ -171,6 +195,14 @@ function buildFilterConditions(projectId: string, params: WidgetQueryParams) {
     conditions.push(eq(classifications.journeyStep, params.journeyStep));
   }
 
+  if (params.tableRow) {
+    conditions.push(eq(widgets.rowId, params.tableRow));
+  }
+
+  if (params.tableColumn) {
+    conditions.push(eq(widgets.columnId, params.tableColumn));
+  }
+
   if (params.placement === "unplaced") {
     const unplacedCondition = or(
       isNull(widgets.rowIndex),
@@ -190,37 +222,154 @@ function buildFilterConditions(projectId: string, params: WidgetQueryParams) {
   return conditions;
 }
 
+type AxisOption = {
+  value: string;
+  label: string;
+  index: number;
+  tableLabel: string;
+  tableMuralWidgetId: string;
+};
+
+type AxisOptions = {
+  rows: AxisOption[];
+  columns: AxisOption[];
+};
+
+type AxisLookupEntry = {
+  label: string;
+  tableLabel: string;
+};
+
+type AxisLookup = {
+  rows: Map<string, AxisLookupEntry>;
+  columns: Map<string, AxisLookupEntry>;
+};
+
+function buildAxisOptions(
+  tableWidgets: Array<{ muralWidgetId: string; metadata: WidgetMetadata }>,
+): AxisOptions {
+  const tableCount = tableWidgets.length;
+  const rows: AxisOption[] = [];
+  const columns: AxisOption[] = [];
+
+  tableWidgets.forEach((table, tableIndex) => {
+    const tableLabel = `Tabell ${tableIndex + 1}`;
+    rows.push(
+      ...toAxisOptions({
+        entries: table.metadata.tableRows ?? [],
+        fallbackPrefix: "Rad",
+        tableLabel,
+        tableMuralWidgetId: table.muralWidgetId,
+        includeTableContext: tableCount > 1,
+      }),
+    );
+    columns.push(
+      ...toAxisOptions({
+        entries: table.metadata.tableColumns ?? [],
+        fallbackPrefix: "Kolonne",
+        tableLabel,
+        tableMuralWidgetId: table.muralWidgetId,
+        includeTableContext: tableCount > 1,
+      }),
+    );
+  });
+
+  return {
+    rows: rows.sort(compareAxisOptions),
+    columns: columns.sort(compareAxisOptions),
+  };
+}
+
+function toAxisOptions({
+  entries,
+  fallbackPrefix,
+  tableLabel,
+  tableMuralWidgetId,
+  includeTableContext,
+}: {
+  entries: NonNullable<WidgetMetadata["tableRows"]>;
+  fallbackPrefix: "Rad" | "Kolonne";
+  tableLabel: string;
+  tableMuralWidgetId: string;
+  includeTableContext: boolean;
+}): AxisOption[] {
+  return entries.map((entry) => {
+    const baseLabel =
+      entry.label?.trim() || `${fallbackPrefix} ${entry.index + 1}`;
+    return {
+      value: entry.id,
+      label: includeTableContext ? `${baseLabel} (${tableLabel})` : baseLabel,
+      index: entry.index,
+      tableLabel,
+      tableMuralWidgetId,
+    };
+  });
+}
+
+function compareAxisOptions(a: AxisOption, b: AxisOption) {
+  return (
+    a.tableLabel.localeCompare(b.tableLabel, "nb-NO") ||
+    a.index - b.index ||
+    a.label.localeCompare(b.label, "nb-NO")
+  );
+}
+
+function buildAxisLookup(axisOptions: AxisOptions): AxisLookup {
+  return {
+    rows: new Map(
+      axisOptions.rows.map((option) => [
+        option.value,
+        { label: option.label, tableLabel: option.tableLabel },
+      ]),
+    ),
+    columns: new Map(
+      axisOptions.columns.map((option) => [
+        option.value,
+        { label: option.label, tableLabel: option.tableLabel },
+      ]),
+    ),
+  };
+}
+
 function escapeLike(value: string): string {
   return value.replace(/[%_\\]/g, (c) => `\\${c}`);
 }
 
-function formatWidgetItem(row: {
-  id: string;
-  muralWidgetId: string;
-  widgetType: string;
-  textContent: string;
-  backgroundColor: string | null;
-  rowIndex: number | null;
-  columnIndex: number | null;
-  rowId: string | null;
-  columnId: string | null;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  createdAt: Date;
-  classificationId: string | null;
-  laneTypeKey: string | null;
-  laneTypeLabel: string | null;
-  classificationVersion: number | null;
-  classificationScenario: string | null;
-  classificationActorTrack: string | null;
-  classificationJourneyStep: string | null;
-  classificationJourneyIndex: number | null;
-  classificationStatus: string | null;
-  triageState: string | null;
-  triageReason: string | null;
-}) {
+function formatWidgetItem(
+  row: {
+    id: string;
+    muralWidgetId: string;
+    widgetType: string;
+    textContent: string;
+    backgroundColor: string | null;
+    rowIndex: number | null;
+    columnIndex: number | null;
+    rowId: string | null;
+    columnId: string | null;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    createdAt: Date;
+    classificationId: string | null;
+    laneTypeKey: string | null;
+    laneTypeLabel: string | null;
+    classificationVersion: number | null;
+    classificationScenario: string | null;
+    classificationActorTrack: string | null;
+    classificationJourneyStep: string | null;
+    classificationJourneyIndex: number | null;
+    classificationStatus: string | null;
+    triageState: string | null;
+    triageReason: string | null;
+  },
+  axisLookup: AxisLookup,
+) {
+  const rowAxis = row.rowId ? axisLookup.rows.get(row.rowId) : undefined;
+  const columnAxis = row.columnId
+    ? axisLookup.columns.get(row.columnId)
+    : undefined;
+
   return {
     id: row.id,
     muralWidgetId: row.muralWidgetId,
@@ -230,6 +379,11 @@ function formatWidgetItem(row: {
     rowIndex: row.rowIndex,
     columnIndex: row.columnIndex,
     position: { x: row.x, y: row.y, width: row.width, height: row.height },
+    tablePosition: {
+      rowLabel: rowAxis?.label ?? null,
+      columnLabel: columnAxis?.label ?? null,
+      tableLabel: rowAxis?.tableLabel ?? columnAxis?.tableLabel ?? null,
+    },
     classification: row.classificationId
       ? {
           laneTypeKey: row.laneTypeKey,
