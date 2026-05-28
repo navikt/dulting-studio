@@ -16,6 +16,12 @@ kan skje i `navikt/dulting-studio` uten å være avhengig av session-notater fra
   widgets og klassifiseringer.
 - Første UI-slice dekker prosjektimport, inbox-tabell, klassifiseringspanel og
   brukerreisematrise.
+- Datamodellen har nå også `clusters` og `cluster_memberships` for å samle flere
+  widgets i en redaksjonell Studio-klynge.
+- API-et har første slice for å liste, opprette og hente klynger med sporbare
+  kildewidgets.
+- UI-et har første minimale flyt for å velge widgets, opprette klynge og se
+  klyngeliste.
 
 ## Lokale Mural-artefakter
 
@@ -59,28 +65,51 @@ ha syntetiske eller saniterte fixtures under `fixtures/`.
 Se [`docs/dulting-tiltaksregister.md`](dulting-tiltaksregister.md) for råkort,
 intensjon, tiltaksklynge, status og mapping for DULT-kortene.
 
-## Nåværende Mural-first arbeidsmodell
+## Nåværende redaksjonsmodell i første slice
 
-Mural er arbeidsflaten for å sortere tiltakspakke, tiltaksklynger og DULT-kort
-visuelt. Repoet skal gi sporbarhet, bakgrunn og beslutningsgrunnlag, ikke være en
-ekstern fasit som erstatter Mural-arbeidet.
+Første slice i Studio avgrenser tydelig mellom rå import, redaksjonell
+bearbeiding og senere tiltakarbeid:
 
-- **Tiltakspakke** er den samlede pakken med mange tiltak, klynger, målinger og
-  avklaringer.
-- **Tiltaksklynge** grupperer tiltak som hører sammen funksjonelt eller
-  atferdsmessig.
-- **DULT-kort** er råkort eller dult-forslag fra dulting-raden, ikke ferdig
-  besluttede tiltak.
-- **Tiltaksregisteret** viser råkorttekst, intensjon, aktør, status og mapping,
-  slik at bakgrunnen for en bearbeidet lapp ikke forsvinner.
-- **Målepåvirkning** beskriver først nærliggende atferd, som åpning av varsel,
-  fullført behovsvurdering og planstart før frist. Flere planer inn er
-  effektmål, ikke eneste suksessmål.
-- **Guardrails** beskriver uønskede bieffekter som må følges med på, for
-  eksempel snarvei bort fra oppfølgingsplikt, helseopplysninger i fritekst eller
-  unødvendig støy.
-- **Åpne spørsmål** er avklaringer som må løses før første test eller
-  implementering.
+Se også [`.github/skills/dulting-redaktor/SCHEMA.md`](../.github/skills/dulting-redaktor/SCHEMA.md)
+og [`.github/skills/dulting-redaktor/EXAMPLES.md`](../.github/skills/dulting-redaktor/EXAMPLES.md)
+for skjema og konkrete eksempler på den samme modellen.
+
+- **Rå widget** er en dataminimert importert Mural-lapp/widget med sporbar kilde
+  via `muralWidgetId`. Rå Mural JSON skal fortsatt ikke lagres i repo, database
+  eller serverlogger.
+- **Studio-klynge** er første lagrede redaksjonelle nivå i Studio. Den samler
+  flere widgets og består av navn, valgfritt sanitert sammendrag, status
+  (`draft`/`validated`) og medlemskap. Klyngen er forarbeid og sporbarhet, ikke
+  et tiltak.
+- **Tiltakskandidat** er et senere bearbeidet forslag med ønsket atferd,
+  hypotese, FORGOOD/EAST/Fogg og måletegn. Dette er ikke del av første slice fra
+  issue #18-#20.
+- **Tiltakspakke** er en senere kuratert pakke med tiltakskandidater og
+  beslutningsgrunnlag. Dette er ikke del av første slice.
+- **Målinger** holdes også avgrenset: rå målelapper kan importeres og knyttes
+  til spørsmål eller indikasjoner, men validerte måletegn hører til
+  tiltakskandidater, ikke rå widgets eller klynger.
+
+Klynger skal derfor ikke ha FORGOOD/EAST/Fogg-score eller målescore i første
+slice.
+
+## Arbeidsflyt i første slice
+
+Se [`.github/skills/dulting-redaktor/SCHEMA.md`](../.github/skills/dulting-redaktor/SCHEMA.md)
+og [`.github/skills/dulting-redaktor/EXAMPLES.md`](../.github/skills/dulting-redaktor/EXAMPLES.md)
+for detaljert arbeidsflyt, output-format og eksempler.
+
+1. Importer Mural lokalt med dataminimert DTO. Rå Mural JSON skal ikke lagres.
+2. Jobb i Mural og/eller Studio-inboxen for å rydde, klassifisere og finne
+   overlapp.
+3. Når flere widgets hører sammen, opprett en **Studio-klynge** med navn,
+   valgfritt sanitert sammendrag og medlemskap til widgets.
+4. Hold Mural-output lett med kildehenvisninger som `W12, W18`.
+5. Hvis teamet senere vil løfte klyngen videre, formuler tiltakskandidat,
+   måletegn og eventuelt tiltakspakke som egne senere artefakter.
+
+Full historikk og beslutningslogg er fortsatt utenfor første slice. Det krever
+eksplisitt opt-in og/eller senere Studio-støtte.
 
 ## Neste anbefalte issues
 
@@ -91,10 +120,10 @@ ekstern fasit som erstatter Mural-arbeidet.
    workshop-grupper.
 4. Gjør inboxen bedre for store datasett: foreldreløse items, side-ved-side
    gruppevisning og tydelig batcharbeid.
-5. Bearbeid validerte DULT-kort videre til kanoniske tiltak. Et kanonisk tiltak
-   er et DULT-kort som er avklart, omskrevet og godkjent for bruk i en
-   tiltakspakke.
-6. Bygg tiltakspakkevisning med dekning på aktørspor og brukerreisesteg.
+5. Bearbeid validerte Studio-klynger videre til tiltakskandidater med ønsket
+   atferd, hypotese, FORGOOD/EAST/Fogg og måletegn.
+6. Bygg visning for tiltakskandidater og tiltakspakker med dekning på
+   aktørspor og brukerreisesteg.
 7. Eksporter godkjent tiltakspakke til Markdown/JSON etter PII-bekreftelse.
 8. Dokumenter manuelle PII-stoppunkter før import, promotering og eksport.
 
