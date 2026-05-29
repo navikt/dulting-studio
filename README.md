@@ -34,8 +34,9 @@ graph LR
 
 ## Miljøer
 
-- 🛠️ [Utvikling](https://dulting-studio.intern.dev.nav.no)
-- 🚫 Produksjon er ikke satt opp ennå
+- 🚀 [Produksjon](https://dulting-studio.intern.nav.no) — rent prod-verktøy
+  (ingen dev). Åpent for alle innloggede Nav-ansatte; kan låses til team-esyfo
+  senere. Se [Deploy og database-beslutning](docs/deploy.md).
 
 ## Datagrenser
 
@@ -92,8 +93,10 @@ migrasjoner, lokal auth-mock og smoke-test av Mural-import.
 
 ### Plattformgrunnmur
 
-- Azure AD og Wonderwall beskytter appen i dev-miljøet
-- `nais/nais-dev.yaml` har eksplisitt tom `accessPolicy` fordi appen foreløpig
+- Azure AD og Wonderwall beskytter appen (innlogging kreves). I prod er
+  `allowAllUsers: true` — åpent for alle innloggede Nav-ansatte; lås til
+  team-esyfo-gruppe senere via `claims.groups` i `nais/nais-prod.yaml`
+- `nais/nais-prod.yaml` har eksplisitt tom `accessPolicy` fordi appen foreløpig
   ikke skal ta imot kall fra andre apper eller kalle ut til andre tjenester
 - health (`/api/isAlive`), readiness (`/api/isReady`) og metrics
   (`/api/metrics`) er åpne for NAIS-prober og Prometheus
@@ -102,7 +105,7 @@ migrasjoner, lokal auth-mock og smoke-test av Mural-import.
   same-origin-sjekk på usikre HTTP-metoder
 - endepunkter som krever særskilt tilgang kan i tillegg sette
   `requiredAzureAdGroups` i `withProtectedApiRoute()`. Bruk bare gruppe-IDer som
-  allerede ligger i `nais/nais-dev.yaml`, og hold manifest og app-side allowlist
+  ligger i `nais/nais-prod.yaml`, og hold manifest og app-side allowlist
   samkjørt
 
 Repoet bruker database og migrasjoner for importerte prosjekter, widgets og

@@ -15,12 +15,16 @@ spec:
     application:
       enabled: true
       tenant: nav.no
-      allowAllUsers: false
-      claims:
-        groups:
-          # Hold disse gruppe-IDene i sync med eventuell app-side allowlist i withProtectedApiRoute().
-          - id: "5066bb56-7f19-4b49-ae48-f1ba66abf546"
-          - id: "ef4e9824-6f3a-4933-8f40-6edf5233d4d2"
+      # Åpent for alle innloggede Nav-ansatte i prod nå (Wonderwall krever
+      # fortsatt innlogging, men ingen gruppe-begrensning).
+      # For å låse til team-esyfo senere: sett allowAllUsers: false og legg inn
+      # team-esyfo sin AD-gruppe-ID under claims.groups (hold i sync med en
+      # eventuell app-side allowlist i withProtectedApiRoute()):
+      #   allowAllUsers: false
+      #   claims:
+      #     groups:
+      #       - id: "<team-esyfo-gruppe-id>"
+      allowAllUsers: true
     sidecar:
       enabled: true
       autoLogin: true
@@ -53,7 +57,7 @@ spec:
     limits:
       memory: 512Mi
   ingresses:
-    - https://dulting-studio.intern.dev.nav.no
+    - https://dulting-studio.intern.nav.no
   accessPolicy:
     inbound:
       # Ingen app-til-app-kall inn i fase 1.1. Tilgang går via ingress og Wonderwall.

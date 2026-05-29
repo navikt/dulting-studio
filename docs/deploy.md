@@ -1,7 +1,7 @@
 # Deploy og database-beslutning
 
-Kort driftsnotat for å få dulting-studio ut i dev-miljøet, og den ene
-beslutningen som gjenstår: **skal dev-appen ha database eller ikke?**
+Kort driftsnotat for å få dulting-studio ut i prod (rent prod-verktøy, ingen
+dev), og den ene beslutningen som gjenstår på sikt: **skal appen ha database?**
 
 > Plattformgrunnmuren (Azure AD, Wonderwall, helse-endepunkter, app-side
 > tokenvalidering) er beskrevet i [README → Plattformgrunnmur](../README.md#plattformgrunnmur).
@@ -15,10 +15,10 @@ linje med våre andre apper:
 | Ting | Verdi |
 | --- | --- |
 | NAIS-app | `dulting-studio` i namespace `team-esyfo` |
-| Cluster | `dev-gcp` |
-| Manifest | `nais/nais-dev.yaml` (image settes via `{{image}}`) |
-| Ingress | `https://dulting-studio.intern.dev.nav.no` (intern — kun på Nav-nett / naisdevice) |
-| Auth | Azure AD-app + Wonderwall-sidecar (`autoLogin: true`). `allowAllUsers: false` → **kun de to Azure AD-gruppene** i manifestet slipper inn |
+| Cluster | `prod-gcp` (rent prod — ingen dev) |
+| Manifest | `nais/nais-prod.yaml` (image settes via `{{image}}`) |
+| Ingress | `https://dulting-studio.intern.nav.no` (intern — Nav-ansatte på Nav-nett) |
+| Auth | Azure AD-app + Wonderwall-sidecar (`autoLogin: true`). `allowAllUsers: true` → **åpent for alle innloggede Nav-ansatte** (lås til team-esyfo-gruppe senere — se manifest) |
 | Image | Next.js standalone, `node:24-slim`, port 3000 (`Dockerfile`) |
 | Helse | `/api/isAlive`, `/api/isReady`, `/api/metrics` — statiske, ingen DB |
 
@@ -27,9 +27,9 @@ Utrulling går via `.github/workflows/build-and-deploy.yaml`:
 1. **push til `main`** (eller PR) → jobben `test-and-verify` kjører
    `pnpm run lint`, `pnpm run test`, `pnpm run build`. **Alt må være grønt** —
    ellers bygges/deployes ingenting.
-2. `build-dev` bygger image (team-esyfo reusable action).
-3. `deploy-dev` kjører `nais/deploy` mot `dev-gcp` med
-   `RESOURCE: nais/nais-dev.yaml`.
+2. `build-prod` bygger image (team-esyfo reusable action).
+3. `deploy-prod` kjører `nais/deploy` mot `prod-gcp` med
+   `RESOURCE: nais/nais-prod.yaml`.
 
 Så for å få noe ut: **merge til `main`** og push (push er den manuelle review-gaten).
 
@@ -47,8 +47,8 @@ funksjonelle deployet, fordi de er statiske eller filbaserte:
 - `/` (forsiden) — `loadStudioCaseBundle` leser seed-filer, ikke DB.
 - `/brukerreise`, `/brukerreise/aid-presentasjon`, `/tiltakskart`.
 
-Dette er nok til å vise konkurranse-artefakten (brukerreisen) til alle på
-Nav-nett, allerede ved neste merge.
+Dette er nok til å vise konkurranse-artefakten (brukerreisen) til alle
+innloggede Nav-ansatte, allerede ved neste merge til main.
 
 ## Hva som trenger database
 
@@ -63,7 +63,7 @@ Uten `DATABASE_URL` kaster `getDb()` («DATABASE_URL mangler»), og disse sidene
 feiler deployet. (Lokalt var feilen du så Azure-auth, ikke DB — men deployet bak
 Wonderwall er det DB-en som mangler.)
 
-## Beslutningen: DB eller ikke i dev
+## Beslutningen: DB eller ikke
 
 ### (a) Deploy uten database — anbefalt nå
 Brukerreisen + forsiden + referansevisningene er live og delbare. Studio-
@@ -75,14 +75,14 @@ Gjør inbox/tiltak/klynger/matrise/tiltakspakke/import ende-til-ende. Koster en
 Cloud SQL-instans i team-esyfo sitt GCP-prosjekt og litt drift → **ditt valg**
 (jeg har ikke provisjonert noe).
 
-Skisse til manifest-tillegg (`nais/nais-dev.yaml`):
+Skisse til manifest-tillegg (`nais/nais-prod.yaml`):
 
 ```yaml
 spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_15
-        tier: db-f1-micro        # minste tier for dev
+        tier: db-f1-micro        # minste tier; vurder større for prod
         databases:
           - name: dulting-studio
 ```
@@ -105,7 +105,9 @@ Gjenstående wiring når (b) velges (egen liten oppgave):
 
 ## Hvem ser appen
 
-`intern.dev.nav.no` + `allowAllUsers: false` betyr: kun innloggede Nav-ansatte
-som er medlem av en av de to Azure AD-gruppene i `nais/nais-dev.yaml`, og kun fra
-Nav-nett/naisdevice. Vil flere se den, må gruppe-IDer legges til i manifestet
-(hold dem i sync med ev. app-side `requiredAzureAdGroups`).
+`intern.nav.no` + `allowAllUsers: true` betyr: **alle innloggede Nav-ansatte** på
+Nav-nett ser appen (Wonderwall krever fortsatt innlogging, men ingen
+gruppe-begrensning). Vil du **låse til team-esyfo** senere: sett
+`allowAllUsers: false` og legg team-esyfo sin AD-gruppe-ID under `claims.groups`
+i `nais/nais-prod.yaml` (kommentert mal ligger i manifestet; hold i sync med en
+ev. app-side `requiredAzureAdGroups`).
