@@ -15,4 +15,7 @@ ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
-CMD ["node", "server.js"]
+# Basisimaget (Chainguard/cgr-nav node) har ENTRYPOINT ["node"]. CMD må derfor
+# IKKE gjenta "node" — ellers blir kommandoen `node node server.js` og containeren
+# crasher med «Cannot find module '/app/node'».
+CMD ["server.js"]
