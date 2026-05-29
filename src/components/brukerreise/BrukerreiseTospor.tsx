@@ -3,6 +3,7 @@
 
 import {
   ArrowRightIcon,
+  CheckmarkCircleIcon,
   ExclamationmarkTriangleIcon,
 } from "@navikt/aksel-icons";
 import Link from "next/link";
@@ -10,7 +11,13 @@ import { usePathname } from "next/navigation";
 import { DultRefTag } from "@/components/DultRefTag";
 import { isRegisteredDultId } from "@/lib/dult-reference-registry";
 import { PhaseIcon } from "./icons";
-import { mission, overordnetMaal, persona, phases } from "./journey-data";
+import {
+  contrast,
+  mission,
+  overordnetMaal,
+  persona,
+  phases,
+} from "./journey-data";
 import { NudgeCard } from "./NudgeCard";
 
 export function BrukerreiseTospor() {
@@ -54,6 +61,43 @@ export function BrukerreiseTospor() {
             </div>
             <p className="brA__goals-dm1">{overordnetMaal.dialogmote1Note}</p>
           </section>
+
+          <aside className="brA__legend" aria-label="Slik leser du reisen">
+            <span className="brA__legend-title">Slik leser du reisen</span>
+            <ul>
+              <li>
+                <span
+                  className="brA__legend-key brA__legend-key--barr"
+                  aria-hidden
+                />
+                Barriere i dag
+              </li>
+              <li>
+                <span
+                  className="brA__legend-key brA__legend-key--motiv"
+                  aria-hidden
+                />
+                Driver vi spiller på
+              </li>
+              <li>
+                <span
+                  className="brA__legend-key brA__legend-key--silence"
+                  aria-hidden
+                />
+                Stillhet / dødsone
+              </li>
+              <li>
+                <span
+                  className="brA__legend-key brA__legend-key--nudge"
+                  aria-hidden
+                />
+                Dultet — varsel/oppgave
+              </li>
+            </ul>
+            <p className="brA__legend-track">
+              Hvert steg: <b>I dag</b> mot <b>Med dulting</b>
+            </p>
+          </aside>
         </header>
 
         <div className="brA__cols" aria-hidden>
@@ -97,6 +141,12 @@ export function BrukerreiseTospor() {
                     className="brA__panel brA__panel--now"
                     aria-label="I dag"
                   >
+                    <span
+                      className="brA__panellabel brA__panellabel--now"
+                      aria-hidden
+                    >
+                      I dag
+                    </span>
                     <span className="brA__tag brA__tag--barr">
                       Barriere · {p.barriere.kategori}
                     </span>
@@ -118,6 +168,12 @@ export function BrukerreiseTospor() {
                     className="brA__panel brA__panel--dult"
                     aria-label="Med dulting"
                   >
+                    <span
+                      className="brA__panellabel brA__panellabel--dult"
+                      aria-hidden
+                    >
+                      Med dulting
+                    </span>
                     <span className="brA__tag brA__tag--motiv">
                       Spiller på · {p.motivasjon.driver}
                     </span>
@@ -174,6 +230,39 @@ export function BrukerreiseTospor() {
             </li>
           ))}
         </ol>
+
+        <section
+          className="brA__summary"
+          aria-label="Slik endrer dulting flyten"
+        >
+          <h2 className="brA__summary-title">Slik endrer dulting flyten</h2>
+          <div className="brA__summarystats">
+            <div>
+              <b className="br-num">
+                {contrast.todayTouchpoints} → {contrast.dultTouchpoints}
+              </b>
+              <span>kontaktpunkter → tidsriktige dult</span>
+            </div>
+            <div>
+              <b className="br-num">{contrast.silenceWeeks} → 0</b>
+              <span>uker stillhet</span>
+            </div>
+            <div>
+              <b>
+                <CheckmarkCircleIcon aria-hidden fontSize="1.6rem" />
+              </b>
+              <span>plan i gang før frist</span>
+            </div>
+          </div>
+          <Link
+            className="brA__summary-cta"
+            href={`${pathname}?modus=presentasjon`}
+            scroll={false}
+          >
+            Se reisen som presentasjon
+            <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+          </Link>
+        </section>
       </div>
     </div>
   );

@@ -201,13 +201,19 @@ export function BrukerreisePresentasjon() {
         >
           {persona.note}
         </p>
-        <span
+        <Link
           className="br-nudge__cta"
-          style={{ background: "#2176d4", marginTop: "0.5rem" }}
+          href={pathname}
+          scroll={false}
+          style={{
+            background: "#2176d4",
+            marginTop: "0.5rem",
+            textDecoration: "none",
+          }}
         >
           Se tiltakene bak reisen
           <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-        </span>
+        </Link>
       </section>
     </div>
   );

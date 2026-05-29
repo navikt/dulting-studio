@@ -5,7 +5,9 @@
   /* palette */
   --ink: #0a2540;
   --ink-soft: #475569;
-  --ink-faint: #8a93a3;
+  /* --ink-faint mørknet fra #8a93a3 (3.10:1) til ~5.8:1 mot hvitt for å
+     klare WCAG AA på captions, labels, dato og lov-idealet (uu-krav). */
+  --ink-faint: #5b6675;
   --paper: #fbfbfd;
   --paper-2: #f4f6f9;
   --hair: #e6e9f0;
@@ -16,11 +18,14 @@
   --accent-soft: #eaf2fd;
   --accent-ink: #00357a;
 
-  --silence: #b88500;
+  /* --silence mørknet fra #b88500 (2.97:1) til ~4.96:1 på --silence-bg slik
+     at barriere-taggen og «Avveining»-teksten klarer WCAG AA. */
+  --silence: #8a6200;
   --silence-bg: #fdf3d6;
   --silence-hatch: #f7e6b0;
 
-  --good: #06893a;
+  /* --good mørknet fra #06893a (4.04:1) til ~4.9:1 på --good-bg for AA. */
+  --good: #057a33;
   --good-bg: #e7f6ec;
 
   /* channels */
@@ -268,52 +273,6 @@
   color: var(--ink-soft);
   max-width: 60ch;
 }
-.brA__statbar {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-  margin-top: 1.5rem;
-  padding: 1rem 1.25rem;
-  border: 1px solid var(--hair);
-  border-radius: var(--r-md);
-  background: #fff;
-  box-shadow: var(--shadow-sm);
-}
-.brA__stat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-.brA__stat b {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 800;
-}
-.brA__stat span {
-  font-size: 0.78rem;
-  color: var(--ink-faint);
-}
-.brA__stat--now b {
-  color: var(--ink-faint);
-}
-.brA__stat--dult b {
-  color: var(--accent);
-}
-.brA__statrow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  align-items: center;
-}
-.brA__statcaption {
-  margin: 0;
-  font-size: 0.82rem;
-  color: var(--ink-soft);
-  border-top: 1px solid var(--hair);
-  padding-top: 0.6rem;
-  max-width: 74ch;
-}
-
 /* column headers — static; sticky caused overlap with content behind */
 .brA__cols {
   display: grid;
@@ -414,7 +373,7 @@
   align-items: center;
   gap: 0.6rem;
 }
-.brA__rowtitle h3 {
+.brA__rowtitle h2 {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.15rem;
@@ -857,6 +816,9 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
+  /* sentrer hele fase-blokken vertikalt i den høye seksjonen — uten dette
+     ligger innholdet toppjustert med et stort tomrom før neste beat. */
+  align-content: center;
   gap: 3rem;
   padding: 5rem max(1.5rem, calc(50vw - 34rem));
   border-top: 1px solid var(--hair);
@@ -1555,4 +1517,188 @@
   color: #7fb0e8;
   font-size: 0.85rem;
   font-style: italic;
+}
+
+/* =====================================================================
+   Lese-nøkkel — forklarer fargespråket og de to sporene før reisen
+   ===================================================================== */
+.brA__legend {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.1rem;
+  padding: 0.8rem 1.1rem;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  background: var(--paper);
+}
+.brA__legend-title {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.brA__legend ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.brA__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+.brA__legend-key {
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 5px;
+  flex: none;
+  border: 1px solid var(--hair-strong);
+}
+.brA__legend-key--barr {
+  background: var(--silence-bg);
+  border-color: color-mix(in srgb, var(--silence) 40%, white);
+}
+.brA__legend-key--motiv {
+  background: var(--good-bg);
+  border-color: color-mix(in srgb, var(--good) 35%, white);
+}
+.brA__legend-key--silence {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--silence-bg),
+    var(--silence-bg) 3px,
+    var(--silence-hatch) 3px,
+    var(--silence-hatch) 6px
+  );
+  border-color: color-mix(in srgb, var(--silence) 40%, white);
+}
+.brA__legend-key--nudge {
+  background: #fff;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.brA__legend-track {
+  margin: 0 0 0 auto;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+.brA__legend-track b {
+  color: var(--ink-soft);
+}
+
+/* per-panel spor-merkelapp — synlig kun når panelene stables på smal skjerm,
+   der kolonnetitlene «I dag / Med dulting» er skjult */
+.brA__panellabel {
+  display: none;
+}
+
+/* avsluttende oppsummeringsbånd i arbeidsverktøyet — speiler closeren i
+   presentasjonsmodus, og gir working-viewet en konklusjon + vei til reisen */
+.brA__summary {
+  margin-top: 3rem;
+  padding: 2.25rem 2rem;
+  border-radius: var(--r-lg);
+  background: radial-gradient(120% 130% at 50% -20%, #12325f, #0a1f3d 72%);
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.3rem;
+}
+.brA__summary-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.brA__summarystats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem 3rem;
+}
+.brA__summarystats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.brA__summarystats b {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: #7fb0e8;
+  line-height: 1;
+}
+.brA__summarystats b svg {
+  color: #7fb0e8;
+  vertical-align: middle;
+}
+.brA__summarystats span {
+  font-size: 0.82rem;
+  color: #b9cbe6;
+}
+.brA__summary-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+  background: var(--accent-bright);
+  text-decoration: none;
+  padding: 0.7rem 1.3rem;
+  border-radius: 999px;
+}
+.brA__summary-cta:hover {
+  background: #1a6ac4;
+}
+.brA__summary-cta:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 60rem) {
+  .brA__legend-track {
+    margin-left: 0;
+  }
+  .brA__panellabel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .brA__panellabel::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+  }
+  .brA__panellabel--now {
+    color: var(--ink-faint);
+  }
+  .brA__panellabel--now::before {
+    background: var(--ink-faint);
+  }
+  .brA__panellabel--dult {
+    color: var(--accent-ink);
+  }
+  .brA__panellabel--dult::before {
+    background: var(--accent);
+  }
 }
