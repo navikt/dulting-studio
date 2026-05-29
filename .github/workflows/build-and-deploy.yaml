@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: read # nødvendig for å hente @navikt-pakker fra GitHub Packages (pnpm install)
     timeout-minutes: 15
     steps:
       - uses: navikt/teamesyfo-github-actions-workflows/actions/setup-pnpm@eea7c65b525dfc94332000d3737a5a51207643df # main
