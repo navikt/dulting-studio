@@ -2,6 +2,7 @@ import {
   Alert,
   BodyLong,
   BodyShort,
+  Button,
   Heading,
   HStack,
   Tag,
@@ -68,6 +69,19 @@ export default async function Home() {
                 retning, men inneholder ikke reelle tiltak, saker eller
                 personopplysninger.
               </Alert>
+
+              <HStack gap="space-12" wrap>
+                <Button as="a" href="/brukerreise/leder" variant="primary">
+                  Åpne brukerreisen for nærmeste leder
+                </Button>
+                <Button
+                  as="a"
+                  href="/brukerreise/leder?modus=presentasjon"
+                  variant="secondary"
+                >
+                  Vis som presentasjon
+                </Button>
+              </HStack>
             </VStack>
           </section>
 

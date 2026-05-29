@@ -142,3 +142,52 @@ visuelt. Dette registeret gir bakgrunn, råkorttekst og mapping. Oppdater
 registeret når et DULT-kort flyttes til en annen klynge eller får ny status.
 Kolonnen «Åpne spørsmål» i Mural tilsvarer avklaringstabellen i dette
 registeret og må holdes synkronisert.
+
+## Tilleggsråkort fra tavla (DULT-26–35)
+
+> Lagt til 2026-05-29 etter en **eksakt** gjennomgang av kidult-tavla
+> (CSV-eksport med tekst + posisjon + område). «Dulting arbeidsgiver»-området
+> har **36 lapper**; DULT-01…25 over dekket 25 av dem. De følgende 10 fantes på
+> tavla, men manglet i registeret — flere kom trolig til etter at registeret
+> ble skrevet. Tyngdepunktet er **deling**, **aktiv/justerbar plan** og en
+> **revamp av Dine sykmeldte**.
+
+| DULT-ID | Råkort (verbatim) | Intensjon | Tiltaksklynge (foreløpig) | Kommentar |
+|---|---|---|---|---|
+| DULT-26 | Oppfordre arbeidsgiver til å dele med legen så tidlig som mulig (eks skisse). Ta i bruk dulteteknikker som trigger: urgency / forhåndsutfylt valg for fastlegen | Få planen delt med lege tidlig via aktiv dulting. | Stegvis hjelp i planflyt (deling) | Konkret dulteteknikk (urgency, forhåndsutfylt) — mekanisme som mangler i bearbeidet tiltak. |
+| DULT-27 | Det burde stå om hvorfor man skal dele planen med fastlege og Nav | Arbeidsgiver forstår verdien av deling. | Støttende tekst og forståelse | Nær DULT-26; motivasjon for deling. |
+| DULT-28 | Dersom de ikke kan lagres lengre enn 4 måneder hos Nav, kan arbeidsgiver anbefales å lagre planene hos seg så de kan bruke de senere … man kan gjenbruke masse fra en annens tidligere plan? — hvorfor lagres den ikke lenger og hvor de kan finne den igjen? | Plan kan gjenbrukes/lagres ut over Nav sin 4-mnd-lagring. | Stegvis hjelp i planflyt | Berører Nav-lagringsregel + gjenbruk på tvers. Krever avklaring. |
+| DULT-29 | Oppfølgingsplanen fungerer slik at den kan reverseres, man kan endre innholdet gjennom perioder på samme plan. «Ingenting er hugget i stein …» | Planen oppleves som et levende, endrbart verktøy. | Stegvis hjelp i planflyt | Speiles av T06 (aktiv plan kan justeres). |
+| DULT-30 | Ville det være en idé at sykmeldt også kan dele planen med lege og Nav (si til AG at den ansatte kan dele) | Også sykmeldt kan dele planen. | Stegvis hjelp i planflyt (deling) | **Kryss-aktør** — kobles til sykmeldt-sporet. |
+| DULT-31 | Ha med en knapp inne på planen «endre/juster/oppdater plan» | Lett å oppdatere aktiv plan. | Stegvis hjelp i planflyt | Konkret UI for DULT-29 / T06. |
+| DULT-32 | Revamped dine sykmeldte guider lederen i hvordan en oppfølgingssamtale bør gjøres. Hvilke spørsmål stiller man? Sitter man sammen? Hva er en oppfølgingsplan, og hvordan drar man best nytte av den? Hvem skal man dele planen med, og når? | Flaten guider hele oppfølgingssamtalen, ikke bare planutfylling. | Stegvis hjelp i planflyt | **Bredere enn DULT-05/T05** — eget, større grep. |
+| DULT-33 | Dersom man ikke har behov for en plan kan man her oppgi det, og dele infoen med nav og lege. | Registrere «ikke behov» og dele begrunnelsen. | Behovsvurdering i Dine sykmeldte | Variant/overlapp med DULT-15 og DULT-16. |
+| DULT-34 | Endre overskrift? … kanskje heller: «Hvem skal du dele oppfølgingsplanen med?» … Burde knappen hete evaluering av oppfølgingsplan …? | Tydeligere tekst/handling på delings- og evalueringssteg. | Tekst og skjermrydding | UI-/språkrydding på delingssteget. |
+| DULT-35 | Ikke synlig nok at det er den siste / aktive plan | Tydeliggjøre hvilken plan som er aktiv. | Tekst og skjermrydding | Delvis dekket av T06. |
+
+## Dekningskart: råkort → bearbeidet tiltak (T01–T14)
+
+> Svar på «er den bearbeidede tabellen komplett?»: **kjernen er dekket, men
+> flere råkort har ingen eller tynn dekning** i T01–T14
+> (`src/lib/kidult-reference-model.ts`). **GAP** = ikke representert som eget
+> bearbeidet tiltak. Dette er innspill til neste revisjon av tiltakene, ikke en
+> påstand om at de bør inn i første test.
+
+| Bearbeidet tiltak | Dekker råkort | Merknad |
+|---|---|---|
+| T01 Varsel før uke 4 | DULT-06 | |
+| T02 Frist på riktig person | DULT-20, DULT-11 | |
+| T03 Personnær vurderingsoppgave | DULT-01, DULT-07 | |
+| T04 Plan trengs ikke nå | DULT-15, DULT-16, DULT-33 | |
+| T05 Miniguide og stegvis plan | DULT-05, DULT-24, DULT-17 | DULT-17 (tilpasse etter gradering/yrkesgruppe) dekkes kun delvis. |
+| T06 Aktiv plan kan justeres | DULT-29, DULT-31, DULT-35 | Disse var ikke i registeret før nå. |
+| T07 Utkast og fremdrift | DULT-08, DULT-19 | |
+| T08 Evalueringsdato | DULT-12 | |
+| T09 Kalender og opt-in påminnelse | DULT-12, DULT-22 | |
+| T10 Hvorfor dele med lege og Nav | DULT-26, DULT-27 | Dulteteknikk-mekanismen i DULT-26 er ikke eksplisitt i T10. |
+| T11 Tilrettelegging virker / ikke | — | Ingen direkte råkort; avledet i bearbeidingen. |
+| T12 Lagring og gjenbruk | DULT-28 | Tynt; DULT-28 har mer (gjenbruk på tvers, 4-mnd-regel). |
+| T13 Verdi og plikt i klarspråk | DULT-02, DULT-10 | |
+| T14 Samlet innhold og begrepsrydding | DULT-03, DULT-09, DULT-13, DULT-34 | |
+| **GAP — ikke i bearbeidet tabell** | **DULT-04** (legebeskjed som signal), **DULT-30** (sykmeldt kan også dele), **DULT-32** (revamped Dine sykmeldte guider samtalen) | Reelle tiltaksidéer uten hjem i T01–T14. |
+| Kontekst/premiss/meta (ikke tiltak) | DULT-14, DULT-18, DULT-21, DULT-23, DULT-25 | DULT-25 (banner blindness) brukes som guardrail. |

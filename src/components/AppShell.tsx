@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  FolderIcon,
-  LineGraphIcon,
-  TableIcon,
-  UploadIcon,
-} from "@navikt/aksel-icons";
+import { FolderIcon } from "@navikt/aksel-icons";
 import { Link as AkselLink, Heading, HStack } from "@navikt/ds-react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,28 +11,29 @@ type NavItem = {
   icon: React.ReactNode;
 };
 
+// Slim toppnav (4a): «Importer Mural» er tatt ut av den persistente baren —
+// det er en sjelden handling (fortsatt tilgjengelig på /projects/import), og
+// på sikt trolig unødvendig. Med ett prosjekt holder det med «Prosjekter».
 const navItems: NavItem[] = [
   {
     href: "/projects",
     label: "Prosjekter",
     icon: <FolderIcon aria-hidden fontSize="1.25rem" />,
   },
-  {
-    href: "/projects/import",
-    label: "Importer Mural",
-    icon: <UploadIcon aria-hidden fontSize="1.25rem" />,
-  },
-  {
-    href: "/brukerreise",
-    label: "Brukerreise",
-    icon: <LineGraphIcon aria-hidden fontSize="1.25rem" />,
-  },
-  {
-    href: "/tiltakskart",
-    label: "Tiltakskart",
-    icon: <TableIcon aria-hidden fontSize="1.25rem" />,
-  },
 ];
+
+function isActiveNavItem(pathname: string, href: string) {
+  if (href === "/projects") {
+    return (
+      pathname === href ||
+      (pathname.startsWith("/projects/") &&
+        pathname !== "/projects/import" &&
+        !pathname.startsWith("/projects/import/"))
+    );
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -55,16 +51,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <nav aria-label="Hovednavigasjon">
             <HStack as="ul" gap="space-16" className="app-nav">
               {navItems.map((item) => {
-                const isExactMatch = pathname === item.href;
-                const isSection = pathname.startsWith(item.href);
+                const isActive = isActiveNavItem(pathname, item.href);
 
                 return (
                   <li key={item.href}>
                     <AkselLink
                       as={NextLink}
                       href={item.href}
-                      className={`app-nav__link${isSection ? " app-nav__link--active" : ""}`}
-                      aria-current={isExactMatch ? "page" : undefined}
+                      className={`app-nav__link${isActive ? " app-nav__link--active" : ""}`}
+                      aria-current={isActive ? "page" : undefined}
                     >
                       <HStack gap="space-4" align="center">
                         {item.icon}

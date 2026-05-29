@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ArrowLeftIcon,
-  FolderIcon,
-  LineGraphIcon,
-  TableIcon,
-} from "@navikt/aksel-icons";
+import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import {
   BodyLong,
   BodyShort,
@@ -378,53 +373,8 @@ function ProjectInboxContent() {
             size="small"
             icon={<ArrowLeftIcon aria-hidden />}
           >
-            Tilbake
+            Tilbake til prosjekter
           </Button>
-          <HStack gap="space-8">
-            <Button
-              as={Link}
-              href={`/projects/${projectId}/tiltak`}
-              variant="tertiary"
-              size="small"
-            >
-              Tiltak
-            </Button>
-            <Button
-              as={Link}
-              href={`/projects/${projectId}/clusters`}
-              variant="tertiary"
-              size="small"
-              icon={<FolderIcon aria-hidden />}
-            >
-              Klynger
-            </Button>
-            <Button
-              as={Link}
-              href={`/projects/${projectId}/matrix`}
-              variant="tertiary"
-              size="small"
-              icon={<TableIcon aria-hidden />}
-            >
-              Matrisevisning
-            </Button>
-            <Button
-              as={Link}
-              href="/brukerreise"
-              variant="tertiary"
-              size="small"
-              icon={<LineGraphIcon aria-hidden />}
-            >
-              Brukerreise
-            </Button>
-            <Button
-              as={Link}
-              href="/tiltakskart"
-              variant="tertiary"
-              size="small"
-            >
-              Tiltakskart
-            </Button>
-          </HStack>
         </HStack>
 
         <VStack gap="space-8">
