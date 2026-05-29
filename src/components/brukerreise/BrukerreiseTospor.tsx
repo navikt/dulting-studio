@@ -10,13 +10,7 @@ import { usePathname } from "next/navigation";
 import { DultRefTag } from "@/components/DultRefTag";
 import { isRegisteredDultId } from "@/lib/dult-reference-registry";
 import { PhaseIcon } from "./icons";
-import {
-  contrast,
-  mission,
-  overordnetMaal,
-  persona,
-  phases,
-} from "./journey-data";
+import { mission, overordnetMaal, persona, phases } from "./journey-data";
 import { NudgeCard } from "./NudgeCard";
 
 export function BrukerreiseTospor() {
@@ -37,34 +31,6 @@ export function BrukerreiseTospor() {
           <div className="brA__track">{mission.track}</div>
           <h1 className="brA__title">{mission.title}</h1>
           <p className="brA__lead">{mission.lead}</p>
-
-          <div className="brA__statbar">
-            <div className="brA__statrow">
-              <div className="brA__stat brA__stat--now">
-                <b className="br-num">{contrast.todayTouchpoints}</b>
-                <span>kontaktpunkter fra Nav i dag</span>
-              </div>
-              <div
-                style={{
-                  alignSelf: "center",
-                  color: "var(--ink-faint)",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <ArrowRightIcon aria-hidden fontSize="1.4rem" />
-              </div>
-              <div className="brA__stat brA__stat--dult">
-                <b className="br-num">{contrast.dultTouchpoints}</b>
-                <span>tidsriktige dult om oppfølging</span>
-              </div>
-            </div>
-            <p className="brA__statcaption">
-              I dag er kontakten generell (sykmelding mottatt) eller sen (når
-              Nav ber om plan) — sjelden et tidsriktig signal om oppfølging. Med
-              dulting blir hvert steg et lite dult som gjør neste steg enkelt.
-            </p>
-          </div>
           <p
             className="br-eyebrow"
             style={{
