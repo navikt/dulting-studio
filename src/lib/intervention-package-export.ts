@@ -17,7 +17,9 @@ export class ProbablePiiRiskExportError extends Error {
   readonly code = "probable_pii_risk_export";
 
   constructor() {
-    super("Eksport er blokkert fordi minst én kilde har sannsynlig PII-risiko.");
+    super(
+      "Eksport er blokkert fordi minst én kilde har sannsynlig PII-risiko.",
+    );
   }
 }
 

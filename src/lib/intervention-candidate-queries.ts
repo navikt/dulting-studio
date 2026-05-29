@@ -1,8 +1,8 @@
 import { eq, inArray } from "drizzle-orm";
 import type { getDb } from "@/db/client";
 import {
-  interventionCandidates,
   interventionCandidateSources,
+  interventionCandidates,
 } from "@/db/schema";
 
 type Database = ReturnType<typeof getDb>;

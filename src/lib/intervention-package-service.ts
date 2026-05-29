@@ -123,7 +123,9 @@ export async function addCandidateToCurrentPackage(
     }));
 
   const packageId =
-    "packageId" in currentPackage ? currentPackage.packageId : currentPackage.id;
+    "packageId" in currentPackage
+      ? currentPackage.packageId
+      : currentPackage.id;
 
   try {
     const member = await store.insertPackageMember({

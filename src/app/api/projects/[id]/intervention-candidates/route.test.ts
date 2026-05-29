@@ -314,7 +314,9 @@ describe("/api/projects/[id]/intervention-candidates", () => {
     expect(JSON.stringify(logErrorMock.mock.calls)).not.toContain(
       "Samler widgets om tidligere oppfølging.",
     );
-    expect(JSON.stringify(logErrorMock.mock.calls)).not.toContain("textContent");
+    expect(JSON.stringify(logErrorMock.mock.calls)).not.toContain(
+      "textContent",
+    );
     await expect(response.json()).resolves.toEqual({
       message: "Intern serverfeil",
       callId: "call-123",

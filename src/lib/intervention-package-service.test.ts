@@ -4,9 +4,9 @@ import {
   addCandidateToCurrentPackage,
   CandidateNotFoundForPackageError,
   DuplicatePackageMemberError,
+  type InterventionPackageStore,
   RejectedCandidatePackageError,
   recordPackageExport,
-  type InterventionPackageStore,
 } from "./intervention-package-service";
 import type { AddPackageMemberInput } from "./intervention-package-validation";
 
@@ -25,7 +25,8 @@ const userContext: ProtectedApiContext = {
 
 const payload: AddPackageMemberInput = {
   candidateId,
-  assessment: "Relevant for første pakke fordi tiltaket kan gi tidligere oppfølging.",
+  assessment:
+    "Relevant for første pakke fordi tiltaket kan gi tidligere oppfølging.",
   forgoodFlags: [
     {
       dimension: "goals",

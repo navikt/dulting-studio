@@ -45,7 +45,9 @@ describe("/api/projects/[id]/intervention-packages/current", () => {
       coverage: { actorTracks: [], journeySteps: [], cells: [] },
     };
     const dependencies = createDependencies();
-    dependencies.getCurrentPackageWithCandidates.mockResolvedValue(packageDetail);
+    dependencies.getCurrentPackageWithCandidates.mockResolvedValue(
+      packageDetail,
+    );
     const { handleGetCurrentPackage } = await import("./route");
 
     const response = await handleGetCurrentPackage(

@@ -76,7 +76,10 @@ function containsHtmlMarkup(value: string) {
 function validateObject(
   body: unknown,
   allowedKeys: Set<string>,
-): { record: Record<string, unknown>; errors: InterventionPackageValidationError[] } {
+): {
+  record: Record<string, unknown>;
+  errors: InterventionPackageValidationError[];
+} {
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     return {
       record: {},

@@ -5,12 +5,12 @@ import type { ProtectedApiContext } from "@/lib/auth";
 import { withProtectedApiRoute } from "@/lib/auth";
 import { validateUuid } from "@/lib/classify-validation";
 import {
+  type AddPackageMemberResult,
   addCandidateToCurrentPackage,
   CandidateNotFoundForPackageError,
   createDrizzleInterventionPackageStore,
   DuplicatePackageMemberError,
   RejectedCandidatePackageError,
-  type AddPackageMemberResult,
 } from "@/lib/intervention-package-service";
 import {
   type AddPackageMemberInput,
@@ -90,7 +90,11 @@ export async function handleAddCurrentPackageMember(
       path,
       method: request.method,
     });
-    return createErrorResponse(context.callId, "Ugyldig JSON i forespørsel", 400);
+    return createErrorResponse(
+      context.callId,
+      "Ugyldig JSON i forespørsel",
+      400,
+    );
   }
 
   const validation = validateAddPackageMemberBody(body);

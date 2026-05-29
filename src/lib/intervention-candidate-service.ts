@@ -1,8 +1,8 @@
 import { and, eq, inArray } from "drizzle-orm";
 import type { getDb } from "@/db/client";
 import {
-  interventionCandidates,
   interventionCandidateSources,
+  interventionCandidates,
   type NewInterventionCandidate,
   type NewInterventionCandidateSource,
   widgets,

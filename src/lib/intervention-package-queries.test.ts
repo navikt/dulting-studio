@@ -34,7 +34,9 @@ describe("getCurrentPackageWithCandidates", () => {
           placementRole: "journey_step",
           assessment: "Relevant for første pakke.",
           forgoodFlags: [{ dimension: "goals", note: "Tydelig mål." }],
-          openQuestions: [{ question: "Må ordlyd juridisk sjekkes?", category: "juridisk" }],
+          openQuestions: [
+            { question: "Må ordlyd juridisk sjekkes?", category: "juridisk" },
+          ],
           stopCriteria: [{ criterion: "Stopp ved PII i fritekst." }],
           addedAt: new Date("2026-05-28T12:00:00.000Z"),
         },
@@ -153,13 +155,13 @@ describe("getCurrentPackageWithCandidates", () => {
       fetchSourceRows: vi.fn(),
     };
 
-    await expect(getCurrentPackageWithCandidates(store, projectId)).resolves.toEqual(
-      {
-        package: null,
-        groups: [],
-        coverage: { actorTracks: [], journeySteps: [], cells: [] },
-      },
-    );
+    await expect(
+      getCurrentPackageWithCandidates(store, projectId),
+    ).resolves.toEqual({
+      package: null,
+      groups: [],
+      coverage: { actorTracks: [], journeySteps: [], cells: [] },
+    });
     expect(store.fetchMemberCandidateRows).not.toHaveBeenCalled();
   });
 });

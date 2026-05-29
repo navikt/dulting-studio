@@ -11,7 +11,8 @@ describe("validateAddPackageMemberBody", () => {
     expect(
       validateAddPackageMemberBody({
         candidateId,
-        assessment: "Relevant for første pakke fordi tiltaket kan gi tidligere oppfølging.",
+        assessment:
+          "Relevant for første pakke fordi tiltaket kan gi tidligere oppfølging.",
         forgoodFlags: [
           {
             dimension: "goals",
@@ -108,7 +109,10 @@ describe("validateAddPackageMemberBody", () => {
       ok: false,
       errors: [
         { field: "assessment", message: "Må være ren tekst uten HTML" },
-        { field: "forgoodFlags[0].note", message: "Må være ren tekst uten HTML" },
+        {
+          field: "forgoodFlags[0].note",
+          message: "Må være ren tekst uten HTML",
+        },
         {
           field: "openQuestions[0].question",
           message: "Må være ren tekst uten HTML",

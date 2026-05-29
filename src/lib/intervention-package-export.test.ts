@@ -95,7 +95,9 @@ describe("buildInterventionPackageExport", () => {
     expect(result.content).toContain("### Tidlig oppfølgingsplan");
     expect(result.content).toContain("- Vurdering: Relevant for første pakke.");
     expect(result.content).toContain("- goals: Tydelig mål.");
-    expect(result.content).toContain("- Må ordlyd juridisk sjekkes? (juridisk)");
+    expect(result.content).toContain(
+      "- Må ordlyd juridisk sjekkes? (juridisk)",
+    );
     expect(result.content).toContain("- Stopp ved PII i fritekst.");
     expect(result.content).toContain(
       "- Widget cell-1 | PII-risiko: none | Kilde for tidlig signal | Tidlig oppfølging",
@@ -159,11 +161,7 @@ describe("buildInterventionPackageExport", () => {
     };
 
     expect(() =>
-      buildInterventionPackageExport(
-        unsafePackage,
-        "markdown",
-        exportContext,
-      ),
+      buildInterventionPackageExport(unsafePackage, "markdown", exportContext),
     ).toThrow(ProbablePiiRiskExportError);
   });
 });

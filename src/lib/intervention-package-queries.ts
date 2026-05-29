@@ -1,8 +1,8 @@
 import { and, eq, inArray } from "drizzle-orm";
 import type { getDb } from "@/db/client";
 import {
-  interventionCandidates,
   interventionCandidateSources,
+  interventionCandidates,
   interventionPackageMembers,
   interventionPackages,
   type PackageForgoodFlag,
@@ -161,7 +161,10 @@ export async function getCurrentPackageWithCandidates(
 }
 
 function groupSourcesByCandidateId(sourceRows: PackageSourceRow[]) {
-  const sourceRefsByCandidateId = new Map<string, InterventionPackageSourceRef[]>();
+  const sourceRefsByCandidateId = new Map<
+    string,
+    InterventionPackageSourceRef[]
+  >();
 
   for (const source of sourceRows) {
     const refs = sourceRefsByCandidateId.get(source.candidateId) ?? [];
@@ -206,7 +209,10 @@ function buildCoverage(
 ): InterventionPackageCoverage {
   const actorTracks: string[] = [];
   const journeySteps: string[] = [];
-  const cellMap = new Map<string, InterventionPackageCoverage["cells"][number]>();
+  const cellMap = new Map<
+    string,
+    InterventionPackageCoverage["cells"][number]
+  >();
 
   for (const candidate of candidates) {
     const actorTrack = normalizeCoverageValue(candidate.actorTrack);

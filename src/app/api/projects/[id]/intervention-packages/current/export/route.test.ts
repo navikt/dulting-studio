@@ -91,7 +91,9 @@ describe("/api/projects/[id]/intervention-packages/current/export", () => {
       },
       expect.objectContaining({ callId: "call-123" }),
     );
-    await expect(response.text()).resolves.toBe("# Tiltakspakke: Tiltakspakke 1\n");
+    await expect(response.text()).resolves.toBe(
+      "# Tiltakspakke: Tiltakspakke 1\n",
+    );
   });
 
   it("POST rejects export without PII confirmation", async () => {
