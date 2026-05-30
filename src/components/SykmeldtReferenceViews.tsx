@@ -207,6 +207,10 @@ export function SykmeldtInterventionMapView() {
         Se også{" "}
         <AkselLink as={NextLink} href="/tiltakskart">
           arbeidsgiver-tiltakskartet
+        </AkselLink>{" "}
+        og{" "}
+        <AkselLink as={NextLink} href="/atferdsmatrise">
+          atferdsmatrisen
         </AkselLink>
         .
       </BodyShort>

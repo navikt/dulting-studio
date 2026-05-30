@@ -416,6 +416,10 @@ export function KidultInterventionMapView() {
         og{" "}
         <AkselLink as={NextLink} href="/tiltakskart/sykmeldt">
           sykmeldt-sporet
+        </AkselLink>{" "}
+        og{" "}
+        <AkselLink as={NextLink} href="/atferdsmatrise">
+          atferdsmatrisen
         </AkselLink>
         .
       </BodyShort>

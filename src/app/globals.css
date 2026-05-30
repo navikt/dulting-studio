@@ -1195,3 +1195,93 @@ a:where(:not(.aksel-button)) {
     left: -1rem;
   }
 }
+
+/* =====================================================================
+   Atferdsmatrise — motivasjon (kolonner) × barriere (rader)
+   ===================================================================== */
+.bm-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--ax-radius-8);
+}
+.bm-scroll:focus-visible {
+  outline: 2px solid var(--ax-border-focus);
+  outline-offset: 2px;
+}
+.bm {
+  border-collapse: separate;
+  border-spacing: 0.4rem;
+  width: 100%;
+  min-width: 56rem;
+  table-layout: fixed;
+}
+.bm__caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.bm__corner {
+  width: 9rem;
+  border: 0;
+  background: transparent;
+}
+.bm__colhead {
+  vertical-align: bottom;
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ax-text-default);
+  padding: 0.5rem 0.6rem;
+  background: var(--ax-bg-accent-soft);
+  border: 1px solid var(--ax-border-accent);
+  border-radius: var(--ax-radius-8);
+}
+.bm__rowhead {
+  width: 9rem;
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ax-text-default);
+  padding: 0.6rem 0.7rem;
+  background: var(--ax-bg-warning-soft);
+  border: 1px solid var(--ax-border-warning);
+  border-radius: var(--ax-radius-8);
+}
+.bm__cell {
+  vertical-align: top;
+  padding: 0.4rem;
+  border: 1px dashed var(--ax-border-subtle);
+  border-radius: var(--ax-radius-8);
+  background: var(--ax-bg-default);
+}
+.bm__cell--filled {
+  border-style: solid;
+}
+.bm__chip {
+  display: block;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--ax-radius-4);
+  color: var(--ax-text-default);
+  background: var(--ax-bg-accent-soft);
+  border: 1px solid var(--ax-border-accent);
+}
+.bm__chip + .bm__chip {
+  margin-top: 0.3rem;
+}
+.bm__chip b {
+  font-weight: 700;
+}
+.bm[data-aktor="sykmeldt"] .bm__chip {
+  background: var(--ax-bg-meta-purple-soft);
+  border-color: var(--ax-border-meta-purple);
+}
+.bm[data-aktor="sykmeldt"] .bm__colhead {
+  background: var(--ax-bg-meta-purple-soft);
+  border-color: var(--ax-border-meta-purple);
+}
