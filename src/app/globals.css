@@ -20,8 +20,10 @@ body {
 /* Plain lenker arver tekstfarge — men IKKE Aksel-knapper rendret som <a>
    (Button as="a"). Aksel setter knappefargen i et @layer; en ulagdelt
    a{color:inherit} slår lagdelte regler uansett spesifisitet og ga svart
-   tekst på blå primærknapp (3.3:1). Unntaket lar Aksel eie knappefargen. */
-a:not(.aksel-button) {
+   tekst på blå primærknapp (3.3:1). :where() holder spesifisiteten på rein
+   a (0,0,1) så egne lenke-klasser (.brA__present m.fl. som setter color:#fff)
+   fortsatt vinner; :not(.aksel-button) lar Aksel eie knappefargen. */
+a:where(:not(.aksel-button)) {
   color: inherit;
 }
 
