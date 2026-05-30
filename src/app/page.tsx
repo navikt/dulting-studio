@@ -50,6 +50,9 @@ export default function Home() {
           >
             Vis som presentasjon
           </Button>
+          <Button as="a" href="/brukerreise/sykmeldt" variant="tertiary">
+            Brukerreise for den sykmeldte
+          </Button>
         </div>
         <p className="lp__note">
           Bevisst avgrenset demo. Alt innhold er syntetisk — ingen reelle

@@ -10,7 +10,18 @@
 // Illustrative, synthetic scenario only — no real persons or cases.
 // Persona: leder "Maria" følger opp ansatt "Jonas". Ingen diagnose vises.
 
-export type ChannelKey = "msag" | "dsm" | "plan" | "epost" | "nav";
+export type ChannelKey =
+  // arbeidsgiver-sporet
+  | "msag"
+  | "dsm"
+  | "plan"
+  | "epost"
+  | "nav"
+  // sykmeldt-sporet
+  | "minside-sykmeldt"
+  | "dsf"
+  | "sms"
+  | "kartlegging";
 
 export type Channel = {
   key: ChannelKey;
@@ -25,6 +36,20 @@ export const channels: Record<ChannelKey, Channel> = {
   plan: { key: "plan", label: "Oppfølgingsplan", tint: "--ch-plan" },
   epost: { key: "epost", label: "E-post", tint: "--ch-epost" },
   nav: { key: "nav", label: "Nav", tint: "--ch-nav" },
+  // sykmeldt-flatene. «Min side for sykmeldte» (vår flate, microfrontend +
+  // varsel) og «Ditt sykefravær» (Flex-eid — vi samarbeider, eier den ikke).
+  "minside-sykmeldt": {
+    key: "minside-sykmeldt",
+    label: "Min side for sykmeldte",
+    tint: "--ch-dsm",
+  },
+  dsf: { key: "dsf", label: "Ditt sykefravær", tint: "--ch-msag" },
+  sms: { key: "sms", label: "SMS", tint: "--ch-epost" },
+  kartlegging: {
+    key: "kartlegging",
+    label: "Kartleggingsspørsmål",
+    tint: "--ch-plan",
+  },
 };
 
 export type Nudge = {
@@ -93,6 +118,30 @@ export type Phase = {
   /** Måletegn — hentet fra KPI-kortene i atferdskartleggingen. */
   measurements: string[];
   guardrail: string;
+  /** To-sidig touchpoint: navngir det tilsvarende steget i det andre sporet. */
+  sharedWithAg?: string;
+};
+
+/** Felles datakontrakt for en brukerreise (leder eller sykmeldt). */
+export type Mission = { track: string; title: string; lead: string };
+export type Persona = { leder: string; ansatt: string; note: string };
+export type OverordnetMaal = {
+  eyebrow: string;
+  oppdrag: string;
+  kr: string[];
+  dialogmote1Note: string;
+};
+export type Contrast = {
+  todayTouchpoints: number;
+  dultTouchpoints: number;
+  silenceWeeks: number;
+};
+export type JourneyData = {
+  mission: Mission;
+  persona: Persona;
+  phases: Phase[];
+  overordnetMaal: OverordnetMaal;
+  contrast: Contrast;
 };
 
 export const persona = {
@@ -442,4 +491,13 @@ export const overordnetMaal = {
   ],
   dialogmote1Note:
     "Dialogmøte 1 (innen uke 7) ligger i samme horisont. Vi tar ikke dulting-grepet for selve møtet nå — det er en egen satsing senere — men oppfølgingsplanen mater rett inn i det.",
+};
+
+/** Samlet brukerreise for nærmeste leder — injiseres i komponentene. */
+export const lederJourney: JourneyData = {
+  mission,
+  persona,
+  phases,
+  overordnetMaal,
+  contrast,
 };

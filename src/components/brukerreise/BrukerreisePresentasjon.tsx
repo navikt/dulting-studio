@@ -12,20 +12,15 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { DultRefTag } from "@/components/DultRefTag";
 import { isRegisteredDultId } from "@/lib/dult-reference-registry";
 import { PhaseIcon } from "./icons";
-import {
-  contrast,
-  mission,
-  overordnetMaal,
-  persona,
-  phases,
-} from "./journey-data";
+import type { JourneyData } from "./journey-data";
 import { NudgeCard } from "./NudgeCard";
 import { screenFor } from "./ScreenMock";
 
-export function BrukerreisePresentasjon() {
+export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const pathname = usePathname();
+  const { contrast, mission, overordnetMaal, persona, phases } = data;
 
   useEffect(() => {
     const root = rootRef.current;

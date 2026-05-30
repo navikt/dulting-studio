@@ -2,6 +2,7 @@ import { HStack, Loader } from "@navikt/ds-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Brukerreise } from "@/components/brukerreise/Brukerreise";
+import { lederJourney } from "@/components/brukerreise/journey-data";
 
 export const metadata: Metadata = {
   title: "Brukerreise for nærmeste leder — dulting-studio",
@@ -26,7 +27,7 @@ export default function BrukerreiseLederPage() {
         </HStack>
       }
     >
-      <Brukerreise />
+      <Brukerreise data={lederJourney} />
     </Suspense>
   );
 }

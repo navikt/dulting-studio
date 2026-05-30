@@ -400,6 +400,17 @@
   border-radius: 999px;
   text-transform: uppercase;
 }
+/* to-sidig touchpoint — peker på det tilsvarende steget i det andre sporet */
+.brA__sharedflag {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, white);
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+}
 .brA__panel {
   border-radius: var(--r-md);
   padding: 1rem 1.1rem;

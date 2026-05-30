@@ -11,17 +11,12 @@ import { usePathname } from "next/navigation";
 import { DultRefTag } from "@/components/DultRefTag";
 import { isRegisteredDultId } from "@/lib/dult-reference-registry";
 import { PhaseIcon } from "./icons";
-import {
-  contrast,
-  mission,
-  overordnetMaal,
-  persona,
-  phases,
-} from "./journey-data";
+import type { JourneyData } from "./journey-data";
 import { NudgeCard } from "./NudgeCard";
 
-export function BrukerreiseTospor() {
+export function BrukerreiseTospor({ data }: { data: JourneyData }) {
   const pathname = usePathname();
+  const { mission, overordnetMaal, persona, phases, contrast } = data;
 
   return (
     <div className="br-proto">
@@ -133,6 +128,9 @@ export function BrukerreiseTospor() {
                   <h2>{p.title}</h2>
                   {p.scope === "first-track" && (
                     <span className="brA__firstflag">Første spor</span>
+                  )}
+                  {p.sharedWithAg && (
+                    <span className="brA__sharedflag">↔ {p.sharedWithAg}</span>
                   )}
                 </div>
 

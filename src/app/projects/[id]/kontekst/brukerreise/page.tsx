@@ -1,6 +1,7 @@
 import { HStack, Loader } from "@navikt/ds-react";
 import { Suspense } from "react";
 import { Brukerreise } from "@/components/brukerreise/Brukerreise";
+import { lederJourney } from "@/components/brukerreise/journey-data";
 
 export default function ProjectKontekstBrukerreisePage() {
   return (
@@ -11,7 +12,7 @@ export default function ProjectKontekstBrukerreisePage() {
         </HStack>
       }
     >
-      <Brukerreise />
+      <Brukerreise data={lederJourney} />
     </Suspense>
   );
 }

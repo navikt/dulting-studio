@@ -32,6 +32,10 @@ const channelIcon: Record<ChannelKey, IconKey> = {
   plan: "chat",
   epost: "envelope",
   nav: "share",
+  "minside-sykmeldt": "checklist",
+  dsf: "checklist",
+  sms: "bell",
+  kartlegging: "checklist",
 };
 
 export function ChannelIcon({

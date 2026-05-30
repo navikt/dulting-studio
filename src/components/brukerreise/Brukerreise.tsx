@@ -4,6 +4,7 @@ import { Schibsted_Grotesk } from "next/font/google";
 import { useSearchParams } from "next/navigation";
 import { BrukerreisePresentasjon } from "./BrukerreisePresentasjon";
 import { BrukerreiseTospor } from "./BrukerreiseTospor";
+import type { JourneyData } from "./journey-data";
 import "./brukerreise.css";
 
 // Schibsted Grotesk lastes via next/font (self-hosted, ingen runtime-<link>,
@@ -23,14 +24,18 @@ const schibsted = Schibsted_Grotesk({
  *
  * Tospor-visningen har en «Vis som presentasjon»-knapp; presentasjonen en «Lukk».
  */
-export function Brukerreise() {
+export function Brukerreise({ data }: { data: JourneyData }) {
   const searchParams = useSearchParams();
   const erPresentasjon =
     (searchParams.get("modus") ?? "").toLowerCase() === "presentasjon";
 
   return (
     <div className={schibsted.variable}>
-      {erPresentasjon ? <BrukerreisePresentasjon /> : <BrukerreiseTospor />}
+      {erPresentasjon ? (
+        <BrukerreisePresentasjon data={data} />
+      ) : (
+        <BrukerreiseTospor data={data} />
+      )}
     </div>
   );
 }
