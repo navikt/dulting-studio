@@ -1,11 +1,13 @@
 // Utvelgelses-modell for FØRSTE tiltakspakke: legger de bearbeidede tiltakene
 // (arbeidsgiver T01–T14 fra kidult-reference-model, sykmeldt ST01–ST12 fra
 // sykmeldt-reference-model) på beslutnings-aksene effekt × innsats, med blokkert-
-// flagg, FORGOOD-merknad og toveis-kobling — pluss et forslag til pakke 1.
+// flagg, guardrail, virkningshypotese (H1/H2), FORGOOD-merknad og toveis-kobling
+// — pluss et forslag til pakke 1.
 //
 // VIKTIG: effekt/innsats-anslagene er et UTKAST utledet fra register- og scoping-
-// docs (dulting-tiltaksregister*.md, dulting-scoping-status.md). De er et
-// utgangspunkt teamet kalibrerer, ikke en fasit. Alt er syntetisk/illustrativt.
+// docs (dulting-tiltaksregister*.md, dulting-scoping-status.md) + målmodellen
+// (maalmodell-virkningshypotese.md). De er et utgangspunkt teamet kalibrerer,
+// ikke en fasit. Alt er syntetisk/illustrativt.
 
 export type Aktor = "ag" | "sm";
 
@@ -17,6 +19,9 @@ export type Tier =
   | "pakke1" // foreslått i første pakke
   | "vurder" // god kandidat, men ikke i kjernen av pakke 1
   | "senere"; // bør vente (lav effekt/høy innsats, eller parkert)
+
+/** Virkningshypotese fra maalmodell-virkningshypotese.md. */
+export type HypoteseId = "H1" | "H2";
 
 export type SelectionTiltak = {
   id: string; // "T01" / "ST05"
@@ -31,8 +36,12 @@ export type SelectionTiltak = {
   tier: Tier;
   /** For pakke1: kjernetiltak (bærer pakken) vs. støtte (billig forsterker). */
   kjerne?: boolean;
+  /** Hvilke(n) virkningshypotese tiltaket lader opp til. */
+  hypotese?: HypoteseId[];
   /** Satt = blokkert/avhengig: avklaring, eierskap eller teknisk forutsetning. */
   blokkertAv?: string;
+  /** Stoppunkt/vakt (fra kilde-modellene) — synlig på beslutningslaget. */
+  guardrail?: string;
   /** Kort etisk merknad (FORGOOD) der det krever varsomhet. */
   forgood?: string;
   /** Toveis kobling: tilsvarende steg/tiltak i det andre sporet (vårt grep). */
@@ -58,14 +67,23 @@ export const effektLabels: Record<Niva, string> = {
   1: "Lav effekt",
 };
 
+export const hypoteseLabel: Record<HypoteseId, string> = {
+  H1: "Tidligere oppfølging hos arbeidsgiver",
+  H2: "Bedre informasjonsgrunnlag for fastlege",
+};
+
 /** Kriteriene en plass i FØRSTE pakke vurderes mot (prioritert rekkefølge). */
 export const pakke1Kriterier = [
   "Treffer det høyeste løftepunktet — stillheten før 4-ukers-fristen (tidlig signal + behovsvurdering), ikke spredt tynt utover alle steg.",
   "Gjennomførbart nå — scoping «dulting», ikke blokkert av avklaring, på flater vi eier eller samarbeider om.",
   "Lav etisk risiko — FORGOOD/guardrails grønt, «informere, aldri presse».",
-  "Målbart — har et primært atferds-/opplevelsesmåletegn og en virkningshypotese.",
-  "Helst en toveis kobling — samme touchpoint for begge aktører (vårt distinkte grep).",
+  "Målbart — har et primært atferds-/opplevelsesmåletegn og en virkningshypotese (H1/H2).",
+  "Helst en toveis kobling — samme kontaktpunkt for begge aktører (vårt distinkte grep).",
 ];
+
+/** Hvordan forslaget forholder seg til den vedtatte målmodellen (synlig ramme). */
+export const pakke1Ramme =
+  "Kjernen følger målmodellens to arbeidsgiver-hovedklynger — tidsriktig signal og behovsvurdering — pluss støttetekst (maalmodell-virkningshypotese.md §8). Sykmeldt-speilet (ST04, ST05, ST01) er en bevisst utvidelse som realiserer den toveis koblingen; ST05 forutsetter avklart samtykke og trigger-regel før den kan låses som kjerne.";
 
 export const utkastNote =
   "Effekt- og innsats-anslagene er et utkast utledet fra register- og scoping-docs. De er et utgangspunkt for kalibrering med teamet, ikke en fasit.";
@@ -81,10 +99,13 @@ const agTiltak: SelectionTiltak[] = [
     effekt: 3,
     tier: "pakke1",
     kjerne: true,
+    hypotese: ["H1"],
     blokkertAv: "Åpent: eksakt uke + om eksternt varsel (SMS/e-post) i tillegg",
+    guardrail:
+      "Unngå varseltrøtthet og for tidlig press; ikke duplikat når plan finnes.",
     toveis: "ST04 (sykmeldt får tidsriktig signal samtidig)",
     hvorfor:
-      "Selve kjernenudgen — bryter stillheten før fristen. Hele reise-analysen peker hit.",
+      "Selve kjernedulten — bryter stillheten før fristen. Reise-analysen peker hit.",
   },
   {
     id: "T02",
@@ -95,6 +116,9 @@ const agTiltak: SelectionTiltak[] = [
     effekt: 3,
     tier: "pakke1",
     kjerne: true,
+    hypotese: ["H1"],
+    blokkertAv: "Teknisk: deep-link til riktig person (DULT-23) må på plass",
+    guardrail: "Ikke vis frist hvis saken allerede er avklart.",
     hvorfor:
       "Gjør passiv sykmeldingsinfo til en konkret oppgave på riktig person — høy effekt, lav innsats.",
   },
@@ -107,8 +131,12 @@ const agTiltak: SelectionTiltak[] = [
     effekt: 3,
     tier: "pakke1",
     kjerne: true,
+    hypotese: ["H1"],
+    guardrail:
+      "Ikke mål bare navigasjon som suksess — det er stillingtaken som teller.",
     toveis: "ST05 (sykmeldtes egen behovsvurdering)",
-    hvorfor: "Får behovsvurderingen til å faktisk skje — ikke bare navigasjon.",
+    hvorfor:
+      "Skal få behovsvurderingen til å faktisk skje — ikke bare navigasjon.",
   },
   {
     id: "T04",
@@ -119,8 +147,11 @@ const agTiltak: SelectionTiltak[] = [
     effekt: 2,
     tier: "pakke1",
     kjerne: true,
+    hypotese: ["H1"],
     blokkertAv: "Fritekst-årsak krever PII-/juridisk avklaring",
-    forgood: "Må ikke bli snarvei bort fra oppfølgingsplikten; ingen default.",
+    guardrail:
+      "Ingen forhåndsvalgt default; flyten må aktivt bekrefte at oppfølgingsplikten består ved «ikke nå».",
+    forgood: "Må ikke bli snarvei bort fra oppfølgingsplikten.",
     hvorfor:
       "Gjør «nei» til et ærlig, registrert valg — fullfører beslutningspunktet.",
   },
@@ -132,6 +163,7 @@ const agTiltak: SelectionTiltak[] = [
     innsats: 3,
     effekt: 2,
     tier: "senere",
+    hypotese: ["H1"],
     hvorfor:
       "Verdifull, men en større ombygging av planflyten — etter pakke 1.",
   },
@@ -143,6 +175,7 @@ const agTiltak: SelectionTiltak[] = [
     innsats: 2,
     effekt: 2,
     tier: "senere",
+    hypotese: ["H1"],
   },
   {
     id: "T07",
@@ -152,6 +185,7 @@ const agTiltak: SelectionTiltak[] = [
     innsats: 2,
     effekt: 1,
     tier: "senere",
+    hypotese: ["H1"],
   },
   {
     id: "T08",
@@ -161,6 +195,7 @@ const agTiltak: SelectionTiltak[] = [
     innsats: 1,
     effekt: 2,
     tier: "vurder",
+    hypotese: ["H1"],
     hvorfor:
       "Billig og nyttig, men ikke ved «muren» — kandidat til neste pakke.",
   },
@@ -172,6 +207,7 @@ const agTiltak: SelectionTiltak[] = [
     innsats: 2,
     effekt: 2,
     tier: "senere",
+    hypotese: ["H1"],
     forgood: "Ingen skjult default på varsling.",
   },
   {
@@ -182,6 +218,7 @@ const agTiltak: SelectionTiltak[] = [
     innsats: 1,
     effekt: 2,
     tier: "vurder",
+    hypotese: ["H2"],
   },
   {
     id: "T11",
@@ -191,6 +228,7 @@ const agTiltak: SelectionTiltak[] = [
     innsats: 2,
     effekt: 2,
     tier: "senere",
+    hypotese: ["H2"],
     forgood: "Ikke be om diagnose eller private forhold.",
   },
   {
@@ -201,6 +239,7 @@ const agTiltak: SelectionTiltak[] = [
     innsats: 2,
     effekt: 1,
     tier: "senere",
+    hypotese: ["H2"],
   },
   {
     id: "T13",
@@ -211,8 +250,11 @@ const agTiltak: SelectionTiltak[] = [
     effekt: 2,
     tier: "pakke1",
     kjerne: false,
+    hypotese: ["H1"],
+    guardrail:
+      "Teksten må ikke bli moraliserende, truende eller for lang, eller skyve mot feil valg.",
     hvorfor:
-      "Billig forsterker som løfter alle de andre — klarspråk på plikt og verdi der nudgene lever.",
+      "Billig forsterker som løfter alle de andre — klarspråk på plikt og verdi der dultene lever.",
   },
   {
     id: "T14",
@@ -222,6 +264,7 @@ const agTiltak: SelectionTiltak[] = [
     innsats: 3,
     effekt: 2,
     tier: "senere",
+    hypotese: ["H1"],
     hvorfor: "Eget innholdsløp — for stort til å henge på første pakke.",
   },
 ];
@@ -237,10 +280,13 @@ const smTiltak: SelectionTiltak[] = [
     effekt: 2,
     tier: "pakke1",
     kjerne: false,
-    blokkertAv: "Eierskap til flate (Flex «Ditt sykefravær» / Symfoni)",
+    hypotese: ["H1"],
+    blokkertAv:
+      "Eierskap til flate (Flex «Ditt sykefravær» / Symfoni) + tone i plikt-språket",
+    guardrail: "Ikke overvelde dag 1; ikke bruk plikt som pisk.",
     forgood: "Plikt skal opplyse, ikke true.",
     hvorfor:
-      "Kunnskapsgrunnlaget — den sykmeldte forstår plikt og prosess fra dag 1, i lett språk.",
+      "Sykmeldt-sidens klarspråk-støtte (motstykke til T13) — forstår plikt og prosess fra dag 1, i lett språk.",
   },
   {
     id: "ST02",
@@ -250,6 +296,7 @@ const smTiltak: SelectionTiltak[] = [
     innsats: 1,
     effekt: 2,
     tier: "vurder",
+    hypotese: ["H1"],
     toveis: "AG steg 01 (leder venter ofte på kontakt)",
   },
   {
@@ -260,6 +307,7 @@ const smTiltak: SelectionTiltak[] = [
     innsats: 1,
     effekt: 1,
     tier: "vurder",
+    hypotese: ["H1"],
     toveis: "AG steg 01 (samme bilde for begge)",
   },
   {
@@ -271,6 +319,9 @@ const smTiltak: SelectionTiltak[] = [
     effekt: 3,
     tier: "pakke1",
     kjerne: true,
+    hypotese: ["H1"],
+    guardrail:
+      "Unngå varseltrøtthet og duplikat når plan/vurdering finnes; ikke for tidlig press.",
     toveis: "AG steg 02 / T01 (begge minnes samtidig)",
     hvorfor:
       "Speiler AG-signalet — begge parter dultes mot samme moment før uke 4.",
@@ -278,17 +329,22 @@ const smTiltak: SelectionTiltak[] = [
   {
     id: "ST05",
     aktor: "sm",
-    title: "Egen behovsvurdering, delbar; ja → AG-varsel",
+    title: "Egen behovsvurdering (delbar med Nav); ja → AG-varsel",
     steg: "2 · Signal og egen behovsvurdering",
     innsats: 3,
     effekt: 3,
     tier: "pakke1",
     kjerne: true,
-    blokkertAv: "Åpent: hvem ser vurderingen + når utløses AG-varselet",
-    forgood: "Tydelig samtykke; «ikke nå» må være et reelt valg.",
+    hypotese: ["H1", "H2"],
+    blokkertAv:
+      "Åpent: hvem ser vurderingen, og utløses AG-varsel på aktivt «ja» eller alltid?",
+    guardrail:
+      "Tydelig hvem som ser hva; ingen forhåndsvalgt default; «ikke nå» et reelt valg.",
+    forgood:
+      "Tydelig samtykke for deling med Nav; varsel kun på aktivt «ja», ikke automatisk.",
     toveis: "AG steg 03 / T03 (mulig felles behovsvurdering)",
     hvorfor:
-      "Den toveis koblingen — vårt distinkte grep: ett «ja» setter begge parter i gang.",
+      "Den toveis koblingen — vårt distinkte grep: ett «ja» setter begge i gang. Kjerne, men forutsetter avklart samtykke/trigger.",
   },
   {
     id: "ST06",
@@ -298,6 +354,7 @@ const smTiltak: SelectionTiltak[] = [
     innsats: 3,
     effekt: 2,
     tier: "senere",
+    hypotese: ["H1"],
     blokkertAv:
       "Geografi-pilot (Troms/Finnmark) — kan ikke forutsettes nasjonalt",
   },
@@ -309,6 +366,7 @@ const smTiltak: SelectionTiltak[] = [
     innsats: 1,
     effekt: 2,
     tier: "vurder",
+    hypotese: ["H1"],
   },
   {
     id: "ST08",
@@ -318,6 +376,7 @@ const smTiltak: SelectionTiltak[] = [
     innsats: 2,
     effekt: 2,
     tier: "senere",
+    hypotese: ["H1"],
     toveis: "AG steg 04 (samtale og planarbeid)",
   },
   {
@@ -328,6 +387,7 @@ const smTiltak: SelectionTiltak[] = [
     innsats: 1,
     effekt: 2,
     tier: "vurder",
+    hypotese: ["H1"],
     forgood: "Aldri «du burde jobbe mer» — helsen styrer.",
     hvorfor: "Billig framing med stor opplevd verdi — kandidat til støtte.",
   },
@@ -339,6 +399,7 @@ const smTiltak: SelectionTiltak[] = [
     innsats: 3,
     effekt: 3,
     tier: "senere",
+    hypotese: ["H1", "H2"],
     blokkertAv: "Teknisk: sykmeldt skriver ikke i planen i dag",
     hvorfor:
       "Høy effekt, men teknisk forutsetning mangler — blokkert til den er på plass.",
@@ -351,6 +412,7 @@ const smTiltak: SelectionTiltak[] = [
     innsats: 1,
     effekt: 2,
     tier: "vurder",
+    hypotese: ["H1"],
     toveis: "AG steg 06 (evaluering)",
   },
   {
@@ -361,6 +423,7 @@ const smTiltak: SelectionTiltak[] = [
     innsats: 2,
     effekt: 2,
     tier: "senere",
+    hypotese: ["H1"],
   },
 ];
 

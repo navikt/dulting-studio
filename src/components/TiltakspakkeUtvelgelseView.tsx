@@ -25,10 +25,12 @@ import {
   type Aktor,
   aktorLabel,
   effektLabels,
+  hypoteseLabel,
   innsatsLabels,
   type Niva,
   pakke1,
   pakke1Kriterier,
+  pakke1Ramme,
   type SelectionTiltak,
   tiltakAt,
   utkastNote,
@@ -44,12 +46,19 @@ function erGjorForst(innsats: Niva, effekt: Niva) {
   return effekt - innsats >= 1;
 }
 
+const tierStatus: Record<SelectionTiltak["tier"], string> = {
+  pakke1: "Foreslått i pakke 1",
+  vurder: "Vurderes",
+  senere: "Senere",
+};
+
 function Chip({ t }: { t: SelectionTiltak }) {
   const tip = [
     t.hvorfor,
     t.toveis ? `↔ ${t.toveis}` : null,
-    t.blokkertAv ? `Blokkert: ${t.blokkertAv}` : null,
-    t.forgood ? `FORGOOD: ${t.forgood}` : null,
+    t.blokkertAv ? `Åpen avklaring: ${t.blokkertAv}` : null,
+    t.guardrail ? `Guardrail: ${t.guardrail}` : null,
+    t.forgood ? `Etisk merknad (FORGOOD): ${t.forgood}` : null,
   ]
     .filter(Boolean)
     .join("\n");
@@ -67,8 +76,48 @@ function Chip({ t }: { t: SelectionTiltak }) {
         <ExclamationmarkTriangleIcon aria-hidden className="tu__chip-ic" />
       )}
       <b>{t.id}</b> {t.title}
-      {t.toveis && <span className="tu__chip-link">↔</span>}
+      {t.toveis && (
+        <span className="tu__chip-link" aria-hidden>
+          ↔
+        </span>
+      )}
+      {/* tilgjengelig motstykke til farge/ikon — leses av skjermleser */}
+      <span className="tu-sr">
+        {` — ${tierStatus[t.tier]}.`}
+        {t.blokkertAv ? ` Åpen avklaring: ${t.blokkertAv}.` : ""}
+        {t.toveis ? ` Toveis kobling: ${t.toveis}.` : ""}
+      </span>
     </span>
+  );
+}
+
+function ForslagItem({ t }: { t: SelectionTiltak }) {
+  return (
+    <li className="tu-forslag__row">
+      <span className={`tu-forslag__id tu-forslag__id--${t.aktor}`}>
+        {t.id}
+      </span>
+      <span>
+        <b>{t.title}</b>
+        {t.hvorfor && <em> — {t.hvorfor}</em>}
+        <span className="tu-forslag__meta">
+          {t.hypotese?.map((h) => (
+            <span key={h} className="tu-forslag__hyp" title={hypoteseLabel[h]}>
+              {h}
+            </span>
+          ))}
+          {t.toveis && <span className="tu-forslag__toveis">↔ {t.toveis}</span>}
+        </span>
+        {t.guardrail && (
+          <span className="tu-forslag__guard">Guardrail: {t.guardrail}</span>
+        )}
+        {t.blokkertAv && (
+          <span className="tu-forslag__blokkert">
+            <ExclamationmarkTriangleIcon aria-hidden /> {t.blokkertAv}
+          </span>
+        )}
+      </span>
+    </li>
   );
 }
 
@@ -129,10 +178,11 @@ export function TiltakspakkeUtvelgelseView() {
                 Hvilke tiltak skal med i første pakke?
               </Heading>
               <BodyLong>
-                De bearbeidede tiltakene plassert etter forventet{" "}
+                De bearbeidede tiltakene er plassert etter forventet{" "}
                 <strong>effekt</strong> og <strong>innsats</strong>. Øvre
-                venstre hjørne — høy effekt, lav innsats — er «gjør først».
-                Forslaget til pakke 1 er uthevet og samler seg om det høyeste
+                venstre — der effekten er høy i forhold til innsatsen — er «gjør
+                først». Alle tiltak vises; de uthevede er forslaget til pakke 1,
+                de nedtonede venter. Forslaget samler seg om det høyeste
                 løftepunktet: stillheten før 4-ukers-fristen.
               </BodyLong>
             </VStack>
@@ -167,12 +217,15 @@ export function TiltakspakkeUtvelgelseView() {
         </Tag>
       </HStack>
 
-      <div className="tu-scroll">
+      <section
+        className="tu-scroll"
+        aria-label="Effekt × innsats-matrise — bla horisontalt ved behov"
+      >
         <table className="tu-matrix">
           <caption className="tu-matrix__caption">
             Effekt (rad) mot innsats (kolonne) for{" "}
             {view === "begge" ? "begge spor" : aktorLabel[view].toLowerCase()}.
-            Øvre venstre = høy effekt, lav innsats.
+            Øvre venstre = høy effekt i forhold til innsats.
           </caption>
           <thead>
             <tr>
@@ -212,22 +265,26 @@ export function TiltakspakkeUtvelgelseView() {
             ))}
           </tbody>
         </table>
-      </div>
+      </section>
 
       <HStack gap="space-16" wrap className="tu-legend">
         <span className="tu-legend__item">
           <i className="tu-legend__sw tu-legend__sw--ag" aria-hidden />
-          Arbeidsgiver
+          Arbeidsgiver (T-tiltak)
         </span>
         <span className="tu-legend__item">
           <i className="tu-legend__sw tu-legend__sw--sm" aria-hidden />
-          Den sykmeldte
+          Den sykmeldte (ST-tiltak)
         </span>
         <span className="tu-legend__item">
           <CheckmarkCircleIcon aria-hidden /> Foreslått i pakke 1
         </span>
         <span className="tu-legend__item">
           <ExclamationmarkTriangleIcon aria-hidden /> Åpen avklaring / blokkert
+        </span>
+        <span className="tu-legend__item">
+          <i className="tu-legend__sw tu-legend__sw--senere" aria-hidden />
+          Nedtonet = senere (ikke i denne pakken)
         </span>
         <span className="tu-legend__item">↔ Toveis kobling</span>
       </HStack>
@@ -249,6 +306,10 @@ export function TiltakspakkeUtvelgelseView() {
             </BodyShort>
           </VStack>
 
+          <BodyShort size="small" className="tu-ramme">
+            {pakke1Ramme}
+          </BodyShort>
+
           <div className="tu-forslag__cols">
             <div>
               <Heading level="3" size="xsmall">
@@ -256,26 +317,7 @@ export function TiltakspakkeUtvelgelseView() {
               </Heading>
               <ul className="tu-forslag__list">
                 {kjerne.map((t) => (
-                  <li key={t.id}>
-                    <span
-                      className={`tu-forslag__id tu-forslag__id--${t.aktor}`}
-                    >
-                      {t.id}
-                    </span>
-                    <span>
-                      <b>{t.title}</b>
-                      {t.hvorfor && <em> — {t.hvorfor}</em>}
-                      {t.toveis && (
-                        <span className="tu-forslag__toveis">↔ {t.toveis}</span>
-                      )}
-                      {t.blokkertAv && (
-                        <span className="tu-forslag__blokkert">
-                          <ExclamationmarkTriangleIcon aria-hidden />{" "}
-                          {t.blokkertAv}
-                        </span>
-                      )}
-                    </span>
-                  </li>
+                  <ForslagItem key={t.id} t={t} />
                 ))}
               </ul>
             </div>
@@ -285,26 +327,10 @@ export function TiltakspakkeUtvelgelseView() {
               </Heading>
               <ul className="tu-forslag__list">
                 {stotte.map((t) => (
-                  <li key={t.id}>
-                    <span
-                      className={`tu-forslag__id tu-forslag__id--${t.aktor}`}
-                    >
-                      {t.id}
-                    </span>
-                    <span>
-                      <b>{t.title}</b>
-                      {t.hvorfor && <em> — {t.hvorfor}</em>}
-                      {t.blokkertAv && (
-                        <span className="tu-forslag__blokkert">
-                          <ExclamationmarkTriangleIcon aria-hidden />{" "}
-                          {t.blokkertAv}
-                        </span>
-                      )}
-                    </span>
-                  </li>
+                  <ForslagItem key={t.id} t={t} />
                 ))}
                 {stotte.length === 0 && (
-                  <li className="muted">
+                  <li className="tu-forslag__row muted">
                     Ingen rene støttetiltak i dette sporet.
                   </li>
                 )}
@@ -321,6 +347,11 @@ export function TiltakspakkeUtvelgelseView() {
                 <li key={k}>{k}</li>
               ))}
             </ol>
+            <BodyShort size="small" className="muted">
+              Hypotese-merkene viser hvilken virkningshypotese hvert tiltak
+              lader opp til: <b>H1</b> {hypoteseLabel.H1.toLowerCase()},{" "}
+              <b>H2</b> {hypoteseLabel.H2.toLowerCase()}.
+            </BodyShort>
           </VStack>
         </VStack>
       </Box>

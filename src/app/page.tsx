@@ -79,6 +79,22 @@ export default function Home() {
           </article>
         ))}
       </section>
+
+      <nav className="lp__refs" aria-label="Analysen bak reisene">
+        <span className="lp__refs-label">Bak reisene</span>
+        <Link className="lp__cta-link" href="/atferdsmatrise">
+          Atferdsmatrise
+          <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+        </Link>
+        <Link className="lp__cta-link" href="/tiltakskart">
+          Tiltakskart
+          <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+        </Link>
+        <Link className="lp__cta-link" href="/tiltakspakke-utvelgelse">
+          Tiltaksutvelgelse
+          <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+        </Link>
+      </nav>
     </div>
   );
 }
