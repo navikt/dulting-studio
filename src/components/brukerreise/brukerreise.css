@@ -1713,3 +1713,336 @@
     background: var(--accent);
   }
 }
+
+/* =====================================================================
+   SPLIT-VIEW — «ett touchpoint, to sider»: leder ↔ sykmeldt side om side
+   rundt en felles tidslinje. Egen rute /brukerreise/sammen.
+   ===================================================================== */
+.brS {
+  --sm-ink: #4b2fb0; /* sykmeldt-aksent (lilla), motstykke til --accent-ink */
+  max-width: 84rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+}
+.brS__hero {
+  padding: 2.5rem 0 0.5rem;
+  text-align: center;
+}
+.brS__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  line-height: 1.05;
+  margin: 0.4rem auto 0.5rem;
+  max-width: 22ch;
+}
+.brS__lead {
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+  max-width: 58ch;
+  margin: 0 auto;
+}
+.brS__legend {
+  display: inline-flex;
+  gap: 1.5rem;
+  margin-top: 1.1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.brS__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.brS__legend i {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+}
+.brS__legend .leder {
+  color: var(--accent-ink);
+}
+.brS__legend .leder i {
+  background: var(--accent);
+}
+.brS__legend .sykmeldt {
+  color: var(--sm-ink);
+}
+.brS__legend .sykmeldt i {
+  background: var(--ch-dsm);
+}
+
+.brS__rows {
+  margin-top: 1.5rem;
+}
+.brS__row {
+  display: grid;
+  grid-template-columns: 1fr minmax(12rem, 17rem) 1fr;
+  gap: 1.75rem;
+  align-items: stretch;
+  animation: br-rise 0.5s both;
+}
+.brS__side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  max-width: 25rem;
+  width: 100%;
+  padding: 1.75rem 0;
+  justify-content: center;
+}
+.brS__side--leder {
+  align-items: flex-end;
+  text-align: right;
+  margin-left: auto;
+}
+.brS__side--sykmeldt {
+  align-items: flex-start;
+  text-align: left;
+  margin-right: auto;
+}
+.brS__side .br-nudge {
+  width: 100%;
+}
+.brS__sidelabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.brS__sidelabel::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+.brS__sidelabel--leder {
+  color: var(--accent-ink);
+}
+.brS__sidelabel--leder::before {
+  background: var(--accent);
+}
+.brS__sidelabel--sykmeldt {
+  color: var(--sm-ink);
+}
+.brS__sidelabel--sykmeldt::before {
+  background: var(--ch-dsm);
+}
+.brS__behav {
+  display: flex;
+  gap: 0.4rem;
+  align-items: flex-start;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0;
+}
+.brS__side--leder .brS__behav {
+  flex-direction: row-reverse;
+  color: var(--accent-ink);
+}
+.brS__side--sykmeldt .brS__behav {
+  color: var(--sm-ink);
+}
+
+/* central moment node + spine */
+.brS__moment {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.75rem 0.5rem;
+}
+.brS__moment::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--accent), var(--ch-dsm));
+  opacity: 0.3;
+  z-index: 0;
+}
+.brS__row:first-child .brS__moment::before {
+  top: 50%;
+}
+.brS__row:last-child .brS__moment::before {
+  bottom: 50%;
+}
+.brS__momentnum {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--hair-strong);
+  box-shadow: 0 0 0 6px var(--paper);
+}
+.brS__momenttime {
+  margin-top: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.brS__momenttitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.98rem;
+  line-height: 1.2;
+  margin: 0.15rem 0 0.45rem;
+}
+.brS__coupling {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  margin: 0;
+  background: var(--paper-2);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.65rem;
+}
+.brS__coupling b {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+.brS__coupling--key {
+  background: linear-gradient(180deg, var(--accent-soft), #fff);
+  border-color: color-mix(in srgb, var(--accent) 30%, white);
+  color: var(--accent-ink);
+}
+.brS__coupling--key b {
+  color: var(--accent);
+}
+
+.brS__today {
+  margin-top: 0.3rem;
+  font-size: 0.76rem;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+/* closer */
+.brS__closer {
+  margin-top: 2.5rem;
+  padding: 2rem 1.75rem;
+  border-radius: var(--r-lg);
+  background: radial-gradient(120% 130% at 50% -20%, #1a2c5c, #0a1f3d 72%);
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+.brS__closer h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  margin: 0;
+  max-width: 24ch;
+}
+.brS__closer p {
+  margin: 0;
+  color: #b9cbe6;
+  max-width: 60ch;
+  font-size: 0.92rem;
+}
+.brS__closerlinks {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.3rem;
+}
+.brS__closerlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+.brS__closerlink:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.brS__nav {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+}
+.brS__navlink {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+  text-decoration: none;
+}
+.brS__navlink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 60rem) {
+  .brS__row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+  .brS__moment::before {
+    display: none;
+  }
+  .brS__moment {
+    order: -1; /* touchpoint-headeren leder hvert par på smal skjerm */
+    align-items: flex-start;
+    text-align: left;
+    padding: 1.5rem 0 0.75rem;
+  }
+  .brS__side {
+    max-width: none;
+    align-items: stretch;
+    text-align: left;
+    margin: 0;
+    padding: 0.5rem 0;
+  }
+  .brS__side--leder .brS__behav {
+    flex-direction: row;
+  }
+}

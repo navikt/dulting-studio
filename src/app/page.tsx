@@ -53,6 +53,9 @@ export default function Home() {
           <Button as="a" href="/brukerreise/sykmeldt" variant="tertiary">
             Brukerreise for den sykmeldte
           </Button>
+          <Button as="a" href="/brukerreise/sammen" variant="tertiary">
+            Begge side om side
+          </Button>
         </div>
         <p className="lp__note">
           Bevisst avgrenset demo. Alt innhold er syntetisk — ingen reelle
