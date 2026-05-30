@@ -122,14 +122,28 @@ a:where(:not(.aksel-button)) {
   --lp-display:
     var(--font-schibsted-lp), "Schibsted Grotesk", "Source Sans 3", system-ui,
     sans-serif;
+  /* Premium-lag: navy-tonet, lagdelt skygge + sjenerøs radius. Bevisst egen
+     skala for landingen, som speiler brukerreise-verdenens skygge-filosofi. */
+  --lp-radius: 18px;
+  --lp-shadow:
+    0 1px 2px rgb(10 37 64 / 4%), 0 14px 40px -14px rgb(10 37 64 / 14%);
+  --lp-shadow-hover:
+    0 1px 2px rgb(10 37 64 / 5%), 0 26px 60px -18px rgb(10 37 64 / 20%);
 }
 .lp__hero {
+  position: relative;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.1rem;
   padding: clamp(2.5rem, 8vw, 6rem) 1rem clamp(2rem, 5vw, 3.5rem);
+  /* svært subtil lysglød fra toppen — løfter uten å bli gimmick */
+  background: radial-gradient(
+    60% 60% at 50% -8%,
+    rgb(0 103 197 / 7%),
+    transparent 70%
+  );
 }
 .lp__eyebrow {
   font-family: var(--lp-display);
@@ -161,12 +175,51 @@ a:where(:not(.aksel-button)) {
   max-width: 54ch;
   margin: 0;
 }
-.lp__cta-row {
+.lp__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+  margin-top: 0.6rem;
+}
+.lp__cta-also {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  align-items: center;
   justify-content: center;
-  margin-top: 0.6rem;
+  gap: 0.5rem 1.4rem;
+}
+.lp__cta-also-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--a-text-subtle);
+}
+.lp__cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0067c5;
+  text-decoration: none;
+  padding: 0.2rem 0.15rem;
+  border-radius: 6px;
+  transition: color 0.18s ease;
+}
+.lp__cta-link svg {
+  transition: transform 0.18s ease;
+}
+.lp__cta-link:hover {
+  color: #00357a;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lp__cta-link:hover svg {
+  transform: translateX(3px);
+}
+.lp__cta-link:focus-visible {
+  outline: 3px solid var(--ax-border-focus, #0067c5);
+  outline-offset: 2px;
 }
 .lp__note {
   font-size: 0.9rem;
@@ -184,9 +237,18 @@ a:where(:not(.aksel-button)) {
 .lp__card {
   background: var(--a-surface-default);
   border: 1px solid var(--a-border-subtle);
-  border-radius: 20px;
-  padding: 1.5rem 1.6rem;
-  box-shadow: 0 1px 2px rgb(10 37 64 / 5%);
+  border-radius: var(--lp-radius);
+  padding: 1.6rem 1.7rem;
+  box-shadow: var(--lp-shadow);
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (hover: hover) {
+  .lp__card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--lp-shadow-hover);
+  }
 }
 .lp__card-num {
   font-family: var(--lp-display);
@@ -208,6 +270,41 @@ a:where(:not(.aksel-button)) {
   color: #475569;
   font-size: 0.95rem;
   line-height: 1.5;
+}
+
+/* Rolig entré: heltens innhold og kortene stiger inn ved last. fill-mode
+   «backwards» gir from-tilstanden under delay, og slipper underliggende verdier
+   tilbake etterpå — så kort-hover (translateY) ikke overstyres. */
+@media (prefers-reduced-motion: no-preference) {
+  .lp__hero > *,
+  .lp__card {
+    animation: lp-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  }
+  .lp__hero > *:nth-child(2) {
+    animation-delay: 0.05s;
+  }
+  .lp__hero > *:nth-child(3) {
+    animation-delay: 0.1s;
+  }
+  .lp__hero > *:nth-child(4) {
+    animation-delay: 0.15s;
+  }
+  .lp__card:nth-child(2) {
+    animation-delay: 0.08s;
+  }
+  .lp__card:nth-child(3) {
+    animation-delay: 0.16s;
+  }
+}
+@keyframes lp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Import dropzone */

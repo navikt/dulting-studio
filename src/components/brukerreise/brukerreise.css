@@ -30,7 +30,9 @@
 
   /* channels */
   --ch-msag: #0067c5;
-  --ch-dsm: #7a5af8;
+  /* Aksel meta-purple (--ax-*-meta-purple): én lilla på tvers av split-view,
+     brukerreise og atferdsmatrise — NAV-native, hvit tekst ~4.5:1 (AA). */
+  --ch-dsm: #905bd3;
   --ch-plan: #c98a00;
   --ch-epost: #64748b;
   --ch-nav: #06893a;
@@ -1535,7 +1537,7 @@
    rundt en felles tidslinje. Egen rute /brukerreise/sammen.
    ===================================================================== */
 .brS {
-  --sm-ink: #4b2fb0; /* sykmeldt-aksent (lilla), motstykke til --accent-ink */
+  --sm-ink: #360072; /* Aksel meta-purple text, motstykke til --accent-ink */
   max-width: 84rem;
   margin: 0 auto;
   padding: 0 1.25rem 4rem;

@@ -1,5 +1,7 @@
+import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { Button } from "@navikt/ds-react";
 import { Schibsted_Grotesk } from "next/font/google";
+import Link from "next/link";
 
 const schibsted = Schibsted_Grotesk({
   subsets: ["latin"],
@@ -39,23 +41,28 @@ export default function Home() {
           få nærmeste leder tidligere i gang med oppfølging — fra dagens
           faktiske flyt, mot flyten med tiltak.
         </p>
-        <div className="lp__cta-row">
+        <div className="lp__cta">
           <Button as="a" href="/brukerreise/leder" variant="primary">
             Åpne brukerreisen for nærmeste leder
           </Button>
-          <Button
-            as="a"
-            href="/brukerreise/leder?modus=presentasjon"
-            variant="secondary"
-          >
-            Vis som presentasjon
-          </Button>
-          <Button as="a" href="/brukerreise/sykmeldt" variant="tertiary">
-            Brukerreise for den sykmeldte
-          </Button>
-          <Button as="a" href="/brukerreise/sammen" variant="tertiary">
-            Begge side om side
-          </Button>
+          <nav className="lp__cta-also" aria-label="Andre innganger">
+            <span className="lp__cta-also-label">Eller utforsk</span>
+            <Link className="lp__cta-link" href="/brukerreise/sykmeldt">
+              Den sykmeldtes reise
+              <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+            </Link>
+            <Link className="lp__cta-link" href="/brukerreise/sammen">
+              Begge spor side om side
+              <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+            </Link>
+            <Link
+              className="lp__cta-link"
+              href="/brukerreise/leder?modus=presentasjon"
+            >
+              Presentasjonsmodus
+              <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+            </Link>
+          </nav>
         </div>
         <p className="lp__note">
           Bevisst avgrenset demo. Alt innhold er syntetisk — ingen reelle
