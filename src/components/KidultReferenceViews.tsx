@@ -420,6 +420,10 @@ export function KidultInterventionMapView() {
         og{" "}
         <AkselLink as={NextLink} href="/atferdsmatrise">
           atferdsmatrisen
+        </AkselLink>{" "}
+        og{" "}
+        <AkselLink as={NextLink} href="/tiltakspakke-utvelgelse">
+          utvelgelsen til første pakke
         </AkselLink>
         .
       </BodyShort>

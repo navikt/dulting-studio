@@ -1382,3 +1382,210 @@ a:where(:not(.aksel-button)) {
   background: var(--ax-bg-meta-purple-soft);
   border-color: var(--ax-border-meta-purple);
 }
+
+/* ── Tiltakspakke-utvelgelse: effekt × innsats-matrise + forslag ───────── */
+.tu-scroll {
+  overflow-x: auto;
+  border-radius: var(--ax-radius-8);
+}
+.tu-matrix {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: separate;
+  border-spacing: 7px;
+}
+.tu-matrix__caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.tu-matrix__corner {
+  width: 7rem;
+}
+.tu-matrix__colhead {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--a-text-subtle);
+  text-align: center;
+  padding-bottom: 0.25rem;
+}
+.tu-matrix__rowhead {
+  width: 7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--a-text-subtle);
+  text-align: right;
+  vertical-align: top;
+  padding: 0.5rem 0.6rem 0 0;
+}
+.tu-matrix__cell {
+  vertical-align: top;
+  border: 1px dashed var(--a-border-subtle);
+  border-radius: var(--ax-radius-8);
+  background: var(--a-surface-subtle, #f7f9fc);
+  padding: 0.5rem;
+  min-width: 9rem;
+}
+.tu-matrix__cell--first {
+  border-style: solid;
+  border-color: color-mix(in srgb, #057a33 30%, white);
+  background: #f1faf4;
+}
+.tu-matrix__zone {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #057a33 70%, #475569);
+  opacity: 0.7;
+}
+.tu__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  line-height: 1.25;
+  padding: 0.22rem 0.45rem;
+  margin: 0 0 0.3rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  width: 100%;
+}
+.tu__chip b {
+  font-weight: 800;
+}
+.tu__chip-ic {
+  flex: none;
+  font-size: 0.95em;
+}
+.tu__chip-link {
+  margin-left: auto;
+  font-weight: 700;
+  opacity: 0.75;
+}
+.tu__chip--ag {
+  background: #eaf2fd;
+  border-color: #bcd6f3;
+  color: #00357a;
+}
+.tu__chip--sm {
+  background: var(--ax-bg-meta-purple-soft);
+  border-color: color-mix(in srgb, var(--ax-border-meta-purple) 45%, white);
+  color: var(--ax-text-meta-purple);
+}
+.tu__chip--pakke1.tu__chip--ag {
+  border-color: #0067c5;
+  box-shadow: 0 1px 3px rgb(0 103 197 / 25%);
+}
+.tu__chip--pakke1.tu__chip--sm {
+  border-color: var(--ax-border-meta-purple);
+  box-shadow: 0 1px 3px rgb(144 91 211 / 25%);
+}
+.tu__chip--pakke1 .tu__chip-ic {
+  color: #057a33;
+}
+.tu__chip--blokkert {
+  border-style: dashed;
+}
+.tu__chip--blokkert .tu__chip-ic:last-of-type {
+  color: #8a6200;
+}
+.tu__chip--senere {
+  opacity: 0.6;
+}
+.tu-legend {
+  font-size: 0.8rem;
+  color: var(--a-text-subtle);
+}
+.tu-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.tu-legend__sw {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 4px;
+}
+.tu-legend__sw--ag {
+  background: #0067c5;
+}
+.tu-legend__sw--sm {
+  background: var(--ax-border-meta-purple);
+}
+.tu-forslag {
+  background: #f6f8fc;
+}
+.tu-forslag__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem 2rem;
+}
+.tu-forslag__list {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+/* biome-ignore lint/style/noDescendingSpecificity: målretter en annen container enn .kidult-plain-list — ingen reell kaskadekonflikt */
+.tu-forslag__list li {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.tu-forslag__id {
+  flex: none;
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  margin-top: 0.1rem;
+}
+.tu-forslag__id--ag {
+  background: #eaf2fd;
+  color: #00357a;
+}
+.tu-forslag__id--sm {
+  background: var(--ax-bg-meta-purple-soft);
+  color: var(--ax-text-meta-purple);
+}
+.tu-forslag__toveis {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #0067c5;
+  margin-top: 0.15rem;
+}
+.tu-forslag__blokkert {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #8a6200;
+  margin-top: 0.15rem;
+}
+.tu-kriterier {
+  margin: 0.3rem 0 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  color: var(--a-text-default);
+}
+@media (max-width: 40rem) {
+  .tu-forslag__cols {
+    grid-template-columns: 1fr;
+  }
+}

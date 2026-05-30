@@ -156,6 +156,9 @@ export function AtferdsmatriseView() {
             de samme tiltakene i kontekst:
           </BodyShort>
           <HStack gap="space-12" wrap>
+            <AkselLink as={NextLink} href="/tiltakspakke-utvelgelse">
+              Utvelgelse — hvilke tiltak først
+            </AkselLink>
             <AkselLink as={NextLink} href="/tiltakskart">
               Tiltakskart — arbeidsgiver
             </AkselLink>
