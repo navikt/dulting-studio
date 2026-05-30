@@ -52,6 +52,7 @@ export function TiltakEditor() {
   const [error, setError] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [savedId, setSavedId] = useState<string | null>(null);
+  const [statusMsg, setStatusMsg] = useState(""); // skjermleser-annonsering (aria-live)
 
   useEffect(() => {
     fetch("/api/pakke-tiltak")
@@ -81,14 +82,27 @@ export function TiltakEditor() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(row),
       });
-      if (!res.ok) throw new Error(String(res.status));
-      const { tiltak } = await res.json();
+      const data = await res.json().catch(() => ({}) as { tiltak?: Row });
+      if (res.status === 409 && data.tiltak) {
+        // Noen andre lagret raden i mellomtiden — vis deres verdier.
+        setRows((prev) =>
+          prev ? prev.map((r) => (r.id === row.id ? data.tiltak : r)) : prev,
+        );
+        const msg = `${row.id}: en annen lagret denne raden — viser oppdaterte verdier. Gjør endringen på nytt om nødvendig.`;
+        setError(msg);
+        setStatusMsg(msg);
+        return;
+      }
+      if (!res.ok || !data.tiltak) throw new Error(String(res.status));
       setRows((prev) =>
-        prev ? prev.map((r) => (r.id === row.id ? tiltak : r)) : prev,
+        prev ? prev.map((r) => (r.id === row.id ? data.tiltak : r)) : prev,
       );
       setSavedId(row.id);
+      setStatusMsg(`${row.id} lagret`);
     } catch {
-      setError(`Klarte ikke lagre ${row.id}.`);
+      const msg = `Klarte ikke lagre ${row.id}.`;
+      setError(msg);
+      setStatusMsg(msg);
     } finally {
       setSavingId(null);
     }
@@ -121,12 +135,17 @@ export function TiltakEditor() {
             Kalibrer og bearbeid tiltakene
           </Heading>
           <BodyShort>
-            Endringer her deles med hele teamet og brukes i
-            utvelgelses-matrisen. Juster effekt/innsats, plassering (tier) og
+            Endringer lagres i databasen og deles med hele teamet — dette er det
+            delte arbeidssettet. Juster effekt/innsats, plassering (tier) og
             tekst per tiltak.
           </BodyShort>
         </VStack>
       </VStack>
+
+      {/* skjermleser-annonsering av lagre-status (alltid i DOM) */}
+      <div aria-live="polite" className="tu-sr">
+        {statusMsg}
+      </div>
 
       {error && <Alert variant="warning">{error}</Alert>}
 

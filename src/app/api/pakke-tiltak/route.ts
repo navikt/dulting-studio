@@ -121,6 +121,7 @@ export async function handlePut(
       )
     : (base.hypotese ?? []);
   const title = clean(body.title, 200) ?? base.title;
+  const expectedVersion = Number(body.version);
 
   // Identitet/struktur (aktor, steg) beholdes fra modellen; resten er redigerbart.
   const row: NewPakkeTiltak = {
@@ -143,11 +144,16 @@ export async function handlePut(
 
   try {
     const db = getDb();
-    await db
+    // Optimistisk samtidighet: oppdater bare hvis version stemmer (ellers har
+    // noen andre lagret i mellomtiden). Krever gyldig version på eksisterende rad.
+    const updated = await db
       .insert(pakkeTiltak)
       .values(row)
       .onConflictDoUpdate({
         target: pakkeTiltak.id,
+        setWhere: Number.isInteger(expectedVersion)
+          ? eq(pakkeTiltak.version, expectedVersion)
+          : undefined,
         set: {
           title: row.title,
           innsats: row.innsats,
@@ -164,17 +170,31 @@ export async function handlePut(
           updatedAt: sql`now()`,
           version: sql`${pakkeTiltak.version} + 1`,
         },
-      });
+      })
+      .returning();
+
+    if (updated.length === 0) {
+      // Versjons-konflikt — returner gjeldende rad så klienten kan vise den.
+      const [current] = await db
+        .select()
+        .from(pakkeTiltak)
+        .where(eq(pakkeTiltak.id, id));
+      return Response.json(
+        {
+          message: "Raden ble endret av en annen. Verdiene er oppdatert.",
+          tiltak: current,
+          callId: context.callId,
+        },
+        { status: 409 },
+      );
+    }
+
     logInfo("Updated pakke-tiltak", {
       callId: context.callId,
       tiltak: id,
       by: context.user.navIdent,
     });
-    const [updated] = await db
-      .select()
-      .from(pakkeTiltak)
-      .where(eq(pakkeTiltak.id, id));
-    return Response.json({ tiltak: updated, callId: context.callId });
+    return Response.json({ tiltak: updated[0], callId: context.callId });
   } catch (error) {
     logError("Failed to update pakke-tiltak", {
       callId: context.callId,

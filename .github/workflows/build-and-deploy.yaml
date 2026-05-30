@@ -63,7 +63,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    timeout-minutes: 10
+    # 20 min: første deploy provisjonerer Cloud SQL, som kan ta flere minutter.
+    timeout-minutes: 20
     concurrency:
       group: dulting-studio-deploy-prod
       cancel-in-progress: true
@@ -73,4 +74,6 @@ jobs:
         env:
           CLUSTER: prod-gcp
           RESOURCE: nais/nais-prod.yaml
+          # Vent lenger på rollout ved første Cloud SQL-provisjonering.
+          TIMEOUT: 15m
           VAR: image=${{ needs.build-prod.outputs.image }},version=${{ github.sha }}

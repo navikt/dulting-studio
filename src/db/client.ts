@@ -47,6 +47,17 @@ export function getDb(): Database {
 
   const pool = new Pool({
     connectionString: databaseUrl,
+    // db-f1-micro har lavt max_connections — hold poolen liten. La henging
+    // feile raskt i stedet for å blokkere readiness-proben.
+    max: 5,
+    idleTimeoutMillis: 30_000,
+    connectionTimeoutMillis: 5_000,
+  });
+  // pg emitter 'error' på idle-klienter (f.eks. når Cloud SQL dropper en
+  // tilkobling). Uten handler blir det en uncaught exception som kan ta ned
+  // hele prosessen — selv om all spørringskode er try/catch'et.
+  pool.on("error", (err) => {
+    console.error("[db] uventet feil på idle-klient:", err);
   });
 
   const db = drizzle(pool, { schema });
