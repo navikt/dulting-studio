@@ -34,7 +34,7 @@ function PhaseCard({ phase }: { phase: SykmeldtPhase }) {
       </div>
       <VStack gap="space-16" className="kidult-map-phase__body">
         <VStack gap="space-4">
-          <Heading level="3" size="medium" id={`sphase-${phase.id}`}>
+          <Heading level="2" size="medium" id={`sphase-${phase.id}`}>
             {phase.title}
           </Heading>
           <BodyShort>{phase.goal}</BodyShort>
@@ -64,7 +64,7 @@ function PhaseCard({ phase }: { phase: SykmeldtPhase }) {
                     {tiltak.id}
                   </Tag>
                   <Heading
-                    level="4"
+                    level="3"
                     size="xsmall"
                     id={`${phase.id}-${tiltak.id}`}
                   >
@@ -157,7 +157,7 @@ export function SykmeldtInterventionMapView() {
               </Tag>
             </HStack>
             <VStack gap="space-4">
-              <Heading level="2" size="large">
+              <Heading level="1" size="large">
                 {sykmeldtMission.title}
               </Heading>
               <BodyLong>{sykmeldtMission.lead}</BodyLong>
@@ -174,7 +174,7 @@ export function SykmeldtInterventionMapView() {
 
       <Box borderWidth="1" borderRadius="8" padding="space-16">
         <VStack gap="space-8">
-          <Heading level="3" size="small">
+          <Heading level="2" size="small">
             Støttelag (gjennomgående, ikke en egen fase)
           </Heading>
           <ul className="kidult-plain-list">
@@ -189,7 +189,7 @@ export function SykmeldtInterventionMapView() {
 
       <Box background="warning-soft" borderRadius="8" padding="space-16">
         <VStack gap="space-8">
-          <Heading level="3" size="small">
+          <Heading level="2" size="small">
             Åpne spørsmål til bearbeidingen
           </Heading>
           <ul className="kidult-plain-list">

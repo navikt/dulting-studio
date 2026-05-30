@@ -174,7 +174,7 @@ export function TiltakspakkeUtvelgelseView() {
               </Tag>
             </HStack>
             <VStack gap="space-4">
-              <Heading level="2" size="large">
+              <Heading level="1" size="large">
                 Hvilke tiltak skal med i første pakke?
               </Heading>
               <BodyLong>

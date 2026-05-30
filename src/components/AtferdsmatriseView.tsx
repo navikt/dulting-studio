@@ -65,7 +65,7 @@ export function AtferdsmatriseView() {
               </Tag>
             </HStack>
             <VStack gap="space-4">
-              <Heading level="2" size="large">
+              <Heading level="1" size="large">
                 Hvorfor dultene virker
               </Heading>
               <BodyLong>
@@ -148,7 +148,7 @@ export function AtferdsmatriseView() {
 
       <Box borderWidth="1" borderRadius="8" padding="space-16">
         <VStack gap="space-8">
-          <Heading level="3" size="small">
+          <Heading level="2" size="small">
             Slik henger det sammen
           </Heading>
           <BodyShort size="small">

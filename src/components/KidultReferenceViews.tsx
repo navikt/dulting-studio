@@ -111,7 +111,7 @@ function ReferenceHeader({
             </Tag>
           </HStack>
           <VStack gap="space-4">
-            <Heading level="2" size="large">
+            <Heading level="1" size="large">
               {currentView === "journey"
                 ? "Brukerreise for oppfølgingsplan"
                 : "Tiltakskart for oppfølgingsplan"}
@@ -158,7 +158,7 @@ function JourneyStepCard({
     >
       <VStack gap="space-8">
         <HStack gap="space-8" align="center" wrap>
-          <Heading level="3" size="small" id={`step-${step.id}`}>
+          <Heading level="2" size="small" id={`step-${step.id}`}>
             {step.title}
           </Heading>
           {step.channel && (
@@ -188,7 +188,7 @@ function JourneyStepCard({
                 padding="space-16"
               >
                 <VStack gap="space-8">
-                  <Heading level="4" size="xsmall">
+                  <Heading level="3" size="xsmall">
                     {path.title}
                   </Heading>
                   <BodyShort size="small">{path.body}</BodyShort>
@@ -232,7 +232,7 @@ export function KidultJourneyView() {
 
       <section aria-labelledby="journey-timeline-heading">
         <VStack gap="space-16">
-          <Heading level="3" size="medium" id="journey-timeline-heading">
+          <Heading level="2" size="medium" id="journey-timeline-heading">
             Tidslinje
           </Heading>
           <div className="kidult-journey-timeline" data-variant={variant}>
@@ -257,7 +257,7 @@ export function KidultJourneyView() {
 
       <Box background="warning-soft" borderRadius="8" padding="space-16">
         <VStack gap="space-8">
-          <Heading level="3" size="small">
+          <Heading level="2" size="small">
             Åpne avklaringer
           </Heading>
           <ul className="kidult-plain-list">
@@ -291,7 +291,7 @@ function PhaseCard({
       </div>
       <VStack gap="space-16" className="kidult-map-phase__body">
         <VStack gap="space-4">
-          <Heading level="3" size="medium" id={`phase-${phase.id}`}>
+          <Heading level="2" size="medium" id={`phase-${phase.id}`}>
             {phase.title}
           </Heading>
           <BodyShort>{phase.behavior}</BodyShort>
@@ -316,7 +316,7 @@ function PhaseCard({
                     {tiltak.id}
                   </Tag>
                   <Heading
-                    level="4"
+                    level="3"
                     size="xsmall"
                     id={`${phase.id}-${tiltak.id}`}
                   >
@@ -389,7 +389,7 @@ export function KidultInterventionMapView() {
 
       <Box borderWidth="1" borderRadius="8" padding="space-16">
         <VStack gap="space-8">
-          <Heading level="3" size="small">
+          <Heading level="2" size="small">
             Støttende gjennom hele reisen
           </Heading>
           <BodyShort>
