@@ -117,6 +117,17 @@ export function BrukerreiseSammen() {
                   <span className="brS__sidelabel brS__sidelabel--leder">
                     Arbeidsgiver
                   </span>
+                  <div className="brS__tags">
+                    <span className="brA__tag brA__tag--barr">
+                      Barriere · {l.barriere.kategori}
+                    </span>
+                    <span className="brA__tag brA__tag--motiv">
+                      Spiller på · {l.motivasjon.driver}
+                    </span>
+                  </div>
+                  <p className="brS__today">
+                    <b>I dag</b> {l.today.barrier}
+                  </p>
                   <NudgeCard nudge={l.dult.nudge} time={l.time} />
                   <p className="brS__behav">
                     <ArrowRightIcon aria-hidden fontSize="1rem" />
@@ -128,6 +139,17 @@ export function BrukerreiseSammen() {
                   <span className="brS__sidelabel brS__sidelabel--sykmeldt">
                     Den sykmeldte
                   </span>
+                  <div className="brS__tags">
+                    <span className="brA__tag brA__tag--barr">
+                      Barriere · {s.barriere.kategori}
+                    </span>
+                    <span className="brA__tag brA__tag--motiv">
+                      Spiller på · {s.motivasjon.driver}
+                    </span>
+                  </div>
+                  <p className="brS__today">
+                    <b>I dag</b> {s.today.barrier}
+                  </p>
                   <NudgeCard nudge={s.dult.nudge} time={s.time} />
                   <p className="brS__behav">
                     <ArrowRightIcon aria-hidden fontSize="1rem" />

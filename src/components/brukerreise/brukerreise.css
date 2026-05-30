@@ -1708,6 +1708,14 @@
 .brS__row:last-child .brS__moment::before {
   bottom: 50%;
 }
+/* moment-innholdet skal ligge OVER spinen (den posisjonerte ::before-streken
+   tegnes ellers oppå den statiske teksten/boksen) */
+.brS__momenttime,
+.brS__momenttitle,
+.brS__coupling {
+  position: relative;
+  z-index: 1;
+}
 .brS__momentnum {
   position: relative;
   z-index: 1;
@@ -1771,11 +1779,33 @@
   color: var(--accent);
 }
 
+/* per-side why-tagger (gjenbruker .brA__tag-fargene) + «I dag»-kontrast,
+   alt avledet fra reise-dataene så split-viewen samsvarer med reisene */
+.brS__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.brS__side--leder .brS__tags {
+  justify-content: flex-end;
+}
+.brS__tags .brA__tag {
+  margin-bottom: 0;
+}
 .brS__today {
-  margin-top: 0.3rem;
-  font-size: 0.76rem;
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.brS__today b {
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--ink-faint);
-  font-style: italic;
+  margin-right: 0.3rem;
 }
 
 /* closer */

@@ -7,7 +7,7 @@ import {
   XMarkIcon,
 } from "@navikt/aksel-icons";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { DultRefTag } from "@/components/DultRefTag";
 import { isRegisteredDultId } from "@/lib/dult-reference-registry";
@@ -20,7 +20,24 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const pathname = usePathname();
+  const router = useRouter();
   const { contrast, mission, overordnetMaal, persona, phases } = data;
+
+  // a11y: full-skjerm-overlayet dekker appen, men app-headeren bak lå igjen i
+  // tab-rekkefølgen. Gjør den inert mens presentasjonen vises, og la Escape
+  // lukke (tastatur-vei ut). Gjenopprettes når presentasjonen lukkes.
+  useEffect(() => {
+    const header = document.querySelector(".app-header");
+    header?.setAttribute("inert", "");
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") router.push(pathname, { scroll: false });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      header?.removeAttribute("inert");
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [router, pathname]);
 
   useEffect(() => {
     const root = rootRef.current;
