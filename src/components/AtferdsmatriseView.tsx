@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftIcon, TableIcon } from "@navikt/aksel-icons";
+import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import {
   Link as AkselLink,
   BodyLong,
@@ -23,6 +23,7 @@ import {
   itemsInCell,
   matriseItems,
 } from "@/lib/atferdsmatrise-model";
+import { AnalyseNav } from "./AnalyseNav";
 
 export function AtferdsmatriseView() {
   const [aktor, setAktor] = useState<Aktor>("arbeidsgiver");
@@ -31,7 +32,7 @@ export function AtferdsmatriseView() {
   return (
     <VStack gap="space-24" className="atferdsmatrise">
       <VStack gap="space-20" className="kidult-reference-header">
-        <HStack gap="space-12" align="center" justify="space-between" wrap>
+        <HStack gap="space-12" align="center" wrap>
           <Button
             as={NextLink}
             href="/"
@@ -41,18 +42,8 @@ export function AtferdsmatriseView() {
           >
             Forsiden
           </Button>
-          <HStack gap="space-8" align="center" wrap>
-            <Button
-              as={NextLink}
-              href="/tiltakskart"
-              variant="tertiary"
-              size="small"
-              icon={<TableIcon aria-hidden />}
-            >
-              Tiltakskart
-            </Button>
-          </HStack>
         </HStack>
+        <AnalyseNav />
 
         <Box background="info-soft" borderRadius="12" padding="space-24">
           <VStack gap="space-12">

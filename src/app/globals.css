@@ -243,6 +243,38 @@ a:where(:not(.aksel-button)) {
   font-weight: 600;
   color: var(--a-text-subtle);
 }
+
+/* Delt analyse-navigasjon (atferdsmatrise / tiltakskart / utvelgelse) */
+.analyse-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.analyse-nav__tab {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--ax-text-accent);
+  background: var(--ax-bg-accent-soft);
+  border: 1px solid var(--ax-border-accent);
+  border-radius: var(--ax-radius-full, 999px);
+  padding: 0.3rem 0.85rem;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.analyse-nav__tab:hover {
+  background: var(--ax-bg-accent-moderate-hover, #cce0f5);
+}
+.analyse-nav__tab--active {
+  color: #fff;
+  background: var(--ax-bg-accent-strong);
+  border-color: var(--ax-bg-accent-strong);
+}
+.analyse-nav__tab:focus-visible {
+  outline: 3px solid var(--ax-border-focus, #0067c5);
+  outline-offset: 2px;
+}
 .lp__grid {
   display: grid;
   gap: 1rem;

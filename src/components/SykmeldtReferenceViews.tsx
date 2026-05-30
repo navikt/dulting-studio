@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftIcon, TableIcon } from "@navikt/aksel-icons";
+import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import {
   Link as AkselLink,
   BodyLong,
@@ -21,6 +21,7 @@ import {
   sykmeldtSupport,
   sykmeldtTotalTiltak,
 } from "@/lib/sykmeldt-reference-model";
+import { AnalyseNav } from "./AnalyseNav";
 
 function PhaseCard({ phase }: { phase: SykmeldtPhase }) {
   return (
@@ -122,7 +123,7 @@ export function SykmeldtInterventionMapView() {
   return (
     <VStack gap="space-24">
       <VStack gap="space-20" className="kidult-reference-header">
-        <HStack gap="space-12" align="center" justify="space-between" wrap>
+        <HStack gap="space-12" align="center" wrap>
           <Button
             as={NextLink}
             href="/"
@@ -132,16 +133,8 @@ export function SykmeldtInterventionMapView() {
           >
             Forsiden
           </Button>
-          <Button
-            as={NextLink}
-            href="/tiltakskart"
-            variant="tertiary"
-            size="small"
-            icon={<TableIcon aria-hidden />}
-          >
-            Arbeidsgiver-sporet
-          </Button>
         </HStack>
+        <AnalyseNav />
 
         <Box background="info-soft" borderRadius="12" padding="space-24">
           <VStack gap="space-12">
