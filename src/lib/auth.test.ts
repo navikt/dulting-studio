@@ -54,6 +54,57 @@ describe("withProtectedApiRoute", () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
+  it("accepts unsafe requests behind a reverse proxy via x-forwarded headers", async () => {
+    getToken.mockReturnValueOnce("token");
+    validateAzureToken.mockResolvedValueOnce({ ok: true, payload: {} });
+    parseAzureUserToken.mockReturnValueOnce({
+      ok: true,
+      oid: "oid-123",
+      NAVident: "Z123456",
+      groups: [],
+    });
+
+    const { withProtectedApiRoute } = await import("./auth");
+    const handler = vi.fn(() => Response.json({ ok: true }));
+
+    // Intern URL er http://localhost:3000 (Wonderwall→app), men browseren
+    // poster fra den eksterne https-origin som proxyen videreformidler.
+    const response = await withProtectedApiRoute(handler)(
+      new Request("http://localhost:3000/api/pakke-tiltak", {
+        method: "PUT",
+        headers: {
+          authorization: "Bearer token",
+          origin: "https://dulting-studio.intern.nav.no",
+          "x-forwarded-host": "dulting-studio.intern.nav.no",
+          "x-forwarded-proto": "https",
+        },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(handler).toHaveBeenCalled();
+  });
+
+  it("still rejects cross-origin unsafe requests even with forwarded headers", async () => {
+    const { withProtectedApiRoute } = await import("./auth");
+    const handler = vi.fn();
+
+    const response = await withProtectedApiRoute(handler)(
+      new Request("http://localhost:3000/api/pakke-tiltak", {
+        method: "PUT",
+        headers: {
+          origin: "https://evil.example.com",
+          "x-forwarded-host": "dulting-studio.intern.nav.no",
+          "x-forwarded-proto": "https",
+        },
+      }),
+    );
+
+    expect(response.status).toBe(403);
+    expect(validateAzureToken).not.toHaveBeenCalled();
+    expect(handler).not.toHaveBeenCalled();
+  });
+
   it("passes authenticated Azure user and callId to handler", async () => {
     getToken.mockReturnValueOnce("token");
     validateAzureToken.mockResolvedValueOnce({

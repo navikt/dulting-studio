@@ -73,12 +73,37 @@ function getLocalAuthMockUser() {
   } satisfies AuthenticatedAzureUser;
 }
 
+/**
+ * Forventet origin for same-origin-sjekken. Bak NAIS-ingress (GCLB → Wonderwall
+ * → app) er den interne `request.url` http://<intern-host>, ikke den eksterne
+ * https://dulting-studio.intern.nav.no som browseren sender i `Origin`. Vi
+ * utleder derfor origin fra `x-forwarded-host`/`x-forwarded-proto` (satt av
+ * proxy-kjeden), med fallback til `request.url` lokalt (ingen forwarded-headere
+ * → http://localhost:3000, som matcher browseren). Headerne settes av betrodd
+ * ingress; pod-en nås bare via ingress (accessPolicy.inbound er tom), så de kan
+ * ikke forfalskes i et CSRF-scenario.
+ */
+function getExpectedOrigin(request: Request): string {
+  const url = new URL(request.url);
+  const forwardedHost = request.headers
+    .get("x-forwarded-host")
+    ?.split(",")[0]
+    ?.trim();
+  const forwardedProto = request.headers
+    .get("x-forwarded-proto")
+    ?.split(",")[0]
+    ?.trim();
+  const host = forwardedHost || url.host;
+  const protocol = forwardedProto || url.protocol.replace(/:$/, "");
+  return `${protocol}://${host}`;
+}
+
 function ensureSameOriginForUnsafeMethod(request: Request) {
   if (isSafeMethod(request.method)) {
     return;
   }
 
-  const expectedOrigin = new URL(request.url).origin;
+  const expectedOrigin = getExpectedOrigin(request);
   const origin = request.headers.get("origin");
   const referer = request.headers.get("referer");
 
