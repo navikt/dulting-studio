@@ -3,6 +3,7 @@
 import { ArrowLeftIcon, LineGraphIcon, TableIcon } from "@navikt/aksel-icons";
 import {
   Link as AkselLink,
+  Alert,
   BodyLong,
   BodyShort,
   Box,
@@ -18,6 +19,7 @@ import {
 import NextLink from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
+  berikelseUtkastNote,
   type InterventionMapPhase,
   interventionMapPhases,
   isJourneyStepVisible,
@@ -324,14 +326,54 @@ function PhaseCard({
                   >
                     {tiltak.title}
                   </Heading>
+                  {tiltak.sharedWithSykmeldt && (
+                    <Tag variant="alt3" size="xsmall">
+                      Delt med sykmeldt
+                    </Tag>
+                  )}
                 </HStack>
+
                 <BodyShort size="small">{tiltak.description}</BodyShort>
+
+                {tiltak.barriere && tiltak.motivasjon && (
+                  <HStack gap="space-4" wrap>
+                    <Tag variant="warning" size="xsmall">
+                      Barriere · {tiltak.barriere}
+                    </Tag>
+                    <Tag variant="success" size="xsmall">
+                      Spiller på · {tiltak.motivasjon}
+                    </Tag>
+                  </HStack>
+                )}
+
+                {tiltak.dult && (
+                  <BodyShort size="small">
+                    <strong>Dult:</strong> {tiltak.dult}
+                  </BodyShort>
+                )}
                 <BodyShort size="small">
-                  <strong>Signal:</strong> {tiltak.signal}
+                  <strong>Måletegn:</strong> {tiltak.signal}
                 </BodyShort>
                 <BodyShort size="small">
                   <strong>Stoppunkt:</strong> {tiltak.guardrail}
                 </BodyShort>
+                {(tiltak.eastFogg || tiltak.forgood) && (
+                  <BodyShort size="small" className="muted">
+                    {tiltak.eastFogg ? `EAST/Fogg: ${tiltak.eastFogg}` : ""}
+                    {tiltak.eastFogg && tiltak.forgood ? " · " : ""}
+                    {tiltak.forgood ? `FORGOOD: ${tiltak.forgood}` : ""}
+                  </BodyShort>
+                )}
+
+                {tiltak.raakort && tiltak.raakort.length > 0 && (
+                  <HStack gap="space-4" wrap>
+                    {tiltak.raakort.map((ref) => (
+                      <Tag key={ref} variant="neutral" size="xsmall">
+                        {ref}
+                      </Tag>
+                    ))}
+                  </HStack>
+                )}
               </VStack>
             </article>
           ))}
@@ -379,9 +421,13 @@ export function KidultInterventionMapView() {
           {totalTiltak} tiltak inkludert støttelag
         </Tag>
         <Tag variant="info" size="small">
-          Målinger og stoppunkter synlig
+          Koblet til barriere/motivasjon · utkast
         </Tag>
       </HStack>
+
+      <Alert variant="info" size="small">
+        {berikelseUtkastNote}
+      </Alert>
 
       <div className="kidult-map" data-variant={variant}>
         {interventionMapPhases.map((phase) => (

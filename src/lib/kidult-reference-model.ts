@@ -1,3 +1,8 @@
+import type {
+  BarriereKategori,
+  MotivasjonsDriver,
+} from "./sykmeldt-reference-model";
+
 export type JourneyVariant = "today" | "package";
 
 export type JourneyStepKind =
@@ -23,19 +28,34 @@ export type JourneyStep = {
   }>;
 };
 
+export type InterventionMapTiltak = {
+  id: string;
+  title: string;
+  description: string;
+  signal: string;
+  guardrail: string;
+  // Berikelse (UTKAST til kalibrering) — speiler sykmeldt-modellen så de to
+  // tiltakskartene blir likeverdige. barriere/motivasjon er hentet fra det
+  // steget tiltaket hører til i lederJourney; raakort fra dekningskartet i
+  // docs/dulting-tiltaksregister.md; dult/maaletegn fra description/signal.
+  // eastFogg + forgood er kvalitative utkast som teamet må verifisere.
+  barriere?: BarriereKategori;
+  motivasjon?: MotivasjonsDriver;
+  dult?: string;
+  eastFogg?: string;
+  forgood?: string;
+  raakort?: string[];
+  /** Satt der AG-touchpointet speiler den sykmeldtes reise. */
+  sharedWithSykmeldt?: string;
+};
+
 export type InterventionMapPhase = {
   id: string;
   number: number;
   title: string;
   behavior: string;
   measurement: string;
-  tiltak: Array<{
-    id: string;
-    title: string;
-    description: string;
-    signal: string;
-    guardrail: string;
-  }>;
+  tiltak: InterventionMapTiltak[];
   decisionPoint?: string;
 };
 
@@ -179,6 +199,14 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Påminnelse som forklarer hva planen er og hvorfor den bør lages nå.",
         signal: "Åpner varsel; starter vurdering eller plan før frist.",
         guardrail: "Unngå varseltrøtthet og for tidlig press.",
+        barriere: "Tidspress og prioritering",
+        motivasjon: "Plikt og ytre forventninger",
+        dult: "Påminnelse på Min side arbeidsgiver før uke 4 som forklarer hva planen er og hvorfor den bør lages nå.",
+        eastFogg: "Timely (før frist), Easy (forklarer hva/hvorfor)",
+        forgood: "Respect — påminnelsen skal opplyse, ikke presse.",
+        raakort: ["DULT-06"],
+        sharedWithSykmeldt:
+          "↔ speiler den sykmeldtes tidlige plikt-/prosessinfo",
       },
       {
         id: "T02",
@@ -187,6 +215,12 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Vis frist og relevant planinformasjon på den sykmeldte i Dine sykmeldte.",
         signal: "Åpner riktig person; starter handling.",
         guardrail: "Ikke vis frist hvis saken allerede er avklart.",
+        barriere: "Manglende rutiner",
+        motivasjon: "Plikt og ytre forventninger",
+        dult: "Vis frist og relevant planinfo på den sykmeldte i Dine sykmeldte — en konkret oppgave, ikke passiv info.",
+        eastFogg: "Easy (oppgave på riktig person), Salient (tydelig frist)",
+        forgood: "Forgiving — ikke dobbeltvarsle hvis saken alt er avklart.",
+        raakort: ["DULT-20", "DULT-11"],
       },
     ],
   },
@@ -208,6 +242,13 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Gjør passiv sykmeldingsinformasjon til en konkret oppgave på riktig person.",
         signal: "Starter og fullfører behovsvurdering.",
         guardrail: "Ikke mål bare navigasjon som suksess.",
+        barriere: "Kunnskapsmangel og uklarhet",
+        motivasjon: "Autonomi og eierskap",
+        dult: "Gjør passiv sykmeldingsinfo til en konkret behovsvurderingsoppgave på riktig person.",
+        eastFogg: "Easy (strukturerte valg), Prompt (utløser handling)",
+        forgood: "Honest — mål reell vurdering, ikke bare navigasjon/klikk.",
+        raakort: ["DULT-01", "DULT-07"],
+        sharedWithSykmeldt: "↔ behovsvurderingen speiler sykmeldts ST04/ST05",
       },
       {
         id: "T04",
@@ -216,6 +257,13 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Arbeidsgiver kan velge riktig utfall når plan ikke er nødvendig.",
         signal: "Andel ikke nå og årsaksfordeling.",
         guardrail: "Ingen default; fritekst krever avklaring og PII-vern.",
+        barriere: "Kunnskapsmangel og uklarhet",
+        motivasjon: "Autonomi og eierskap",
+        dult: "La arbeidsgiver velge «ikke nå» med strukturert årsak — et legitimt utfall, ikke en blindvei.",
+        eastFogg: "Easy (årsak fra liste), aktivt valg (ingen default)",
+        forgood:
+          "Ownership — ingen default; fritekst krever PII-/juridisk avklaring.",
+        raakort: ["DULT-15", "DULT-16", "DULT-33"],
       },
     ],
   },
@@ -233,6 +281,13 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Bryt planarbeidet ned i tydelige steg med enklere språk og fremdrift.",
         signal: "Frafall i planflyt, fullføring og bruk av steg.",
         guardrail: "Ikke overforklar eller gjøre alt til veiviser.",
+        barriere: "Relasjon og tillit",
+        motivasjon: "Tilhørighet og relasjon",
+        dult: "«Revamped Dine sykmeldte» som guider selve samtalen: hvilke spørsmål, hva en plan er, og hvordan dra nytte av den.",
+        eastFogg: "Easy (steg + språk), Ability (senker terskel)",
+        forgood: "Respect — ikke overforklar eller gjør alt til veiviser.",
+        raakort: ["DULT-05", "DULT-24", "DULT-17"],
+        sharedWithSykmeldt: "↔ samtaleforberedelsen speiler den sykmeldtes",
       },
       {
         id: "T06",
@@ -240,6 +295,12 @@ export const interventionMapPhases: InterventionMapPhase[] = [
         description: "Vis at planen ikke er hugget i stein og kan oppdateres.",
         signal: "Åpner aktiv plan og bruker endre/juster.",
         guardrail: "Ikke skap ekstra dokumentasjonsbyrde.",
+        barriere: "Manglende rutiner",
+        motivasjon: "Autonomi og eierskap",
+        dult: "Vis at planen er et levende verktøy med «endre/juster»-knapp — ikke hugget i stein.",
+        eastFogg: "Easy (endre direkte), Salient (synlig aktiv plan)",
+        forgood: "Forgiving — ikke skap ekstra dokumentasjonsbyrde.",
+        raakort: ["DULT-29", "DULT-31", "DULT-35"],
       },
       {
         id: "T07",
@@ -248,6 +309,12 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Gjør utkast, gjenstående oppgaver og aktiv plan mer synlig.",
         signal: "Gjenopptar utkast og markerer steg som gjort.",
         guardrail: "Ikke forveksle fremdrift med faktisk kvalitet.",
+        barriere: "Tidspress og prioritering",
+        motivasjon: "Autonomi og eierskap",
+        dult: "Gjør utkast, gjenstående oppgaver og aktiv plan synlig så arbeidet lett kan gjenopptas.",
+        eastFogg: "Easy (gjenoppta utkast), Salient (fremdrift)",
+        forgood: "Honest — ikke forveksle fremdrift med faktisk kvalitet.",
+        raakort: ["DULT-08", "DULT-19"],
       },
     ],
   },
@@ -267,6 +334,12 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Formuler dato-feltet som avtale om å sjekke om tilrettelegging fungerer.",
         signal: "Evalueringsdato satt og forstått.",
         guardrail: "Ikke bare en administrativ dato.",
+        barriere: "Manglende rutiner",
+        motivasjon: "Tilhørighet og relasjon",
+        dult: "Formuler dato-feltet som en avtale om å sjekke om tilretteleggingen fungerer — en ny samtale, ikke en administrativ dato.",
+        eastFogg: "Salient (ny samtale), Timely (avtalt tidspunkt)",
+        forgood: "Respect — datoen skal bety noe reelt, ikke pliktløp.",
+        raakort: ["DULT-12"],
       },
       {
         id: "T09",
@@ -274,6 +347,12 @@ export const interventionMapPhases: InterventionMapPhase[] = [
         description: "La partene legge datoen i kalender og velge påminnelse.",
         signal: "Kalender lagt til og påminnelse valgt.",
         guardrail: "Ingen skjult default på varsling.",
+        barriere: "Tidspress og prioritering",
+        motivasjon: "Autonomi og eierskap",
+        dult: "La partene legge datoen i kalender og selv velge påminnelse (opt-in).",
+        eastFogg: "Easy (ett klikk), Timely (påminnelse)",
+        forgood: "Consent — ingen skjult default på varsling.",
+        raakort: ["DULT-12", "DULT-22"],
       },
     ],
   },
@@ -292,6 +371,12 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Forklar mottaker, formål og nytte av å dele planen tidlig.",
         signal: "Forståelse av deling og deling gjennomført.",
         guardrail: "Ikke gjør deling til press uten kontekst.",
+        barriere: "Kunnskapsmangel og uklarhet",
+        motivasjon: "Plikt og ytre forventninger",
+        dult: "Forklar mottaker, formål og nytte av å dele planen tidlig.",
+        eastFogg: "Easy (forklart i kontekst), Salient (synlig nytte)",
+        forgood: "Respect — ikke gjør deling til press uten kontekst.",
+        raakort: ["DULT-26", "DULT-27"],
       },
       {
         id: "T11",
@@ -300,6 +385,12 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Hjelp arbeidsgiver å skrive relevant om tilrettelegging for videre vurdering.",
         signal: "Relevant felt fylt og kvalitet på beskrivelser.",
         guardrail: "Ikke be om diagnose eller private forhold.",
+        barriere: "Kunnskapsmangel og uklarhet",
+        motivasjon: "Autonomi og eierskap",
+        dult: "Ledetekst som hjelper arbeidsgiver å skrive relevant om hva som virker / ikke virker for videre vurdering.",
+        eastFogg: "Easy (ledetekst), Ability (vet hva som er relevant)",
+        forgood: "Privacy — ikke be om diagnose eller private forhold.",
+        raakort: [],
       },
       {
         id: "T12",
@@ -308,6 +399,12 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Forklar hva Nav lagrer, hva arbeidsgiver bør lagre, og gjenbruk av plan.",
         signal: "Forståelse av lagring og gjenbruk.",
         guardrail: "Ikke oppfordre til ulovlig lagring.",
+        barriere: "Kunnskapsmangel og uklarhet",
+        motivasjon: "Plikt og ytre forventninger",
+        dult: "Forklar hva Nav lagrer, hva arbeidsgiver bør lagre, og gjenbruk av plan på tvers av perioder.",
+        eastFogg: "Easy (forklart), Salient (gjenbruk)",
+        forgood: "Lawful — ikke oppfordre til ulovlig lagring.",
+        raakort: ["DULT-28"],
       },
     ],
   },
@@ -317,6 +414,9 @@ export const supportTiltak = [
   "T13 - Verdi og plikt i klarspråk",
   "T14 - Samlet innhold og begrepsrydding",
 ];
+
+export const berikelseUtkastNote =
+  "Koblingen til barriere, motivasjon, dult, EAST/Fogg og FORGOOD er et utkast utledet fra atferdskartleggingen og register-docs — et utgangspunkt for kalibrering med teamet, ikke en fasit. Barriere/motivasjon er hentet fra steget tiltaket hører til i reisen; råkort fra dekningskartet.";
 
 export function isJourneyStepVisible(
   step: JourneyStep,
