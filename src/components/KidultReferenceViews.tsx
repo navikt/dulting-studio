@@ -412,6 +412,10 @@ export function KidultInterventionMapView() {
         Kilde: Ki-dult v3.2-modell. Se også{" "}
         <AkselLink as={NextLink} href={referenceHref("/brukerreise", variant)}>
           brukerreisen med variantvalg
+        </AkselLink>{" "}
+        og{" "}
+        <AkselLink as={NextLink} href="/tiltakskart/sykmeldt">
+          sykmeldt-sporet
         </AkselLink>
         .
       </BodyShort>
