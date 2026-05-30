@@ -37,29 +37,23 @@ export default function Home() {
         </span>
         <h1 className="lp__title">Dulting i sykefraværsoppfølgingen</h1>
         <p className="lp__lead">
-          Et internt arbeidsverktøy som viser hvordan små, tidsriktige dult kan
-          få nærmeste leder tidligere i gang med oppfølging — fra dagens
-          faktiske flyt, mot flyten med tiltak.
+          Et internt arbeidsverktøy for å styrke dialogen i
+          sykefraværsoppfølgingen — der arbeidsgivers tilretteleggingsplikt og
+          den sykmeldtes medvirkning møtes. Vi viser dagens faktiske flyt mot
+          flyten med små, tidsriktige dult.
         </p>
         <div className="lp__cta">
-          <Button as="a" href="/brukerreise/leder" variant="primary">
-            Åpne brukerreisen for nærmeste leder
+          <Button as="a" href="/brukerreise/sammen" variant="primary">
+            Se reisen — begge spor side om side
           </Button>
-          <nav className="lp__cta-also" aria-label="Andre innganger">
-            <span className="lp__cta-also-label">Eller utforsk</span>
+          <nav className="lp__cta-also" aria-label="Gå rett til ett spor">
+            <span className="lp__cta-also-label">Eller hvert spor for seg</span>
+            <Link className="lp__cta-link" href="/brukerreise/leder">
+              Arbeidsgiver · nærmeste leder
+              <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+            </Link>
             <Link className="lp__cta-link" href="/brukerreise/sykmeldt">
-              Den sykmeldtes reise
-              <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-            </Link>
-            <Link className="lp__cta-link" href="/brukerreise/sammen">
-              Begge spor side om side
-              <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-            </Link>
-            <Link
-              className="lp__cta-link"
-              href="/brukerreise/leder?modus=presentasjon"
-            >
-              Presentasjonsmodus
+              Den sykmeldte
               <ArrowRightIcon aria-hidden fontSize="0.9rem" />
             </Link>
           </nav>
