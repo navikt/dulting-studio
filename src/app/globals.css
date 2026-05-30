@@ -17,7 +17,11 @@ body {
   font-family: "Source Sans 3", Arial, sans-serif;
 }
 
-a {
+/* Plain lenker arver tekstfarge — men IKKE Aksel-knapper rendret som <a>
+   (Button as="a"). Aksel setter knappefargen i et @layer; en ulagdelt
+   a{color:inherit} slår lagdelte regler uansett spesifisitet og ga svart
+   tekst på blå primærknapp (3.3:1). Unntaket lar Aksel eie knappefargen. */
+a:not(.aksel-button) {
   color: inherit;
 }
 
@@ -140,10 +144,11 @@ a {
   font-size: clamp(2.1rem, 6vw, 4rem);
   line-height: 1.04;
   margin: 0;
-  max-width: 18ch;
+  /* bredt nok til at «sykefraværsoppfølgingen» får plass på én linje på
+     desktop (ren tolinjes tittel); på smal skjerm bryter hyphens-regelen
+     ordet i stedet for å gi horisontal overflyt. */
+  max-width: 52rem;
   color: #0a2540;
-  /* lange sammensatte ord (f.eks. «sykefraværsoppfølgingen») må kunne brytes
-     på smale skjermer — ellers gir de horisontal overflyt. */
   overflow-wrap: break-word;
   hyphens: auto;
 }
