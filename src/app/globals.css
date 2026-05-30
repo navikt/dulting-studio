@@ -275,6 +275,30 @@ a:where(:not(.aksel-button)) {
   outline: 3px solid var(--ax-border-focus, #0067c5);
   outline-offset: 2px;
 }
+
+/* Team-delt tiltak-editor */
+.tu-editor {
+  max-width: 60rem;
+}
+.tu-edit-row {
+  border: 1px solid var(--a-border-subtle);
+  border-left: 4px solid var(--ax-border-accent);
+  border-radius: var(--ax-radius-12);
+  padding: 1rem 1.1rem;
+  display: grid;
+  gap: 0.75rem;
+}
+.tu-edit-row--sm {
+  border-left-color: var(--ax-border-meta-purple);
+}
+.tu-edit-row__kjerne {
+  align-self: end;
+  padding-bottom: 0.5rem;
+}
+.tu-edit-row__saved {
+  color: #046a2c;
+  font-weight: 600;
+}
 .lp__grid {
   display: grid;
   gap: 1rem;

@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   check,
   doublePrecision,
   index,
@@ -555,6 +556,46 @@ export const interventionPackageExports = pgTable(
   ],
 );
 
+// Team-delt redigering av utvelgelses-tiltakene (effekt/innsats-kalibrering +
+// bearbeiding). Naturlig nøkkel = tiltak-id (T01 / ST05); én delt rad per tiltak,
+// ikke prosjekt-scopet — alle innloggede deler samme sett. Speiler SelectionTiltak.
+export const pakkeTiltak = pgTable(
+  "pakke_tiltak",
+  {
+    id: text("id").primaryKey(),
+    aktor: text("aktor").notNull(),
+    title: text("title").notNull(),
+    steg: text("steg").notNull(),
+    innsats: integer("innsats").notNull(),
+    effekt: integer("effekt").notNull(),
+    tier: text("tier").notNull(),
+    kjerne: boolean("kjerne").notNull().default(false),
+    hypotese: jsonb("hypotese")
+      .$type<string[]>()
+      .default(sql`'[]'::jsonb`)
+      .notNull(),
+    blokkertAv: text("blokkert_av"),
+    guardrail: text("guardrail"),
+    forgood: text("forgood"),
+    toveis: text("toveis"),
+    hvorfor: text("hvorfor"),
+    updatedBy: text("updated_by").notNull(),
+    ...timestamps,
+    version: versionColumn,
+  },
+  (table) => [
+    check("pakke_tiltak_aktor_check", sql`${table.aktor} in ('ag', 'sm')`),
+    check(
+      "pakke_tiltak_tier_check",
+      sql`${table.tier} in ('pakke1', 'vurder', 'senere')`,
+    ),
+    check("pakke_tiltak_innsats_range", sql`${table.innsats} between 1 and 3`),
+    check("pakke_tiltak_effekt_range", sql`${table.effekt} between 1 and 3`),
+    check("pakke_tiltak_title_length", sql`char_length(${table.title}) <= 200`),
+    check("pakke_tiltak_version_positive", sql`${table.version} > 0`),
+  ],
+);
+
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
 
@@ -597,3 +638,6 @@ export type InterventionPackageExport =
   typeof interventionPackageExports.$inferSelect;
 export type NewInterventionPackageExport =
   typeof interventionPackageExports.$inferInsert;
+
+export type PakkeTiltak = typeof pakkeTiltak.$inferSelect;
+export type NewPakkeTiltak = typeof pakkeTiltak.$inferInsert;

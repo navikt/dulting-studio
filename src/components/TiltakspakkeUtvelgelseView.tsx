@@ -183,7 +183,10 @@ export function TiltakspakkeUtvelgelseView() {
       </VStack>
 
       <Alert variant="info" size="small">
-        {utkastNote}
+        {utkastNote}{" "}
+        <AkselLink as={NextLink} href="/tiltakspakke-utvelgelse/rediger">
+          Rediger og kalibrer tiltakene (team-delt) →
+        </AkselLink>
       </Alert>
 
       <HStack gap="space-8" wrap>
