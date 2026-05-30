@@ -120,6 +120,9 @@ export type Phase = {
   guardrail: string;
   /** To-sidig touchpoint: navngir det tilsvarende steget i det andre sporet. */
   sharedWithAg?: string;
+  /** Valgfri produktskjerm-mock (ScreenMock-id). Settes kun der en mock finnes
+      — unngår at f.eks. arbeidsgiver-skjermer lekker inn i andre reiser. */
+  screenId?: string;
 };
 
 /** Felles datakontrakt for en brukerreise (leder eller sykmeldt). */
@@ -226,7 +229,7 @@ export const phases: Phase[] = [
       },
     },
     lawIdeal:
-      "Slik det burde være: leder tar initiativ til oppfølgingsplan i uke 4, og senest innen uke 8.",
+      "Slik det burde være: leder lager oppfølgingsplan sammen med den ansatte så tidlig som mulig, og senest innen 4 uker.",
     barriere: {
       kategori: "Tidspress og prioritering",
       detalj:
@@ -235,7 +238,7 @@ export const phases: Phase[] = [
     motivasjon: {
       driver: "Plikt og ytre forventninger",
       detalj:
-        "En tydelig, konkret frist gjør plikten håndterbar — og en sosial norm («de fleste tar stilling innen uke 4») gjør den lettere å følge.",
+        "En tydelig, konkret frist gjør plikten håndterbar og lettere å handle på i tide.",
     },
     dult: {
       intervention:
@@ -243,7 +246,7 @@ export const phases: Phase[] = [
       nudge: {
         channel: "msag",
         title: "Snart frist for oppfølgingsplan for Jonas",
-        body: "De fleste ledere tar stilling innen uke 4. Du har til 3. februar — det tar omtrent 10 minutter å komme i gang.",
+        body: "Du har frist til 3. februar. Ta stilling nå, så slipper du å vente på at noen spør.",
         cta: "Ta stilling nå",
       },
       desiredBehavior:
@@ -251,7 +254,7 @@ export const phases: Phase[] = [
       refs: ["DULT-06", "DULT-20", "DULT-22", "T01", "T02"],
     },
     consideration:
-      "Vi vurderer eksternt varsel (e-post til arbeidsgiver) i tillegg til oppgaven på Min side AG. Det vil trolig dra flere i gang tidlig — men må veies mot varseltrøtthet, og bør testes isolert.",
+      "Vi vurderer eksternt varsel (e-post til arbeidsgiver) i tillegg til oppgaven på Min side arbeidsgiver. Det vil trolig dra flere i gang tidlig — men må veies mot varseltrøtthet, og bør testes isolert.",
     measurements: [
       "Varsel vist / varsel åpnet",
       "Stilling tatt eller plan startet før frist",
@@ -264,6 +267,7 @@ export const phases: Phase[] = [
   {
     n: "03",
     id: "behovsvurdering",
+    screenId: "behovsvurdering",
     time: "Uke 3–4",
     date: "27. januar – 3. februar",
     title: "Trenger vi en oppfølgingsplan?",
@@ -314,6 +318,7 @@ export const phases: Phase[] = [
   {
     n: "04",
     id: "samtale-plan",
+    screenId: "samtale-plan",
     time: "Etter vurdering",
     date: "uke 4–5",
     title: "Samtale og planarbeid",
@@ -362,6 +367,7 @@ export const phases: Phase[] = [
   {
     n: "05",
     id: "deling",
+    screenId: "deling",
     time: "Når plan finnes",
     date: "uke 5–6",
     title: "Deling med fastlege og Nav",
@@ -434,7 +440,7 @@ export const phases: Phase[] = [
     motivasjon: {
       driver: "Autonomi og eierskap",
       detalj:
-        "Når planen er deres egen, levende og endrbar («ingenting er hugget i stein»), blir det naturlig å vende tilbake til den.",
+        "Når planen er deres egen, levende og mulig å endre («ingenting er hugget i stein»), blir det naturlig å vende tilbake til den.",
     },
     dult: {
       intervention:
@@ -477,14 +483,14 @@ export const contrast = {
   silenceWeeks: 3,
 };
 
-/** AID/IA-målene reisen ladrer opp til — vises i en «Mål bak reisen»-stripe. */
+/** AID/IA-målene reisen lader opp til — vises i en «Mål bak reisen»-stripe. */
 export const overordnetMaal = {
   eyebrow: "Mål bak reisen",
   oppdrag:
     "Dulting for å øke etterlevelsen av arbeidsgivers tilretteleggingsplikt og den ansattes medvirkningsplikt — med mål om å redusere sykefraværet (AID / IA-avtalen 2025–2028).",
   kr: [
     "Flere oppfølgingsplaner — og tidligere",
-    "Flere tar stilling til behov innen uke 10",
+    "Flere tar stilling til behov innen uke 4",
     "Plan sendt uten å vente på veileder",
     "Flere gjennomførte dialogmøte 1",
     "Økt gradert sykmelding · kortere sykefravær",

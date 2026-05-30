@@ -78,7 +78,7 @@ function ReferenceHeader({
         <HStack gap="space-8" align="center" wrap>
           <Button
             as={NextLink}
-            href={referenceHref("/brukerreise", variant)}
+            href="/brukerreise/leder"
             variant={currentView === "journey" ? "primary" : "tertiary"}
             size="small"
             icon={<LineGraphIcon aria-hidden />}
@@ -410,7 +410,7 @@ export function KidultInterventionMapView() {
 
       <BodyShort size="small" className="muted">
         Kilde: Ki-dult v3.2-modell. Se også{" "}
-        <AkselLink as={NextLink} href={referenceHref("/brukerreise", variant)}>
+        <AkselLink as={NextLink} href="/brukerreise/leder">
           brukerreisen med variantvalg
         </AkselLink>{" "}
         og{" "}

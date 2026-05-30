@@ -117,7 +117,7 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
               <span className="brC__tag brC__tag--motiv">
                 Spiller på · {p.motivasjon.driver}
               </span>
-              {screenFor(p.id) ?? (
+              {(p.screenId ? screenFor(p.screenId) : null) ?? (
                 <NudgeCard nudge={p.dult.nudge} time={p.time} />
               )}
               <p className="brA__behav" style={{ marginTop: "0.9rem" }}>
@@ -144,7 +144,7 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
           </section>
 
           {/* the wall: today's 3-week silence, full-bleed dark beat */}
-          {p.id === "sykmelding" && (
+          {i === 0 && (
             <section className="brC__wall br-bleed" aria-label="Stillhet i dag">
               <div className="brC__wallnum br-num brC__reveal">
                 {contrast.silenceWeeks} uker
@@ -206,7 +206,7 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
             textDecoration: "none",
           }}
         >
-          Se tiltakene bak reisen
+          Tilbake til reisen
           <ArrowRightIcon aria-hidden fontSize="0.9rem" />
         </Link>
       </section>

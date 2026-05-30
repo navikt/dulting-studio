@@ -510,235 +510,6 @@
 }
 
 /* =====================================================================
-   VARIANT B — Toggle / morph (single timeline, switch state)
-   ===================================================================== */
-.brB {
-  max-width: 56rem;
-  margin: 0 auto;
-  padding: 0 1.25rem 5rem;
-}
-.brB__hero {
-  text-align: center;
-  padding: 3rem 0 1.5rem;
-}
-.brB__track {
-  color: var(--accent);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  font-family: var(--font-display);
-}
-.brB__title {
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  font-size: clamp(2rem, 4.5vw, 3.2rem);
-  line-height: 1.05;
-  margin: 0.5rem auto 0.6rem;
-  max-width: 16ch;
-}
-.brB__lead {
-  color: var(--ink-soft);
-  max-width: 52ch;
-  margin: 0 auto;
-  font-size: 1.02rem;
-}
-
-.brB__toggle {
-  display: inline-flex;
-  gap: 0.25rem;
-  background: var(--paper-2);
-  border: 1px solid var(--hair);
-  border-radius: 999px;
-  padding: 0.3rem;
-  margin: 1.75rem auto 0.5rem;
-  box-shadow: var(--shadow-sm);
-}
-.brB__toggle button {
-  appearance: none;
-  border: 0;
-  cursor: pointer;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.9rem;
-  padding: 0.55rem 1.3rem;
-  border-radius: 999px;
-  color: var(--ink-faint);
-  background: transparent;
-  transition:
-    color 0.25s,
-    background 0.25s,
-    box-shadow 0.25s;
-}
-.brB__toggle button.on {
-  color: var(--ink);
-  background: #fff;
-  box-shadow: var(--shadow-sm);
-}
-.brB__toggle button.on.dult {
-  color: var(--accent);
-}
-
-.brB__readout {
-  display: flex;
-  justify-content: center;
-  gap: 2.5rem;
-  margin: 1.25rem 0 0.5rem;
-}
-.brB__readout div {
-  text-align: center;
-}
-.brB__readout b {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  transition: color 0.3s;
-}
-.brB__readout span {
-  display: block;
-  font-size: 0.76rem;
-  color: var(--ink-faint);
-}
-.brB[data-state="today"] .brB__readout b {
-  color: var(--ink-faint);
-}
-.brB[data-state="dult"] .brB__readout b {
-  color: var(--accent);
-}
-
-.brB__line {
-  position: relative;
-  margin: 2rem auto 0;
-  padding-left: 2.5rem;
-}
-.brB__line::before {
-  content: "";
-  position: absolute;
-  left: 0.7rem;
-  top: 0.5rem;
-  bottom: 0.5rem;
-  width: 2px;
-  background: var(--hair-strong);
-  transition: background 0.4s;
-}
-.brB[data-state="dult"] .brB__line::before {
-  background: var(--accent);
-}
-
-.brB__step {
-  position: relative;
-  margin-bottom: 1rem;
-  border: 1px solid var(--hair);
-  border-radius: var(--r-md);
-  background: #fff;
-  padding: 1rem 1.15rem;
-  box-shadow: var(--shadow-sm);
-}
-.brB__step::before {
-  content: "";
-  position: absolute;
-  left: -2.18rem;
-  top: 1.15rem;
-  width: 0.85rem;
-  height: 0.85rem;
-  border-radius: 50%;
-  background: var(--ink-faint);
-  box-shadow: 0 0 0 4px var(--paper);
-  transition: background 0.4s;
-}
-.brB[data-state="dult"] .brB__step::before {
-  background: var(--accent);
-}
-.brB__step h3 {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  margin: 0 0 0.15rem;
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-.brB__step .when {
-  font-size: 0.74rem;
-  color: var(--ink-faint);
-  font-weight: 600;
-}
-.brB__step p {
-  font-size: 0.9rem;
-  color: var(--ink-soft);
-  margin: 0.35rem 0 0;
-}
-
-/* the dead-zone block dominates in today mode */
-.brB__dead {
-  position: relative;
-  margin-bottom: 1rem;
-  overflow: hidden;
-  border-radius: var(--r-md);
-  border: 1px dashed color-mix(in srgb, var(--silence) 45%, white);
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--silence-bg),
-    var(--silence-bg) 11px,
-    var(--silence-hatch) 11px,
-    var(--silence-hatch) 22px
-  );
-  transition:
-    max-height 0.5s ease,
-    opacity 0.4s,
-    padding 0.5s,
-    margin 0.5s;
-}
-.brB__dead-inner {
-  padding: 2rem 1.25rem;
-  text-align: center;
-}
-.brB__dead b {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  color: var(--silence);
-  display: block;
-}
-.brB__dead span {
-  color: #8a6d12;
-  font-size: 0.9rem;
-}
-.brB[data-state="dult"] .brB__dead {
-  max-height: 0;
-  opacity: 0;
-  padding: 0;
-  margin: 0;
-  border-width: 0;
-}
-.brB[data-state="today"] .brB__dead {
-  max-height: 240px;
-}
-
-/* dult-only steps slide in */
-.brB__step--new {
-  border-color: color-mix(in srgb, var(--accent) 25%, white);
-}
-.brB[data-state="today"] .brB__step--new {
-  display: none;
-}
-.brB[data-state="dult"] .brB__step--new {
-  animation: br-rise 0.5s both;
-}
-.brB__newtag {
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  color: #fff;
-  background: var(--accent);
-  padding: 0.1rem 0.4rem;
-  border-radius: 5px;
-}
-
-.brB__nudgewrap {
-  margin-top: 0.8rem;
-}
-
-/* =====================================================================
    VARIANT C — Scrollytelling (cinematic, full-bleed)
    ===================================================================== */
 /* C takes over the full viewport — a standalone cinematic surface, free of the
@@ -1003,6 +774,15 @@
   z-index: 20;
 }
 .brC__progress a {
+  /* 24px treffmål (WCAG 2.5.8) med den visuelle prikken tegnet via ::after */
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.brC__progress a::after {
+  content: "";
   width: 0.7rem;
   height: 0.7rem;
   border-radius: 50%;
@@ -1011,9 +791,13 @@
     transform 0.2s,
     background 0.2s;
 }
-.brC__progress a.on {
+.brC__progress a.on::after {
   background: var(--accent);
   transform: scale(1.5);
+}
+.brC__progress a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 @media (max-width: 60rem) {
@@ -1326,6 +1110,20 @@
   background: rgba(10, 18, 32, 0.8);
 }
 
+/* Synlig tastatur-fokus på egne lenker/knapper (WCAG 2.4.7 / 1.4.11).
+   Lyse outlines på mørk bakgrunn, accent på lys. */
+.brA__present:focus-visible,
+.brS__navlink:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.brC__close:focus-visible,
+.brS__closerlink:focus-visible,
+.br-nudge__cta:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 @media (max-width: 60rem) {
   .brA__present {
     position: static;
@@ -1480,7 +1278,7 @@
   outline-offset: 1px;
 }
 
-/* «Mål bak reisen»-stripe — ladrer reisen opp til AID/IA-KR-ene */
+/* «Mål bak reisen»-stripe — lader reisen opp til AID/IA-KR-ene */
 .brA__goals {
   margin-top: 1.25rem;
   padding: 1rem 1.25rem;
@@ -1678,6 +1476,24 @@
   outline: 2px solid #fff;
   outline-offset: 2px;
 }
+.brA__summary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #b9cbe6;
+  text-decoration: none;
+}
+.brA__summary-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.brA__summary-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
 
 @media (max-width: 60rem) {
   .brA__legend-track {
@@ -1789,6 +1605,7 @@
   animation: br-rise 0.5s both;
 }
 .brS__side {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
@@ -1797,15 +1614,40 @@
   padding: 1.75rem 0;
   justify-content: center;
 }
+/* eksplisitt kolonneplassering: moment (DOM-rekkefølge #1) midt, leder venstre,
+   sykmeldt høyre — så lese-/tab-rekkefølgen (moment → leder → sykmeldt) er
+   logisk uavhengig av den visuelle plasseringen. */
 .brS__side--leder {
+  grid-column: 1;
   align-items: flex-end;
   text-align: right;
   margin-left: auto;
 }
 .brS__side--sykmeldt {
+  grid-column: 3;
   align-items: flex-start;
   text-align: left;
   margin-right: auto;
+}
+/* aktør-farget skinne langs spine-kanten — gjør blå/lilla-kodingen tydelig
+   uten å overstyre nudge-kortenes egen kanal-farge */
+.brS__side--leder::after,
+.brS__side--sykmeldt::before {
+  content: "";
+  position: absolute;
+  top: 1.9rem;
+  bottom: 1.9rem;
+  width: 3px;
+  border-radius: 3px;
+  opacity: 0.5;
+}
+.brS__side--leder::after {
+  right: 0;
+  background: var(--accent);
+}
+.brS__side--sykmeldt::before {
+  left: 0;
+  background: var(--ch-dsm);
 }
 .brS__side .br-nudge {
   width: 100%;
@@ -1856,6 +1698,7 @@
 
 /* central moment node + spine */
 .brS__moment {
+  grid-column: 2;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1873,7 +1716,7 @@
   width: 2px;
   transform: translateX(-50%);
   background: linear-gradient(180deg, var(--accent), var(--ch-dsm));
-  opacity: 0.3;
+  opacity: 0.45;
   z-index: 0;
 }
 .brS__row:first-child .brS__moment::before {
@@ -2029,8 +1872,14 @@
   .brS__moment::before {
     display: none;
   }
+  /* enkeltkolonne: nullstill grid-plassering så DOM-rekkefølgen (moment →
+     leder → sykmeldt) styrer — ingen order-hack som bryter lese-rekkefølgen */
+  .brS__moment,
+  .brS__side--leder,
+  .brS__side--sykmeldt {
+    grid-column: auto;
+  }
   .brS__moment {
-    order: -1; /* touchpoint-headeren leder hvert par på smal skjerm */
     align-items: flex-start;
     text-align: left;
     padding: 1.5rem 0 0.75rem;
@@ -2041,6 +1890,11 @@
     text-align: left;
     margin: 0;
     padding: 0.5rem 0;
+  }
+  /* skjul de vertikale aktør-skinnene når kortene stables */
+  .brS__side--leder::after,
+  .brS__side--sykmeldt::before {
+    display: none;
   }
   .brS__side--leder .brS__behav {
     flex-direction: row;

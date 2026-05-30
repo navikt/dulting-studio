@@ -97,17 +97,6 @@ export function BrukerreiseSammen() {
                 key={moment.title}
                 style={{ animationDelay: `${i * 0.05}s` }}
               >
-                <div className="brS__side brS__side--leder">
-                  <span className="brS__sidelabel brS__sidelabel--leder">
-                    Arbeidsgiver
-                  </span>
-                  <NudgeCard nudge={l.dult.nudge} time={l.time} />
-                  <p className="brS__behav">
-                    <ArrowRightIcon aria-hidden fontSize="1rem" />
-                    {l.dult.desiredBehavior}
-                  </p>
-                </div>
-
                 <div className="brS__moment">
                   <span className="brS__momentnum br-num">{i + 1}</span>
                   <span className="brS__momenttime br-num">{l.time}</span>
@@ -121,6 +110,17 @@ export function BrukerreiseSammen() {
                       {moment.key ? "↔ Toveis kobling" : "Felles touchpoint"}
                     </b>
                     {moment.coupling}
+                  </p>
+                </div>
+
+                <div className="brS__side brS__side--leder">
+                  <span className="brS__sidelabel brS__sidelabel--leder">
+                    Arbeidsgiver
+                  </span>
+                  <NudgeCard nudge={l.dult.nudge} time={l.time} />
+                  <p className="brS__behav">
+                    <ArrowRightIcon aria-hidden fontSize="1rem" />
+                    {l.dult.desiredBehavior}
                   </p>
                 </div>
 
@@ -142,7 +142,7 @@ export function BrukerreiseSammen() {
         <section className="brS__closer">
           <h2>To roller, samme mål</h2>
           <p>
-            Begge sporene ladrer opp til de samme målene i IA-avtalen — flere og
+            Begge sporene lader opp til de samme målene i IA-avtalen — flere og
             tidligere oppfølgingsplaner, mer gradert sykmelding, kortere fravær.
             Dulting virker best når begge parter dultes mot det samme, samtidig.
           </p>

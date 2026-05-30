@@ -116,7 +116,7 @@ const phases: Phase[] = [
     motivasjon: {
       driver: "Plikt og ytre forventninger",
       detalj:
-        "En tydelig, tidsriktig anledning gjør plikten håndterbar — og en sosial norm («mange tar stilling nå») gjør den lettere å følge.",
+        "En tydelig, tidsriktig anledning gjør plikten håndterbar og lettere å handle på i tide.",
     },
     dult: {
       intervention:
@@ -124,7 +124,7 @@ const phases: Phase[] = [
       nudge: {
         channel: "sms",
         title: "Snart fire uker — vurder en oppfølgingsplan",
-        body: "Mange lager en oppfølgingsplan med lederen sin nå. Vil du vurdere behovet? Det tar et par minutter.",
+        body: "Det nærmer seg fire uker. Vil du vurdere om du trenger en oppfølgingsplan med lederen din?",
         cta: "Vurder behovet",
       },
       desiredBehavior:
@@ -171,7 +171,7 @@ const phases: Phase[] = [
     },
     dult: {
       intervention:
-        "En enkel oppgave på «Min side for sykmeldte» (varsel/bjella): ta stilling til behovet. Vurderingen kan deles med Nav, og «ja» trigger et varsel til arbeidsgiver — den to-sidige koblingen.",
+        "En enkel oppgave på «Min side for sykmeldte» (varsel/bjella): ta stilling til behovet. Vurderingen kan deles med Nav, og «ja» trigger et varsel til arbeidsgiver — den toveis koblingen.",
       nudge: {
         channel: "minside-sykmeldt",
         title: "Trenger du en oppfølgingsplan nå?",
@@ -302,19 +302,19 @@ const phases: Phase[] = [
     today: {
       text: "Planen har en evalueringsdato, men ingenting minner Jonas om den, og evalueringen gir lite støtte. Planen blir et engangsdokument.",
       barrier:
-        "Ingen påminnelse, ingen recap av hva man ble enige om — så datoen forsvinner i hverdagen.",
+        "Ingen påminnelse, ingen oppsummering av hva man ble enige om — så datoen forsvinner i hverdagen.",
     },
     lawIdeal:
       "Slik det burde være: planen evalueres og justeres med den ansatte.",
     barriere: {
       kategori: "Manglende rutiner",
       detalj:
-        "Uten påminnelse eller recap forsvinner evalueringen; planen behandles som et engangsdokument.",
+        "Uten påminnelse eller oppsummering forsvinner evalueringen; planen behandles som et engangsdokument.",
     },
     motivasjon: {
       driver: "Autonomi og eierskap",
       detalj:
-        "Når planen er deres, levende og endrbar («ingenting er hugget i stein»), blir det naturlig å vende tilbake til den.",
+        "Når planen er deres, levende og mulig å endre («ingenting er hugget i stein»), blir det naturlig å vende tilbake til den.",
     },
     dult: {
       intervention:
@@ -348,7 +348,7 @@ const overordnetMaal: OverordnetMaal = {
     "Dulting for å gjøre den sykmeldte til en informert, medvirkende part — og øke etterlevelsen av medvirknings- og aktivitetsplikten, med mål om å redusere sykefraværet (AID / IA-avtalen 2025–2028).",
   kr: [
     "Egen behovsvurdering — og tidligere",
-    "Flere tar stilling til behov innen uke 10",
+    "Flere tar stilling til behov innen uke 4",
     "Plan delt uten å vente på veileder",
     "Forberedt og medvirkende i dialogmøte 1",
     "Økt gradert sykmelding · kortere sykefravær",

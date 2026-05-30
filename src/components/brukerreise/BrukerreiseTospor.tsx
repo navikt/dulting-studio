@@ -260,6 +260,10 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
             Se reisen som presentasjon
             <ArrowRightIcon aria-hidden fontSize="0.9rem" />
           </Link>
+          <Link className="brA__summary-link" href="/brukerreise/sammen">
+            Se begge spor side om side
+            <ArrowRightIcon aria-hidden fontSize="0.85rem" />
+          </Link>
         </section>
       </div>
     </div>
