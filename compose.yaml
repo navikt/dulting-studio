@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: dulting-studio-postgres
     environment:
       POSTGRES_DB: dulting_studio
@@ -14,7 +14,9 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      - dulting-studio-postgres:/var/lib/postgresql/data
+      # PG18-imaget krever mount på /var/lib/postgresql (ikke .../data) — det
+      # legger dataene i en versjons-subkatalog. Se docker-library/postgres#1259.
+      - dulting-studio-postgres:/var/lib/postgresql
 
 volumes:
   dulting-studio-postgres:

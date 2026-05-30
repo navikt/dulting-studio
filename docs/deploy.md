@@ -111,3 +111,37 @@ gruppe-begrensning). Vil du **låse til team-esyfo** senere: sett
 `allowAllUsers: false` og legg team-esyfo sin AD-gruppe-ID under `claims.groups`
 i `nais/nais-prod.yaml` (kommentert mal ligger i manifestet; hold i sync med en
 ev. app-side `requiredAzureAdGroups`).
+
+## DB-utrulling — implementert og klar (2026-05-30)
+
+Path (b) er nå bygd og verifisert lokalt for den team-delte tiltak-editoren
+(`/tiltakspakke-utvelgelse/rediger`). Tenant er `nav.no` (ikke trygdeetaten;
+Z-identer støttes ikke). Klart å rulle ut — **ingen ekstra manuelle steg utover
+deploy**, fordi migrering kjører på app-oppstart:
+
+- **`nais/nais-prod.yaml`:** `gcp.sqlInstances` (POSTGRES_18, `db-f1-micro` =
+  minste tier, `diskAutoresize: true`, `envVarPrefix: DB`) +
+  `azure.application.claims.extra: [NAVident]`
+  (NAV-ident i token → «sist endret av» i editoren).
+- **`src/db/client.ts`:** `getDb()` bygger connection-string fra
+  `DATABASE_URL ?? DB_URL ?? DB_HOST/DB_PORT/DB_USERNAME/DB_PASSWORD/DB_DATABASE`.
+- **`src/instrumentation.ts`:** migrate-on-boot via drizzle-orm-migratoren,
+  serialisert med `pg_try_advisory_lock` (ADR-003: ett kontrollert steg; appen
+  kjører dessuten på 1 replica). Guardet i try/catch — en DB-feil hindrer
+  ALDRI at appen starter (forsiden/brukerreisene er DB-frie og lazy).
+- **`Dockerfile`:** `COPY migrations /app/migrations` (migratoren leser dem on-boot).
+
+**Slik ruller du ut + verifiserer (på Nav-nett):**
+
+1. Push til `main` (eller merge PR). CI bygger + deployer; NAIS provisjonerer
+   Cloud SQL (tar noen minutter første gang). Kan kreve at Cloud SQL aktiveres
+   for team-esyfo i NAIS Console/GCP (samme type steg som repo-autoriseringen).
+2. Når poden er oppe: sjekk loggen for `[migrate] migreringer kjørt` (eller
+   `hopper over` hvis DB ikke er klar enda — da redeploy/restart).
+3. Åpne `/tiltakspakke-utvelgelse/rediger` → 26 tiltak lazy-seedes; rediger +
+   Lagre → «v… · sist: \<din NAV-ident\>».
+4. Lås til team-esyfo-gruppe når ønskelig (se «Hvem ser appen» over).
+
+**Lokal utvikling:** `pnpm db:up` (Rancher/docker), `.env` med
+`DATABASE_URL=postgresql://postgres:postgres@localhost:5432/dulting_studio` +
+`LOCAL_AUTH_MOCK_ENABLED=true`, `pnpm db:migrate`, `pnpm dev`.

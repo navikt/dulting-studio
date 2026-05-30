@@ -5,6 +5,8 @@ WORKDIR /app
 COPY .next/standalone /app/
 COPY .next/static /app/.next/static
 COPY public /app/public
+# Migreringsfilene må være i imaget for migrate-on-boot (src/instrumentation.ts).
+COPY migrations /app/migrations
 
 EXPOSE 3000
 

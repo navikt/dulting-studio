@@ -14,17 +14,18 @@ spec:
   azure:
     application:
       enabled: true
-      tenant: nav.no
-      # Åpent for alle innloggede Nav-ansatte i prod nå (Wonderwall krever
-      # fortsatt innlogging, men ingen gruppe-begrensning).
-      # For å låse til team-esyfo senere: sett allowAllUsers: false og legg inn
-      # team-esyfo sin AD-gruppe-ID under claims.groups (hold i sync med en
-      # eventuell app-side allowlist i withProtectedApiRoute()):
-      #   allowAllUsers: false
-      #   claims:
-      #     groups:
-      #       - id: "<team-esyfo-gruppe-id>"
+      tenant: nav.no # nav.no-tenant — ikke trygdeetaten; Z-identer støttes ikke
+      # Åpent for alle innloggede Nav-ansatte på intern ingress nå (Wonderwall
+      # krever fortsatt innlogging). Lås til team-esyfo senere ved å sette
+      # allowAllUsers: false og legge til groups under claims (samme blokk som
+      # extra under) — NAIS håndhever gruppe-tilgang i Wonderwall-laget:
+      #   groups:
+      #     - id: "<team-esyfo-gruppe-id>"
       allowAllUsers: true
+      claims:
+        # NAVident i token → brukes som «sist endret av» i tiltak-editoren.
+        extra:
+          - NAVident
     sidecar:
       enabled: true
       autoLogin: true
@@ -66,3 +67,17 @@ spec:
       # Ingen downstream-tjenester eller eksterne hoster før database/import-fasen er avklart.
       rules: []
       external: []
+  gcp:
+    sqlInstances:
+      # Minimal Cloud SQL for team-delt tiltak-editor. db-f1-micro = minste
+      # (delt-kjerne) tier — passer en intern, lav-trafikk demo. POSTGRES_18 =
+      # nyeste major (lengst støtte). diskAutoresize: true hindrer disk-full
+      # (auto-utvider; manuell diskSize ignoreres da). Migreringer kjøres på
+      # app-oppstart (src/instrumentation.ts); NAIS injiserer DB_*-env
+      # (envVarPrefix DB) som getDb() bygger connection-string fra.
+      - type: POSTGRES_18
+        tier: db-f1-micro
+        diskAutoresize: true
+        databases:
+          - name: dulting-studio
+            envVarPrefix: DB
