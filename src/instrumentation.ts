@@ -13,9 +13,9 @@ const MIGRATION_LOCK_ID = 47110815;
 export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
 
-  const { resolveDatabaseUrl } = await import("./db/client");
-  const url = resolveDatabaseUrl();
-  if (!url) {
+  const { resolveDbConfig } = await import("./db/client");
+  const config = resolveDbConfig();
+  if (!config) {
     console.log("[migrate] ingen database konfigurert — hopper over migrering");
     return;
   }
@@ -25,8 +25,9 @@ export async function register() {
   const { migrate } = await import("drizzle-orm/node-postgres/migrator");
 
   // Én dedikert connection: garanterer at advisory-låsen og migreringen kjører
-  // på samme session.
-  const client = new pg.Client({ connectionString: url });
+  // på samme session. Samme config som poolen (diskrete DB_*-deler + ssl-objekt
+  // for NAIS) — ikke en connection-string med sslmode, se db/client.ts.
+  const client = new pg.Client(config);
   try {
     await client.connect();
     const res = await client.query(
