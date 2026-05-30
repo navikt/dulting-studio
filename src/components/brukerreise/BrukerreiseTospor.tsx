@@ -213,10 +213,19 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
                     <dt>Måletegn</dt>
                     <dd>
                       <ul className="brA__measures">
-                        {p.measurements.map((m) => (
+                        {p.measurements.primary.map((m) => (
                           <li key={m}>{m}</li>
                         ))}
                       </ul>
+                      {p.measurements.proxy &&
+                        p.measurements.proxy.length > 0 && (
+                          <p className="brA__measures-proxy">
+                            <span className="brA__measures-proxy-label">
+                              Støttemål
+                            </span>
+                            {p.measurements.proxy.join(" · ")}
+                          </p>
+                        )}
                     </dd>
                   </div>
                   <div className="br-meta">

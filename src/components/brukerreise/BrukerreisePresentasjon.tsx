@@ -23,19 +23,56 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
   const router = useRouter();
   const { contrast, mission, overordnetMaal, persona, phases } = data;
 
-  // a11y: full-skjerm-overlayet dekker appen, men app-headeren bak lå igjen i
-  // tab-rekkefølgen. Gjør den inert mens presentasjonen vises, og la Escape
-  // lukke (tastatur-vei ut). Gjenopprettes når presentasjonen lukkes.
+  // a11y: full-skjerm-overlayet er en modal (role="dialog" + aria-modal). Gjør
+  // appen bak inert, flytt fokus inn ved åpning, hold Tab innenfor (fokus-felle),
+  // la Escape lukke, og gjenopprett fokus til det som var aktivt før.
   useEffect(() => {
+    const root = rootRef.current;
     const header = document.querySelector(".app-header");
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+
     header?.setAttribute("inert", "");
+    root?.focus();
+
+    const focusablesIn = (el: HTMLElement) =>
+      Array.from(
+        el.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((n) => n.getClientRects().length > 0);
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") router.push(pathname, { scroll: false });
+      if (e.key === "Escape") {
+        router.push(pathname, { scroll: false });
+        return;
+      }
+      if (e.key !== "Tab" || !root) return;
+      const f = focusablesIn(root);
+      if (f.length === 0) {
+        e.preventDefault();
+        root.focus();
+        return;
+      }
+      const first = f[0];
+      const last = f[f.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (!active || !root.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
+
     window.addEventListener("keydown", onKey);
     return () => {
       header?.removeAttribute("inert");
       window.removeEventListener("keydown", onKey);
+      previouslyFocused?.focus?.();
     };
   }, [router, pathname]);
 
@@ -77,7 +114,14 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
   }, []);
 
   return (
-    <div className="br-proto brC" ref={rootRef}>
+    <div
+      className="br-proto brC"
+      ref={rootRef}
+      tabIndex={-1}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${mission.title} — presentasjon`}
+    >
       <Link
         className="brC__close"
         href={pathname}

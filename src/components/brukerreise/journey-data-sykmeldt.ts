@@ -78,11 +78,13 @@ const phases: Phase[] = [
     },
     consideration:
       "Å legge dette i selve sykmeldingen eies av et annet team (Symfoni). Start på «Min side for sykmeldte» / «Ditt sykefravær» (Flex) via microfrontend — flater vi samarbeider om, men ikke eier alene.",
-    measurements: [
-      "% sykmeldte som forstår egne plikter (Lumi)",
-      "Besøk på info-/sykefraværsflate etter sykmelding",
-      "% som tar tidlig kontakt med leder",
-    ],
+    measurements: {
+      primary: [
+        "% sykmeldte som forstår egne plikter (Lumi)",
+        "% som tar tidlig kontakt med leder",
+      ],
+      proxy: ["Besøk på info-/sykefraværsflate etter sykmelding"],
+    },
     guardrail:
       "Ikke overvelde dag 1; plikt skal opplyse, ikke true. Bygg inn i eksisterende flater.",
     sharedWithAg: "AG steg 01",
@@ -133,11 +135,10 @@ const phases: Phase[] = [
     },
     consideration:
       "SMS er effektivt, men må veies mot varseltrøtthet — én tidsriktig påminnelse, ikke mas. Bør testes isolert.",
-    measurements: [
-      "Varsel vist / åpnet",
-      "Andel som vurderer behov innen uke 4",
-      "Besøk på flate etter SMS",
-    ],
+    measurements: {
+      primary: ["Andel som vurderer behov innen uke 4"],
+      proxy: ["Varsel vist / åpnet", "Besøk på flate etter SMS"],
+    },
     guardrail:
       "Unngå varseltrøtthet og for tidlig press; ikke duplikat når plan eller vurdering allerede finnes.",
     sharedWithAg: "AG steg 02",
@@ -183,11 +184,13 @@ const phases: Phase[] = [
     },
     consideration:
       "Kartleggingsspørsmålene (pilot Troms og Finnmark, uke ~7) kan bli en ny anledning til å vurdere behov — men forveksles lett med oppfølgingsplanen. Vi må forklare forskjellen tydelig, og kan ikke forutsette at alle ser flaten.",
-    measurements: [
-      "Antall egne behovsvurderinger innen uke 4",
-      "Andel «ja» som utløser AG-varsel",
-      "Andel delt med Nav",
-    ],
+    measurements: {
+      primary: [
+        "Antall egne behovsvurderinger innen uke 4",
+        "Andel «ja» som utløser AG-varsel",
+        "Andel delt med Nav",
+      ],
+    },
     guardrail:
       "Tydelig samtykke om deling; ingen forhåndsvalgt default. «Ikke nå» må være et reelt valg, ikke en snarvei bort fra medvirkning.",
     sharedWithAg: "AG steg 03",
@@ -231,11 +234,13 @@ const phases: Phase[] = [
       desiredBehavior: "Jonas møter forberedt og bidrar reelt i planen.",
       refs: ["ST07", "ST08", "ST09", "SYK-11", "SYK-12", "SYK-13", "SYK-14"],
     },
-    measurements: [
-      "Visninger av forberedelsesskjema før plan",
-      "% sykmeldte som føler seg ivaretatt ved første samtale (Lumi)",
-      "% som vet hva de kan bidra med",
-    ],
+    measurements: {
+      primary: [
+        "% sykmeldte som føler seg ivaretatt ved første samtale (Lumi)",
+        "% som vet hva de kan bidra med",
+      ],
+      proxy: ["Visninger av forberedelsesskjema før plan"],
+    },
     guardrail:
       "Ikke be om diagnose eller private forhold; en hjelp, ikke et nytt krav. Aldri «du burde jobbe mer» — helsen styrer.",
     sharedWithAg: "AG steg 04",
@@ -281,11 +286,13 @@ const phases: Phase[] = [
     },
     consideration:
       "Må ikke føre til dobbel-varsling når planen allerede er delt, eller til at sensitive opplysninger deles ukritisk.",
-    measurements: [
-      "Andel planer med sykmeldt-medvirkning",
-      "Deling med lege/Nav opp",
-      "Tidlig deling (aggregert)",
-    ],
+    measurements: {
+      primary: [
+        "Andel planer med sykmeldt-medvirkning",
+        "Deling med lege/Nav opp",
+        "Tidlig deling (aggregert)",
+      ],
+    },
     guardrail: "Deling skal aldri føles som press; tydelig hvem som ser hva.",
     sharedWithAg: "AG steg 04–05",
   },
@@ -331,11 +338,14 @@ const phases: Phase[] = [
     },
     consideration:
       "Større grep (ikke scopet inn nå, men viktig kontekst): gjøre selve planen til et levende dokument — vise forrige samtale og la den oppdateres i stedet for å måtte lages på nytt.",
-    measurements: [
-      "Evalueringsdato satt, og påminnelse valgt",
-      "Flere som faktisk evaluerer planen",
-      "Plan åpnet og justert senere; rating av tiltak",
-    ],
+    measurements: {
+      primary: [
+        "Evalueringsdato satt, og påminnelse valgt",
+        "Flere som faktisk evaluerer planen",
+        "Rating av tiltak",
+      ],
+      proxy: ["Plan åpnet og justert senere"],
+    },
     guardrail:
       "Ingen skjult default på varsling; unngå skyld-språk når et tiltak ikke virket. Ikke gjør flere planer til et krav.",
     sharedWithAg: "AG steg 06",

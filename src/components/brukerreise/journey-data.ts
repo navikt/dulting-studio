@@ -115,8 +115,10 @@ export type Phase = {
   };
   /** Eksplisitt avveining (vises der vi vurderer noe med tydelig bakside). */
   consideration?: string;
-  /** Måletegn — hentet fra KPI-kortene i atferdskartleggingen. */
-  measurements: string[];
+  /** Måletegn — primære (atferd + opplevelse) er målet; proxy (visninger,
+      åpninger, besøk) er dempede bruksindikatorer, så vi ikke styrer mot
+      vanity-tall. Hentet fra KPI-kortene i atferdskartleggingen. */
+  measurements: { primary: string[]; proxy?: string[] };
   guardrail: string;
   /** To-sidig touchpoint: navngir det tilsvarende steget i det andre sporet. */
   sharedWithAg?: string;
@@ -200,11 +202,13 @@ export const phases: Phase[] = [
         "Maria åpner riktig person, og forstår hva hun bør gjøre videre.",
       refs: ["DULT-07", "DULT-11", "DULT-02", "DULT-10", "T03", "T13"],
     },
-    measurements: [
-      "Åpning av personside etter mottak",
-      "% ledere som vet hva som kommer i sykefraværsoppfølgingen",
-      "% ansatte som opplever tidlig kontakt som støtte, ikke press (Lumi)",
-    ],
+    measurements: {
+      primary: [
+        "% ledere som vet hva som kommer i sykefraværsoppfølgingen",
+        "% ansatte som opplever tidlig kontakt som støtte, ikke press (Lumi)",
+      ],
+      proxy: ["Åpning av personside etter mottak"],
+    },
     guardrail:
       "Ikke gjør alle sykmeldinger til hastesaker. Riktig populasjon og timing, nøytral tone.",
   },
@@ -255,12 +259,14 @@ export const phases: Phase[] = [
     },
     consideration:
       "Vi vurderer eksternt varsel (e-post til arbeidsgiver) i tillegg til oppgaven på Min side arbeidsgiver. Det vil trolig dra flere i gang tidlig — men må veies mot varseltrøtthet, og bør testes isolert.",
-    measurements: [
-      "Varsel vist / varsel åpnet",
-      "Stilling tatt eller plan startet før frist",
-      "Andel som sender plan uten å vente på beskjed fra veileder",
-      "Flere oppfølgingsplaner startet tidligere",
-    ],
+    measurements: {
+      primary: [
+        "Stilling tatt eller plan startet før frist",
+        "Andel som sender plan uten å vente på beskjed fra veileder",
+        "Flere oppfølgingsplaner startet tidligere",
+      ],
+      proxy: ["Varsel vist / varsel åpnet"],
+    },
     guardrail:
       "Unngå varseltrøtthet, for tidlig press og duplikatvarsel når plan allerede finnes.",
   },
@@ -307,11 +313,13 @@ export const phases: Phase[] = [
     },
     consideration:
       "Workshop-innsikt (kandidat, ikke scopet inn): arbeidsgivere mangler ofte info om hva den ansatte får fra Nav — f.eks. unntak fra aktivitetsplikten. Å gi leder relevant kontekst, uten å bryte personvern, kan gjøre vurderingen riktigere.",
-    measurements: [
-      "Fullført behovsvurdering",
-      "Fordeling «lag plan» / «ikke nå»",
-      "Andel «ikke nå» med oppgitt grunn",
-    ],
+    measurements: {
+      primary: [
+        "Fullført behovsvurdering",
+        "Fordeling «lag plan» / «ikke nå»",
+        "Andel «ikke nå» med oppgitt grunn",
+      ],
+    },
     guardrail:
       "«Plan trengs ikke nå» må ikke bli en snarvei bort fra oppfølgingsplikten. Ingen forhåndsvalgt default.",
   },
@@ -356,11 +364,13 @@ export const phases: Phase[] = [
         "Maria starter en relevant plan og bruker den i samtalen og tilretteleggingen.",
       refs: ["DULT-05", "DULT-32", "DULT-02", "T05"],
     },
-    measurements: [
-      "Planstart og planfullføring",
-      "% sykmeldte som føler seg ivaretatt av leder ved første samtale",
-      "% ledere som vet hva de bør snakke med en sykmeldt om",
-    ],
+    measurements: {
+      primary: [
+        "Planstart og planfullføring",
+        "% sykmeldte som føler seg ivaretatt av leder ved første samtale",
+        "% ledere som vet hva de bør snakke med en sykmeldt om",
+      ],
+    },
     guardrail:
       "Ikke be om diagnose, private forhold eller unødvendig fritekst. Ikke gjør alt til en veiviser.",
   },
@@ -407,11 +417,13 @@ export const phases: Phase[] = [
     },
     consideration:
       "Dulteteknikk for deling: urgency + forhåndsutfylt valg for fastlegen. Drar trolig opp tidlig deling — men må ikke oppleves som press eller føre til at sensitive opplysninger deles ukritisk.",
-    measurements: [
-      "Plan delt, og tidspunkt for deling",
-      "Tidlig deling før relevant legekontakt (H2, aggregert)",
-      "Andel gradert sykmelding der plan ble delt tidlig (aggregert)",
-    ],
+    measurements: {
+      primary: [
+        "Plan delt, og tidspunkt for deling",
+        "Tidlig deling før relevant legekontakt (H2, aggregert)",
+        "Andel gradert sykmelding der plan ble delt tidlig (aggregert)",
+      ],
+    },
     guardrail:
       "Deling må ikke oppleves som press eller føre til unødvendig sensitive opplysninger.",
   },
@@ -466,11 +478,13 @@ export const phases: Phase[] = [
     },
     consideration:
       "Større grep (ikke scopet inn nå, men viktig kontekst): gjøre selve planen til et levende dokument — vise forrige samtale, støtte vurdering av hva som er prøvd, og la planen oppdateres i stedet for å måtte lages på nytt. Avgjørende for en kontinuerlig sykefraværsoppfølging.",
-    measurements: [
-      "Evalueringsdato satt, og kalender/påminnelse valgt",
-      "Flere som faktisk evaluerer planen",
-      "Plan åpnet og justert senere",
-    ],
+    measurements: {
+      primary: [
+        "Evalueringsdato satt, og kalender/påminnelse valgt",
+        "Flere som faktisk evaluerer planen",
+      ],
+      proxy: ["Plan åpnet og justert senere"],
+    },
     guardrail:
       "Ingen skjult default på varsling. Ikke skap ekstra administrasjonsbyrde.",
   },
