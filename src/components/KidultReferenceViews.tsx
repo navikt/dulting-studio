@@ -69,12 +69,12 @@ function ReferenceHeader({
       <HStack gap="space-12" align="center" justify="space-between" wrap>
         <Button
           as={NextLink}
-          href="/projects"
+          href="/"
           variant="tertiary-neutral"
           size="small"
           icon={<ArrowLeftIcon aria-hidden />}
         >
-          Prosjekter
+          Forsiden
         </Button>
         <HStack gap="space-8" align="center" wrap>
           <Button
