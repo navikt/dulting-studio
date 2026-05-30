@@ -1619,35 +1619,17 @@
    logisk uavhengig av den visuelle plasseringen. */
 .brS__side--leder {
   grid-column: 1;
+  grid-row: 1;
   align-items: flex-end;
   text-align: right;
   margin-left: auto;
 }
 .brS__side--sykmeldt {
   grid-column: 3;
+  grid-row: 1;
   align-items: flex-start;
   text-align: left;
   margin-right: auto;
-}
-/* aktør-farget skinne langs spine-kanten — gjør blå/lilla-kodingen tydelig
-   uten å overstyre nudge-kortenes egen kanal-farge */
-.brS__side--leder::after,
-.brS__side--sykmeldt::before {
-  content: "";
-  position: absolute;
-  top: 1.9rem;
-  bottom: 1.9rem;
-  width: 3px;
-  border-radius: 3px;
-  opacity: 0.5;
-}
-.brS__side--leder::after {
-  right: 0;
-  background: var(--accent);
-}
-.brS__side--sykmeldt::before {
-  left: 0;
-  background: var(--ch-dsm);
 }
 .brS__side .br-nudge {
   width: 100%;
@@ -1699,6 +1681,7 @@
 /* central moment node + spine */
 .brS__moment {
   grid-column: 2;
+  grid-row: 1;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1878,6 +1861,7 @@
   .brS__side--leder,
   .brS__side--sykmeldt {
     grid-column: auto;
+    grid-row: auto;
   }
   .brS__moment {
     align-items: flex-start;
@@ -1890,11 +1874,6 @@
     text-align: left;
     margin: 0;
     padding: 0.5rem 0;
-  }
-  /* skjul de vertikale aktør-skinnene når kortene stables */
-  .brS__side--leder::after,
-  .brS__side--sykmeldt::before {
-    display: none;
   }
   .brS__side--leder .brS__behav {
     flex-direction: row;
