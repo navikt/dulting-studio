@@ -33,7 +33,7 @@ export default function Home() {
     <div className={`lp ${schibsted.variable}`}>
       <section className="lp__hero">
         <span className="lp__eyebrow">
-          Internt · syntetisk demo · IA-avtalen 2025–2028
+          Internt · syntetisk demo · AID / IA-avtalen 2025–2028
         </span>
         <h1 className="lp__title">Dulting i sykefraværsoppfølgingen</h1>
         <p className="lp__lead">

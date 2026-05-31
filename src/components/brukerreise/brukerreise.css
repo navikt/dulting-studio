@@ -1765,6 +1765,10 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--ink-faint);
+  /* opak maske så spinen (z-index 0) ikke skinner gjennom teksten —
+     matcher den faktiske side-bakgrunnen så det ikke blir en synlig boks */
+  background: var(--a-surface-default);
+  padding: 0 0.5rem;
 }
 .brS__momenttitle {
   font-family: var(--font-display);
@@ -1772,6 +1776,8 @@
   font-size: 0.98rem;
   line-height: 1.2;
   margin: 0.15rem 0 0.45rem;
+  background: var(--a-surface-default);
+  padding: 0 0.5rem;
 }
 .brS__coupling {
   font-size: 0.78rem;
