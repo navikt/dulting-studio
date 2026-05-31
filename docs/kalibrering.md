@@ -22,7 +22,26 @@
   består). Ikke synlig inngang tirsdag, lett å hente fram.
 - **C2 · Pakke 1:** ✅ bekreftet som utgangspunkt — AG T01–T04 (+T13 støtte),
   sykmeldt ST04–ST05 (+ST01), samlet om «tidlig signal + behovsvurdering før uke 4».
-- **C1 · Effekt/innsats:** 🔄 valideres nå, rad for rad (se egen gjennomgang i chat).
+- **C1 · Effekt/innsats:** 🔄 påbegynt — taksonomi tatt først (se §F), post-merge-skår gjenstår.
+- **F · Taksonomi:** ✅ T01+T02 slått sammen · T04→T03 · T08+T09 slått sammen ·
+  ST01 progressiv · ST05→«vurder» (asymmetrisk signal) · ST03 effekt 1→2 (detaljer i §F).
+
+---
+
+## 🔜 Gjenstår å kalibrere (prioritert) — rask runde når du er tilbake
+
+Hver har min anbefaling forhåndsutfylt — bekreft (✅) eller korriger (✏️).
+
+1. **T01\* primær-barriere** (sammenslått): Tidspress vs Manglende rutiner? → *anbefalt:
+   Manglende rutiner primær (rutine/system som leverer oppgaven), Tidspress sekundær.*
+2. **Effekt/innsats post-merge** — bekreft §F2 (AG, 11 tiltak) + §F3 (sykmeldt). De fleste
+   uendret; bare de tre mergene + ST03/ST05 flyttet seg.
+3. **AG A1 barriere×motivasjon** rad for rad — særlig ⚠️-radene (T05, og T08\* etter merge).
+4. **A2 EAST/Fogg + FORGOOD** (mest gjettet) — rask vinge gjennom.
+5. **A4 4-ukers-frist-ordlyd:** «senest innen uke 4» (juridisk) vs workshop-kortets
+   «uke 4, senest uke 8».
+6. **Sykmeldt ST06–ST12** barriere/motivasjon + dult-tone — ikke gått gjennom ennå.
+7. **Implementering:** når 1–6 er låst → fold mergene inn i modellfilene SAMLET + redeploy.
 
 ---
 
@@ -207,3 +226,27 @@ første gjennomgang; det er de tre sammenslåtte som trenger ny bekreftelse:
 | T12 | Lagring og gjenbruk av plan | 1 | 2 | senere | |
 | T13 | Verdi og plikt i klarspråk (støtte) | 2 | 1 | pakke1 støtte | |
 | T14 | Samlet innhold + begrepsrydding | 2 | 3 | senere | |
+
+### F3. Sykmeldt-liste — effekt/innsats etter kalibrering
+
+Ingen merger på sykmeldt-siden; bare ST03 (effekt) og ST05 (tier) flyttet seg.
+
+| ID | Tiltak | E | I | Tier | Merk |
+|----|--------|---|---|------|------|
+| ST01 | Plikt-/prosessinfo dag 1 (progressiv) | 2 | 2 | pakke1 støtte | tone/timing → progressiv ✅ |
+| ST02 | Oppfordre tidlig kontakt + gevinst | 2 | 1 | vurder | |
+| ST03 | Vis hva leder skal gjøre (symmetri) | **2** | 1 | vurder | effekt 1→2 ✅ |
+| ST04 | Tidsriktig signal ~uke 4 | 3 | 2 | pakke1 kjerne | |
+| ST05 | Egen behovsvurdering; ja→AG-varsel | 3 | 3 | **vurder** | flyttet pakke1→vurder ✅ (asymmetrisk; team/roadmap) |
+| ST06 | Kartleggingsspørsmål som ny anledning | 2 | 3 | senere | blokkert: geografi-pilot |
+| ST07 | Forstå hva en plan er + gevinst | 2 | 1 | vurder | |
+| ST08 | Forberedelsesskjema til samtalen | 2 | 2 | senere | |
+| ST09 | «Sykmeldt fra oppgavene» | 2 | 1 | vurder | |
+| ST10 | Sykmeldt medvirker + deler planen | 3 | 3 | senere | teknisk blokkert |
+| ST11 | Evalueringsdato + påminnelse + mal | 2 | 1 | vurder | |
+| ST12 | Evalueringsside + flere planer | 2 | 2 | senere | |
+
+> **Konsekvens for pakke 1 (oppdater §C2):** ST05 er flyttet fra *kjerne* til *vurder*.
+> Pakke 1 sykmeldt-side blir da **ST04 kjerne + ST01 støtte**; ST05 (det toveis grepet)
+> er nå en bevisst, betinget utvidelse, ikke låst kjerne — i tråd med kalibreringen.
+> AG-side pakke 1 (post-merge): **T01\* + T03\* kjerne + T13 støtte.**
