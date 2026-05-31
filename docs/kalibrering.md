@@ -183,3 +183,27 @@ heller parametere på samme objekt.*
       T01–T03 konvergerer, og det `sammen` viser). B oppløser edge-casene: begge promptes
       i samme vindu (ikke race), begge svar PERSISTERER + synlige (ingen forsvinner),
       leder kan endre til plan er ferdigstilt. **ÅPENT — team/roadmap, ikke låst i kalibrering.**
+- **ST03 → effekt 1→2** ✅ (2026-05-31). «Vis sykmeldt hva leder skal gjøre» var
+  undervurdert: å vite leders ansvar/frist gir sykmeldt trygghet + brekkstang til å
+  purre (passer «mer makt til sykmeldt»). Symmetri holdes én vei nå (sykmeldt ser
+  leders rolle); motsatt vei (AG ser sykmeldts signal) ligger i ST05-tråden, ikke
+  løftet som eget tiltak ennå.
+
+### F2. AG-liste etter sammenslåing — effekt/innsats re-skåret
+
+Etter mergene krymper AG-lista fra 14 → 11 tiltak. Skårene er ellers stabile fra
+første gjennomgang; det er de tre sammenslåtte som trenger ny bekreftelse:
+
+| ID | Tiltak (post-merge) | E | I | Tier | Merk |
+|----|---------------------|---|---|------|------|
+| T01* | Tidsriktig oppgave på riktig person før uke 4 (T01+T02) | 3 | 2 | pakke1 kjerne | Barriere: ⚠️ Tidspress vs Manglende rutiner |
+| T03* | Personnær vurderingsoppgave m/ «nei»-gren (T03+T04) | 3 | 2 | pakke1 kjerne | Kunnskapsmangel / Autonomi |
+| T05 | Miniguide og stegvis plan | 2 | 3 | senere | |
+| T06 | Aktiv plan kan justeres | 2 | 2 | senere | |
+| T07 | Utkast og fremdrift | 1 | 2 | senere | |
+| T08* | Evalueringsdato + opt-in påminnelse (T08+T09) | 2 | 2 | vurder | Tier var split vurder/senere |
+| T10 | Hvorfor dele med lege/Nav | 2 | 1 | vurder | |
+| T11 | Tilrettelegging virker/ikke | 2 | 2 | senere | |
+| T12 | Lagring og gjenbruk av plan | 1 | 2 | senere | |
+| T13 | Verdi og plikt i klarspråk (støtte) | 2 | 1 | pakke1 støtte | |
+| T14 | Samlet innhold + begrepsrydding | 2 | 3 | senere | |
