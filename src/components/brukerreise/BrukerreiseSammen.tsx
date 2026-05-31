@@ -169,18 +169,12 @@ export function BrukerreiseSammen() {
             Dulting virker best når begge parter dultes mot det samme, samtidig.
           </p>
           <div className="brS__closerlinks">
-            <Link
-              className="brS__closerlink"
-              href="/brukerreise/leder?modus=presentasjon"
-            >
-              Arbeidsgiver som presentasjon
+            <Link className="brS__closerlink" href="/brukerreise/leder">
+              Se hele arbeidsgiver-reisen
               <ArrowRightIcon aria-hidden fontSize="0.9rem" />
             </Link>
-            <Link
-              className="brS__closerlink"
-              href="/brukerreise/sykmeldt?modus=presentasjon"
-            >
-              Sykmeldt som presentasjon
+            <Link className="brS__closerlink" href="/brukerreise/sykmeldt">
+              Se hele den sykmeldtes reise
               <ArrowRightIcon aria-hidden fontSize="0.9rem" />
             </Link>
           </div>

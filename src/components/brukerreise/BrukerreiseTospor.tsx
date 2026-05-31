@@ -261,16 +261,16 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
               <span>plan i gang før frist</span>
             </div>
           </div>
+          <Link className="brA__summary-cta" href="/brukerreise/sammen">
+            Se begge spor side om side
+            <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+          </Link>
           <Link
-            className="brA__summary-cta"
+            className="brA__summary-link"
             href={`${pathname}?modus=presentasjon`}
             scroll={false}
           >
             Se reisen som presentasjon
-            <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-          </Link>
-          <Link className="brA__summary-link" href="/brukerreise/sammen">
-            Se begge spor side om side
             <ArrowRightIcon aria-hidden fontSize="0.85rem" />
           </Link>
         </section>
