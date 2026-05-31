@@ -286,12 +286,14 @@ Bygd: utvelgelsen har nå en **«Prioritering: bang for the buck × måldekning�
   hvert tiltak ladrer opp til. ⚠️ **UTKAST — må kalibreres som effekt/innsats.**
 - **Måldekning**: per KR, hva pakke 1 dekker vs hull.
 
-**Funn å ta stilling til (AG-sporet):** pakke 1 dekker solid **KR1** (flere/tidligere planer),
-**KR2** (stilling til behov ≤ uke 4) og **KR3** (plan uten å vente). **KR4 (dialogmøte 1) og
-KR5 (gradert sykmelding) ligger UTENFOR pakke 1.** KR4 matcher scope (dialogmøte = egen
-satsing senere). KR5/gradert nås via **H2/lege** (T10, T11, ST05, ST10) — alle i «vurder/senere».
-→ **Bevisst kalibreringsspørsmål:** er det riktig at pakke 1 ikke rører gradert/lege, gitt at
-gradert er en topp-KR? (Produktleder: lege ikke primær bruker nå. Verktøyet viser nå koblingen
-eksplisitt så teamet kan veie den bevisst — ikke skjule den.)
+**Funn (AG-sporet):** pakke 1 dekker solid **KR1** (flere/tidligere planer), **KR2** (stilling
+til behov ≤ uke 4) og **KR3** (plan uten å vente). **KR4 (dialogmøte 1) er kalibrert tom**
+(dialogmøte = egen satsing senere, ute av scope), og **KR5 (gradert sykmelding) ligger utenfor
+pakke 1.** KR5/gradert nås via **H2/lege** (T10, T11, ST05, ST10) — alle i «vurder/senere».
+→ **Bevisst valg teamet bør veie tirsdag:** er det riktig at pakke 1 ikke rører gradert/lege,
+gitt at gradert er en topp-KR? (Produktleder: lege ikke primær bruker nå. Verktøyet viser nå
+koblingen eksplisitt så teamet kan veie den bevisst — ikke skjule den.)
 
-**Gjenstår å kalibrere:** `tiltakKr`-tabellen rad for rad (som effekt/innsats).
+**✅ KR-kobling kalibrert (2026-05-31):** KR4 satt tom (T08/ST08/ST11 er kontinuitet/prep uten
+KR nå — ingen tiltak treffer dialogmøtet direkte). ST09 tatt av KR5 (identitet/medvirkning, ikke
+direkte gradert). Resten av `tiltakKr`-mappingen bekreftet rad for rad.

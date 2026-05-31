@@ -443,7 +443,7 @@ export const tiltakKr: Record<string, KrId[]> = {
   T05: ["KR1"],
   T06: ["KR1"],
   T07: ["KR1"],
-  T08: ["KR4"],
+  T08: [],
   T10: ["KR5"],
   T11: ["KR5"],
   T12: ["KR1"],
@@ -457,10 +457,10 @@ export const tiltakKr: Record<string, KrId[]> = {
   ST05: ["KR1", "KR2", "KR5"],
   ST06: ["KR2"],
   ST07: ["KR1"],
-  ST08: ["KR4"],
-  ST09: ["KR5", "KR1"],
+  ST08: [],
+  ST09: ["KR1"],
   ST10: ["KR1", "KR5"],
-  ST11: ["KR4"],
+  ST11: [],
   ST12: ["KR1"],
 };
 
