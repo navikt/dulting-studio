@@ -105,16 +105,18 @@ function ReferenceHeader({
                 : "Kanonisk oversikt over klynger, tiltak, signaler og stoppunkter fra Ki-dult v3.2."}
             </BodyLong>
           </VStack>
-          <ToggleGroup
-            label="Velg visning"
-            value={variant}
-            onChange={onVariantChange}
-            data-color="neutral"
-            size="small"
-          >
-            <ToggleGroup.Item value="today" label="I dag" />
-            <ToggleGroup.Item value="package" label="Med tiltakspakke" />
-          </ToggleGroup>
+          {currentView === "journey" && (
+            <ToggleGroup
+              label="Velg visning"
+              value={variant}
+              onChange={onVariantChange}
+              data-color="neutral"
+              size="small"
+            >
+              <ToggleGroup.Item value="today" label="I dag" />
+              <ToggleGroup.Item value="package" label="Med tiltakspakke" />
+            </ToggleGroup>
+          )}
         </VStack>
       </Box>
     </VStack>
