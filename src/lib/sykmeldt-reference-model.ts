@@ -125,7 +125,7 @@ export const sykmeldtMapPhases: SykmeldtPhase[] = [
   {
     id: "s2",
     number: 2,
-    title: "Tidsriktig signal og egen behovsvurdering",
+    title: "Tidsriktig varsel og egen behovsvurdering",
     goal: "Den sykmeldte tar stilling til behovet for plan rundt uke 4 — på eget initiativ, ikke bare ved å vente på leder.",
     measurement:
       "Antall egne behovsvurderinger innen uke 4, andel «ja» som utløser AG-varsel, og respons på SMS/varsel.",
@@ -133,7 +133,7 @@ export const sykmeldtMapPhases: SykmeldtPhase[] = [
     tiltak: [
       {
         id: "ST04",
-        title: "Tidsriktig signal ~uke 4",
+        title: "Tidsriktig varsel ~uke 4",
         raakort: ["SYK-07", "SYK-08"],
         onsketAtferd:
           "Blir minnet på, og vurderer behovet for en oppfølgingsplan før/rundt uke 4.",
@@ -156,7 +156,7 @@ export const sykmeldtMapPhases: SykmeldtPhase[] = [
           "Gjør en egen vurdering av behovet, kan dele den med Nav, og «ja» utløser varsel til arbeidsgiver.",
         barriere: "Manglende rutiner",
         motivasjon: "Autonomi og eierskap",
-        dult: "Oppgave i «Ditt sykefravær»: sykmeldt signaliserer/ber om plan via en kort vurdering (delbar med Nav/lege); «ja» → synlig forespørsel + varsel til leder. AG eier og bestemmer planen, men forespørselen kan ikke ignoreres stille.",
+        dult: "Oppgave i «Ditt sykefravær»: sykmeldt ber om plan via en kort vurdering (delbar med Nav/lege); «ja» → synlig forespørsel + varsel til leder. AG eier og bestemmer planen, men forespørselen kan ikke ignoreres stille.",
         eastFogg: "Easy, Social (felles signal), Prompt",
         forgood:
           "Openness — tydelig hvem som ser vurderingen og hva «ja» utløser.",

@@ -102,7 +102,7 @@ function ReferenceHeader({
             <BodyLong>
               {currentView === "journey"
                 ? "Fra sykmelding til behovsvurdering: se forskjellen mellom dagens stillhet og en tidlig tiltakspakke."
-                : "Kanonisk oversikt over klynger, tiltak, signaler og stoppunkter fra Ki-dult v3.2."}
+                : "Kanonisk oversikt over klynger, tiltak, måletegn og stoppunkter fra Ki-dult v3.2."}
             </BodyLong>
           </VStack>
           {currentView === "journey" && (

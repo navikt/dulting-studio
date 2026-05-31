@@ -41,7 +41,7 @@ export const aidMission = {
   aidGoal:
     "AID-oppdraget handler om å redusere sykefravær ved å styrke arbeidsgivers tilretteleggingsplikt og partenes medvirkningsplikt.",
   firstTrack:
-    "Første anbefalte spor er tidsriktig signal, behovsvurdering og trygg overgang til oppfølgingsplan.",
+    "Første anbefalte spor er tidsriktig varsel, behovsvurdering og trygg overgang til oppfølgingsplan.",
 };
 
 export const presentationPrinciples: PresentationPrinciple[] = [
@@ -51,7 +51,7 @@ export const presentationPrinciples: PresentationPrinciple[] = [
   },
   {
     title: "Marker første spor tydelig",
-    body: "Samtidig må første test være smal nok til å måle: signal, behovsvurdering, planstart og tidlig deling.",
+    body: "Samtidig må første test være smal nok til å måle: varsel, behovsvurdering, planstart og tidlig deling.",
   },
   {
     title: "Mål nærliggende handlinger først",
@@ -79,16 +79,16 @@ export const employerJourneyStages: JourneyStage[] = [
     desiredBehavior:
       "Arbeidsgiver åpner riktig person og forstår at oppfølging starter før fristen for oppfølgingsplan.",
     measurement:
-      "Åpning av relevant personside, visning av signal og overgang til vurdering eller plan.",
+      "Åpning av relevant personside, visning av varsel og overgang til vurdering eller plan.",
     guardrail:
-      "Ikke gjør alle sykmeldinger til hastesaker. Signal må begrenses til relevant populasjon og timing.",
+      "Ikke gjør alle sykmeldinger til hastesaker. Varsel må begrenses til relevant populasjon og timing.",
     sources: ["DULT-07", "DULT-11", "Målmodell H1"],
     scope: "both",
   },
   {
     id: "tidlig-signal",
     timeLabel: "Uke 1-3",
-    title: "Tidlig signal før fristen",
+    title: "Tidlig varsel før fristen",
     actorGoal:
       "Leder trenger et konkret varsel om når oppfølgingsplan bør vurderes.",
     today:
@@ -100,10 +100,10 @@ export const employerJourneyStages: JourneyStage[] = [
     desiredBehavior:
       "Arbeidsgiver går videre til behovsvurdering eller plan før fireukersfristen.",
     measurement:
-      "Signal vist, signal åpnet, vurdering startet, plan startet før frist.",
+      "Varsel vist, varsel åpnet, vurdering startet, plan startet før frist.",
     guardrail:
       "Unngå varseltrøtthet, for tidlig press og duplikatvarsel når plan allerede finnes.",
-    sources: ["DULT-06", "DULT-20", "Målmodell: Tidsriktig signal"],
+    sources: ["DULT-06", "DULT-20", "Målmodell: Tidsriktig varsel"],
     scope: "first-track",
   },
   {
@@ -195,18 +195,18 @@ export const employerJourneyStages: JourneyStage[] = [
 export const employerClusters: JourneyCluster[] = [
   {
     id: "timely-signal",
-    title: "Tidsriktig signal",
+    title: "Tidsriktig varsel",
     status: "Anbefalt første spor",
     summary:
       "Gjør arbeidsgiver oppmerksom før oppfølgingsplan bør vurderes, med tydelig frist og riktig kontekst.",
     desiredBehavior:
       "Arbeidsgiver går til riktig person og starter vurdering eller plan før fristen.",
     hypothesis:
-      "Hvis signalet kommer tidsriktig og peker til riktig person, kan flere komme tidligere i gang med oppfølging.",
+      "Hvis varselet kommer tidsriktig og peker til riktig person, kan flere komme tidligere i gang med oppfølging.",
     measurement:
-      "Signal vist, åpnet, vurdering startet, plan startet før frist.",
+      "Varsel vist, åpnet, vurdering startet, plan startet før frist.",
     guardrail:
-      "Signalet må ikke bli støy, kontrollopplevelse eller varsel til irrelevante sykefravær.",
+      "Varselet må ikke bli støy, kontrollopplevelse eller varsel til irrelevante sykefravær.",
     sources: ["DULT-06", "DULT-20"],
   },
   {

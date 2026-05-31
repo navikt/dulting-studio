@@ -52,10 +52,10 @@ const REGISTRY = {
   },
   "DULT-06": {
     id: "DULT-06",
-    title: "Tidsriktig signal om oppfølgingsplan",
+    title: "Tidsriktig varsel om oppfølgingsplan",
     summary:
       "Arbeidsgiver blir gjort oppmerksom på planbehov tidlig nok — typisk når fraværet nærmer seg fire uker. Trigger må avklares.",
-    cluster: "Tidsriktig signal",
+    cluster: "Tidsriktig varsel",
     status: "Med i første test",
   },
   "DULT-07": {
@@ -135,7 +135,7 @@ const REGISTRY = {
     title: "Frist på riktig person",
     summary:
       "Arbeidsgiver ser frist for oppfølgingsplan på riktig person i Dine sykmeldte. Henger tett sammen med DULT-06 og krever presis fristregel.",
-    cluster: "Tidsriktig signal",
+    cluster: "Tidsriktig varsel",
     status: "Med i første test",
   },
   "DULT-22": {

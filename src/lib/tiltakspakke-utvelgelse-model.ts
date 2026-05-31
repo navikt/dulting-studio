@@ -94,7 +94,7 @@ export const krKort: Record<KrId, string> = {
 
 /** Kriteriene en plass i FØRSTE pakke vurderes mot (prioritert rekkefølge). */
 export const pakke1Kriterier = [
-  "Treffer det høyeste løftepunktet — stillheten før 4-ukers-fristen (tidlig signal + behovsvurdering), ikke spredt tynt utover alle steg.",
+  "Treffer det høyeste løftepunktet — stillheten før 4-ukers-fristen (tidlig varsel + behovsvurdering), ikke spredt tynt utover alle steg.",
   "Gjennomførbart nå — scoping «dulting», ikke blokkert av avklaring, på flater vi eier eller samarbeider om.",
   "Lav etisk risiko — FORGOOD/guardrails grønt, «informere, aldri presse».",
   "Målbart — har et primært atferds-/opplevelsesmåletegn og en virkningshypotese (H1/H2).",
@@ -103,7 +103,7 @@ export const pakke1Kriterier = [
 
 /** Hvordan forslaget forholder seg til den vedtatte målmodellen (synlig ramme). */
 export const pakke1Ramme =
-  "Kjernen følger målmodellens to arbeidsgiver-hovedklynger — tidsriktig signal og behovsvurdering — pluss støttetekst (maalmodell-virkningshypotese.md §8). Sykmeldt-speilet er ST04 (kjerne) + ST01 (støtte). ST05 (det toveis grepet) er en bevisst, betinget utvidelse — «vurder», ikke låst kjerne — fordi AG eier planen, og samtykke/trigger + uenighets-håndtering må avklares først.";
+  "Kjernen følger målmodellens to arbeidsgiver-hovedklynger — tidsriktig varsel og behovsvurdering — pluss støttetekst (maalmodell-virkningshypotese.md §8). Sykmeldt-speilet er ST04 (kjerne) + ST01 (støtte). ST05 (det toveis grepet) er en bevisst, betinget utvidelse — «vurder», ikke låst kjerne — fordi AG eier planen, og samtykke/trigger + uenighets-håndtering må avklares først.";
 
 export const utkastNote =
   "Effekt- og innsats-anslagene er et utkast utledet fra register- og scoping-docs. De er et utgangspunkt for kalibrering med teamet, ikke en fasit.";
@@ -124,7 +124,7 @@ const agTiltak: SelectionTiltak[] = [
       "Åpent: eksakt uke + ekstern varsling (SMS/e-post) som målbart valg. Teknisk: deep-link til riktig person (DULT-23).",
     guardrail:
       "Unngå varseltrøtthet og for tidlig press; ikke dobbeltvarsle når plan/sak alt er avklart.",
-    toveis: "ST04 (sykmeldt får tidsriktig signal samtidig)",
+    toveis: "ST04 (sykmeldt får tidsriktig varsel samtidig)",
     hvorfor:
       "Kjernedulten — et tidsriktig varsel som lander som en konkret oppgave med frist på riktig person, bryter stillheten før fristen. Reise-analysen peker hit.",
   },
@@ -294,8 +294,8 @@ const smTiltak: SelectionTiltak[] = [
   {
     id: "ST04",
     aktor: "sm",
-    title: "Tidsriktig signal ~uke 4",
-    steg: "2 · Signal og egen behovsvurdering",
+    title: "Tidsriktig varsel ~uke 4",
+    steg: "2 · Varsel og egen behovsvurdering",
     innsats: 2,
     effekt: 3,
     tier: "pakke1",
@@ -305,13 +305,13 @@ const smTiltak: SelectionTiltak[] = [
       "Unngå varseltrøtthet og duplikat når plan/vurdering finnes; ikke for tidlig press.",
     toveis: "AG steg 02 / T01 (begge minnes samtidig)",
     hvorfor:
-      "Speiler AG-signalet — begge parter dultes mot samme moment før uke 4.",
+      "Speiler AG-varselet — begge parter dultes mot samme moment før uke 4.",
   },
   {
     id: "ST05",
     aktor: "sm",
     title: "Egen behovsvurdering (delbar med Nav); ja → AG-varsel",
-    steg: "2 · Signal og egen behovsvurdering",
+    steg: "2 · Varsel og egen behovsvurdering",
     innsats: 3,
     effekt: 3,
     tier: "vurder",
@@ -324,13 +324,13 @@ const smTiltak: SelectionTiltak[] = [
       "Tydelig samtykke for deling med Nav; varsel kun på aktivt «ja», ikke automatisk.",
     toveis: "AG steg 03 / T03 (mulig felles behovsvurdering)",
     hvorfor:
-      "Det distinkte toveis-grepet: sykmeldt signaliserer/ber → AG eier og bestemmer, men forespørselen er synlig og kan ikke ignoreres stille. «Vurder», ikke låst kjerne — forutsetter avklart samtykke/trigger + uenighets-håndtering (team/roadmap).",
+      "Det distinkte toveis-grepet: sykmeldt ber → AG eier og bestemmer, men forespørselen er synlig og kan ikke ignoreres stille. «Vurder», ikke låst kjerne — forutsetter avklart samtykke/trigger + uenighets-håndtering (team/roadmap).",
   },
   {
     id: "ST06",
     aktor: "sm",
     title: "Kartleggingsspørsmål som ny anledning",
-    steg: "2 · Signal og egen behovsvurdering",
+    steg: "2 · Varsel og egen behovsvurdering",
     innsats: 3,
     effekt: 2,
     tier: "senere",

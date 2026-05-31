@@ -725,7 +725,7 @@ export function TiltakspakkeUtvelgelseView() {
               Forslag: Tiltakspakke 1
             </Heading>
             <BodyShort size="small" className="muted">
-              Konsentrert om tidlig signal + behovsvurdering — fra begge sider,
+              Konsentrert om tidlig varsel + behovsvurdering — fra begge sider,
               før uke 4. Et utgangspunkt for kalibrering.
             </BodyShort>
           </VStack>

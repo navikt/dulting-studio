@@ -30,7 +30,7 @@ const moments: Moment[] = [
       "Samme hendelse, to innganger — leder i «Dine sykmeldte», Jonas på «Min side for sykmeldte».",
   },
   {
-    title: "Tidlig signal før fristen",
+    title: "Tidlig varsel før fristen",
     coupling:
       "I dag: stillhet for begge. Med dulting: et tidsriktig varsel til hver part — samtidig.",
   },

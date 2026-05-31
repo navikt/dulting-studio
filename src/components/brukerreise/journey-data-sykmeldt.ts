@@ -94,11 +94,11 @@ const phases: Phase[] = [
     id: "tidlig-signal",
     time: "Uke 1–4",
     date: "frem til 3. februar",
-    title: "Tidlig signal før fristen",
+    title: "Tidlig varsel før fristen",
     icon: "bell",
     scope: "both",
     actorGoal:
-      "Jonas trenger et tidsriktig signal om at en oppfølgingsplan snart bør vurderes.",
+      "Jonas trenger et tidsriktig varsel om at en oppfølgingsplan snart bør vurderes.",
     today: {
       text: "Jonas får kanskje generelle Nav-varsler (for eksempel om sykepenger), men ingenting om oppfølging eller om at en plan snart bør vurderes.",
       barrier:
@@ -164,7 +164,7 @@ const phases: Phase[] = [
     barriere: {
       kategori: "Manglende rutiner",
       detalj:
-        "Ingen flate for at den sykmeldte vurderer behov selv; signalet når aldri fram til arbeidsgiver.",
+        "Ingen flate for at den sykmeldte vurderer behov selv; varselet når aldri fram til arbeidsgiver.",
     },
     motivasjon: {
       driver: "Autonomi og eierskap",
@@ -180,7 +180,7 @@ const phases: Phase[] = [
         body: "Svar enkelt: ja, jeg vil lage en plan med lederen min — eller ikke ennå. Sier du ja, får arbeidsgiver beskjed.",
         cta: "Ta stilling",
       },
-      desiredBehavior: "Jonas tar et bevisst valg, og signalet når leder.",
+      desiredBehavior: "Jonas tar et bevisst valg, og varselet når leder.",
       refs: ["ST05", "ST06", "SYK-09", "SYK-R3", "SYK-R4"],
     },
     consideration:
