@@ -1573,6 +1573,44 @@ a:where(:not(.aksel-button)) {
   background: var(--ax-bg-meta-purple-soft);
   border-color: var(--ax-border-meta-purple);
 }
+/* klikkbart chip → forklaring (beholder chip-utseendet, legger på affordance) */
+.bm__chip--btn {
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    border-color 80ms ease,
+    box-shadow 80ms ease;
+}
+.bm__chip--btn:hover {
+  border-color: var(--a-border-action);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+}
+.bm__chip--btn:focus-visible {
+  outline: 2px solid var(--a-border-action);
+  outline-offset: 1px;
+}
+/* klikkbar kategori-overskrift → definisjon (prikket understrek = klikkbar) */
+.bm__head-btn {
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+}
+.bm__head-btn:hover {
+  text-decoration-style: solid;
+}
+.bm__head-btn:focus-visible {
+  outline: 2px solid var(--a-border-action);
+  outline-offset: 2px;
+}
 
 /* ── Tiltakspakke-utvelgelse: effekt × innsats-matrise + forslag ───────── */
 .tu-scroll {

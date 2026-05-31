@@ -7,6 +7,8 @@ import {
   BodyShort,
   Box,
   Button,
+  Detail,
+  Dialog,
   Heading,
   HStack,
   Tag,
@@ -19,11 +21,108 @@ import {
   type Aktor,
   aktorLabel,
   BARRIERER,
+  barriereForklaring,
   DRIVERE,
+  driverForklaring,
   itemsInCell,
+  type MatriseItem,
   matriseItems,
 } from "@/lib/atferdsmatrise-model";
 import { AnalyseNav } from "./AnalyseNav";
+
+/** Klikkbart matrise-element → kort forklaring av hva steget/tiltaket er. */
+function MatriseChip({
+  item,
+  barriere,
+  driver,
+}: {
+  item: MatriseItem;
+  barriere: string;
+  driver: string;
+}) {
+  return (
+    <Dialog>
+      <Dialog.Trigger>
+        <button
+          type="button"
+          className="bm__chip bm__chip--btn"
+          aria-label={`Forklar ${item.id}: ${item.title}`}
+        >
+          <b>{item.id}</b> {item.title}
+        </button>
+      </Dialog.Trigger>
+      <Dialog.Popup>
+        <Dialog.Header>
+          <Detail uppercase>{item.id}</Detail>
+          <Dialog.Title>{item.title}</Dialog.Title>
+          {item.description && (
+            <Dialog.Description>{item.description}</Dialog.Description>
+          )}
+        </Dialog.Header>
+        <Dialog.Body>
+          <dl className="dult-ref-dialog__meta">
+            <div>
+              <dt>Barriere det løser</dt>
+              <dd>{barriere}</dd>
+            </div>
+            <div>
+              <dt>Driver det spiller på</dt>
+              <dd>{driver}</dd>
+            </div>
+          </dl>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Dialog.CloseTrigger>
+            <Button variant="secondary" size="small">
+              Lukk
+            </Button>
+          </Dialog.CloseTrigger>
+        </Dialog.Footer>
+      </Dialog.Popup>
+    </Dialog>
+  );
+}
+
+/** Klikkbar kategori-overskrift (barriere/driver) → kort definisjon. */
+function KategoriDialog({
+  navn,
+  kind,
+  forklaring,
+}: {
+  navn: string;
+  kind: string;
+  forklaring?: string;
+}) {
+  return (
+    <Dialog>
+      <Dialog.Trigger>
+        <button
+          type="button"
+          className="bm__head-btn"
+          aria-label={`Forklar ${navn}`}
+        >
+          {navn}
+        </button>
+      </Dialog.Trigger>
+      <Dialog.Popup>
+        <Dialog.Header>
+          <Detail uppercase>{kind}</Detail>
+          <Dialog.Title>{navn}</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body>
+          <BodyLong>{forklaring ?? "Forklaring kommer."}</BodyLong>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Dialog.CloseTrigger>
+            <Button variant="secondary" size="small">
+              Lukk
+            </Button>
+          </Dialog.CloseTrigger>
+        </Dialog.Footer>
+      </Dialog.Popup>
+    </Dialog>
+  );
+}
 
 export function AtferdsmatriseView() {
   const [aktor, setAktor] = useState<Aktor>("arbeidsgiver");
@@ -103,7 +202,11 @@ export function AtferdsmatriseView() {
               <td className="bm__corner" aria-hidden />
               {DRIVERE.map((driver) => (
                 <th key={driver} scope="col" className="bm__colhead">
-                  {driver}
+                  <KategoriDialog
+                    navn={driver}
+                    kind="Motivasjonsdriver"
+                    forklaring={driverForklaring[driver]}
+                  />
                 </th>
               ))}
             </tr>
@@ -112,7 +215,11 @@ export function AtferdsmatriseView() {
             {BARRIERER.map((barriere) => (
               <tr key={barriere}>
                 <th scope="row" className="bm__rowhead">
-                  {barriere}
+                  <KategoriDialog
+                    navn={barriere}
+                    kind="Barriere"
+                    forklaring={barriereForklaring[barriere]}
+                  />
                 </th>
                 {DRIVERE.map((driver) => {
                   const cellItems = itemsInCell(aktor, barriere, driver);
@@ -124,9 +231,12 @@ export function AtferdsmatriseView() {
                       }`}
                     >
                       {cellItems.map((item) => (
-                        <span key={item.id} className="bm__chip">
-                          <b>{item.id}</b> {item.title}
-                        </span>
+                        <MatriseChip
+                          key={item.id}
+                          item={item}
+                          barriere={barriere}
+                          driver={driver}
+                        />
                       ))}
                     </td>
                   );

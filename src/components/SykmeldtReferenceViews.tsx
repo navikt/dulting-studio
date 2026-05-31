@@ -7,6 +7,8 @@ import {
   BodyShort,
   Box,
   Button,
+  Detail,
+  Dialog,
   Heading,
   HStack,
   Tag,
@@ -15,6 +17,7 @@ import {
 import NextLink from "next/link";
 import {
   type SykmeldtPhase,
+  type SykmeldtTiltak,
   sykmeldtMapPhases,
   sykmeldtMission,
   sykmeldtOpenQuestions,
@@ -22,6 +25,112 @@ import {
   sykmeldtTotalTiltak,
 } from "@/lib/sykmeldt-reference-model";
 import { AnalyseNav } from "./AnalyseNav";
+
+/** Kompakt, klikkbart tiltakskort — speiler AG-kartets MapTiltakCard. Synlig:
+ *  kode + tittel + ønsket atferd + barriere/driver. Resten (dult, måletegn,
+ *  stoppunkt, EAST/Fogg, FORGOOD, råkort) åpnes i dialog. */
+function SykmeldtTiltakCard({ tiltak }: { tiltak: SykmeldtTiltak }) {
+  return (
+    <Dialog>
+      <Dialog.Trigger>
+        <button
+          type="button"
+          className="kidult-map-tiltak-card kidult-map-tiltak-card--btn"
+          aria-label={`Vis detaljer for ${tiltak.id}: ${tiltak.title}`}
+        >
+          <span className="kidult-map-tiltak-card__head">
+            <Tag variant="neutral" size="xsmall">
+              {tiltak.id}
+            </Tag>
+            {tiltak.sharedWithAg && (
+              <Tag variant="alt3" size="xsmall">
+                Delt
+              </Tag>
+            )}
+          </span>
+          <span className="kidult-map-tiltak-card__title">{tiltak.title}</span>
+          <span className="kidult-map-tiltak-card__desc">
+            {tiltak.onsketAtferd}
+          </span>
+          <span className="kidult-map-tiltak-card__why">
+            <Tag variant="warning" size="xsmall">
+              {tiltak.barriere}
+            </Tag>
+            <Tag variant="success" size="xsmall">
+              {tiltak.motivasjon}
+            </Tag>
+          </span>
+          <span className="kidult-map-tiltak-card__more" aria-hidden>
+            Dult, måletegn og stoppunkt →
+          </span>
+        </button>
+      </Dialog.Trigger>
+      <Dialog.Popup>
+        <Dialog.Header>
+          <Detail uppercase>
+            {tiltak.id}
+            {tiltak.sharedWithAg ? " · delt med arbeidsgiver" : ""}
+          </Detail>
+          <Dialog.Title>{tiltak.title}</Dialog.Title>
+          <Dialog.Description>{tiltak.onsketAtferd}</Dialog.Description>
+        </Dialog.Header>
+        <Dialog.Body>
+          <dl className="dult-ref-dialog__meta">
+            <div>
+              <dt>Barriere → driver</dt>
+              <dd>
+                {tiltak.barriere} → {tiltak.motivasjon}
+              </dd>
+            </div>
+            <div>
+              <dt>Dult</dt>
+              <dd>{tiltak.dult}</dd>
+            </div>
+            <div>
+              <dt>Måletegn</dt>
+              <dd>{tiltak.maaletegn}</dd>
+            </div>
+            <div>
+              <dt>Stoppunkt</dt>
+              <dd>{tiltak.guardrail}</dd>
+            </div>
+            {tiltak.eastFogg && (
+              <div>
+                <dt>EAST/Fogg (utkast)</dt>
+                <dd>{tiltak.eastFogg}</dd>
+              </div>
+            )}
+            {tiltak.forgood && (
+              <div>
+                <dt>FORGOOD (utkast)</dt>
+                <dd>{tiltak.forgood}</dd>
+              </div>
+            )}
+            {tiltak.sharedWithAg && (
+              <div>
+                <dt>Delt touchpoint</dt>
+                <dd>{tiltak.sharedWithAg}</dd>
+              </div>
+            )}
+            {tiltak.raakort.length > 0 && (
+              <div>
+                <dt>Råkort</dt>
+                <dd>{tiltak.raakort.join(" · ")}</dd>
+              </div>
+            )}
+          </dl>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Dialog.CloseTrigger>
+            <Button variant="secondary" size="small">
+              Lukk
+            </Button>
+          </Dialog.CloseTrigger>
+        </Dialog.Footer>
+      </Dialog.Popup>
+    </Dialog>
+  );
+}
 
 function PhaseCard({ phase }: { phase: SykmeldtPhase }) {
   return (
@@ -54,64 +163,7 @@ function PhaseCard({ phase }: { phase: SykmeldtPhase }) {
 
         <div className="kidult-map-tiltak-grid">
           {phase.tiltak.map((tiltak) => (
-            <article
-              key={tiltak.id}
-              className="kidult-map-tiltak-card"
-              aria-labelledby={`${phase.id}-${tiltak.id}`}
-            >
-              <VStack gap="space-8">
-                <HStack gap="space-8" align="center" wrap>
-                  <Tag variant="neutral" size="xsmall">
-                    {tiltak.id}
-                  </Tag>
-                  <Heading
-                    level="3"
-                    size="xsmall"
-                    id={`${phase.id}-${tiltak.id}`}
-                  >
-                    {tiltak.title}
-                  </Heading>
-                  {tiltak.sharedWithAg && (
-                    <Tag variant="alt3" size="xsmall">
-                      Delt med AG
-                    </Tag>
-                  )}
-                </HStack>
-
-                <BodyShort size="small">{tiltak.onsketAtferd}</BodyShort>
-
-                <HStack gap="space-4" wrap>
-                  <Tag variant="warning" size="xsmall">
-                    Barriere · {tiltak.barriere}
-                  </Tag>
-                  <Tag variant="success" size="xsmall">
-                    Spiller på · {tiltak.motivasjon}
-                  </Tag>
-                </HStack>
-
-                <BodyShort size="small">
-                  <strong>Dult:</strong> {tiltak.dult}
-                </BodyShort>
-                <BodyShort size="small">
-                  <strong>Måletegn:</strong> {tiltak.maaletegn}
-                </BodyShort>
-                <BodyShort size="small">
-                  <strong>Stoppunkt:</strong> {tiltak.guardrail}
-                </BodyShort>
-                <BodyShort size="small" className="muted">
-                  EAST/Fogg: {tiltak.eastFogg} · FORGOOD: {tiltak.forgood}
-                  {tiltak.sharedWithAg ? ` · ${tiltak.sharedWithAg}` : ""}
-                </BodyShort>
-
-                <HStack gap="space-4" wrap>
-                  {tiltak.raakort.map((ref) => (
-                    <Tag key={ref} variant="neutral" size="xsmall">
-                      {ref}
-                    </Tag>
-                  ))}
-                </HStack>
-              </VStack>
-            </article>
+            <SykmeldtTiltakCard key={tiltak.id} tiltak={tiltak} />
           ))}
         </div>
       </VStack>
