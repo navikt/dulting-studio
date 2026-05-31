@@ -151,7 +151,7 @@ const agTiltak: SelectionTiltak[] = [
     aktor: "ag",
     title: "Stegvis plan",
     steg: "3 · Stegvis planflyt",
-    innsats: 3,
+    innsats: 2,
     effekt: 1,
     tier: "senere",
     hypotese: ["H1"],

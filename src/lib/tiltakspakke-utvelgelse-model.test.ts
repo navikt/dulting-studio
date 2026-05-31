@@ -17,7 +17,7 @@ const byId = (id: string) => {
 describe("tiltakspakke-utvelgelse-model · prioritering", () => {
   it("bangForBuck = effekt / innsats", () => {
     expect(bangForBuck(byId("T13"))).toBeCloseTo(2); // E2 / I1
-    expect(bangForBuck(byId("T05"))).toBeCloseTo(1 / 3); // E1 / I3
+    expect(bangForBuck(byId("T05"))).toBeCloseTo(1 / 2); // E1 / I2
   });
 
   it("prioritert sorterer synkende på bang for the buck", () => {

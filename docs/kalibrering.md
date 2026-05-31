@@ -224,7 +224,7 @@ første gjennomgang; det er de tre sammenslåtte som trenger ny bekreftelse:
 |----|---------------------|---|---|------|------|
 | T01* | Tidsriktig oppgave på riktig person før uke 4 (T01+T02) | 3 | 2 | pakke1 kjerne | Barriere: **Manglende rutiner** primær + Tidspress sekundær ✅ |
 | T03* | Personnær vurderingsoppgave m/ «nei»-gren (T03+T04) | 3 | 2 | pakke1 kjerne | Kunnskapsmangel / Autonomi |
-| T05 | Stegvis plan (miniguide skilt ut) | **1** | 3 | senere | ✅ premiss (frafall) holder ikke. Miniguide/klarspråk → info-laget T13 (leder) + ST07 (sykmeldt), kan ligge utenfor planen |
+| T05 | Stegvis plan (miniguide skilt ut) | **1** | **2** | senere | ✅ premiss (frafall) holder ikke. Miniguide/klarspråk → info-laget T13 (leder) + ST07 (sykmeldt), kan ligge utenfor planen |
 | T06 | Aktiv plan kan justeres | 2 | 2 | senere | |
 | T07 | Utkast og fremdrift | 1 | 2 | senere | ✅ E1 bekreftet — premiss (frafall under utfylling) ikke observert |
 | T08* | Evalueringsdato + opt-in påminnelse (T08+T09) | 2 | 2 | vurder | Tier var split vurder/senere |
