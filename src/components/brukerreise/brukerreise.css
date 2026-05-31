@@ -413,6 +413,29 @@
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
 }
+/* steg som ikke er besluttet — synlig «under avklaring»-markør (f.eks. ST05) */
+.brA__avklaringflag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #7a6210;
+  background: var(--silence-bg);
+  border: 1px solid color-mix(in srgb, var(--silence) 32%, white);
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+.brA__avklaringflag svg {
+  flex: none;
+}
+/* i tosporsvisningen: egen linje med luft under, venstrestilt */
+.brS__avklaringflag {
+  align-self: flex-start;
+  margin: 0.1rem 0 0.45rem;
+}
 .brA__panel {
   border-radius: var(--r-md);
   padding: 1rem 1.1rem;

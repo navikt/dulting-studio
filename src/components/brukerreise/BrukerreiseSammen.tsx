@@ -2,7 +2,10 @@
 // tidslinje — «ett touchpoint, to sider». Additiv visning; gjenbruker de to
 // eksisterende datagrunnlagene (lederJourney + sykmeldtJourney) og NudgeCard.
 // De to reisene er bygd AG-parallelt (6 steg, samme uker), så de zippes på indeks.
-import { ArrowRightIcon } from "@navikt/aksel-icons";
+import {
+  ArrowRightIcon,
+  ExclamationmarkTriangleIcon,
+} from "@navikt/aksel-icons";
 import { Schibsted_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { lederJourney } from "./journey-data";
@@ -139,6 +142,15 @@ export function BrukerreiseSammen() {
                   <span className="brS__sidelabel brS__sidelabel--sykmeldt">
                     Den sykmeldte
                   </span>
+                  {s.underAvklaring && (
+                    <span className="brA__avklaringflag brS__avklaringflag">
+                      <ExclamationmarkTriangleIcon
+                        aria-hidden
+                        fontSize="0.8rem"
+                      />
+                      {s.underAvklaring}
+                    </span>
+                  )}
                   <div className="brS__tags">
                     <span className="brA__tag brA__tag--barr">
                       Barriere · {s.barriere.kategori}

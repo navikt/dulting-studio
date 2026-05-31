@@ -132,6 +132,15 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
                   {p.sharedWithAg && (
                     <span className="brA__sharedflag">↔ {p.sharedWithAg}</span>
                   )}
+                  {p.underAvklaring && (
+                    <span className="brA__avklaringflag">
+                      <ExclamationmarkTriangleIcon
+                        aria-hidden
+                        fontSize="0.85rem"
+                      />
+                      {p.underAvklaring}
+                    </span>
+                  )}
                 </div>
 
                 <div className="brA__panels">

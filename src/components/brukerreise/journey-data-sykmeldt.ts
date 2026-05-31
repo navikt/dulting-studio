@@ -151,6 +151,7 @@ const phases: Phase[] = [
     title: "Jonas tar stilling selv",
     icon: "checklist",
     scope: "both",
+    underAvklaring: "Mest usikre grep — under avklaring",
     actorGoal:
       "Jonas må kunne gjøre en egen vurdering: trengs en plan nå — og si fra uten å vente på leder.",
     today: {
@@ -183,7 +184,7 @@ const phases: Phase[] = [
       refs: ["ST05", "ST06", "SYK-09", "SYK-R3", "SYK-R4"],
     },
     consideration:
-      "Kartleggingsspørsmålene (pilot Troms og Finnmark, uke ~7) kan bli en ny anledning til å vurdere behov — men forveksles lett med oppfølgingsplanen. Vi må forklare forskjellen tydelig, og kan ikke forutsette at alle ser flaten.",
+      "Dette er det mest usikre grepet: om den sykmeldte selv skal kunne vurdere behovet og varsle arbeidsgiver er ikke besluttet — arbeidsgiver eier oppfølgingsplanen, og sykmeldts «ja» er et innspill, ikke et vedtak. Vi viser det som en mulighet, ikke en vedtatt flyt. (Kartleggingsspørsmålene i pilot Troms og Finnmark, uke ~7, kan dessuten bli en egen anledning til å vurdere behov — men forveksles lett med oppfølgingsplanen.)",
     measurements: {
       primary: [
         "Antall egne behovsvurderinger innen uke 4",

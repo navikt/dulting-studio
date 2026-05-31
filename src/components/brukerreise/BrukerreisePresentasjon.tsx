@@ -4,6 +4,7 @@
 import {
   ArrowRightIcon,
   CheckmarkCircleIcon,
+  ExclamationmarkTriangleIcon,
   XMarkIcon,
 } from "@navikt/aksel-icons";
 import Link from "next/link";
@@ -164,6 +165,12 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
                 {p.time} · {p.date}
               </div>
               <h2 className="brC__phasetitle">{p.title}</h2>
+              {p.underAvklaring && (
+                <span className="brA__avklaringflag">
+                  <ExclamationmarkTriangleIcon aria-hidden fontSize="0.85rem" />
+                  {p.underAvklaring}
+                </span>
+              )}
               <p className="brC__phaselead">{p.actorGoal}</p>
               <div className="brC__today">
                 <span className="brC__tag brC__tag--barr">

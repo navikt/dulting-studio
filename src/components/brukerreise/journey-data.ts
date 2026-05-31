@@ -122,6 +122,9 @@ export type Phase = {
   guardrail: string;
   /** To-sidig touchpoint: navngir det tilsvarende steget i det andre sporet. */
   sharedWithAg?: string;
+  /** Markerer et steg som ikke er besluttet (badge-tekst i tittelen). Brukt der
+      grepet er en betinget mulighet, ikke vedtatt flyt — f.eks. ST05. */
+  underAvklaring?: string;
   /** Valgfri produktskjerm-mock (ScreenMock-id). Settes kun der en mock finnes
       — unngår at f.eks. arbeidsgiver-skjermer lekker inn i andre reiser. */
   screenId?: string;
