@@ -85,7 +85,7 @@ export default function Home() {
           <ArrowRightIcon aria-hidden fontSize="0.9rem" />
         </Link>
         <Link className="lp__cta-link" href="/tiltakspakke-utvelgelse">
-          Tiltaksutvelgelse
+          Utvelgelse
           <ArrowRightIcon aria-hidden fontSize="0.9rem" />
         </Link>
       </nav>

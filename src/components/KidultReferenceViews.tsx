@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftIcon, LineGraphIcon, TableIcon } from "@navikt/aksel-icons";
+import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import {
   Link as AkselLink,
   Alert,
@@ -54,10 +54,6 @@ function useReferenceVariant() {
   return { variant, setVariant };
 }
 
-function referenceHref(path: string, variant: JourneyVariant) {
-  return `${path}?variant=${variant}`;
-}
-
 function ReferenceHeader({
   currentView,
   variant,
@@ -69,7 +65,7 @@ function ReferenceHeader({
 }) {
   return (
     <VStack gap="space-20" className="kidult-reference-header">
-      <HStack gap="space-12" align="center" justify="space-between" wrap>
+      <HStack gap="space-12" align="center" wrap>
         <Button
           as={NextLink}
           href="/"
@@ -79,26 +75,6 @@ function ReferenceHeader({
         >
           Forsiden
         </Button>
-        <HStack gap="space-8" align="center" wrap>
-          <Button
-            as={NextLink}
-            href="/brukerreise/leder"
-            variant={currentView === "journey" ? "primary" : "tertiary"}
-            size="small"
-            icon={<LineGraphIcon aria-hidden />}
-          >
-            Brukerreise
-          </Button>
-          <Button
-            as={NextLink}
-            href={referenceHref("/tiltakskart", variant)}
-            variant={currentView === "map" ? "primary" : "tertiary"}
-            size="small"
-            icon={<TableIcon aria-hidden />}
-          >
-            Tiltakskart
-          </Button>
-        </HStack>
       </HStack>
       <AnalyseNav />
 

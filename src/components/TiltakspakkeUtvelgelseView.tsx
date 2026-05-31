@@ -35,6 +35,7 @@ import {
   krGradertNote,
   krKort,
   krLabels,
+  krMerknad,
   krUtkastNote,
   type Niva,
   pakke1,
@@ -329,7 +330,9 @@ function KrRad({ kr, tiltak }: { kr: KrId; tiltak: SelectionTiltak[] }) {
       </div>
       <div className="tu-mal__tiltak">
         {tiltak.length === 0 ? (
-          <span className="muted">Ingen tiltak lader hit i dette sporet.</span>
+          <span className="muted">
+            Ingen tiltak i dette sporet treffer dette målet.
+          </span>
         ) : (
           tiltak.map((t) => (
             <TiltakDetailTag
@@ -342,6 +345,11 @@ function KrRad({ kr, tiltak }: { kr: KrId; tiltak: SelectionTiltak[] }) {
           ))
         )}
       </div>
+      {krMerknad[kr] && (
+        <BodyShort size="small" className="muted tu-mal__merknad">
+          {krMerknad[kr]}
+        </BodyShort>
+      )}
     </div>
   );
 }
@@ -483,7 +491,9 @@ export function TiltakspakkeUtvelgelseView() {
                 venstre — der effekten er høy i forhold til innsatsen — er «gjør
                 først». Alle tiltak vises; de uthevede er forslaget til pakke 1,
                 de nedtonede venter. Forslaget samler seg om det høyeste
-                løftepunktet: stillheten før 4-ukers-fristen.
+                løftepunktet: stillheten før 4-ukers-fristen.{" "}
+                <strong>Klikk en tiltak-kode</strong> (her, i rangeringen eller
+                måldekningen) for full forklaring.
               </BodyLong>
             </VStack>
             <ToggleGroup
@@ -528,24 +538,20 @@ export function TiltakspakkeUtvelgelseView() {
           {persistEnabled ? (
             <>
               <strong>Bygg pakke (lagres)</strong> — endringer lagres og deles
-              med teamet. Matrise, måldekning, bang og forslag oppdateres mens
-              du justerer plasseringen i «Bang for the buck».
+              med teamet. Juster i <strong>«Plassering»</strong>-kolonnen i
+              rangerings-tabellen lenger ned; matrise, måldekning, bang og
+              forslag oppdateres live.
             </>
           ) : (
             <>
-              <strong>Live what-if</strong> — databasen er ikke tilgjengelig
-              her, så endringer er midlertidige (ikke lagret). Alt oppdateres
-              live mens du justerer.
+              <strong>Live what-if</strong> — databasen er ikke tilgjengelig, så
+              endringer er midlertidige. Juster i <strong>«Plassering»</strong>
+              -kolonnen i rangerings-tabellen lenger ned; alt oppdateres live.
             </>
           )}
-          <span className="tu-sr" aria-live="polite">
+          <span className="tu-save-status muted" aria-live="polite">
             {saveMsg}
           </span>
-          {persistEnabled && saveMsg && (
-            <BodyShort size="small" className="muted">
-              {saveMsg}
-            </BodyShort>
-          )}
         </Alert>
       )}
 

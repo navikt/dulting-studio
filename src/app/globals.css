@@ -1983,3 +1983,19 @@ button.tu__chip:focus-visible,
   outline: 2px solid var(--ax-border-focus, #0067c5);
   outline-offset: 2px;
 }
+.tu-save-status {
+  display: block;
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+}
+.tu-save-status:empty {
+  display: none;
+}
+.tu-mal__merknad {
+  margin-top: 0.4rem;
+}
+/* hvilende affordance: prikket understrek viser at kode-chips er klikkbare */
+.tu-codebtn {
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+}

@@ -472,7 +472,12 @@ export const krUtkastNote =
   "KR-koblingen er et utkast (som effekt/innsats) — hvilke overordnede mål hvert tiltak lader opp til. Kalibreres med teamet.";
 
 export const krGradertNote =
-  "KR5 (gradert sykmelding / kortere fravær) nås i hovedsak via H2: tidlig deling med fastlege gir bedre grunnlag for gradert sykmelding. Legen er en mekanisme og et effektmål her — ikke en primær bruker i denne pakken. Tiltakene som mater dette (T10, ST05, ST10) ligger i «vurder/senere», ikke i pakke 1.";
+  "KR5 (gradert sykmelding / kortere fravær) nås i hovedsak via H2 — en hypotese: at tidlig deling med fastlege kan gi bedre grunnlag for å vurdere gradert sykmelding. Legen er en mekanisme og et effektmål her, ikke en primær bruker i denne pakken. Tiltakene som mater dette (T10, ST05, ST10) ligger i «vurder/senere», ikke i pakke 1.";
+
+/** Korte merknader per KR der dekningen trenger en forklaring (synlig i måldekningen). */
+export const krMerknad: Partial<Record<KrId, string>> = {
+  KR4: "Bevisst utenfor pakke 1 — dialogmøte 1 ligger senere i løpet (egen satsing); oppfølgingsplanen mater inn i det.",
+};
 
 export function krFor(id: string): KrId[] {
   return tiltakKr[id] ?? [];
