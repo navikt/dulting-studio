@@ -136,7 +136,7 @@ a:where(:not(.aksel-button)) {
 }
 
 .app-content {
-  max-width: 72rem;
+  max-width: 84rem;
   margin: 0 auto;
   padding: 2rem 1.25rem 4rem;
 }
@@ -849,7 +849,7 @@ a:where(:not(.aksel-button)) {
 
 /* Ki-dult reference visualizations */
 .kidult-reference-header {
-  max-width: 72rem;
+  max-width: 84rem;
 }
 
 .kidult-journey-timeline {
