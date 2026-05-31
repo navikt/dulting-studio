@@ -1919,3 +1919,26 @@ a:where(:not(.aksel-button)) {
   color: var(--a-text-subtle);
   opacity: 0.8;
 }
+
+/* Klikkbare kode-chips (T01/ST05) → åpner detalj-dialog. Nullstill knappens
+   UA-chrome, men behold chip-utseendet fra .tu__chip / .tu-krtag / .tu-forslag__id. */
+button.tu__chip,
+.tu-codebtn {
+  appearance: none;
+  cursor: pointer;
+}
+button.tu__chip {
+  font-family: inherit;
+}
+button.tu-forslag__id {
+  border: 0;
+}
+button.tu__chip:hover,
+.tu-codebtn:hover {
+  filter: brightness(0.96);
+}
+button.tu__chip:focus-visible,
+.tu-codebtn:focus-visible {
+  outline: 2px solid var(--ax-border-focus, #0067c5);
+  outline-offset: 1px;
+}

@@ -12,6 +12,8 @@ import {
   BodyShort,
   Box,
   Button,
+  Detail,
+  Dialog,
   Heading,
   HStack,
   Tag,
@@ -62,21 +64,12 @@ const tierStatus: Record<SelectionTiltak["tier"], string> = {
 };
 
 function Chip({ t }: { t: SelectionTiltak }) {
-  const tip = [
-    t.hvorfor,
-    t.toveis ? `↔ ${t.toveis}` : null,
-    t.blokkertAv ? `Åpen avklaring: ${t.blokkertAv}` : null,
-    t.guardrail ? `Guardrail: ${t.guardrail}` : null,
-    t.forgood ? `Etisk merknad (FORGOOD): ${t.forgood}` : null,
-  ]
-    .filter(Boolean)
-    .join("\n");
   return (
-    <span
+    <TiltakDetailTag
+      t={t}
       className={`tu__chip tu__chip--${t.aktor} tu__chip--${t.tier}${
         t.blokkertAv ? " tu__chip--blokkert" : ""
-      }`}
-      title={tip || undefined}
+      } tu__chip--btn`}
     >
       {t.tier === "pakke1" && (
         <CheckmarkCircleIcon aria-hidden className="tu__chip-ic" />
@@ -90,13 +83,7 @@ function Chip({ t }: { t: SelectionTiltak }) {
           ↔
         </span>
       )}
-      {/* tilgjengelig motstykke til farge/ikon — leses av skjermleser */}
-      <span className="tu-sr">
-        {` — ${tierStatus[t.tier]}.`}
-        {t.blokkertAv ? ` Åpen avklaring: ${t.blokkertAv}.` : ""}
-        {t.toveis ? ` Toveis kobling: ${t.toveis}.` : ""}
-      </span>
-    </span>
+    </TiltakDetailTag>
   );
 }
 
@@ -130,6 +117,110 @@ function ForslagItem({ t }: { t: SelectionTiltak }) {
   );
 }
 
+/** Klikkbar tiltakskode → Aksel-dialog med full kontekst. Gjenbruker
+ *  dult-ref-dialog__meta-stilen, og samme dialog-mønster som DultRefTag. */
+function TiltakDetailTag({
+  t,
+  className,
+  children,
+}: {
+  t: SelectionTiltak;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const bang = bangForBuck(t);
+  const krs = krFor(t.id);
+  return (
+    <Dialog>
+      <Dialog.Trigger>
+        <button
+          type="button"
+          className={className}
+          aria-label={`Vis detaljer for ${t.id}: ${t.title}`}
+        >
+          {children}
+        </button>
+      </Dialog.Trigger>
+      <Dialog.Popup>
+        <Dialog.Header>
+          <Detail uppercase>
+            {t.id} · {aktorLabel[t.aktor]}
+          </Detail>
+          <Dialog.Title>{t.title}</Dialog.Title>
+          <Dialog.Description>
+            {t.steg} · {tierStatus[t.tier]}
+            {t.kjerne ? " · kjerne" : ""}
+          </Dialog.Description>
+        </Dialog.Header>
+        <Dialog.Body>
+          <dl className="dult-ref-dialog__meta">
+            <div>
+              <dt>Effekt × innsats</dt>
+              <dd>
+                {effektLabels[t.effekt]} / {innsatsLabels[t.innsats]} · bang{" "}
+                {bang >= 1 ? bang.toFixed(1) : bang.toFixed(2)}
+              </dd>
+            </div>
+            {krs.length > 0 && (
+              <div>
+                <dt>Overordnet mål</dt>
+                <dd>{krs.map((k) => krLabels[k]).join(" · ")}</dd>
+              </div>
+            )}
+            {t.hypotese && t.hypotese.length > 0 && (
+              <div>
+                <dt>Virkningshypotese</dt>
+                <dd>
+                  {t.hypotese
+                    .map((h) => `${h}: ${hypoteseLabel[h]}`)
+                    .join(" · ")}
+                </dd>
+              </div>
+            )}
+            {t.hvorfor && (
+              <div>
+                <dt>Hvorfor</dt>
+                <dd>{t.hvorfor}</dd>
+              </div>
+            )}
+            {t.toveis && (
+              <div>
+                <dt>Toveis kobling</dt>
+                <dd>↔ {t.toveis}</dd>
+              </div>
+            )}
+            {t.guardrail && (
+              <div>
+                <dt>Guardrail</dt>
+                <dd>{t.guardrail}</dd>
+              </div>
+            )}
+            {t.forgood && (
+              <div>
+                <dt>Etisk merknad (FORGOOD)</dt>
+                <dd>{t.forgood}</dd>
+              </div>
+            )}
+            {t.blokkertAv && (
+              <div>
+                <dt>Åpen avklaring</dt>
+                <dd>{t.blokkertAv}</dd>
+              </div>
+            )}
+          </dl>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Dialog.CloseTrigger>
+            <Button variant="secondary" size="small">
+              Lukk
+            </Button>
+          </Dialog.CloseTrigger>
+        </Dialog.Footer>
+      </Dialog.Popup>
+    </Dialog>
+  );
+}
+
 const KR_ORDER: KrId[] = ["KR1", "KR2", "KR3", "KR4", "KR5"];
 /** Høyest mulige bang for the buck (effekt 3 / innsats 1) — skalerer baren. */
 const MAX_BANG = 3;
@@ -141,9 +232,12 @@ function BangRad({ t }: { t: SelectionTiltak }) {
     <tr className={`tu-rang__row tu-rang__row--${t.tier}`}>
       <th scope="row" className="tu-rang__idcell">
         <span className="tu-rang__idinner">
-          <span className={`tu-forslag__id tu-forslag__id--${t.aktor}`}>
+          <TiltakDetailTag
+            t={t}
+            className={`tu-forslag__id tu-forslag__id--${t.aktor} tu-codebtn`}
+          >
             {t.id}
-          </span>
+          </TiltakDetailTag>
           <span className="tu-rang__title">{t.title}</span>
         </span>
       </th>
@@ -202,13 +296,13 @@ function KrRad({ kr, tiltak }: { kr: KrId; tiltak: SelectionTiltak[] }) {
           <span className="muted">Ingen tiltak ladrer hit i dette sporet.</span>
         ) : (
           tiltak.map((t) => (
-            <span
+            <TiltakDetailTag
               key={t.id}
-              className={`tu-krtag tu-krtag--${t.tier}`}
-              title={`${t.title} · ${tierStatus[t.tier]}`}
+              t={t}
+              className={`tu-krtag tu-krtag--${t.tier} tu-codebtn`}
             >
               {t.id}
-            </span>
+            </TiltakDetailTag>
           ))
         )}
       </div>

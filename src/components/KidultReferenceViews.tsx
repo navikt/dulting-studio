@@ -31,6 +31,7 @@ import {
   supportTiltak,
 } from "@/lib/kidult-reference-model";
 import { AnalyseNav } from "./AnalyseNav";
+import { DultRefTag } from "./DultRefTag";
 
 type ReferenceView = "journey" | "map";
 
@@ -368,9 +369,7 @@ function PhaseCard({
                 {tiltak.raakort && tiltak.raakort.length > 0 && (
                   <HStack gap="space-4" wrap>
                     {tiltak.raakort.map((ref) => (
-                      <Tag key={ref} variant="neutral" size="xsmall">
-                        {ref}
-                      </Tag>
+                      <DultRefTag key={ref} id={ref} />
                     ))}
                   </HStack>
                 )}
