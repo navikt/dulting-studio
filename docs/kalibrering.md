@@ -275,3 +275,23 @@ målbart designvalg (parameter på T01\*; gjelder også sykmeldt-siden / ST01):
 «Informere, ikke presse» gjort operasjonelt. **Sterk samlende sak for tirsdag.**
 Konsekvens: ST01 (pull, besluttet) og T01\* står ikke i motstrid — pull er startpunktet,
 ekstern push er den målbare hypotesen man evt. tester oppå.
+
+---
+
+## G. KR-kobling + bang-for-buck (NY i verktøyet 2026-05-31) — utkast til kalibrering
+
+Bygd: utvelgelsen har nå en **«Prioritering: bang for the buck × måldekning»**-seksjon:
+- **Bang for the buck** = effekt ÷ innsats per tiltak (rangert, synkende).
+- **KR-kobling** (`tiltakKr` i `tiltakspakke-utvelgelse-model.ts`): hvilke av de 5 KR-ene
+  hvert tiltak ladrer opp til. ⚠️ **UTKAST — må kalibreres som effekt/innsats.**
+- **Måldekning**: per KR, hva pakke 1 dekker vs hull.
+
+**Funn å ta stilling til (AG-sporet):** pakke 1 dekker solid **KR1** (flere/tidligere planer),
+**KR2** (stilling til behov ≤ uke 4) og **KR3** (plan uten å vente). **KR4 (dialogmøte 1) og
+KR5 (gradert sykmelding) ligger UTENFOR pakke 1.** KR4 matcher scope (dialogmøte = egen
+satsing senere). KR5/gradert nås via **H2/lege** (T10, T11, ST05, ST10) — alle i «vurder/senere».
+→ **Bevisst kalibreringsspørsmål:** er det riktig at pakke 1 ikke rører gradert/lege, gitt at
+gradert er en topp-KR? (Produktleder: lege ikke primær bruker nå. Verktøyet viser nå koblingen
+eksplisitt så teamet kan veie den bevisst — ikke skjule den.)
+
+**Gjenstår å kalibrere:** `tiltakKr`-tabellen rad for rad (som effekt/innsats).
