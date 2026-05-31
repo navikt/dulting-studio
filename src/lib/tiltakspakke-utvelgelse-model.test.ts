@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  avvikFraModell,
   bangForBuck,
   krDekning,
   krFor,
@@ -53,5 +54,13 @@ describe("tiltakspakke-utvelgelse-model · prioritering", () => {
     for (const tiltak of Object.values(ag)) {
       for (const t of tiltak) expect(t.aktor).toBe("ag");
     }
+  });
+
+  it("avvikFraModell: ren modell gir ingen avvik, endret tier gir avvik", () => {
+    const kopi = selectionTiltak.map((t) => ({ ...t }));
+    expect(avvikFraModell(kopi)).toHaveLength(0);
+    const t10 = kopi.find((t) => t.id === "T10");
+    if (t10) t10.tier = "pakke1";
+    expect(avvikFraModell(kopi).map((t) => t.id)).toEqual(["T10"]);
   });
 });

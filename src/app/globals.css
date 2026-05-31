@@ -1994,6 +1994,18 @@ button.tu__chip:focus-visible,
 .tu-mal__merknad {
   margin-top: 0.4rem;
 }
+/* avviks-indikator: bekrefter at live-byggeren samsvarer med kalibrert baseline */
+.tu-avvik__liste {
+  margin: 0.6rem 0 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.tu-avvik__liste b {
+  font-variant-numeric: tabular-nums;
+}
 /* hvilende affordance: prikket understrek viser at kode-chips er klikkbare */
 .tu-codebtn {
   text-decoration: underline dotted;

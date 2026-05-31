@@ -516,3 +516,21 @@ export function krDekning(
   }
   return out;
 }
+
+/**
+ * Tiltak i `kilde` som avviker fra den kalibrerte modellen (tier/effekt/innsats/
+ * kjerne). Brukes til å vise om live-pakken er ren kalibrert baseline eller endret.
+ */
+export function avvikFraModell(kilde: SelectionTiltak[]): SelectionTiltak[] {
+  const m = new Map(selectionTiltak.map((t) => [t.id, t]));
+  return kilde.filter((t) => {
+    const b = m.get(t.id);
+    if (!b) return false;
+    return (
+      t.tier !== b.tier ||
+      t.effekt !== b.effekt ||
+      t.innsats !== b.innsats ||
+      (t.kjerne ?? false) !== (b.kjerne ?? false)
+    );
+  });
+}

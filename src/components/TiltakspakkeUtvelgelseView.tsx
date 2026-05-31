@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import {
   type Aktor,
   aktorLabel,
+  avvikFraModell,
   bangForBuck,
   effektLabels,
   hypoteseLabel,
@@ -365,6 +366,8 @@ export function TiltakspakkeUtvelgelseView() {
   // seed er ufarlig. Feiler DB → behold modellen (klient-side what-if).
   const [persistEnabled, setPersistEnabled] = useState(false);
   const [versions, setVersions] = useState<Record<string, number>>({});
+  // hvem som sist endret hvert tiltak (kun ekte team-redigeringer, ikke seed)
+  const [redigertAv, setRedigertAv] = useState<Record<string, string>>({});
   const [saveMsg, setSaveMsg] = useState("");
   const aktorFilter = view === "begge" ? undefined : view;
   const valgte = pakke1(aktorFilter, tiltak);
@@ -372,6 +375,8 @@ export function TiltakspakkeUtvelgelseView() {
   const stotte = valgte.filter((t) => !t.kjerne);
   const rangert = prioritert(aktorFilter, tiltak);
   const dekning = krDekning(aktorFilter, tiltak);
+  // avvik mot den kalibrerte modellen (baseline) — kjernen i datasikkerheten
+  const avvik = avvikFraModell(tiltak);
 
   useEffect(() => {
     let aktiv = true;
@@ -383,6 +388,13 @@ export function TiltakspakkeUtvelgelseView() {
         if (!aktiv || !Array.isArray(d.tiltak)) return;
         const byId = new Map(d.tiltak.map((r) => [r.id, r]));
         setVersions(Object.fromEntries(d.tiltak.map((r) => [r.id, r.version])));
+        setRedigertAv(
+          Object.fromEntries(
+            d.tiltak
+              .filter((r) => r.updatedBy && r.updatedBy !== "seed")
+              .map((r) => [r.id, r.updatedBy]),
+          ),
+        );
         setTiltak((prev) =>
           prev.map((m) => {
             const r = byId.get(m.id);
@@ -438,11 +450,13 @@ export function TiltakspakkeUtvelgelseView() {
             ),
           );
           setVersions((v) => ({ ...v, [id]: saved.version }));
+          setRedigertAv((p) => ({ ...p, [id]: saved.updatedBy }));
           setSaveMsg(`${id}: en annen lagret nettopp — viser deres verdi.`);
           return;
         }
         if (saved) {
           setVersions((v) => ({ ...v, [id]: saved.version }));
+          setRedigertAv((p) => ({ ...p, [id]: saved.updatedBy }));
           setSaveMsg(`${id} lagret · ${saved.updatedBy}`);
         } else {
           setSaveMsg(`${id}: kunne ikke lagre (beholdt lokalt).`);
@@ -451,8 +465,28 @@ export function TiltakspakkeUtvelgelseView() {
       .catch(() => setSaveMsg(`${id}: kunne ikke lagre (beholdt lokalt).`));
   }
   function resetPakke() {
+    const diverging = avvikFraModell(tiltak);
     setTiltak(selectionTiltak.map((t) => ({ ...t })));
-    setSaveMsg("");
+    if (!persistEnabled || diverging.length === 0) {
+      setRedigertAv({});
+      setSaveMsg("");
+      return;
+    }
+    // skriv modell-verdiene tilbake til DB for de tiltakene som avvek
+    setSaveMsg("Tilbakestiller til kalibrert modell …");
+    const byId = new Map(selectionTiltak.map((t) => [t.id, t]));
+    Promise.allSettled(
+      diverging.map((d) =>
+        fetch("/api/pakke-tiltak", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...byId.get(d.id), version: versions[d.id] }),
+        }),
+      ),
+    ).then(() => {
+      setRedigertAv({});
+      setSaveMsg("Tilbakestilt til kalibrert modell.");
+    });
   }
 
   return (
@@ -566,6 +600,45 @@ export function TiltakspakkeUtvelgelseView() {
           {valgte.filter((t) => t.blokkertAv).length} med åpen avklaring
         </Tag>
       </HStack>
+
+      {avvik.length === 0 ? (
+        <Alert variant="success" size="small" className="tu-avvik tu-avvik--ok">
+          Samsvarer med den kalibrerte modellen — settet, skårene og rekkefølgen
+          er akkurat slik teamet har signert dem.
+        </Alert>
+      ) : (
+        <Alert variant="warning" size="small" className="tu-avvik">
+          <HStack gap="space-12" align="center" wrap justify="space-between">
+            <span>
+              <strong>
+                {avvik.length} tiltak avviker fra den kalibrerte modellen.
+              </strong>{" "}
+              {persistEnabled
+                ? "Dette er lagrede team-endringer."
+                : "Dette er en lokal what-if (ikke lagret)."}
+            </span>
+            <Button variant="secondary" size="xsmall" onClick={resetPakke}>
+              Tilbakestill til kalibrert
+            </Button>
+          </HStack>
+          <ul className="tu-avvik__liste">
+            {avvik.map((t) => {
+              const m = selectionTiltak.find((x) => x.id === t.id);
+              const tierEndret = m && m.tier !== t.tier;
+              const av = redigertAv[t.id];
+              return (
+                <li key={t.id}>
+                  <b>{t.id}</b> {t.title} —{" "}
+                  {tierEndret && m
+                    ? `${tierStatus[m.tier]} → ${tierStatus[t.tier]}`
+                    : "effekt/innsats endret fra baseline"}
+                  {av ? ` · endret av ${av}` : ""}
+                </li>
+              );
+            })}
+          </ul>
+        </Alert>
+      )}
 
       <section
         className="tu-scroll"
