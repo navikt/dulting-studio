@@ -14,6 +14,18 @@
 
 ---
 
+## ✅ Signert i kalibrering 2026-05-31
+
+- **D · Forside:** ✅ godkjent som balansert (begge plikter sidestilt, «sammen»
+  som primær inngang, likestilte spor-lenker). Beholdes.
+- **D · Scrollytelling:** ✅ beholdes de-emfasert (forside-CTA fjernet, ruta/koden
+  består). Ikke synlig inngang tirsdag, lett å hente fram.
+- **C2 · Pakke 1:** ✅ bekreftet som utgangspunkt — AG T01–T04 (+T13 støtte),
+  sykmeldt ST04–ST05 (+ST01), samlet om «tidlig signal + behovsvurdering før uke 4».
+- **C1 · Effekt/innsats:** 🔄 valideres nå, rad for rad (se egen gjennomgang i chat).
+
+---
+
 ## A. Arbeidsgiver (T01–T14) — NY berikelse (ikke deployet)
 
 Jeg utvidet AG-tiltakskartet til samme rikdom som sykmeldt: hvert tiltak fikk
@@ -121,3 +133,53 @@ Hvert tiltak er `pakke1 | vurder | senere`. Gå gjennom at plasseringene stemmer
   fikk til». Bør være hovedpoenget i framføringen.
 - **Hovedartefakt:** tospor (oppslått, skannbart, why-lag synlig) — ikke scrollytelling.
 - Åpne spørsmål om AG-reisens 7 «lov-ideal»-steg vs faktisk praksis (behold kritisk).
+
+---
+
+## F. Tiltaks-taksonomi — kalibrert 2026-05-31 (live med produkteier)
+
+Produkteier utfordret om tiltakene er over-oppdelt. Felles ramme vi jobber ut fra:
+*et varsel er i bunn én oppgave/beskjed på en flate (Dine sykmeldte / Ditt
+sykefravær), med eller uten ekstern push (SMS/e-post). Da blir flere «tiltak»
+heller parametere på samme objekt.*
+
+- **T01 + T02 → SLÅS SAMMEN** ✅ (2026-05-31). Ett tiltak: «tidsriktig oppgave på
+  riktig person før uke 4, med frist». Ekstern varsling (SMS/e-post) og eksakt uke
+  blir parametere, ikke egne tiltak. (Oppdater `kidult-reference-model.ts` +
+  `tiltakspakke-utvelgelse-model.ts` etter at hele taksonomien er avklart.)
+- **T03 + T04 → T04 slås inn i T03** ✅ (2026-05-31). T03 = «ta stilling: ja → lag
+  plan / nei → registrer med grunn». «Nei»-grenen er en utgang av beslutningspunktet,
+  ikke et eget tiltak. Den etiske vakten («ikke en snarvei bort fra plikten», ingen
+  default) beholdes synlig på det samlede tiltaket.
+- **T08 + T09 → SLÅS SAMMEN** ✅ (2026-05-31). «Sett evalueringsdato + opt-in
+  påminnelse (kalender)». Påminnelsen er det som gjør datoen til atferd — uten den
+  er datoen tom. Opt-in / ingen skjult default = parameter. (Steg 4 / etter «muren»
+  — uansett ikke kjernen i pakke 1.)
+- **ST01 → PROGRESSIV** ✅ (2026-05-31). Lett, hjelp-først og *pull* dag 1
+  (rettigheter / hva skjer videre); tydeligere plikt-/prosess-lag først når fraværet
+  faktisk strekker seg mot uke 4. Ingen ekstern push. Treffer de som blir værende
+  uten å mase på de som blir friske selv. (Flate-eierskap Flex «Ditt sykefravær» /
+  Symfoni fortsatt åpent.) Justér ST01s `description`/tone i `sykmeldt-reference-model.ts`.
+- **ST05 → «VURDER», ikke låst kjerne** ✅ (2026-05-31). **Modellen korrigert av
+  produkteier:** AG eier planen; i dagens løsning kan KUN AG lage plan, sykmeldt har
+  read-only etter deling. Pågående bygg: «be om plan»-knapp for sykmeldt → varsel til
+  leder. ST05 reframes fra *symmetrisk parallell vurdering* til **asymmetrisk
+  signal/forespørsel**: sykmeldt ber/signaliserer, AG bestemmer og eier.
+  - **Åpent designspørsmål til teamet — uenighet:** kun ruten *sykmeldt ja / AG nei*
+    er vanskelig. Prinsipp: sykmeldts forespørsel skal være SYNLIG for AG og ikke
+    kunne ignoreres stille (= «makten» til sykmeldt); AGs «nei» på en aktiv forespørsel
+    bør kreve registrert grunn (jf. T03/T04-logikk). *Sykmeldt nei / AG ja*: AG eier
+    plikten, kan lage plan likevel; sykmeldts «nei» er innspill, ikke veto.
+  - **Nav/lege-innsyn** = samtykke-spørsmålet (uendret).
+  - **ST03 «dette ser AG»** = synlighetslaget som gir signalet tenner → vurder å løfte
+    ST03 sammen med ST05 (symmetri).
+  - **Strategisk fork (produkteier reiste, uavklart): hvor bor behovsvurderingen?**
+    - *A — «be om plan»-knapp:* alltid-på, reaktiv. Her oppstår sekvens-spørsmålene
+      (hvem svarer først, kan leder ombestemme seg, forsvinner sykmeldts valg).
+    - *B — standard uke-4-løype:* behovsvurderingen bakt inn i uke-4-touchpointen for
+      begge parter — ikke en knapp, en del av flyten alle treffer.
+    - **Anbefaling: B som ryggrad, knappen som off-cycle/tidlig rute** (sykmeldt trenger
+      plan før uke 4). B faller sammen med hele tesen (uke 4 = «muren», der AG-siden
+      T01–T03 konvergerer, og det `sammen` viser). B oppløser edge-casene: begge promptes
+      i samme vindu (ikke race), begge svar PERSISTERER + synlige (ingen forsvinner),
+      leder kan endre til plan er ferdigstilt. **ÅPENT — team/roadmap, ikke låst i kalibrering.**
