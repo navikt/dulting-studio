@@ -432,7 +432,7 @@ export function pakke1(aktor?: Aktor): SelectionTiltak[] {
 
 // ── Kobling til overordnede mål (KR) + prioritering ──────────────────────────
 /**
- * Hvilke overordnede KR-er hvert tiltak ladrer opp til. UTKAST — kalibreres med
+ * Hvilke overordnede KR-er hvert tiltak lader opp til. UTKAST — kalibreres med
  * teamet, som effekt/innsats. KR5 (gradert / kortere fravær) nås i hovedsak via
  * H2: tidlig deling med fastlege gir bedre grunnlag for gradert sykmelding.
  */
@@ -465,7 +465,7 @@ export const tiltakKr: Record<string, KrId[]> = {
 };
 
 export const krUtkastNote =
-  "KR-koblingen er et utkast (som effekt/innsats) — hvilke overordnede mål hvert tiltak ladrer opp til. Kalibreres med teamet.";
+  "KR-koblingen er et utkast (som effekt/innsats) — hvilke overordnede mål hvert tiltak lader opp til. Kalibreres med teamet.";
 
 export const krGradertNote =
   "KR5 (gradert sykmelding / kortere fravær) nås i hovedsak via H2: tidlig deling med fastlege gir bedre grunnlag for gradert sykmelding. Legen er en mekanisme og et effektmål her — ikke en primær bruker i denne pakken. Tiltakene som mater dette (T10, ST05, ST10) ligger i «vurder/senere», ikke i pakke 1.";
@@ -486,7 +486,7 @@ export function prioritert(aktor?: Aktor): SelectionTiltak[] {
     .sort((a, b) => bangForBuck(b) - bangForBuck(a) || b.effekt - a.effekt);
 }
 
-/** Per KR: tiltakene som ladrer opp til den (valgfritt filtrert på aktør). */
+/** Per KR: tiltakene som lader opp til den (valgfritt filtrert på aktør). */
 export function krDekning(aktor?: Aktor): Record<KrId, SelectionTiltak[]> {
   const out: Record<KrId, SelectionTiltak[]> = {
     KR1: [],

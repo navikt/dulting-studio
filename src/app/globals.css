@@ -4,6 +4,28 @@
   color-scheme: light;
 }
 
+/* ── Aksel-legacy --a-*-tokens gjenopplivet ─────────────────────────────────
+   @navikt/ds-css v8 (Darkside) fjernet --a-*-settet; bare --ax-* finnes. Appen
+   refererer fortsatt ~40 --a-*-tokens uten fallback → de kollapset stille
+   (bakgrunn→transparent, border→ingen ramme, dempet tekst→svart). Gjenopplives her
+   med riktig MENING — merk at --ax-text-subtle / --ax-border-subtle er BLÅ, ikke
+   grå, så en navn-til-navn-mapping ville vært feil. Flater holdes hvite (matcher
+   det godkjente utseendet); fiksen gir tilbake rammene + grå dempet tekst. */
+:root {
+  --a-surface-default: #ffffff;
+  --a-surface-subtle: #ffffff;
+  --a-surface-action-subtle: #eaf2fd;
+  --a-surface-action-subtle-hover: #d6e9fc;
+  --a-text-default: #23262a;
+  --a-text-subtle: #5b6675;
+  --a-border-subtle: #e2e6ec;
+  --a-border-default: #c9cfd9;
+  --a-border-action: #0067c5;
+  --a-spacing-8: 0.5rem;
+  --a-spacing-12: 0.75rem;
+  --a-border-radius-xlarge: 12px;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -1940,5 +1962,5 @@ button.tu__chip:hover,
 button.tu__chip:focus-visible,
 .tu-codebtn:focus-visible {
   outline: 2px solid var(--ax-border-focus, #0067c5);
-  outline-offset: 1px;
+  outline-offset: 2px;
 }

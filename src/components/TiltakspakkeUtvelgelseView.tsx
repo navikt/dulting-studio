@@ -239,6 +239,7 @@ function BangRad({ t }: { t: SelectionTiltak }) {
             {t.id}
           </TiltakDetailTag>
           <span className="tu-rang__title">{t.title}</span>
+          <span className="tu-sr">— {tierStatus[t.tier]}</span>
         </span>
       </th>
       <td className="tu-rang__bangcell">
@@ -293,7 +294,7 @@ function KrRad({ kr, tiltak }: { kr: KrId; tiltak: SelectionTiltak[] }) {
       </div>
       <div className="tu-mal__tiltak">
         {tiltak.length === 0 ? (
-          <span className="muted">Ingen tiltak ladrer hit i dette sporet.</span>
+          <span className="muted">Ingen tiltak lader hit i dette sporet.</span>
         ) : (
           tiltak.map((t) => (
             <TiltakDetailTag
@@ -544,7 +545,7 @@ export function TiltakspakkeUtvelgelseView() {
             </Heading>
             <BodyShort size="small" className="muted">
               Kombinerer effektivitet (effekt ÷ innsats) med hvilke overordnede
-              mål (KR) hvert tiltak ladrer opp til — så vi ser hva pakke 1
+              mål (KR) hvert tiltak lader opp til — så vi ser hva pakke 1
               dekker, og hva den bevisst lar stå åpent.
             </BodyShort>
           </VStack>
@@ -563,7 +564,9 @@ export function TiltakspakkeUtvelgelseView() {
                 <thead>
                   <tr>
                     <th scope="col">Tiltak</th>
-                    <th scope="col">Effekt ÷ innsats</th>
+                    <th scope="col" aria-sort="descending">
+                      Effekt ÷ innsats
+                    </th>
                     <th scope="col">E / I</th>
                     <th scope="col">Overordnet mål</th>
                   </tr>

@@ -40,7 +40,7 @@ describe("tiltakspakke-utvelgelse-model · prioritering", () => {
     // KR5 (gradert/lege via H2) nås av delings-/medvirkningstiltakene
     expect(d.KR5.some((t) => t.id === "T10")).toBe(true);
     expect(d.KR5.some((t) => t.id === "ST05")).toBe(true);
-    // hvert tiltak i en KR-bøtte ladrer faktisk opp til den
+    // hvert tiltak i en KR-bøtte lader faktisk opp til den
     for (const [kr, tiltak] of Object.entries(d)) {
       for (const t of tiltak) {
         expect(krFor(t.id)).toContain(kr);
