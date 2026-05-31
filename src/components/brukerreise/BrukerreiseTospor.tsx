@@ -8,8 +8,7 @@ import {
 } from "@navikt/aksel-icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { DultRefTag } from "@/components/DultRefTag";
-import { isRegisteredDultId } from "@/lib/dult-reference-registry";
+import { TiltakRefTag } from "@/components/TiltakRefTag";
 import { PhaseIcon } from "./icons";
 import type { JourneyData } from "./journey-data";
 import { NudgeCard } from "./NudgeCard";
@@ -195,15 +194,19 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
                       {p.dult.desiredBehavior}
                     </p>
                     <div className="brA__refs">
-                      {p.dult.refs.map((r) =>
-                        isRegisteredDultId(r) ? (
-                          <DultRefTag key={r} id={r} />
-                        ) : (
+                      {p.dult.refs.map((r) => {
+                        // Bearbeidet tiltak (T/ST) → klikkbart, med råkortene inni.
+                        if (/^(ST|T)\d+$/.test(r))
+                          return <TiltakRefTag key={r} id={r} />;
+                        // Råkort (DULT-/SYK-) vises nå inne i tiltak-dialogen, ikke løst.
+                        if (/^(DULT|SYK)-/.test(r)) return null;
+                        // Øvrige kilde-pekere (f.eks. «Målmodell H2») beholdes som tekst.
+                        return (
                           <span key={r} className="br-ref">
                             {r}
                           </span>
-                        ),
-                      )}
+                        );
+                      })}
                     </div>
                   </section>
                 </div>

@@ -1451,6 +1451,29 @@ a:where(:not(.aksel-button)) {
   font-size: 0.9375rem;
 }
 
+/* tiltak-dialog: råkortene tiltaket er bearbeidet fra */
+.tiltak-ref-raakort__label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--ax-text-neutral-subtle);
+}
+.tiltak-ref-raakort {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+.tiltak-ref-raakort b {
+  font-variant-numeric: tabular-nums;
+}
+.tiltak-ref-raakort__empty {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--a-text-subtle);
+}
+
 @media (max-width: 48rem) {
   .aid-timeline {
     padding-left: 1.25rem;

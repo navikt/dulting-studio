@@ -10,8 +10,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { DultRefTag } from "@/components/DultRefTag";
-import { isRegisteredDultId } from "@/lib/dult-reference-registry";
+import { TiltakRefTag } from "@/components/TiltakRefTag";
 import { PhaseIcon } from "./icons";
 import type { JourneyData } from "./journey-data";
 import { NudgeCard } from "./NudgeCard";
@@ -198,15 +197,16 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
                 </p>
               )}
               <div className="brA__refs" style={{ marginTop: "0.6rem" }}>
-                {p.dult.refs.map((r) =>
-                  isRegisteredDultId(r) ? (
-                    <DultRefTag key={r} id={r} />
-                  ) : (
+                {p.dult.refs.map((r) => {
+                  if (/^(ST|T)\d+$/.test(r))
+                    return <TiltakRefTag key={r} id={r} />;
+                  if (/^(DULT|SYK)-/.test(r)) return null;
+                  return (
                     <span key={r} className="br-ref">
                       {r}
                     </span>
-                  ),
-                )}
+                  );
+                })}
               </div>
             </div>
           </section>
