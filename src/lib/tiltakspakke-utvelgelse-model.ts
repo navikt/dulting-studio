@@ -414,8 +414,9 @@ export function tiltakAt(
   innsats: Niva,
   effekt: Niva,
   aktor?: Aktor,
+  kilde: SelectionTiltak[] = selectionTiltak,
 ): SelectionTiltak[] {
-  return selectionTiltak.filter(
+  return kilde.filter(
     (t) =>
       t.innsats === innsats &&
       t.effekt === effekt &&
@@ -424,8 +425,11 @@ export function tiltakAt(
 }
 
 /** Forslaget til første pakke, valgfritt filtrert på aktør. */
-export function pakke1(aktor?: Aktor): SelectionTiltak[] {
-  return selectionTiltak.filter(
+export function pakke1(
+  aktor?: Aktor,
+  kilde: SelectionTiltak[] = selectionTiltak,
+): SelectionTiltak[] {
+  return kilde.filter(
     (t) => t.tier === "pakke1" && (aktor ? t.aktor === aktor : true),
   );
 }
@@ -480,14 +484,20 @@ export function bangForBuck(t: SelectionTiltak): number {
 }
 
 /** Tiltak sortert etter bang for the buck (synkende), valgfritt filtrert på aktør. */
-export function prioritert(aktor?: Aktor): SelectionTiltak[] {
-  return selectionTiltak
+export function prioritert(
+  aktor?: Aktor,
+  kilde: SelectionTiltak[] = selectionTiltak,
+): SelectionTiltak[] {
+  return kilde
     .filter((t) => (aktor ? t.aktor === aktor : true))
     .sort((a, b) => bangForBuck(b) - bangForBuck(a) || b.effekt - a.effekt);
 }
 
 /** Per KR: tiltakene som lader opp til den (valgfritt filtrert på aktør). */
-export function krDekning(aktor?: Aktor): Record<KrId, SelectionTiltak[]> {
+export function krDekning(
+  aktor?: Aktor,
+  kilde: SelectionTiltak[] = selectionTiltak,
+): Record<KrId, SelectionTiltak[]> {
   const out: Record<KrId, SelectionTiltak[]> = {
     KR1: [],
     KR2: [],
@@ -495,7 +505,7 @@ export function krDekning(aktor?: Aktor): Record<KrId, SelectionTiltak[]> {
     KR4: [],
     KR5: [],
   };
-  for (const t of selectionTiltak) {
+  for (const t of kilde) {
     if (aktor && t.aktor !== aktor) continue;
     for (const k of krFor(t.id)) out[k].push(t);
   }

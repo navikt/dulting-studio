@@ -42,6 +42,8 @@ import {
   pakke1Ramme,
   prioritert,
   type SelectionTiltak,
+  selectionTiltak,
+  type Tier,
   tiltakAt,
   utkastNote,
 } from "@/lib/tiltakspakke-utvelgelse-model";
@@ -225,7 +227,15 @@ const KR_ORDER: KrId[] = ["KR1", "KR2", "KR3", "KR4", "KR5"];
 /** Høyest mulige bang for the buck (effekt 3 / innsats 1) — skalerer baren. */
 const MAX_BANG = 3;
 
-function BangRad({ t }: { t: SelectionTiltak }) {
+function BangRad({
+  t,
+  editMode,
+  onTier,
+}: {
+  t: SelectionTiltak;
+  editMode: boolean;
+  onTier: (id: string, tier: Tier) => void;
+}) {
   const bang = bangForBuck(t);
   const krs = krFor(t.id);
   return (
@@ -271,6 +281,20 @@ function BangRad({ t }: { t: SelectionTiltak }) {
           )}
         </span>
       </td>
+      {editMode && (
+        <td className="tu-rang__tiercell">
+          <select
+            className="tu-tier-select"
+            aria-label={`Plassering for ${t.id} ${t.title}`}
+            value={t.tier}
+            onChange={(e) => onTier(t.id, e.target.value as Tier)}
+          >
+            <option value="pakke1">Pakke 1</option>
+            <option value="vurder">Vurder</option>
+            <option value="senere">Senere</option>
+          </select>
+        </td>
+      )}
     </tr>
   );
 }
@@ -313,12 +337,23 @@ function KrRad({ kr, tiltak }: { kr: KrId; tiltak: SelectionTiltak[] }) {
 
 export function TiltakspakkeUtvelgelseView() {
   const [view, setView] = useState<View>("ag");
+  const [editMode, setEditMode] = useState(false);
+  const [tiltak, setTiltak] = useState<SelectionTiltak[]>(() =>
+    selectionTiltak.map((t) => ({ ...t })),
+  );
   const aktorFilter = view === "begge" ? undefined : view;
-  const valgte = pakke1(aktorFilter);
+  const valgte = pakke1(aktorFilter, tiltak);
   const kjerne = valgte.filter((t) => t.kjerne);
   const stotte = valgte.filter((t) => !t.kjerne);
-  const rangert = prioritert(aktorFilter);
-  const dekning = krDekning(aktorFilter);
+  const rangert = prioritert(aktorFilter, tiltak);
+  const dekning = krDekning(aktorFilter, tiltak);
+
+  function setTier(id: string, tier: Tier) {
+    setTiltak((prev) => prev.map((t) => (t.id === id ? { ...t, tier } : t)));
+  }
+  function resetPakke() {
+    setTiltak(selectionTiltak.map((t) => ({ ...t })));
+  }
 
   return (
     <VStack gap="space-24" className="tu">
@@ -370,6 +405,21 @@ export function TiltakspakkeUtvelgelseView() {
               <ToggleGroup.Item value="sm" label="Den sykmeldte" />
               <ToggleGroup.Item value="begge" label="Begge" />
             </ToggleGroup>
+            <HStack gap="space-8" wrap align="center">
+              <Button
+                variant={editMode ? "primary" : "secondary"}
+                size="small"
+                onClick={() => setEditMode((v) => !v)}
+                aria-pressed={editMode}
+              >
+                {editMode ? "Ferdig" : "Bygg pakke (live)"}
+              </Button>
+              {editMode && (
+                <Button variant="tertiary" size="small" onClick={resetPakke}>
+                  Nullstill
+                </Button>
+              )}
+            </HStack>
           </VStack>
         </Box>
       </VStack>
@@ -380,6 +430,14 @@ export function TiltakspakkeUtvelgelseView() {
           Rediger og kalibrer tiltakene (team-delt) →
         </AkselLink>
       </Alert>
+
+      {editMode && (
+        <Alert variant="warning" size="small">
+          <strong>Live what-if</strong> — endringene er midlertidige og lagres
+          ikke. Matrise, måldekning, bang-for-buck og pakke-forslaget oppdateres
+          mens du justerer plasseringen nederst i «Bang for the buck».
+        </Alert>
+      )}
 
       <HStack gap="space-8" wrap>
         <Tag variant="success" size="small">
@@ -420,7 +478,7 @@ export function TiltakspakkeUtvelgelseView() {
                   {effektLabels[e]}
                 </th>
                 {INNSATS.map((i) => {
-                  const cell = tiltakAt(i, e, aktorFilter);
+                  const cell = tiltakAt(i, e, aktorFilter, tiltak);
                   return (
                     <td
                       key={i}
@@ -569,11 +627,17 @@ export function TiltakspakkeUtvelgelseView() {
                     </th>
                     <th scope="col">E / I</th>
                     <th scope="col">Overordnet mål</th>
+                    {editMode && <th scope="col">Plassering</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {rangert.map((t) => (
-                    <BangRad key={t.id} t={t} />
+                    <BangRad
+                      key={t.id}
+                      t={t}
+                      editMode={editMode}
+                      onTier={setTier}
+                    />
                   ))}
                 </tbody>
               </table>

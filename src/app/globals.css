@@ -1964,3 +1964,22 @@ button.tu__chip:focus-visible,
   outline: 2px solid var(--ax-border-focus, #0067c5);
   outline-offset: 2px;
 }
+
+/* Live «bygg pakke»: plassering-velger per rad i bang-for-buck-rangeringen */
+.tu-rang__tiercell {
+  white-space: nowrap;
+}
+.tu-tier-select {
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--ax-radius-4, 4px);
+  border: 1px solid var(--a-border-default);
+  background: var(--a-surface-default);
+  color: var(--a-text-default);
+  cursor: pointer;
+}
+.tu-tier-select:focus-visible {
+  outline: 2px solid var(--ax-border-focus, #0067c5);
+  outline-offset: 2px;
+}
