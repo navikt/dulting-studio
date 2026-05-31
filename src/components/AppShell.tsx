@@ -2,13 +2,22 @@
 
 import { Heading } from "@navikt/ds-react";
 import NextLink from "next/link";
+import { usePathname } from "next/navigation";
 
-// Bevisst minimalt toppnav: kun merket (→ forsiden). Pipeline-en (Prosjekter →
-// import/inbox/studio) er midlertidig tatt ut av navigasjonen for å holde fokus
-// på det viktigste nå — brukerreiser, analyse og tiltakspakke-beslutninger — og
-// fordi DB-rutene (/projects, /api/projects/*) ikke er provisjonert i prod. Koden
-// og rutene består (nås via URL); legg tilbake et nav-item når DB er på plass.
+// Slank toppnav: merket (→ forsiden) + to toppnivå-innganger, Brukerreise og
+// Analyse. Bevisst holdt lett så den ikke bryter brukerreisenes immersive verden.
+// Pipeline-en (Prosjekter → import/inbox/studio) er fortsatt ute av navigasjonen
+// (DB-rutene ikke provisjonert i prod); koden/rutene består og nås via URL.
+const ANALYSE_PREFIXES = [
+  "/atferdsmatrise",
+  "/tiltakskart",
+  "/tiltakspakke-utvelgelse",
+];
+
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const brukerreiseActive = pathname.startsWith("/brukerreise");
+  const analyseActive = ANALYSE_PREFIXES.some((p) => pathname.startsWith(p));
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -18,6 +27,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               dulting-studio
             </NextLink>
           </Heading>
+          <nav className="app-nav" aria-label="Hovednavigasjon">
+            <NextLink
+              href="/brukerreise/sammen"
+              className={`app-nav__link${
+                brukerreiseActive ? " app-nav__link--active" : ""
+              }`}
+              aria-current={brukerreiseActive ? "page" : undefined}
+            >
+              Brukerreise
+            </NextLink>
+            <NextLink
+              href="/atferdsmatrise"
+              className={`app-nav__link${
+                analyseActive ? " app-nav__link--active" : ""
+              }`}
+              aria-current={analyseActive ? "page" : undefined}
+            >
+              Analyse
+            </NextLink>
+          </nav>
         </div>
       </header>
 

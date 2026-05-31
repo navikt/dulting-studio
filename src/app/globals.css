@@ -78,8 +78,10 @@ a:where(:not(.aksel-button)) {
 
 .app-nav {
   list-style: none;
-  margin: 0;
+  margin: 0 0 0 auto;
   padding: 0;
+  display: flex;
+  gap: var(--ax-space-4);
 }
 
 .app-nav__link {
@@ -91,13 +93,19 @@ a:where(:not(.aksel-button)) {
   border-radius: var(--ax-radius-4);
 }
 
+.app-nav__link--active {
+  font-weight: 600;
+  color: var(--ax-text-accent);
+  background: var(--ax-bg-accent-soft);
+}
+
+.app-nav__link:hover {
+  background: var(--ax-bg-neutral-soft, #f1f3f5);
+}
+
 .app-nav__link:focus-visible {
   outline: 3px solid var(--ax-border-focus);
   outline-offset: 2px;
-}
-
-.app-nav__link--active {
-  font-weight: 600;
 }
 
 .app-main {
