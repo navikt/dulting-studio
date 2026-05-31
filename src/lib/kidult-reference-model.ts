@@ -111,7 +111,7 @@ export const journeySteps: JourneyStep[] = [
     action: "Vurder om dere trenger en oppfølgingsplan.",
     channel: "Dine sykmeldte",
     kind: "dulting",
-    tiltakRefs: ["T02"],
+    tiltakRefs: ["T01"],
   },
   {
     id: "need-assessment",
@@ -157,7 +157,7 @@ export const journeySteps: JourneyStep[] = [
     body: "Uansett valg er oppgaven på Min side arbeidsgiver ferdigstilt. Leder har tatt et bevisst valg, og Nav har informasjon om behov.",
     action: "Veileder kan se vurderingen. Videre bruk og deling må avklares.",
     kind: "outcome",
-    tiltakRefs: ["T04"],
+    tiltakRefs: ["T03"],
   },
   {
     id: "dialogmote",
@@ -194,33 +194,23 @@ export const interventionMapPhases: InterventionMapPhase[] = [
     tiltak: [
       {
         id: "T01",
-        title: "Varsel før uke 4",
+        title: "Tidsriktig oppgave på riktig person før uke 4",
         description:
-          "Påminnelse som forklarer hva planen er og hvorfor den bør lages nå.",
-        signal: "Åpner varsel; starter vurdering eller plan før frist.",
-        guardrail: "Unngå varseltrøtthet og for tidlig press.",
-        barriere: "Tidspress og prioritering",
-        motivasjon: "Plikt og ytre forventninger",
-        dult: "Påminnelse på Min side arbeidsgiver før uke 4 som forklarer hva planen er og hvorfor den bør lages nå.",
-        eastFogg: "Timely (før frist), Easy (forklarer hva/hvorfor)",
-        forgood: "Respect — påminnelsen skal opplyse, ikke presse.",
-        raakort: ["DULT-06"],
-        sharedWithSykmeldt:
-          "↔ speiler den sykmeldtes tidlige plikt-/prosessinfo",
-      },
-      {
-        id: "T02",
-        title: "Frist på riktig person",
-        description:
-          "Vis frist og relevant planinformasjon på den sykmeldte i Dine sykmeldte.",
-        signal: "Åpner riktig person; starter handling.",
-        guardrail: "Ikke vis frist hvis saken allerede er avklart.",
+          "Et tidsriktig varsel som lander som en konkret oppgave med frist på riktig person (nærmeste leder) — ikke passiv info.",
+        signal:
+          "Åpner varsel / riktig person; starter vurdering eller plan før frist.",
+        guardrail:
+          "Unngå varseltrøtthet og for tidlig press; ikke dobbeltvarsle hvis saken alt er avklart.",
         barriere: "Manglende rutiner",
         motivasjon: "Plikt og ytre forventninger",
-        dult: "Vis frist og relevant planinfo på den sykmeldte i Dine sykmeldte — en konkret oppgave, ikke passiv info.",
-        eastFogg: "Easy (oppgave på riktig person), Salient (tydelig frist)",
-        forgood: "Forgiving — ikke dobbeltvarsle hvis saken alt er avklart.",
-        raakort: ["DULT-20", "DULT-11"],
+        dult: "Et tidsriktig varsel før uke 4 som lander som en konkret oppgave med frist på riktig person i Dine sykmeldte — ikke passiv info. Ekstern varsling (SMS/e-post) er et målbart valg, ikke baket inn.",
+        eastFogg:
+          "Timely (før frist), Easy (oppgave på riktig person), Salient (tydelig frist)",
+        forgood:
+          "Respect — opplyse, ikke presse; ikke dobbeltvarsle når saken alt er avklart.",
+        raakort: ["DULT-06", "DULT-20", "DULT-11"],
+        sharedWithSykmeldt:
+          "↔ speiler den sykmeldtes tidlige plikt-/prosessinfo",
       },
     ],
   },
@@ -237,33 +227,22 @@ export const interventionMapPhases: InterventionMapPhase[] = [
     tiltak: [
       {
         id: "T03",
-        title: "Personnær vurderingsoppgave",
+        title: "Personnær vurderingsoppgave (med «nei»-gren)",
         description:
-          "Gjør passiv sykmeldingsinformasjon til en konkret oppgave på riktig person.",
-        signal: "Starter og fullfører behovsvurdering.",
-        guardrail: "Ikke mål bare navigasjon som suksess.",
+          "Gjør passiv sykmeldingsinfo til en konkret behovsvurdering på riktig person — der «ikke nå» er et ærlig, registrert valg, ikke en blindvei.",
+        signal:
+          "Starter og fullfører behovsvurdering; andel «ikke nå» med oppgitt grunn.",
+        guardrail:
+          "Ikke mål bare navigasjon som suksess; ingen default; «ikke nå» må aktivt bekrefte at oppfølgingsplikten består.",
         barriere: "Kunnskapsmangel og uklarhet",
         motivasjon: "Autonomi og eierskap",
-        dult: "Gjør passiv sykmeldingsinfo til en konkret behovsvurderingsoppgave på riktig person.",
-        eastFogg: "Easy (strukturerte valg), Prompt (utløser handling)",
-        forgood: "Honest — mål reell vurdering, ikke bare navigasjon/klikk.",
-        raakort: ["DULT-01", "DULT-07"],
-        sharedWithSykmeldt: "↔ behovsvurderingen speiler sykmeldts ST04/ST05",
-      },
-      {
-        id: "T04",
-        title: "Plan trengs ikke nå",
-        description:
-          "Arbeidsgiver kan velge riktig utfall når plan ikke er nødvendig.",
-        signal: "Andel ikke nå og årsaksfordeling.",
-        guardrail: "Ingen default; fritekst krever avklaring og PII-vern.",
-        barriere: "Kunnskapsmangel og uklarhet",
-        motivasjon: "Autonomi og eierskap",
-        dult: "La arbeidsgiver velge «ikke nå» med strukturert årsak — et legitimt utfall, ikke en blindvei.",
-        eastFogg: "Easy (årsak fra liste), aktivt valg (ingen default)",
+        dult: "Gjør passiv sykmeldingsinfo til en konkret behovsvurderingsoppgave på riktig person; «nei» registreres med strukturert grunn som et legitimt utfall — ikke en snarvei bort fra plikten.",
+        eastFogg:
+          "Easy (strukturerte valg), Prompt (utløser handling), aktivt valg (ingen default)",
         forgood:
-          "Ownership — ingen default; fritekst krever PII-/juridisk avklaring.",
-        raakort: ["DULT-15", "DULT-16", "DULT-33"],
+          "Honest + Ownership — mål reell vurdering, ikke klikk; «nei» må ikke bli en snarvei bort fra oppfølgingsplikten.",
+        raakort: ["DULT-01", "DULT-07", "DULT-15", "DULT-16", "DULT-33"],
+        sharedWithSykmeldt: "↔ behovsvurderingen speiler sykmeldts ST04/ST05",
       },
     ],
   },
@@ -276,18 +255,18 @@ export const interventionMapPhases: InterventionMapPhase[] = [
     tiltak: [
       {
         id: "T05",
-        title: "Miniguide og stegvis plan",
+        title: "Stegvis plan",
         description:
-          "Bryt planarbeidet ned i tydelige steg med enklere språk og fremdrift.",
-        signal: "Frafall i planflyt, fullføring og bruk av steg.",
-        guardrail: "Ikke overforklar eller gjøre alt til veiviser.",
-        barriere: "Relasjon og tillit",
-        motivasjon: "Tilhørighet og relasjon",
-        dult: "«Revamped Dine sykmeldte» som guider selve samtalen: hvilke spørsmål, hva en plan er, og hvordan dra nytte av den.",
+          "Bryt selve planutfyllingen ned i tydelige steg. (Miniguiden «hva er en plan / hvordan» er skilt ut til klarspråk-laget — T13.)",
+        signal: "Fullføring og bruk av steg i planflyt.",
+        guardrail:
+          "Lav prioritet: planen er liten, og frafall under utfylling er ikke observert. Ikke gjør alt til veiviser.",
+        barriere: "Kunnskapsmangel og uklarhet",
+        motivasjon: "Autonomi og eierskap",
+        dult: "Bryt planutfyllingen ned i tydelige steg med enklere språk. Lav prioritet — premisset om frafall under utfylling er ikke bekreftet.",
         eastFogg: "Easy (steg + språk), Ability (senker terskel)",
         forgood: "Respect — ikke overforklar eller gjør alt til veiviser.",
         raakort: ["DULT-05", "DULT-24", "DULT-17"],
-        sharedWithSykmeldt: "↔ samtaleforberedelsen speiler den sykmeldtes",
       },
       {
         id: "T06",
@@ -329,29 +308,19 @@ export const interventionMapPhases: InterventionMapPhase[] = [
     tiltak: [
       {
         id: "T08",
-        title: "Evalueringsdato som ny samtale",
+        title: "Evalueringsdato + opt-in påminnelse",
         description:
-          "Formuler dato-feltet som avtale om å sjekke om tilrettelegging fungerer.",
-        signal: "Evalueringsdato satt og forstått.",
-        guardrail: "Ikke bare en administrativ dato.",
+          "Formuler dato-feltet som en avtale om ny samtale, og la partene legge den i kalender med opt-in påminnelse.",
+        signal: "Evalueringsdato satt og forstått; påminnelse valgt.",
+        guardrail:
+          "Ikke bare en administrativ dato; ingen skjult default på varsling (opt-in).",
         barriere: "Manglende rutiner",
         motivasjon: "Tilhørighet og relasjon",
-        dult: "Formuler dato-feltet som en avtale om å sjekke om tilretteleggingen fungerer — en ny samtale, ikke en administrativ dato.",
-        eastFogg: "Salient (ny samtale), Timely (avtalt tidspunkt)",
-        forgood: "Respect — datoen skal bety noe reelt, ikke pliktløp.",
-        raakort: ["DULT-12"],
-      },
-      {
-        id: "T09",
-        title: "Kalender og opt-in påminnelse",
-        description: "La partene legge datoen i kalender og velge påminnelse.",
-        signal: "Kalender lagt til og påminnelse valgt.",
-        guardrail: "Ingen skjult default på varsling.",
-        barriere: "Tidspress og prioritering",
-        motivasjon: "Autonomi og eierskap",
-        dult: "La partene legge datoen i kalender og selv velge påminnelse (opt-in).",
-        eastFogg: "Easy (ett klikk), Timely (påminnelse)",
-        forgood: "Consent — ingen skjult default på varsling.",
+        dult: "Formuler evalueringsdatoen som en avtale om ny samtale (sjekke om tilretteleggingen fungerer), med kalender + opt-in påminnelse — påminnelsen er det som gjør datoen til atferd.",
+        eastFogg:
+          "Salient (ny samtale), Timely (påminnelse), Easy (ett klikk i kalender)",
+        forgood:
+          "Respect + Consent — datoen skal bety noe reelt; ingen skjult default på varsling.",
         raakort: ["DULT-12", "DULT-22"],
       },
     ],
@@ -411,7 +380,7 @@ export const interventionMapPhases: InterventionMapPhase[] = [
 ];
 
 export const supportTiltak = [
-  "T13 - Verdi og plikt i klarspråk",
+  "T13 - Verdi og plikt i klarspråk (inkl. plan-miniguide: hva en plan er / hvordan)",
   "T14 - Samlet innhold og begrepsrydding",
 ];
 

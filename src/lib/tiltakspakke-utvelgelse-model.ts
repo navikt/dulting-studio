@@ -83,7 +83,7 @@ export const pakke1Kriterier = [
 
 /** Hvordan forslaget forholder seg til den vedtatte målmodellen (synlig ramme). */
 export const pakke1Ramme =
-  "Kjernen følger målmodellens to arbeidsgiver-hovedklynger — tidsriktig signal og behovsvurdering — pluss støttetekst (maalmodell-virkningshypotese.md §8). Sykmeldt-speilet (ST04, ST05, ST01) er en bevisst utvidelse som realiserer den toveis koblingen; ST05 forutsetter avklart samtykke og trigger-regel før den kan låses som kjerne.";
+  "Kjernen følger målmodellens to arbeidsgiver-hovedklynger — tidsriktig signal og behovsvurdering — pluss støttetekst (maalmodell-virkningshypotese.md §8). Sykmeldt-speilet er ST04 (kjerne) + ST01 (støtte). ST05 (det toveis grepet) er en bevisst, betinget utvidelse — «vurder», ikke låst kjerne — fordi AG eier planen, og samtykke/trigger + uenighets-håndtering må avklares først.";
 
 export const utkastNote =
   "Effekt- og innsats-anslagene er et utkast utledet fra register- og scoping-docs. De er et utgangspunkt for kalibrering med teamet, ikke en fasit.";
@@ -93,79 +93,50 @@ const agTiltak: SelectionTiltak[] = [
   {
     id: "T01",
     aktor: "ag",
-    title: "Varsel før uke 4",
+    title: "Tidsriktig oppgave på riktig person før uke 4",
     steg: "1 · Varsel og frist",
     innsats: 2,
     effekt: 3,
     tier: "pakke1",
     kjerne: true,
     hypotese: ["H1"],
-    blokkertAv: "Åpent: eksakt uke + om eksternt varsel (SMS/e-post) i tillegg",
+    blokkertAv:
+      "Åpent: eksakt uke + ekstern varsling (SMS/e-post) som målbart valg. Teknisk: deep-link til riktig person (DULT-23).",
     guardrail:
-      "Unngå varseltrøtthet og for tidlig press; ikke duplikat når plan finnes.",
+      "Unngå varseltrøtthet og for tidlig press; ikke dobbeltvarsle når plan/sak alt er avklart.",
     toveis: "ST04 (sykmeldt får tidsriktig signal samtidig)",
     hvorfor:
-      "Selve kjernedulten — bryter stillheten før fristen. Reise-analysen peker hit.",
-  },
-  {
-    id: "T02",
-    aktor: "ag",
-    title: "Frist på riktig person",
-    steg: "1 · Varsel og frist",
-    innsats: 1,
-    effekt: 3,
-    tier: "pakke1",
-    kjerne: true,
-    hypotese: ["H1"],
-    blokkertAv: "Teknisk: deep-link til riktig person (DULT-23) må på plass",
-    guardrail: "Ikke vis frist hvis saken allerede er avklart.",
-    hvorfor:
-      "Gjør passiv sykmeldingsinfo til en konkret oppgave på riktig person — høy effekt, lav innsats.",
+      "Kjernedulten — et tidsriktig varsel som lander som en konkret oppgave med frist på riktig person, bryter stillheten før fristen. Reise-analysen peker hit.",
   },
   {
     id: "T03",
     aktor: "ag",
-    title: "Personnær vurderingsoppgave",
+    title: "Personnær vurderingsoppgave (med «nei»-gren)",
     steg: "2 · Behovsvurdering",
     innsats: 2,
     effekt: 3,
     tier: "pakke1",
     kjerne: true,
     hypotese: ["H1"],
+    blokkertAv: "Fritekst-årsak ved «ikke nå» krever PII-/juridisk avklaring",
     guardrail:
-      "Ikke mål bare navigasjon som suksess — det er stillingtaken som teller.",
+      "Ikke mål bare navigasjon som suksess — det er stillingtaken som teller; ingen default; «ikke nå» må aktivt bekrefte at oppfølgingsplikten består.",
+    forgood: "«Nei» må ikke bli en snarvei bort fra oppfølgingsplikten.",
     toveis: "ST05 (sykmeldtes egen behovsvurdering)",
     hvorfor:
-      "Skal få behovsvurderingen til å faktisk skje — ikke bare navigasjon.",
-  },
-  {
-    id: "T04",
-    aktor: "ag",
-    title: "Plan trengs ikke nå",
-    steg: "2 · Behovsvurdering",
-    innsats: 2,
-    effekt: 2,
-    tier: "pakke1",
-    kjerne: true,
-    hypotese: ["H1"],
-    blokkertAv: "Fritekst-årsak krever PII-/juridisk avklaring",
-    guardrail:
-      "Ingen forhåndsvalgt default; flyten må aktivt bekrefte at oppfølgingsplikten består ved «ikke nå».",
-    forgood: "Må ikke bli snarvei bort fra oppfølgingsplikten.",
-    hvorfor:
-      "Gjør «nei» til et ærlig, registrert valg — fullfører beslutningspunktet.",
+      "Skal få behovsvurderingen til å faktisk skje — ikke bare navigasjon — og gjøre «nei» til et ærlig, registrert valg som fullfører beslutningspunktet.",
   },
   {
     id: "T05",
     aktor: "ag",
-    title: "Miniguide og stegvis plan",
+    title: "Stegvis plan",
     steg: "3 · Stegvis planflyt",
     innsats: 3,
-    effekt: 2,
+    effekt: 1,
     tier: "senere",
     hypotese: ["H1"],
     hvorfor:
-      "Verdifull, men en større ombygging av planflyten — etter pakke 1.",
+      "Lav prioritet: planen er liten, og frafall under utfylling er ikke observert. Miniguiden er skilt ut til klarspråk-laget (T13/ST07).",
   },
   {
     id: "T06",
@@ -190,25 +161,15 @@ const agTiltak: SelectionTiltak[] = [
   {
     id: "T08",
     aktor: "ag",
-    title: "Evalueringsdato som ny samtale",
-    steg: "4 · Evaluering og påminnelse",
-    innsats: 1,
-    effekt: 2,
-    tier: "vurder",
-    hypotese: ["H1"],
-    hvorfor:
-      "Billig og nyttig, men ikke ved «muren» — kandidat til neste pakke.",
-  },
-  {
-    id: "T09",
-    aktor: "ag",
-    title: "Kalender og opt-in påminnelse",
+    title: "Evalueringsdato + opt-in påminnelse",
     steg: "4 · Evaluering og påminnelse",
     innsats: 2,
     effekt: 2,
-    tier: "senere",
+    tier: "vurder",
     hypotese: ["H1"],
-    forgood: "Ingen skjult default på varsling.",
+    forgood: "Ingen skjult default på varsling (opt-in).",
+    hvorfor:
+      "Evalueringsdato som ny samtale + påminnelsen som gjør datoen til atferd. Billig og nyttig, men ikke ved «muren» — kandidat til neste pakke.",
   },
   {
     id: "T10",
@@ -305,7 +266,7 @@ const smTiltak: SelectionTiltak[] = [
     title: "Vis hva leder skal gjøre (symmetri)",
     steg: "1 · Tidlig info og plikt",
     innsats: 1,
-    effekt: 1,
+    effekt: 2,
     tier: "vurder",
     hypotese: ["H1"],
     toveis: "AG steg 01 (samme bilde for begge)",
@@ -333,18 +294,17 @@ const smTiltak: SelectionTiltak[] = [
     steg: "2 · Signal og egen behovsvurdering",
     innsats: 3,
     effekt: 3,
-    tier: "pakke1",
-    kjerne: true,
+    tier: "vurder",
     hypotese: ["H1", "H2"],
     blokkertAv:
-      "Åpent: hvem ser vurderingen, og utløses AG-varsel på aktivt «ja» eller alltid?",
+      "Asymmetri: AG eier planen (sykmeldt kan i dag ikke skrive plan). Åpent: hvem ser vurderingen; «ja» → AG-varsel; håndtering ved uenighet (sykmeldt ja / AG nei).",
     guardrail:
       "Tydelig hvem som ser hva; ingen forhåndsvalgt default; «ikke nå» et reelt valg.",
     forgood:
       "Tydelig samtykke for deling med Nav; varsel kun på aktivt «ja», ikke automatisk.",
     toveis: "AG steg 03 / T03 (mulig felles behovsvurdering)",
     hvorfor:
-      "Den toveis koblingen — vårt distinkte grep: ett «ja» setter begge i gang. Kjerne, men forutsetter avklart samtykke/trigger.",
+      "Det distinkte toveis-grepet: sykmeldt signaliserer/ber → AG eier og bestemmer, men forespørselen er synlig og kan ikke ignoreres stille. «Vurder», ikke låst kjerne — forutsetter avklart samtykke/trigger + uenighets-håndtering (team/roadmap).",
   },
   {
     id: "ST06",

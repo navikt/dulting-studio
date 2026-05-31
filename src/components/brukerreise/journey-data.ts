@@ -255,7 +255,7 @@ export const phases: Phase[] = [
       },
       desiredBehavior:
         "Maria tar stilling før fireukersfristen — i stedet for å vente til noen spør.",
-      refs: ["DULT-06", "DULT-20", "DULT-22", "T01", "T02"],
+      refs: ["DULT-06", "DULT-20", "DULT-22", "T01"],
     },
     consideration:
       "Vi vurderer eksternt varsel (e-post til arbeidsgiver) i tillegg til oppgaven på Min side arbeidsgiver. Det vil trolig dra flere i gang tidlig — men må veies mot varseltrøtthet, og bør testes isolert.",
@@ -309,7 +309,7 @@ export const phases: Phase[] = [
       },
       desiredBehavior:
         "Maria tar et bevisst valg og går videre til riktig neste steg.",
-      refs: ["DULT-01", "DULT-07", "DULT-15", "T03", "T04"],
+      refs: ["DULT-01", "DULT-07", "DULT-15", "T03"],
     },
     consideration:
       "Workshop-innsikt (kandidat, ikke scopet inn): arbeidsgivere mangler ofte info om hva den ansatte får fra Nav — f.eks. unntak fra aktivitetsplikten. Å gi leder relevant kontekst, uten å bryte personvern, kan gjøre vurderingen riktigere.",
@@ -472,7 +472,6 @@ export const phases: Phase[] = [
         "DULT-31",
         "DULT-35",
         "T08",
-        "T09",
         "T06",
       ],
     },

@@ -78,7 +78,7 @@ export const sykmeldtMapPhases: SykmeldtPhase[] = [
           "Kjenner medvirknings-/aktivitetsplikten og vet hva som skjer videre — fra dag 1, ikke først ved evaluering.",
         barriere: "Kunnskapsmangel og uklarhet",
         motivasjon: "Plikt og ytre forventninger",
-        dult: "Microfrontend på nav.no / «Ditt sykefravær»: hva skjer nå, dine plikter uten tunge ord, og neste steg.",
+        dult: "Microfrontend på «Ditt sykefravær» (pull, ingen ekstern push): lett og hjelp-først dag 1 — hva skjer nå, hva du kan, neste steg — med et tydeligere plikt-/prosess-lag når fraværet strekker seg mot uke 4.",
         eastFogg: "Easy (lett språk), Timely / Prompt (dag 1)",
         forgood: "Respect — plikt-info skal opplyse, ikke true.",
         maaletegn:
@@ -156,14 +156,14 @@ export const sykmeldtMapPhases: SykmeldtPhase[] = [
           "Gjør en egen vurdering av behovet, kan dele den med Nav, og «ja» utløser varsel til arbeidsgiver.",
         barriere: "Manglende rutiner",
         motivasjon: "Autonomi og eierskap",
-        dult: "Oppgave i bjella / «Ditt sykefravær» som ber om en kort vurdering; kan deles med Nav (og evt. lege); «ja» trigger AG-varsel.",
+        dult: "Oppgave i «Ditt sykefravær»: sykmeldt signaliserer/ber om plan via en kort vurdering (delbar med Nav/lege); «ja» → synlig forespørsel + varsel til leder. AG eier og bestemmer planen, men forespørselen kan ikke ignoreres stille.",
         eastFogg: "Easy, Social (felles signal), Prompt",
         forgood:
           "Openness — tydelig hvem som ser vurderingen og hva «ja» utløser.",
         maaletegn:
           "Antall egne vurderinger; andel «ja» som utløser AG-varsel; andel delt med Nav.",
         guardrail:
-          "Tydelig samtykke/åpenhet om deling; ingen forhåndsvalgt default; «ikke nå» må være et reelt valg.",
+          "Tydelig samtykke/åpenhet om deling; ingen forhåndsvalgt default; «ikke nå» må være et reelt valg. Uenighet (sykmeldt ja / AG nei): forespørselen forblir synlig, AGs «nei» bør kreve registrert grunn.",
         sharedWithAg: "AG steg 03 (behovsvurdering; mulig felles skjema)",
       },
       {
@@ -201,7 +201,7 @@ export const sykmeldtMapPhases: SykmeldtPhase[] = [
           "Forstår hva en oppfølgingsplan er og hvorfor den er nyttig — på lavere terskel enn i dag.",
         barriere: "Kunnskapsmangel og uklarhet",
         motivasjon: "Autonomi og eierskap",
-        dult: "Enkel guide/verktøy om hva planen er og gevinsten — enklere enn dagens.",
+        dult: "Enkel guide/verktøy om hva planen er og gevinsten (klarspråk-miniguiden fra planflyten hører hjemme her) — enklere enn dagens.",
         eastFogg: "Easy, Attractive",
         forgood: "Openness — ærlig om hva planen brukes til og av hvem.",
         maaletegn:
