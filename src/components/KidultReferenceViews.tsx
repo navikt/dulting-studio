@@ -8,6 +8,8 @@ import {
   BodyShort,
   Box,
   Button,
+  Detail,
+  Dialog,
   Heading,
   HGrid,
   HStack,
@@ -21,6 +23,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   berikelseUtkastNote,
   type InterventionMapPhase,
+  type InterventionMapTiltak,
   interventionMapPhases,
   isJourneyStepVisible,
   type JourneyStep,
@@ -31,7 +34,6 @@ import {
   supportTiltak,
 } from "@/lib/kidult-reference-model";
 import { AnalyseNav } from "./AnalyseNav";
-import { DultRefTag } from "./DultRefTag";
 
 type ReferenceView = "journey" | "map";
 
@@ -254,6 +256,119 @@ export function KidultJourneyView() {
   );
 }
 
+/** Kompakt, klikkbart tiltakskort. Synlig: kode + tittel + 1–2 linjer +
+ *  barriere/driver-chips (why-laget). Resten — dult, måletegn, stoppunkt,
+ *  EAST/Fogg, FORGOOD, råkort — åpnes i dialog (samme mønster som DultRefTag
+ *  og kodene i utvelgelsen), så kartet blir skannbart i stedet for en vegg. */
+function MapTiltakCard({ tiltak }: { tiltak: InterventionMapTiltak }) {
+  return (
+    <Dialog>
+      <Dialog.Trigger>
+        <button
+          type="button"
+          className="kidult-map-tiltak-card kidult-map-tiltak-card--btn"
+          aria-label={`Vis detaljer for ${tiltak.id}: ${tiltak.title}`}
+        >
+          <span className="kidult-map-tiltak-card__head">
+            <Tag variant="neutral" size="xsmall">
+              {tiltak.id}
+            </Tag>
+            {tiltak.sharedWithSykmeldt && (
+              <Tag variant="alt3" size="xsmall">
+                Delt
+              </Tag>
+            )}
+          </span>
+          <span className="kidult-map-tiltak-card__title">{tiltak.title}</span>
+          <span className="kidult-map-tiltak-card__desc">
+            {tiltak.description}
+          </span>
+          {tiltak.barriere && tiltak.motivasjon && (
+            <span className="kidult-map-tiltak-card__why">
+              <Tag variant="warning" size="xsmall">
+                {tiltak.barriere}
+              </Tag>
+              <Tag variant="success" size="xsmall">
+                {tiltak.motivasjon}
+              </Tag>
+            </span>
+          )}
+          <span className="kidult-map-tiltak-card__more" aria-hidden>
+            Dult, måletegn og stoppunkt →
+          </span>
+        </button>
+      </Dialog.Trigger>
+      <Dialog.Popup>
+        <Dialog.Header>
+          <Detail uppercase>
+            {tiltak.id}
+            {tiltak.sharedWithSykmeldt ? " · delt med sykmeldt" : ""}
+          </Detail>
+          <Dialog.Title>{tiltak.title}</Dialog.Title>
+          <Dialog.Description>{tiltak.description}</Dialog.Description>
+        </Dialog.Header>
+        <Dialog.Body>
+          <dl className="dult-ref-dialog__meta">
+            {tiltak.barriere && tiltak.motivasjon && (
+              <div>
+                <dt>Barriere → driver</dt>
+                <dd>
+                  {tiltak.barriere} → {tiltak.motivasjon}
+                </dd>
+              </div>
+            )}
+            {tiltak.dult && (
+              <div>
+                <dt>Dult</dt>
+                <dd>{tiltak.dult}</dd>
+              </div>
+            )}
+            <div>
+              <dt>Måletegn</dt>
+              <dd>{tiltak.signal}</dd>
+            </div>
+            <div>
+              <dt>Stoppunkt</dt>
+              <dd>{tiltak.guardrail}</dd>
+            </div>
+            {tiltak.eastFogg && (
+              <div>
+                <dt>EAST/Fogg (utkast)</dt>
+                <dd>{tiltak.eastFogg}</dd>
+              </div>
+            )}
+            {tiltak.forgood && (
+              <div>
+                <dt>FORGOOD (utkast)</dt>
+                <dd>{tiltak.forgood}</dd>
+              </div>
+            )}
+            {tiltak.sharedWithSykmeldt && (
+              <div>
+                <dt>Delt touchpoint</dt>
+                <dd>{tiltak.sharedWithSykmeldt}</dd>
+              </div>
+            )}
+            {tiltak.raakort && tiltak.raakort.length > 0 && (
+              <div>
+                <dt>Råkort</dt>
+                <dd>{tiltak.raakort.join(" · ")}</dd>
+              </div>
+            )}
+          </dl>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Dialog.CloseTrigger>
+            <Button variant="secondary" size="small">
+              Lukk
+            </Button>
+          </Dialog.CloseTrigger>
+        </Dialog.Footer>
+      </Dialog.Popup>
+    </Dialog>
+  );
+}
+
 function PhaseCard({
   phase,
   variant,
@@ -286,71 +401,7 @@ function PhaseCard({
 
         <div className="kidult-map-tiltak-grid">
           {phase.tiltak.map((tiltak) => (
-            <article
-              key={tiltak.id}
-              className="kidult-map-tiltak-card"
-              aria-labelledby={`${phase.id}-${tiltak.id}`}
-            >
-              <VStack gap="space-8">
-                <HStack gap="space-8" align="center" wrap>
-                  <Tag variant="neutral" size="xsmall">
-                    {tiltak.id}
-                  </Tag>
-                  <Heading
-                    level="3"
-                    size="xsmall"
-                    id={`${phase.id}-${tiltak.id}`}
-                  >
-                    {tiltak.title}
-                  </Heading>
-                  {tiltak.sharedWithSykmeldt && (
-                    <Tag variant="alt3" size="xsmall">
-                      Delt med sykmeldt
-                    </Tag>
-                  )}
-                </HStack>
-
-                <BodyShort size="small">{tiltak.description}</BodyShort>
-
-                {tiltak.barriere && tiltak.motivasjon && (
-                  <HStack gap="space-4" wrap>
-                    <Tag variant="warning" size="xsmall">
-                      Barriere · {tiltak.barriere}
-                    </Tag>
-                    <Tag variant="success" size="xsmall">
-                      Spiller på · {tiltak.motivasjon}
-                    </Tag>
-                  </HStack>
-                )}
-
-                {tiltak.dult && (
-                  <BodyShort size="small">
-                    <strong>Dult:</strong> {tiltak.dult}
-                  </BodyShort>
-                )}
-                <BodyShort size="small">
-                  <strong>Måletegn:</strong> {tiltak.signal}
-                </BodyShort>
-                <BodyShort size="small">
-                  <strong>Stoppunkt:</strong> {tiltak.guardrail}
-                </BodyShort>
-                {(tiltak.eastFogg || tiltak.forgood) && (
-                  <BodyShort size="small" className="muted">
-                    {tiltak.eastFogg ? `EAST/Fogg: ${tiltak.eastFogg}` : ""}
-                    {tiltak.eastFogg && tiltak.forgood ? " · " : ""}
-                    {tiltak.forgood ? `FORGOOD: ${tiltak.forgood}` : ""}
-                  </BodyShort>
-                )}
-
-                {tiltak.raakort && tiltak.raakort.length > 0 && (
-                  <HStack gap="space-4" wrap>
-                    {tiltak.raakort.map((ref) => (
-                      <DultRefTag key={ref} id={ref} />
-                    ))}
-                  </HStack>
-                )}
-              </VStack>
-            </article>
+            <MapTiltakCard key={tiltak.id} tiltak={tiltak} />
           ))}
         </div>
 

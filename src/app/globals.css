@@ -1044,17 +1044,81 @@ a:where(:not(.aksel-button)) {
 
 .kidult-map-tiltak-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 0.75rem;
 }
 
 .kidult-map-tiltak-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+  text-align: left;
   background: var(--ax-bg-default);
-  border: 1px solid var(--ax-border-subtle);
+  border: 1px solid var(--a-border-subtle);
   border-top: 4px solid var(--phase-border);
   border-radius: var(--ax-radius-8);
-  padding: var(--ax-space-16);
+  padding: 0.8rem 0.9rem;
   box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+}
+
+/* hele kortet er dialog-trigger — hvilende affordance + hover-løft */
+.kidult-map-tiltak-card--btn {
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition:
+    transform 90ms ease,
+    box-shadow 90ms ease,
+    border-color 90ms ease;
+}
+
+.kidult-map-tiltak-card--btn:hover {
+  border-color: var(--phase-border);
+  box-shadow: 0 5px 16px rgb(0 0 0 / 10%);
+  transform: translateY(-2px);
+}
+
+.kidult-map-tiltak-card--btn:focus-visible {
+  outline: 3px solid var(--a-border-action);
+  outline-offset: 2px;
+}
+
+.kidult-map-tiltak-card__head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.kidult-map-tiltak-card__title {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.kidult-map-tiltak-card__desc {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--a-text-subtle);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.kidult-map-tiltak-card__why {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.kidult-map-tiltak-card__more {
+  margin-top: auto;
+  padding-top: 0.2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--a-border-action);
 }
 
 .kidult-map[data-variant="today"] .kidult-map-phase:nth-of-type(n + 3) {
