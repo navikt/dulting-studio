@@ -1752,12 +1752,14 @@ a:where(:not(.aksel-button)) {
   color: var(--a-text-subtle);
 }
 .tu-rang__idcell {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   text-align: left;
   font-weight: 500;
   min-width: 14rem;
+}
+.tu-rang__idinner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 .tu-rang__title {
   font-weight: 600;
@@ -1767,10 +1769,12 @@ a:where(:not(.aksel-button)) {
   font-weight: 500;
 }
 .tu-rang__bangcell {
+  min-width: 7rem;
+}
+.tu-rang__banginner {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  min-width: 7rem;
 }
 .tu-rang__bar {
   position: relative;
@@ -1804,6 +1808,9 @@ a:where(:not(.aksel-button)) {
   white-space: nowrap;
 }
 .tu-rang__krcell {
+  min-width: 9rem;
+}
+.tu-rang__krinner {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;

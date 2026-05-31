@@ -140,35 +140,41 @@ function BangRad({ t }: { t: SelectionTiltak }) {
   return (
     <tr className={`tu-rang__row tu-rang__row--${t.tier}`}>
       <th scope="row" className="tu-rang__idcell">
-        <span className={`tu-forslag__id tu-forslag__id--${t.aktor}`}>
-          {t.id}
+        <span className="tu-rang__idinner">
+          <span className={`tu-forslag__id tu-forslag__id--${t.aktor}`}>
+            {t.id}
+          </span>
+          <span className="tu-rang__title">{t.title}</span>
         </span>
-        <span className="tu-rang__title">{t.title}</span>
       </th>
       <td className="tu-rang__bangcell">
-        <span className="tu-rang__bar" aria-hidden>
-          <span
-            className={`tu-rang__barfill tu-rang__barfill--${t.aktor}`}
-            style={{ width: `${(bang / MAX_BANG) * 100}%` }}
-          />
+        <span className="tu-rang__banginner">
+          <span className="tu-rang__bar" aria-hidden>
+            <span
+              className={`tu-rang__barfill tu-rang__barfill--${t.aktor}`}
+              style={{ width: `${(bang / MAX_BANG) * 100}%` }}
+            />
+          </span>
+          <b className="tu-rang__bangnum">
+            {bang >= 1 ? bang.toFixed(1) : bang.toFixed(2)}
+          </b>
         </span>
-        <b className="tu-rang__bangnum">
-          {bang >= 1 ? bang.toFixed(1) : bang.toFixed(2)}
-        </b>
       </td>
       <td className="tu-rang__ei">
         E{t.effekt} / I{t.innsats}
       </td>
       <td className="tu-rang__krcell">
-        {krs.length === 0 ? (
-          <span className="muted">—</span>
-        ) : (
-          krs.map((k) => (
-            <span key={k} className="tu-krchip" title={krLabels[k]}>
-              {krKort[k]}
-            </span>
-          ))
-        )}
+        <span className="tu-rang__krinner">
+          {krs.length === 0 ? (
+            <span className="muted">—</span>
+          ) : (
+            krs.map((k) => (
+              <span key={k} className="tu-krchip" title={krLabels[k]}>
+                {krKort[k]}
+              </span>
+            ))
+          )}
+        </span>
       </td>
     </tr>
   );
