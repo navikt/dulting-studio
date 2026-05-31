@@ -32,16 +32,23 @@
 
 Hver har min anbefaling forhåndsutfylt — bekreft (✅) eller korriger (✏️).
 
-1. **T01\* primær-barriere** (sammenslått): Tidspress vs Manglende rutiner? → *anbefalt:
-   Manglende rutiner primær (rutine/system som leverer oppgaven), Tidspress sekundær.*
-2. **Effekt/innsats post-merge** — bekreft §F2 (AG, 11 tiltak) + §F3 (sykmeldt). De fleste
-   uendret; bare de tre mergene + ST03/ST05 flyttet seg.
-3. **AG A1 barriere×motivasjon** rad for rad — særlig ⚠️-radene (T05, og T08\* etter merge).
-4. **A2 EAST/Fogg + FORGOOD** (mest gjettet) — rask vinge gjennom.
-5. **A4 4-ukers-frist-ordlyd:** «senest innen uke 4» (juridisk) vs workshop-kortets
-   «uke 4, senest uke 8».
-6. **Sykmeldt ST06–ST12** barriere/motivasjon + dult-tone — ikke gått gjennom ennå.
-7. **Implementering:** når 1–6 er låst → fold mergene inn i modellfilene SAMLET + redeploy.
+1. ✅ **T01\* primær-barriere:** Manglende rutiner primær + Tidspress sekundær (avklart 2026-05-31).
+2. ✅ **Effekt/innsats post-merge bekreftet** (2026-05-31). Endringer: T05→E1 (stegvis-plan
+   premiss faller; miniguide skilt ut til T13/ST07), T07 E1 bekreftet. Resten står.
+3. ✅ **AG A1 barriere×motivasjon bekreftet** (2026-05-31). Endringer: T01\*→Manglende rutiner,
+   T05→Kunnskapsmangel (var Relasjon/tillit), T08\*→Manglende rutiner / **Tilhørighet**. Resten står.
+4. ✅ **EAST/Fogg + FORGOOD:** stol på utkastene nå (merket «utkast»); FORGOOD-vakter er
+   konservative. Revider EAST/Fogg etter tirsdag (2026-05-31).
+5. ✅ **Frist = «senest innen uke 4»** (juridisk korrekt for plan + deling med lege).
+   «Uke 8» lagt bort. + **Ekstern varsling = eksplisitt målbart valg** (se §F4).
+6. ✅ **Sykmeldt ST06–ST12 bekreftet** (2026-05-31). ST09 = Identitet og rolle (primær,
+   toucher Tilhørighet). Resten står. NB: barriere×motivasjon = analyse/forklaringslag
+   (matrise-plassering + why-tag), endrer ikke dulten — lav-stakes. ST07 = hjem for
+   miniguiden (fra T05); ST10 = «be om plan»-knappen (knyttet til ST05-fork).
+7. ✅ **Implementert** (2026-05-31). Mergene foldet inn i `kidult-reference-model.ts`,
+   `tiltakspakke-utvelgelse-model.ts`, `sykmeldt-reference-model.ts` + ref-tags i
+   `journey-data.ts`. AG-lista 14→11 tiltak. Verifisert: lint 0 feil, 232 tester, build,
+   + Playwright på tiltakskart/utvelgelse/leder/sammen (0 konsollfeil, alt rendrer). Deployet.
 
 ---
 
@@ -215,11 +222,11 @@ første gjennomgang; det er de tre sammenslåtte som trenger ny bekreftelse:
 
 | ID | Tiltak (post-merge) | E | I | Tier | Merk |
 |----|---------------------|---|---|------|------|
-| T01* | Tidsriktig oppgave på riktig person før uke 4 (T01+T02) | 3 | 2 | pakke1 kjerne | Barriere: ⚠️ Tidspress vs Manglende rutiner |
+| T01* | Tidsriktig oppgave på riktig person før uke 4 (T01+T02) | 3 | 2 | pakke1 kjerne | Barriere: **Manglende rutiner** primær + Tidspress sekundær ✅ |
 | T03* | Personnær vurderingsoppgave m/ «nei»-gren (T03+T04) | 3 | 2 | pakke1 kjerne | Kunnskapsmangel / Autonomi |
-| T05 | Miniguide og stegvis plan | 2 | 3 | senere | |
+| T05 | Stegvis plan (miniguide skilt ut) | **1** | 3 | senere | ✅ premiss (frafall) holder ikke. Miniguide/klarspråk → info-laget T13 (leder) + ST07 (sykmeldt), kan ligge utenfor planen |
 | T06 | Aktiv plan kan justeres | 2 | 2 | senere | |
-| T07 | Utkast og fremdrift | 1 | 2 | senere | |
+| T07 | Utkast og fremdrift | 1 | 2 | senere | ✅ E1 bekreftet — premiss (frafall under utfylling) ikke observert |
 | T08* | Evalueringsdato + opt-in påminnelse (T08+T09) | 2 | 2 | vurder | Tier var split vurder/senere |
 | T10 | Hvorfor dele med lege/Nav | 2 | 1 | vurder | |
 | T11 | Tilrettelegging virker/ikke | 2 | 2 | senere | |
@@ -250,3 +257,21 @@ Ingen merger på sykmeldt-siden; bare ST03 (effekt) og ST05 (tier) flyttet seg.
 > Pakke 1 sykmeldt-side blir da **ST04 kjerne + ST01 støtte**; ST05 (det toveis grepet)
 > er nå en bevisst, betinget utvidelse, ikke låst kjerne — i tråd med kalibreringen.
 > AG-side pakke 1 (post-merge): **T01\* + T03\* kjerne + T13 støtte.**
+
+### F4. Ekstern varsling (SMS/e-post) — eksplisitt målbart valg, ikke baket inn ✅ (2026-05-31)
+
+Team-strid: produktleder skeptisk til tidlig push (mange blir friske selv; vil motivere,
+ikke presse). Flere (inkl. produkteier) mener de ikke trekker nok folk tidsnok uten
+ekstern varsel. Begge legitime — løses ikke på mening, men på måling.
+
+**Beslutning:** verktøyet baker IKKE inn et svar. Push/ikke-push presenteres som et åpent,
+målbart designvalg (parameter på T01\*; gjelder også sykmeldt-siden / ST01):
+- **Primært måletegn (rekkevidde):** trekker vi nok folk tidsnok? — andel saker med
+  oppfølging i gang før uke 4; andel som handler på signalet.
+- **Guardrail (press):** opplevd «masete»/kjipt — kort opplevelsesmål, opt-out-/avvisningsrate, klager.
+- **Eksperiment:** start pull (ingen push), mål rekkevidde; er den for lav → test ekstern
+  push på én kohort, mål *både* rekkevidde-løft *og* opplevd press. Empirisk, ikke mening.
+
+«Informere, ikke presse» gjort operasjonelt. **Sterk samlende sak for tirsdag.**
+Konsekvens: ST01 (pull, besluttet) og T01\* står ikke i motstrid — pull er startpunktet,
+ekstern push er den målbare hypotesen man evt. tester oppå.
