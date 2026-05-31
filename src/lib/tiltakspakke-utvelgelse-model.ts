@@ -72,6 +72,26 @@ export const hypoteseLabel: Record<HypoteseId, string> = {
   H2: "Bedre informasjonsgrunnlag for fastlege",
 };
 
+/** Overordnede KR-er fra målmodellen (O1 · «Mål bak reisen»). */
+export type KrId = "KR1" | "KR2" | "KR3" | "KR4" | "KR5";
+
+export const krLabels: Record<KrId, string> = {
+  KR1: "Flere oppfølgingsplaner — og tidligere",
+  KR2: "Flere tar stilling til behov innen uke 4",
+  KR3: "Plan sendt uten å vente på veileder",
+  KR4: "Flere gjennomførte dialogmøte 1",
+  KR5: "Økt gradert sykmelding · kortere sykefravær",
+};
+
+/** Kort etikett for chips. */
+export const krKort: Record<KrId, string> = {
+  KR1: "Flere/tidligere planer",
+  KR2: "Stilling til behov ≤ uke 4",
+  KR3: "Plan uten å vente",
+  KR4: "Dialogmøte 1",
+  KR5: "Gradert ↑ / kortere fravær",
+};
+
 /** Kriteriene en plass i FØRSTE pakke vurderes mot (prioritert rekkefølge). */
 export const pakke1Kriterier = [
   "Treffer det høyeste løftepunktet — stillheten før 4-ukers-fristen (tidlig signal + behovsvurdering), ikke spredt tynt utover alle steg.",
@@ -408,4 +428,76 @@ export function pakke1(aktor?: Aktor): SelectionTiltak[] {
   return selectionTiltak.filter(
     (t) => t.tier === "pakke1" && (aktor ? t.aktor === aktor : true),
   );
+}
+
+// ── Kobling til overordnede mål (KR) + prioritering ──────────────────────────
+/**
+ * Hvilke overordnede KR-er hvert tiltak ladrer opp til. UTKAST — kalibreres med
+ * teamet, som effekt/innsats. KR5 (gradert / kortere fravær) nås i hovedsak via
+ * H2: tidlig deling med fastlege gir bedre grunnlag for gradert sykmelding.
+ */
+export const tiltakKr: Record<string, KrId[]> = {
+  // Arbeidsgiver
+  T01: ["KR1", "KR2", "KR3"],
+  T03: ["KR1", "KR2", "KR3"],
+  T05: ["KR1"],
+  T06: ["KR1"],
+  T07: ["KR1"],
+  T08: ["KR4"],
+  T10: ["KR5"],
+  T11: ["KR5"],
+  T12: ["KR1"],
+  T13: ["KR1", "KR2"],
+  T14: [],
+  // Den sykmeldte
+  ST01: ["KR2"],
+  ST02: ["KR1"],
+  ST03: ["KR2"],
+  ST04: ["KR1", "KR2"],
+  ST05: ["KR1", "KR2", "KR5"],
+  ST06: ["KR2"],
+  ST07: ["KR1"],
+  ST08: ["KR4"],
+  ST09: ["KR5", "KR1"],
+  ST10: ["KR1", "KR5"],
+  ST11: ["KR4"],
+  ST12: ["KR1"],
+};
+
+export const krUtkastNote =
+  "KR-koblingen er et utkast (som effekt/innsats) — hvilke overordnede mål hvert tiltak ladrer opp til. Kalibreres med teamet.";
+
+export const krGradertNote =
+  "KR5 (gradert sykmelding / kortere fravær) nås i hovedsak via H2: tidlig deling med fastlege gir bedre grunnlag for gradert sykmelding. Legen er en mekanisme og et effektmål her — ikke en primær bruker i denne pakken. Tiltakene som mater dette (T10, ST05, ST10) ligger i «vurder/senere», ikke i pakke 1.";
+
+export function krFor(id: string): KrId[] {
+  return tiltakKr[id] ?? [];
+}
+
+/** Bang for the buck: forventet effekt delt på innsats (høyere = mer igjen per krone). */
+export function bangForBuck(t: SelectionTiltak): number {
+  return t.effekt / t.innsats;
+}
+
+/** Tiltak sortert etter bang for the buck (synkende), valgfritt filtrert på aktør. */
+export function prioritert(aktor?: Aktor): SelectionTiltak[] {
+  return selectionTiltak
+    .filter((t) => (aktor ? t.aktor === aktor : true))
+    .sort((a, b) => bangForBuck(b) - bangForBuck(a) || b.effekt - a.effekt);
+}
+
+/** Per KR: tiltakene som ladrer opp til den (valgfritt filtrert på aktør). */
+export function krDekning(aktor?: Aktor): Record<KrId, SelectionTiltak[]> {
+  const out: Record<KrId, SelectionTiltak[]> = {
+    KR1: [],
+    KR2: [],
+    KR3: [],
+    KR4: [],
+    KR5: [],
+  };
+  for (const t of selectionTiltak) {
+    if (aktor && t.aktor !== aktor) continue;
+    for (const k of krFor(t.id)) out[k].push(t);
+  }
+  return out;
 }

@@ -23,13 +23,22 @@ import { useState } from "react";
 import {
   type Aktor,
   aktorLabel,
+  bangForBuck,
   effektLabels,
   hypoteseLabel,
   innsatsLabels,
+  type KrId,
+  krDekning,
+  krFor,
+  krGradertNote,
+  krKort,
+  krLabels,
+  krUtkastNote,
   type Niva,
   pakke1,
   pakke1Kriterier,
   pakke1Ramme,
+  prioritert,
   type SelectionTiltak,
   tiltakAt,
   utkastNote,
@@ -121,12 +130,94 @@ function ForslagItem({ t }: { t: SelectionTiltak }) {
   );
 }
 
+const KR_ORDER: KrId[] = ["KR1", "KR2", "KR3", "KR4", "KR5"];
+/** Høyest mulige bang for the buck (effekt 3 / innsats 1) — skalerer baren. */
+const MAX_BANG = 3;
+
+function BangRad({ t }: { t: SelectionTiltak }) {
+  const bang = bangForBuck(t);
+  const krs = krFor(t.id);
+  return (
+    <tr className={`tu-rang__row tu-rang__row--${t.tier}`}>
+      <th scope="row" className="tu-rang__idcell">
+        <span className={`tu-forslag__id tu-forslag__id--${t.aktor}`}>
+          {t.id}
+        </span>
+        <span className="tu-rang__title">{t.title}</span>
+      </th>
+      <td className="tu-rang__bangcell">
+        <span className="tu-rang__bar" aria-hidden>
+          <span
+            className={`tu-rang__barfill tu-rang__barfill--${t.aktor}`}
+            style={{ width: `${(bang / MAX_BANG) * 100}%` }}
+          />
+        </span>
+        <b className="tu-rang__bangnum">
+          {bang >= 1 ? bang.toFixed(1) : bang.toFixed(2)}
+        </b>
+      </td>
+      <td className="tu-rang__ei">
+        E{t.effekt} / I{t.innsats}
+      </td>
+      <td className="tu-rang__krcell">
+        {krs.length === 0 ? (
+          <span className="muted">—</span>
+        ) : (
+          krs.map((k) => (
+            <span key={k} className="tu-krchip" title={krLabels[k]}>
+              {krKort[k]}
+            </span>
+          ))
+        )}
+      </td>
+    </tr>
+  );
+}
+
+function KrRad({ kr, tiltak }: { kr: KrId; tiltak: SelectionTiltak[] }) {
+  const iPakke1 = tiltak.filter((t) => t.tier === "pakke1");
+  const status =
+    iPakke1.length > 0
+      ? { cls: "ok", label: `I pakke 1 (${iPakke1.length})` }
+      : tiltak.length > 0
+        ? { cls: "gap", label: "Utenfor pakke 1" }
+        : { cls: "none", label: "Ikke dekket" };
+  return (
+    <div className={`tu-mal__row tu-mal__row--${status.cls}`}>
+      <div className="tu-mal__head">
+        <span className="tu-mal__krcode">{kr}</span>
+        <span className="tu-mal__krlabel">{krLabels[kr]}</span>
+        <span className={`tu-mal__status tu-mal__status--${status.cls}`}>
+          {status.label}
+        </span>
+      </div>
+      <div className="tu-mal__tiltak">
+        {tiltak.length === 0 ? (
+          <span className="muted">Ingen tiltak ladrer hit i dette sporet.</span>
+        ) : (
+          tiltak.map((t) => (
+            <span
+              key={t.id}
+              className={`tu-krtag tu-krtag--${t.tier}`}
+              title={`${t.title} · ${tierStatus[t.tier]}`}
+            >
+              {t.id}
+            </span>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function TiltakspakkeUtvelgelseView() {
   const [view, setView] = useState<View>("ag");
   const aktorFilter = view === "begge" ? undefined : view;
   const valgte = pakke1(aktorFilter);
   const kjerne = valgte.filter((t) => t.kjerne);
   const stotte = valgte.filter((t) => !t.kjerne);
+  const rangert = prioritert(aktorFilter);
+  const dekning = krDekning(aktorFilter);
 
   return (
     <VStack gap="space-24" className="tu">
@@ -337,6 +428,72 @@ export function TiltakspakkeUtvelgelseView() {
               <b>H2</b> {hypoteseLabel.H2.toLowerCase()}.
             </BodyShort>
           </VStack>
+        </VStack>
+      </Box>
+
+      <Box
+        className="tu-prio"
+        borderWidth="1"
+        borderRadius="12"
+        padding="space-24"
+      >
+        <VStack gap="space-20">
+          <VStack gap="space-4">
+            <Heading level="2" size="medium">
+              Prioritering: bang for the buck × måldekning
+            </Heading>
+            <BodyShort size="small" className="muted">
+              Kombinerer effektivitet (effekt ÷ innsats) med hvilke overordnede
+              mål (KR) hvert tiltak ladrer opp til — så vi ser hva pakke 1
+              dekker, og hva den bevisst lar stå åpent.
+            </BodyShort>
+          </VStack>
+
+          <VStack gap="space-8">
+            <Heading level="3" size="xsmall">
+              Bang for the buck —{" "}
+              {view === "begge" ? "begge spor" : aktorLabel[view].toLowerCase()}
+            </Heading>
+            <div className="tu-scroll">
+              <table className="tu-rang">
+                <caption className="tu-sr">
+                  Tiltak sortert etter effekt delt på innsats, synkende. Uthevet
+                  rad = foreslått i pakke 1.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Tiltak</th>
+                    <th scope="col">Effekt ÷ innsats</th>
+                    <th scope="col">E / I</th>
+                    <th scope="col">Overordnet mål</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rangert.map((t) => (
+                    <BangRad key={t.id} t={t} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </VStack>
+
+          <VStack gap="space-8">
+            <Heading level="3" size="xsmall">
+              Måldekning — hva pakke 1 treffer, og hullene
+            </Heading>
+            <div className="tu-mal">
+              {KR_ORDER.map((kr) => (
+                <KrRad key={kr} kr={kr} tiltak={dekning[kr]} />
+              ))}
+            </div>
+            <Alert variant="warning" size="small">
+              {krGradertNote}
+            </Alert>
+          </VStack>
+
+          <BodyShort size="small" className="muted">
+            {krUtkastNote}
+          </BodyShort>
         </VStack>
       </Box>
 

@@ -1715,3 +1715,192 @@ a:where(:not(.aksel-button)) {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Prioritering: bang for the buck × måldekning ──────────────────────── */
+.tu-prio {
+  background: #fbfcfe;
+}
+.tu-rang {
+  width: 100%;
+  min-width: 40rem;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.tu-rang__row {
+  border-bottom: 1px solid var(--a-border-subtle);
+}
+.tu-rang__row td,
+.tu-rang__row th {
+  padding: 0.5rem 0.6rem;
+  vertical-align: middle;
+}
+.tu-rang thead th {
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--a-text-subtle);
+  padding: 0 0.6rem 0.4rem;
+  border-bottom: 1px solid var(--a-border-subtle);
+  white-space: nowrap;
+}
+.tu-rang__row--pakke1 {
+  background: var(--ax-bg-success-soft);
+}
+.tu-rang__row--senere {
+  color: var(--a-text-subtle);
+}
+.tu-rang__idcell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+  font-weight: 500;
+  min-width: 14rem;
+}
+.tu-rang__title {
+  font-weight: 600;
+  color: var(--a-text-default);
+}
+.tu-rang__row--senere .tu-rang__title {
+  font-weight: 500;
+}
+.tu-rang__bangcell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 7rem;
+}
+.tu-rang__bar {
+  position: relative;
+  flex: 1;
+  height: 0.5rem;
+  min-width: 3rem;
+  background: #e7ebf1;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.tu-rang__barfill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+}
+.tu-rang__barfill--ag {
+  background: var(--ax-bg-accent-strong);
+}
+.tu-rang__barfill--sm {
+  background: var(--ax-border-meta-purple);
+}
+.tu-rang__bangnum {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  min-width: 2.2rem;
+  text-align: right;
+}
+.tu-rang__ei {
+  font-variant-numeric: tabular-nums;
+  color: var(--a-text-subtle);
+  white-space: nowrap;
+}
+.tu-rang__krcell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.tu-krchip {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: var(--ax-bg-neutral-soft);
+  border: 1px solid var(--a-border-subtle);
+  color: var(--a-text-default);
+  white-space: nowrap;
+}
+
+.tu-mal {
+  display: grid;
+  gap: 0.5rem;
+}
+.tu-mal__row {
+  border: 1px solid var(--a-border-subtle);
+  border-left: 4px solid var(--a-border-default);
+  border-radius: var(--ax-radius-8);
+  padding: 0.7rem 0.9rem;
+  background: var(--a-surface-default);
+}
+.tu-mal__row--ok {
+  border-left-color: var(--ax-bg-success-strong);
+}
+.tu-mal__row--gap {
+  border-left-color: var(--ax-bg-warning-strong);
+  background: var(--ax-bg-warning-soft);
+}
+.tu-mal__row--none {
+  border-left-color: var(--a-border-default);
+  background: var(--ax-bg-neutral-soft);
+}
+.tu-mal__head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+.tu-mal__krcode {
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  background: var(--ax-bg-accent-soft);
+  color: var(--ax-text-accent);
+  padding: 0.05rem 0.4rem;
+  border-radius: 6px;
+}
+.tu-mal__krlabel {
+  font-weight: 600;
+  flex: 1;
+  min-width: 12rem;
+}
+.tu-mal__status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+}
+.tu-mal__status--ok {
+  color: #046a2c;
+  background: var(--ax-bg-success-soft);
+}
+.tu-mal__status--gap {
+  color: #8a6200;
+  background: #fdf3d6;
+}
+.tu-mal__status--none {
+  color: var(--a-text-subtle);
+  background: var(--ax-bg-neutral-soft);
+}
+.tu-mal__tiltak {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.tu-krtag {
+  font-family: var(--font-display, inherit);
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--a-border-subtle);
+  background: var(--a-surface-default);
+}
+.tu-krtag--pakke1 {
+  border-color: var(--ax-bg-success-strong);
+  background: var(--ax-bg-success-soft);
+  color: #046a2c;
+}
+.tu-krtag--senere {
+  color: var(--a-text-subtle);
+  opacity: 0.8;
+}
