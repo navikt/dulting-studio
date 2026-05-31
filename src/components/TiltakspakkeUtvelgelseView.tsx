@@ -603,8 +603,9 @@ export function TiltakspakkeUtvelgelseView() {
 
       {avvik.length === 0 ? (
         <Alert variant="success" size="small" className="tu-avvik tu-avvik--ok">
-          Samsvarer med den kalibrerte modellen — settet, skårene og rekkefølgen
-          er akkurat slik teamet har signert dem.
+          Samsvarer med teamets kalibrerte baseline — settet og rekkefølgen er
+          slik vi sist kalibrerte dem (effekt/innsats-skårene er fortsatt
+          utkast).
         </Alert>
       ) : (
         <Alert variant="warning" size="small" className="tu-avvik">

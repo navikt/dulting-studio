@@ -250,7 +250,7 @@ export const phases: Phase[] = [
       nudge: {
         channel: "msag",
         title: "Snart frist for oppfølgingsplan for Jonas",
-        body: "Du har frist til 3. februar. Ta stilling nå, så slipper du å vente på at noen spør.",
+        body: "Du har frist til 3. februar. Ta stilling nå mens saken er fersk.",
         cta: "Ta stilling nå",
       },
       desiredBehavior:
@@ -287,7 +287,7 @@ export const phases: Phase[] = [
         "Når det eneste alternativet er å lage en hel plan, gjør mange ingenting i stedet.",
     },
     lawIdeal:
-      "Slik det burde være: leder vurderer behovet (uke 4), eller Nav ber om en plan rundt aktivitetskravet (uke 8).",
+      "Slik det burde være: leder tar stilling til behovet for oppfølgingsplan innen uke 4 — i god tid før aktivitetskravet i uke 8.",
     barriere: {
       kategori: "Kunnskapsmangel og uklarhet",
       detalj:

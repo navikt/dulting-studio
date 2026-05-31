@@ -39,8 +39,9 @@ Hver har min anbefaling forhåndsutfylt — bekreft (✅) eller korriger (✏️
    T05→Kunnskapsmangel (var Relasjon/tillit), T08\*→Manglende rutiner / **Tilhørighet**. Resten står.
 4. ✅ **EAST/Fogg + FORGOOD:** stol på utkastene nå (merket «utkast»); FORGOOD-vakter er
    konservative. Revider EAST/Fogg etter tirsdag (2026-05-31).
-5. ✅ **Frist = «senest innen uke 4»** (juridisk korrekt for plan + deling med lege).
-   «Uke 8» lagt bort. + **Ekstern varsling = eksplisitt målbart valg** (se §F4).
+5. ✅ **Plan-frist = «så tidlig som mulig, senest innen uke 4»** (aml §4-6). Tre datoer
+   må ikke blandes: plan ≤ uke 4, dialogmøte 1 ≤ uke 7, aktivitetskrav uke 8. «Uke 8»
+   som plan-frist lagt bort. + **Ekstern varsling = eksplisitt målbart valg** (se §F4).
 6. ✅ **Sykmeldt ST06–ST12 bekreftet** (2026-05-31). ST09 = Identitet og rolle (primær,
    toucher Tilhørighet). Resten står. NB: barriere×motivasjon = analyse/forklaringslag
    (matrise-plassering + why-tag), endrer ikke dulten — lav-stakes. ST07 = hjem for
@@ -89,8 +90,10 @@ bearbeidingen) — ok? Og **T13/T14 (støttelag) er ikke beriket** — skal de f
 samme behandling, eller forblir de støtte-tags?
 
 ### A4. AG-innhold ellers
-- **4-ukers-fristen:** står som «oppfølgingsplan senest innen uke 4» (juridisk
-  korrekt), men avviker fra workshop-kortets ordlyd «uke 4, senest uke 8». Beholde?
+- **4-ukers-fristen:** «oppfølgingsplan så tidlig som mulig, senest innen uke 4»
+  (aml §4-6). Workshop-kortets «uke 4, senest uke 8» blandet plan-fristen med
+  aktivitetskravet — avklart i §5: tre datoer (plan ≤ uke 4, dialogmøte 1 ≤ uke 7,
+  aktivitetskrav uke 8), ikke én.
 - `sharedWithSykmeldt`-markørene (T01/T03/T05) — stemmer touchpoint-koblingene?
 
 ---
