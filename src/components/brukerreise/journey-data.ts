@@ -57,6 +57,10 @@ export type Nudge = {
   title: string;
   body: string;
   cta: string;
+  /** Valgfri ekstra varslingskanal (push utenfor flaten), f.eks. e-post ved
+      siden av oppgaven på Min side arbeidsgiver — på samme måte som SMS for den
+      sykmeldte. Vises som et lite «+ kanal»-merke på kortet. */
+  via?: ChannelKey;
 };
 
 export type IconKey =
@@ -249,12 +253,13 @@ export const phases: Phase[] = [
     },
     dult: {
       intervention:
-        "Et tidsriktig varsel i «Dine sykmeldte», koblet til riktig person, før fireukersfristen.",
+        "Et tidsriktig varsel på «Min side arbeidsgiver» (med mulig e-post-varsling ved siden av), koblet til riktig person før fireukersfristen — som lenker rett til «Dine sykmeldte», der leder tar stilling til behovet.",
       nudge: {
-        channel: "dsm",
+        channel: "msag",
+        via: "epost",
         title: "Snart frist for oppfølgingsplan for Jonas",
-        body: "Du har frist til 3. februar. Ta stilling nå mens saken er fersk.",
-        cta: "Ta stilling nå",
+        body: "Frist 3. februar. Ta stilling i Dine sykmeldte: trenger Jonas en oppfølgingsplan nå?",
+        cta: "Gå til Dine sykmeldte",
       },
       desiredBehavior:
         "Maria tar stilling før fireukersfristen — i stedet for å vente til noen spør.",

@@ -179,6 +179,21 @@
   justify-content: center;
   color: #fff;
 }
+/* sekundær varslingskanal (f.eks. «+ E-post»), parallell til sykmeldtes SMS */
+.br-nudge__via {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: 0.1rem;
+  padding: 0.05rem 0.4rem 0.05rem 0.3rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--via-tint, var(--ink-soft));
+  background: color-mix(in srgb, var(--via-tint, #64748b) 14%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--via-tint, #64748b) 40%, transparent);
+}
 .br-nudge__now {
   font-size: 0.68rem;
   color: var(--ink-faint);

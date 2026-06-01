@@ -16,6 +16,17 @@ export function NudgeCard({ nudge, time }: { nudge: Nudge; time?: string }) {
             <ChannelIcon channel={nudge.channel} fontSize="0.8rem" />
           </span>
           {ch.label}
+          {nudge.via && (
+            <span
+              className="br-nudge__via"
+              style={{
+                ["--via-tint" as string]: `var(${channels[nudge.via].tint})`,
+              }}
+            >
+              <ChannelIcon channel={nudge.via} fontSize="0.62rem" />+{" "}
+              {channels[nudge.via].label}
+            </span>
+          )}
         </span>
         <span className="br-nudge__now">{time ?? "nå"}</span>
       </div>
