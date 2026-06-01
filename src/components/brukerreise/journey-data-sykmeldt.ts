@@ -97,6 +97,7 @@ const phases: Phase[] = [
     title: "Tidlig varsel før fristen",
     icon: "bell",
     scope: "both",
+    underAvklaring: "Varsel til sykmeldt henger på behovsvurderingen — under avklaring",
     actorGoal:
       "Jonas trenger et tidsriktig varsel om at en oppfølgingsplan snart bør vurderes.",
     today: {
@@ -134,7 +135,7 @@ const phases: Phase[] = [
       refs: ["ST04", "SYK-07", "SYK-08"],
     },
     consideration:
-      "SMS er effektivt, men må veies mot varseltrøtthet — én tidsriktig påminnelse, ikke mas. Bør testes isolert.",
+      "Bare leder-varselet er spikret. Å varsle den sykmeldte — og be dem vurdere behovet selv — henger på det toveis grepet i steg 3 (ST05): dropper vi sykmeldt-behovsvurderingen, har dette varselet lite å varsle om. Råkortene (SYK-07/08) foreslår det, men det er ikke besluttet. SMS må dessuten veies mot varseltrøtthet — én tidsriktig påminnelse, ikke mas.",
     measurements: {
       primary: ["Andel som vurderer behov innen uke 4"],
       proxy: ["Varsel vist / åpnet", "Besøk på flate etter SMS"],

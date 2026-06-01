@@ -196,7 +196,7 @@ export const phases: Phase[] = [
       intervention:
         "Allerede når sykmeldingen åpnes løftes riktig person og neste steg fram, med en kort tekst om verdien og ansvaret.",
       nudge: {
-        channel: "msag",
+        channel: "dsm",
         title: "Jonas er sykmeldt 50 % i 4 uker",
         body: "Vi anbefaler å ta en samtale med Jonas og starte oppfølgingen tidlig. Se hva du som leder bør gjøre denne uka.",
         cta: "Start oppfølgingen",
