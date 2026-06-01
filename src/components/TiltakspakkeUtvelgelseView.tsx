@@ -4,6 +4,7 @@ import {
   ArrowLeftIcon,
   CheckmarkCircleIcon,
   ExclamationmarkTriangleIcon,
+  PencilIcon,
 } from "@navikt/aksel-icons";
 import {
   Link as AkselLink,
@@ -336,6 +337,18 @@ export function TiltakspakkeUtvelgelseView() {
     };
   }, []);
 
+  // Bygg-modus på → scroll til rangeringstabellen der «Plassering»-kolonnen
+  // dukker opp, så det er tydelig hva knappen gjør.
+  useEffect(() => {
+    if (editMode) {
+      // Scroll til bygg-noten: den + tabellen med «Plassering» vises sammen.
+      (
+        document.querySelector(".tu-byggnote") ??
+        document.querySelector(".tu-rang")
+      )?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [editMode]);
+
   function setTier(id: string, tier: Tier) {
     setTiltak((prev) => prev.map((t) => (t.id === id ? { ...t, tier } : t)));
     if (!persistEnabled) return; // klient-side what-if — ingen lagring
@@ -459,12 +472,13 @@ export function TiltakspakkeUtvelgelseView() {
             </ToggleGroup>
             <HStack gap="space-8" wrap align="center">
               <Button
-                variant={editMode ? "primary" : "secondary"}
+                variant={editMode ? "secondary" : "primary"}
                 size="small"
+                icon={<PencilIcon aria-hidden />}
                 onClick={() => setEditMode((v) => !v)}
                 aria-pressed={editMode}
               >
-                {editMode ? "Ferdig" : "Bygg pakke (live)"}
+                {editMode ? "Ferdig med bygging" : "Bygg pakke (live)"}
               </Button>
               {editMode && (
                 <Button variant="tertiary" size="small" onClick={resetPakke}>
@@ -719,6 +733,13 @@ export function TiltakspakkeUtvelgelseView() {
               Bang for the buck —{" "}
               {view === "begge" ? "begge spor" : aktorLabel[view].toLowerCase()}
             </Heading>
+            {editMode && (
+              <BodyShort size="small" className="tu-byggnote">
+                <PencilIcon aria-hidden /> Bygg-modus: endre «Plassering» under
+                for å flytte tiltak inn/ut av pakke 1 — matrise, måldekning og
+                forslag oppdateres live.
+              </BodyShort>
+            )}
             <div className="tu-scroll">
               <table className="tu-rang">
                 <caption className="tu-sr">

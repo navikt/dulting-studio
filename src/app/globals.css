@@ -2149,6 +2149,17 @@ button.tu__chip:focus-visible,
 .tu-save-status:empty {
   display: none;
 }
+/* bygg-modus-note ved rangeringstabellen (der «Plassering» dukker opp) */
+.tu-byggnote {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--a-border-action);
+  font-weight: 600;
+}
+.tu-byggnote svg {
+  flex: none;
+}
 .tu-mal__merknad {
   margin-top: 0.4rem;
 }

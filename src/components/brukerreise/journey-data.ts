@@ -249,9 +249,9 @@ export const phases: Phase[] = [
     },
     dult: {
       intervention:
-        "Et tidsriktig varsel på Min side arbeidsgiver, koblet til riktig person, før fireukersfristen.",
+        "Et tidsriktig varsel i «Dine sykmeldte», koblet til riktig person, før fireukersfristen.",
       nudge: {
-        channel: "msag",
+        channel: "dsm",
         title: "Snart frist for oppfølgingsplan for Jonas",
         body: "Du har frist til 3. februar. Ta stilling nå mens saken er fersk.",
         cta: "Ta stilling nå",
