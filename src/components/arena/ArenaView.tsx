@@ -3,39 +3,27 @@
 import Link from "next/link";
 import { ArenaBackdrop } from "./Backdrop";
 import { FighterHovmester, FighterNudgeLab } from "./Fighters";
-import { useBattle } from "./useBattle";
 import "./arena.css";
 
-const NAMES = { p1: "NUDGELAB", p2: "HOVMESTER" } as const;
-
 /**
- * «Brukerreise Battle» — en tullete, ulenket arkade-intro (rute: /battle).
- * Full fighting-game-VS-skjerm: synthwave-arena, helsebarer, to fightere i
- * kampstilling, VS-smell og «FIGHT!». Klikk en fighter → den slår motstanderen
- * (helse tappes, flinch, skadetall, combo, K.O. + rematch). START → forsiden.
+ * «Brukerreise Battle» — rolig, ulenket arkade-intro (rute: /battle).
+ * Et frosset action-panel: synthwave-scene med stille ambiens, to fightere i
+ * kampstilling, og Hovmester fanget midt i et statisk «VARSEL-SPAM!»-angrep mot
+ * NudgeLab. Ingen blits, ingen autopilot — bare en levende, men rolig VS-skjerm.
+ * START → forsiden.
  */
 export function ArenaView() {
-  const { hp, attacker, victim, fx, clashKey, combo, ko, attack } = useBattle();
-
-  const fighterClass = (side: "p1" | "p2") =>
-    `ar-fighter ar-fighter--${side}${
-      attacker === side ? " ar-fighter--lunge" : ""
-    }${victim === side ? " ar-fighter--hurt" : ""}`;
-
   return (
-    <div className={`ar-stage${attacker ? " is-shake" : ""}`}>
+    <div className="ar-stage">
       {/* bakgrunn: scenen i lag */}
       <ArenaBackdrop />
 
-      {/* topp-HUD: helsebarer */}
+      {/* topp-HUD: helsebarer (fulle — bare pynt) */}
       <header className="ar-hud">
         <div className="ar-hud__side ar-hud__side--p1">
           <div className="ar-hud__name">NUDGELAB</div>
           <div className="ar-hud__bar">
-            <span
-              className="ar-hud__fill ar-hud__fill--p1"
-              style={{ transform: `scaleX(${hp.p1 / 100})` }}
-            />
+            <span className="ar-hud__fill ar-hud__fill--p1" />
           </div>
           <div className="ar-hud__meta">
             <span className="ar-hud__stars">★ ★ ★</span>
@@ -51,10 +39,7 @@ export function ArenaView() {
         <div className="ar-hud__side ar-hud__side--p2">
           <div className="ar-hud__name">HOVMESTER</div>
           <div className="ar-hud__bar">
-            <span
-              className="ar-hud__fill ar-hud__fill--p2"
-              style={{ transform: `scaleX(${hp.p2 / 100})` }}
-            />
+            <span className="ar-hud__fill ar-hud__fill--p2" />
           </div>
           <div className="ar-hud__meta">
             <span className="ar-hud__stars">★ ★</span>
@@ -63,18 +48,13 @@ export function ArenaView() {
         </div>
       </header>
 
-      {/* arena: fighterne + VS */}
+      {/* arena: fighterne + VS, med et frosset varsel-spam-angrep */}
       <div className="ar-fighters">
-        <div className={fighterClass("p1")}>
+        <div className="ar-fighter ar-fighter--p1">
           <span className="ar-fighter__plate">▸ PLAYER 1</span>
-          <button
-            type="button"
-            className="ar-fighter__hit"
-            onClick={() => attack("p1")}
-            aria-label="NudgeLab — klikk for å slå"
-          >
+          <div className="ar-fighter__fig ar-fighter__fig--recoil">
             <FighterNudgeLab />
-          </button>
+          </div>
           <ul className="ar-moves">
             <li>
               <span className="ar-moves__cmd">↓↘→ + P</span> Tidsriktig Dult
@@ -92,16 +72,11 @@ export function ArenaView() {
           <span className="ar-vs__text">VS</span>
         </div>
 
-        <div className={fighterClass("p2")}>
+        <div className="ar-fighter ar-fighter--p2">
           <span className="ar-fighter__plate">PLAYER 2 ◂</span>
-          <button
-            type="button"
-            className="ar-fighter__hit"
-            onClick={() => attack("p2")}
-            aria-label="Hovmester — klikk for å slå"
-          >
+          <div className="ar-fighter__fig ar-fighter__fig--lean">
             <FighterHovmester />
-          </button>
+          </div>
           <ul className="ar-moves">
             <li>
               <span className="ar-moves__cmd">↓↘→ + P</span> Varsel-Spam
@@ -115,47 +90,19 @@ export function ArenaView() {
           </ul>
         </div>
 
-        {clashKey > 0 && (
-          <span
-            key={`clash-${clashKey}`}
-            className="ar-clash is-on"
-            aria-hidden
-          />
-        )}
-
-        {fx && (
-          <div
-            key={`sfx-${fx.key}`}
-            className={`ar-sfx ar-sfx--from-${fx.attacker} ar-sfx--at-${fx.victim}`}
-            aria-hidden
-          >
-            <span className="ar-sfx__word">{fx.move.sfx}</span>
-            <span className="ar-sfx__move">
-              {fx.move.name} −{fx.dmg}
-            </span>
-          </div>
-        )}
-
-        {combo > 1 && !ko && (
-          <div key={`combo-${combo}`} className="ar-combo" aria-hidden>
-            <span className="ar-combo__n">{combo}</span>
-            <span className="ar-combo__lab">HITS</span>
-          </div>
-        )}
-      </div>
-
-      {/* «FIGHT!»-flash på load */}
-      <div className="ar-fight" aria-hidden>
-        <span>FIGHT!</span>
-      </div>
-
-      {/* K.O. — vises til rematch */}
-      {ko && (
-        <div className="ar-ko" aria-hidden>
-          <span className="ar-ko__big">K.O.!</span>
-          <span className="ar-ko__who">{NAMES[ko]} VINNER</span>
+        {/* statisk varsel-spam-angrep, frosset over NudgeLab */}
+        <div className="ar-sfx ar-sfx--from-p2 ar-sfx--at-p1" aria-hidden>
+          <span className="ar-sfx__word">PLING-PLING!</span>
+          <span className="ar-sfx__move">Varsel-spam</span>
         </div>
-      )}
+        {/* små bobler for «spam»-følelsen */}
+        <span className="ar-spam ar-spam--1" aria-hidden>
+          pling!
+        </span>
+        <span className="ar-spam ar-spam--2" aria-hidden>
+          pling!
+        </span>
+      </div>
 
       {/* bunn: tittel + START → forsiden */}
       <footer className="ar-foot">
@@ -169,8 +116,8 @@ export function ArenaView() {
           INSERT COIN — TRYKK START FOR Å GÅ INN I STUDIO
         </span>
         <p className="ar-fineprint">
-          Et tullete intro. De sloss av seg selv — bland deg gjerne inn ved å
-          klikke en fighter. Trykk START når du er klar.
+          Et tullete intro mens vi kommer i gang. Trykk START for å gå inn i
+          studio.
         </p>
       </footer>
 
