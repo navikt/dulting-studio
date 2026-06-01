@@ -112,6 +112,10 @@ export type Phase = {
   motivasjon: { driver: MotivasjonsDriver; detalj: string };
   dult: {
     intervention: string;
+    /** Valgfri «oppsett»-beat som skjer FØR selve varselet — f.eks. opt-in når
+        planen lages. Rendres som et eget kort foran nudge, koblet med en
+        tid-pil. Brukt på evalueringssteget (opt-in → påminnelse). */
+    setup?: Nudge;
     nudge: Nudge;
     desiredBehavior: string;
     /** AG-råkort + T-tiltak som ligger bak. */
@@ -464,12 +468,19 @@ export const phases: Phase[] = [
     },
     dult: {
       intervention:
-        "Gjør evalueringsdatoen til en faktisk avtale: kalenderavtale på Min side arbeidsgiver og opt-in-påminnelse om den nye samtalen.",
+        "Når planen lages tilbyr vi en opt-in-påminnelse om evalueringen (default av — guardrail). Noen dager før datoen kommer selve påminnelsen som en oppgave på «Min side arbeidsgiver» (+ e-post). Kalenderavtale er et valgfritt tillegg som synliggjør ekstra.",
+      setup: {
+        channel: "msag",
+        title: "Vil du ha en påminnelse om evalueringen?",
+        body: "Vi minner deg noen dager før 12. mars — bare hvis du vil. Kan også legges i kalenderen.",
+        cta: "Ja, sett påminnelse",
+      },
       nudge: {
-        channel: "epost",
-        title: "På tide med en ny prat med Jonas?",
-        body: "Det er 6 uker siden planen ble laget. Mange tar en ny gjennomgang av tilretteleggingen nå. Vil du sette opp en samtale?",
-        cta: "Foreslå tidspunkt",
+        channel: "msag",
+        via: "epost",
+        title: "Snart tid for å evaluere planen med Jonas",
+        body: "Om noen dager (12. mars) er det lurt med en ny gjennomgang. Mange justerer tilretteleggingen nå. Se hva dere ble enige om sist.",
+        cta: "Åpne oppfølgingsplanen",
       },
       desiredBehavior:
         "Maria og Jonas avtaler en ny samtale og oppdaterer planen.",

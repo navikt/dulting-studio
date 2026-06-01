@@ -199,6 +199,19 @@
   color: var(--ink-faint);
   font-variant-numeric: tabular-nums;
 }
+/* to-beats-dult: opt-in → påminnelse, koblet med en tid-pil */
+.br-beats {
+  display: grid;
+  gap: 0.4rem;
+  width: 100%;
+}
+.br-beats__link {
+  justify-self: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--ink-faint);
+}
 .br-nudge__title {
   font-family: var(--font-display);
   font-weight: 700;

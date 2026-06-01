@@ -329,11 +329,18 @@ const phases: Phase[] = [
     },
     dult: {
       intervention:
-        "En egen påminnelse til den sykmeldte (varsel på «Min side for sykmeldte») med en mal for hva man bør ta stilling til; en evalueringsside der Jonas markerer hva som virker / er utfordrende; og en oppfordring til flere planer ved lengre fravær.",
+        "Når planen lages kan Jonas opt-ine til en påminnelse om evalueringen (default av). Noen dager før datoen kommer påminnelsen på «Min side for sykmeldte» (+ SMS), med en mal for hva han bør ta stilling til.",
+      setup: {
+        channel: "minside-sykmeldt",
+        title: "Vil du minnes på evalueringen?",
+        body: "Vi sender deg en påminnelse noen dager før 12. mars — bare hvis du vil.",
+        cta: "Ja, minn meg på det",
+      },
       nudge: {
-        channel: "sms",
-        title: "På tide med en ny prat med lederen din?",
-        body: "Det er en stund siden planen ble laget. Hva virker for deg nå, og hva er fortsatt vanskelig? Ta det med inn i en ny gjennomgang.",
+        channel: "minside-sykmeldt",
+        via: "sms",
+        title: "Snart tid for å evaluere planen",
+        body: "Om noen dager er det lurt å se på hva som fungerer for deg nå, og hva som fortsatt er vanskelig. Forbered det som er viktig for deg.",
         cta: "Forbered evalueringen",
       },
       desiredBehavior:
