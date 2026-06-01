@@ -9,14 +9,13 @@ import "./arena.css";
 const NAMES = { p1: "NUDGELAB", p2: "HOVMESTER" } as const;
 
 /**
- * «Brukerreise Battle» — en tullete, ulenket arkade-intro (rute: /arena).
+ * «Brukerreise Battle» — en tullete, ulenket arkade-intro (rute: /battle).
  * Full fighting-game-VS-skjerm: synthwave-arena, helsebarer, to fightere i
  * kampstilling, VS-smell og «FIGHT!». Klikk en fighter → den slår motstanderen
  * (helse tappes, flinch, skadetall, combo, K.O. + rematch). START → forsiden.
  */
 export function ArenaView() {
-  const { hp, attacker, victim, dmgFx, clashKey, combo, ko, attack } =
-    useBattle();
+  const { hp, attacker, victim, fx, clashKey, combo, ko, attack } = useBattle();
 
   const fighterClass = (side: "p1" | "p2") =>
     `ar-fighter ar-fighter--${side}${
@@ -124,14 +123,17 @@ export function ArenaView() {
           />
         )}
 
-        {dmgFx && (
-          <span
-            key={`dmg-${dmgFx.key}`}
-            className={`ar-dmg ar-dmg--${dmgFx.side}`}
+        {fx && (
+          <div
+            key={`sfx-${fx.key}`}
+            className={`ar-sfx ar-sfx--from-${fx.attacker} ar-sfx--at-${fx.victim}`}
             aria-hidden
           >
-            -{dmgFx.dmg}
-          </span>
+            <span className="ar-sfx__word">{fx.move.sfx}</span>
+            <span className="ar-sfx__move">
+              {fx.move.name} −{fx.dmg}
+            </span>
+          </div>
         )}
 
         {combo > 1 && !ko && (
@@ -167,8 +169,8 @@ export function ArenaView() {
           INSERT COIN — TRYKK START FOR Å GÅ INN I STUDIO
         </span>
         <p className="ar-fineprint">
-          Et tullete intro. Klikk fighterne for å sloss (helt uten konsekvens) —
-          eller trykk START.
+          Et tullete intro. De sloss av seg selv — bland deg gjerne inn ved å
+          klikke en fighter. Trykk START når du er klar.
         </p>
       </footer>
 

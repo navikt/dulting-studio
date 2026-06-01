@@ -16,10 +16,10 @@ export const metadata: Metadata = {
 };
 
 /**
- * Ulenket easter-egg-rute (/arena): en fighting-game-VS-skjerm som intro.
+ * Ulenket easter-egg-rute (/battle): en fighting-game-VS-skjerm som intro.
  * Dekker hele viewporten over AppShell (fixed) og lenker START → forsiden.
  */
-export default function ArenaPage() {
+export default function BattlePage() {
   return (
     <div className={arcade.variable}>
       <ArenaView />
