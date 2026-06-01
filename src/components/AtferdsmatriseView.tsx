@@ -111,6 +111,10 @@ function KategoriDialog({
         </Dialog.Header>
         <Dialog.Body>
           <BodyLong>{forklaring ?? "Forklaring kommer."}</BodyLong>
+          <Detail className="bm__dialog-utkast">
+            Kort forklaring lagt til av oss (utkast) — ikke Nudgelabs offisielle
+            definisjon.
+          </Detail>
         </Dialog.Body>
         <Dialog.Footer>
           <Dialog.CloseTrigger>
@@ -274,8 +278,9 @@ export function AtferdsmatriseView() {
       </Box>
 
       <BodyShort size="small" className="muted">
-        Kilde: <code>docs/dulting-atferdskartlegging.md</code> (motivasjon/
-        barriere) + de bearbeidede tiltaksregistrene. Illustrativt og syntetisk.
+        Rammeverket — 5 motivasjonsdrivere × 4 barrierer — er Nudgelabs, fra
+        atferdskartleggingen. Her er det operasjonalisert og koblet til de
+        bearbeidede tiltakene. Illustrativt og syntetisk.
       </BodyShort>
     </VStack>
   );

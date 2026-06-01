@@ -1542,12 +1542,13 @@ a:where(:not(.aksel-button)) {
 .bm__cell {
   vertical-align: top;
   padding: 0.4rem;
-  border: 1px dashed var(--ax-border-subtle);
+  /* tomme celler hvisker — ingen ramme, så de fylte cellene bærer signalet */
+  border: 1px solid transparent;
   border-radius: var(--ax-radius-8);
-  background: var(--ax-bg-default);
 }
 .bm__cell--filled {
-  border-style: solid;
+  border-color: var(--a-border-subtle);
+  background: var(--ax-bg-default);
 }
 .bm__chip {
   display: block;
@@ -1610,6 +1611,11 @@ a:where(:not(.aksel-button)) {
 .bm__head-btn:focus-visible {
   outline: 2px solid var(--a-border-action);
   outline-offset: 2px;
+}
+.bm__dialog-utkast {
+  display: block;
+  margin-top: 0.6rem;
+  color: var(--a-text-subtle);
 }
 
 /* ── Tiltakspakke-utvelgelse: effekt × innsats-matrise + forslag ───────── */
