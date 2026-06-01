@@ -1,7 +1,14 @@
 import { getDultReference } from "./dult-reference-registry";
 import { interventionMapPhases } from "./kidult-reference-model";
+import { getSykRaakort } from "./sykmeldt-raakort-registry";
 import { sykmeldtMapPhases } from "./sykmeldt-reference-model";
 import { selectionTiltak } from "./tiltakspakke-utvelgelse-model";
+
+/** Den opprinnelige råkort-teksten for en kode (AG/DULT: tittel; sykmeldt/SYK:
+ *  verbatim), eller undefined hvis koden ikke er i noe register. */
+export function raakortText(id: string): string | undefined {
+  return getDultReference(id)?.title ?? getSykRaakort(id);
+}
 
 /** Et råkort tiltaket er bearbeidet fra. Tittel finnes der et register dekker
  *  koden (i dag: AG-råkort/DULT-NN). Sykmeldt-råkort (SYK-NN) har ikke register
@@ -26,7 +33,7 @@ const sykMap = new Map(
 const selMap = new Map(selectionTiltak.map((t) => [t.id, t]));
 
 function withTitles(ids: string[]): RaakortRef[] {
-  return ids.map((id) => ({ id, title: getDultReference(id)?.title }));
+  return ids.map((id) => ({ id, title: raakortText(id) }));
 }
 
 /**

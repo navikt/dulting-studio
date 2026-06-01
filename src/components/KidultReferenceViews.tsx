@@ -33,6 +33,7 @@ import {
   openJourneyQuestions,
   supportTiltak,
 } from "@/lib/kidult-reference-model";
+import { raakortText } from "@/lib/tiltak-provenance";
 import { AnalyseNav } from "./AnalyseNav";
 
 type ReferenceView = "journey" | "map";
@@ -353,8 +354,20 @@ function MapTiltakCard({ tiltak }: { tiltak: InterventionMapTiltak }) {
             )}
             {tiltak.raakort && tiltak.raakort.length > 0 && (
               <div>
-                <dt>Råkort</dt>
-                <dd>{tiltak.raakort.join(" · ")}</dd>
+                <dt>Laget av råkort</dt>
+                <dd>
+                  <ul className="tiltak-ref-raakort">
+                    {tiltak.raakort.map((rid) => {
+                      const tekst = raakortText(rid);
+                      return (
+                        <li key={rid}>
+                          <b>{rid}</b>
+                          {tekst ? ` — ${tekst}` : ""}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </dd>
               </div>
             )}
           </dl>
