@@ -2,9 +2,8 @@
 
 import {
   ArrowLeftIcon,
-  CheckmarkCircleIcon,
-  ExclamationmarkTriangleIcon,
-  PencilIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
 } from "@navikt/aksel-icons";
 import {
   Link as AkselLink,
@@ -20,406 +19,61 @@ import {
   VStack,
 } from "@navikt/ds-react";
 import NextLink from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
-  type Aktor,
-  aktorLabel,
-  avvikFraModell,
   bangForBuck,
-  effektLabels,
-  hypoteseLabel,
-  innsatsLabels,
-  type KrId,
   krDekning,
-  krFor,
-  krGradertNote,
-  krKort,
-  krLabels,
-  krMerknad,
-  krUtkastNote,
-  type Niva,
   pakke1,
-  pakke1Kriterier,
-  pakke1Ramme,
-  prioritert,
   type SelectionTiltak,
   selectionTiltak,
   type Tier,
-  tiltakAt,
-  utkastNote,
 } from "@/lib/tiltakspakke-utvelgelse-model";
 import { AnalyseNav } from "./AnalyseNav";
-import { TiltakDialog } from "./TiltakDialog";
+import { MaldekningStrip } from "./utvelgelse/MaldekningStrip";
+import { MatriseView } from "./utvelgelse/MatriseView";
+import { OmUtvalget } from "./utvelgelse/OmUtvalget";
+import { TiltakKort } from "./utvelgelse/TiltakKort";
+import { usePakkeTiltak } from "./utvelgelse/usePakkeTiltak";
 
-type View = Aktor | "begge";
-
-/** Felter fra DB-raden vi bryr oss om (superset av modellfeltene + version/updatedBy). */
-type DbRow = {
-  id: string;
-  tier: Tier;
-  effekt: Niva;
-  innsats: Niva;
-  kjerne: boolean;
-  version: number;
-  updatedBy: string;
-};
-
-const EFFEKT: Niva[] = [3, 2, 1];
-const INNSATS: Niva[] = [1, 2, 3];
-
-/** «Gjør først»-sonen: høy effekt relativt til innsats (effekt − innsats ≥ 1). */
-function erGjorForst(innsats: Niva, effekt: Niva) {
-  return effekt - innsats >= 1;
-}
-
-const tierStatus: Record<SelectionTiltak["tier"], string> = {
+const tierStatus: Record<Tier, string> = {
   pakke1: "Foreslått i pakke 1",
   vurder: "Vurderes",
   senere: "Senere",
 };
 
-function Chip({ t }: { t: SelectionTiltak }) {
-  return (
-    <TiltakDetailTag
-      t={t}
-      className={`tu__chip tu__chip--${t.aktor} tu__chip--${t.tier}${
-        t.blokkertAv ? " tu__chip--blokkert" : ""
-      } tu__chip--btn`}
-    >
-      {t.tier === "pakke1" && (
-        <CheckmarkCircleIcon aria-hidden className="tu__chip-ic" />
-      )}
-      {t.blokkertAv && (
-        <ExclamationmarkTriangleIcon aria-hidden className="tu__chip-ic" />
-      )}
-      <b>{t.id}</b> {t.title}
-      {t.toveis && (
-        <span className="tu__chip-link" aria-hidden>
-          ↔
-        </span>
-      )}
-    </TiltakDetailTag>
-  );
-}
-
-function ForslagItem({ t }: { t: SelectionTiltak }) {
-  return (
-    <li className="tu-forslag__row">
-      <span className={`tu-forslag__id tu-forslag__id--${t.aktor}`}>
-        {t.id}
-      </span>
-      <span>
-        <b>{t.title}</b>
-        {t.hvorfor && <em> — {t.hvorfor}</em>}
-        <span className="tu-forslag__meta">
-          {t.hypotese?.map((h) => (
-            <span key={h} className="tu-forslag__hyp" title={hypoteseLabel[h]}>
-              {h}
-            </span>
-          ))}
-          {t.toveis && <span className="tu-forslag__toveis">↔ {t.toveis}</span>}
-        </span>
-        {t.guardrail && (
-          <span className="tu-forslag__guard">Guardrail: {t.guardrail}</span>
-        )}
-        {t.blokkertAv && (
-          <span className="tu-forslag__blokkert">
-            <ExclamationmarkTriangleIcon aria-hidden /> {t.blokkertAv}
-          </span>
-        )}
-      </span>
-    </li>
-  );
-}
-
-/** Klikkbar tiltakskode → det delte, kanoniske tiltak-kortet (likt overalt). */
-function TiltakDetailTag({
-  t,
-  className,
-  children,
-}: {
-  t: SelectionTiltak;
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <TiltakDialog
-      id={t.id}
-      className={className}
-      ariaLabel={`Vis detaljer for ${t.id}: ${t.title}`}
-    >
-      {children}
-    </TiltakDialog>
-  );
-}
-
-const KR_ORDER: KrId[] = ["KR1", "KR2", "KR3", "KR4", "KR5"];
-/** Høyest mulige bang for the buck (effekt 3 / innsats 1) — skalerer baren. */
-const MAX_BANG = 3;
-
-function BangRad({
-  t,
-  editMode,
-  onTier,
-}: {
-  t: SelectionTiltak;
-  editMode: boolean;
-  onTier: (id: string, tier: Tier) => void;
-}) {
-  const bang = bangForBuck(t);
-  const krs = krFor(t.id);
-  return (
-    <tr className={`tu-rang__row tu-rang__row--${t.tier}`}>
-      <th scope="row" className="tu-rang__idcell">
-        <span className="tu-rang__idinner">
-          <TiltakDetailTag
-            t={t}
-            className={`tu-forslag__id tu-forslag__id--${t.aktor} tu-codebtn`}
-          >
-            {t.id}
-          </TiltakDetailTag>
-          <span className="tu-rang__title">{t.title}</span>
-          <span className="tu-sr">— {tierStatus[t.tier]}</span>
-        </span>
-      </th>
-      <td className="tu-rang__bangcell">
-        <span className="tu-rang__banginner">
-          <span className="tu-rang__bar" aria-hidden>
-            <span
-              className={`tu-rang__barfill tu-rang__barfill--${t.aktor}`}
-              style={{ width: `${(bang / MAX_BANG) * 100}%` }}
-            />
-          </span>
-          <b className="tu-rang__bangnum">
-            {bang >= 1 ? bang.toFixed(1) : bang.toFixed(2)}
-          </b>
-        </span>
-      </td>
-      <td className="tu-rang__ei">
-        E{t.effekt} / I{t.innsats}
-      </td>
-      <td className="tu-rang__krcell">
-        <span className="tu-rang__krinner">
-          {krs.length === 0 ? (
-            <span className="muted">—</span>
-          ) : (
-            krs.map((k) => (
-              <span key={k} className="tu-krchip" title={krLabels[k]}>
-                {krKort[k]}
-              </span>
-            ))
-          )}
-        </span>
-      </td>
-      {editMode && (
-        <td className="tu-rang__tiercell">
-          <select
-            className="tu-tier-select"
-            aria-label={`Plassering for ${t.id} ${t.title}`}
-            value={t.tier}
-            onChange={(e) => onTier(t.id, e.target.value as Tier)}
-          >
-            <option value="pakke1">Pakke 1</option>
-            <option value="vurder">Vurder</option>
-            <option value="senere">Senere</option>
-          </select>
-        </td>
-      )}
-    </tr>
-  );
-}
-
-function KrRad({ kr, tiltak }: { kr: KrId; tiltak: SelectionTiltak[] }) {
-  const iPakke1 = tiltak.filter((t) => t.tier === "pakke1");
-  const status =
-    iPakke1.length > 0
-      ? { cls: "ok", label: `I pakke 1 (${iPakke1.length})` }
-      : tiltak.length > 0
-        ? { cls: "gap", label: "Utenfor pakke 1" }
-        : { cls: "none", label: "Ikke dekket" };
-  return (
-    <div className={`tu-mal__row tu-mal__row--${status.cls}`}>
-      <div className="tu-mal__head">
-        <span className="tu-mal__krcode">{kr}</span>
-        <span className="tu-mal__krlabel">{krLabels[kr]}</span>
-        <span className={`tu-mal__status tu-mal__status--${status.cls}`}>
-          {status.label}
-        </span>
-      </div>
-      <div className="tu-mal__tiltak">
-        {tiltak.length === 0 ? (
-          <span className="muted">
-            Ingen tiltak i dette sporet treffer dette målet.
-          </span>
-        ) : (
-          tiltak.map((t) => (
-            <TiltakDetailTag
-              key={t.id}
-              t={t}
-              className={`tu-krtag tu-krtag--${t.tier} tu-codebtn`}
-            >
-              {t.id}
-            </TiltakDetailTag>
-          ))
-        )}
-      </div>
-      {krMerknad[kr] && (
-        <BodyShort size="small" className="muted tu-mal__merknad">
-          {krMerknad[kr]}
-        </BodyShort>
-      )}
-    </div>
-  );
-}
+const byBang = (a: SelectionTiltak, b: SelectionTiltak) =>
+  bangForBuck(b) - bangForBuck(a) || b.effekt - a.effekt;
 
 export function TiltakspakkeUtvelgelseView() {
-  const [view, setView] = useState<View>("ag");
-  const [editMode, setEditMode] = useState(false);
-  const [tiltak, setTiltak] = useState<SelectionTiltak[]>(() =>
-    selectionTiltak.map((t) => ({ ...t })),
+  const {
+    view,
+    setView,
+    aktorFilter,
+    tiltak,
+    persistEnabled,
+    saveMsg,
+    redigertAv,
+    avvik,
+    setMedlemskap,
+    reset,
+  } = usePakkeTiltak();
+  const [visMatrise, setVisMatrise] = useState(false);
+
+  const valgte = pakke1(aktorFilter, tiltak).sort(
+    (a, b) =>
+      Number(b.kjerne ?? false) - Number(a.kjerne ?? false) || byBang(a, b),
   );
-  // Lukk loopen, trygt: modellen er alltid autoritativ (riktig sett + grunninnhold).
-  // DB-en legger bare på EKTE team-redigeringer (updatedBy != "seed"), så en utdatert
-  // seed er ufarlig. Feiler DB → behold modellen (klient-side what-if).
-  const [persistEnabled, setPersistEnabled] = useState(false);
-  const [versions, setVersions] = useState<Record<string, number>>({});
-  // hvem som sist endret hvert tiltak (kun ekte team-redigeringer, ikke seed)
-  const [redigertAv, setRedigertAv] = useState<Record<string, string>>({});
-  const [saveMsg, setSaveMsg] = useState("");
-  const aktorFilter = view === "begge" ? undefined : view;
-  const valgte = pakke1(aktorFilter, tiltak);
   const kjerne = valgte.filter((t) => t.kjerne);
   const stotte = valgte.filter((t) => !t.kjerne);
-  const rangert = prioritert(aktorFilter, tiltak);
+  const iSpor = tiltak.filter((t) =>
+    aktorFilter ? t.aktor === aktorFilter : true,
+  );
+  const kandidater = iSpor.filter((t) => t.tier === "vurder").sort(byBang);
+  const senere = iSpor.filter((t) => t.tier === "senere").sort(byBang);
   const dekning = krDekning(aktorFilter, tiltak);
-  // avvik mot den kalibrerte modellen (baseline) — kjernen i datasikkerheten
-  const avvik = avvikFraModell(tiltak);
-
-  useEffect(() => {
-    let aktiv = true;
-    fetch("/api/pakke-tiltak")
-      .then((r) =>
-        r.ok ? r.json() : Promise.reject(new Error(String(r.status))),
-      )
-      .then((d: { tiltak?: DbRow[] }) => {
-        if (!aktiv || !Array.isArray(d.tiltak)) return;
-        const byId = new Map(d.tiltak.map((r) => [r.id, r]));
-        setVersions(Object.fromEntries(d.tiltak.map((r) => [r.id, r.version])));
-        setRedigertAv(
-          Object.fromEntries(
-            d.tiltak
-              .filter((r) => r.updatedBy && r.updatedBy !== "seed")
-              .map((r) => [r.id, r.updatedBy]),
-          ),
-        );
-        setTiltak((prev) =>
-          prev.map((m) => {
-            const r = byId.get(m.id);
-            // overlay BARE ekte redigeringer (ikke seed) på kjente tiltak
-            return r && r.updatedBy !== "seed"
-              ? {
-                  ...m,
-                  tier: r.tier,
-                  effekt: r.effekt,
-                  innsats: r.innsats,
-                  kjerne: r.kjerne,
-                }
-              : m;
-          }),
-        );
-        setPersistEnabled(true);
-      })
-      .catch(() => {
-        /* DB utilgjengelig → behold modellen (what-if). Visningen er trygg. */
-      });
-    return () => {
-      aktiv = false;
-    };
-  }, []);
-
-  // Bygg-modus på → scroll til rangeringstabellen der «Plassering»-kolonnen
-  // dukker opp, så det er tydelig hva knappen gjør.
-  useEffect(() => {
-    if (editMode) {
-      // Scroll til bygg-noten: den + tabellen med «Plassering» vises sammen.
-      (
-        document.querySelector(".tu-byggnote") ??
-        document.querySelector(".tu-rang")
-      )?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [editMode]);
-
-  function setTier(id: string, tier: Tier) {
-    setTiltak((prev) => prev.map((t) => (t.id === id ? { ...t, tier } : t)));
-    if (!persistEnabled) return; // klient-side what-if — ingen lagring
-    const t = tiltak.find((x) => x.id === id);
-    if (!t) return;
-    setSaveMsg(`Lagrer ${id} …`);
-    fetch("/api/pakke-tiltak", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...t, tier, version: versions[id] }),
-    })
-      .then((r) => r.json().then((d) => ({ status: r.status, d })))
-      .then(({ status, d }) => {
-        const saved = d?.tiltak as (DbRow & { updatedBy: string }) | undefined;
-        if (status === 409 && saved) {
-          // noen andre lagret i mellomtiden — ta inn deres verdi
-          setTiltak((prev) =>
-            prev.map((x) =>
-              x.id === id
-                ? {
-                    ...x,
-                    tier: saved.tier,
-                    effekt: saved.effekt,
-                    innsats: saved.innsats,
-                    kjerne: saved.kjerne,
-                  }
-                : x,
-            ),
-          );
-          setVersions((v) => ({ ...v, [id]: saved.version }));
-          setRedigertAv((p) => ({ ...p, [id]: saved.updatedBy }));
-          setSaveMsg(`${id}: en annen lagret nettopp — viser deres verdi.`);
-          return;
-        }
-        if (saved) {
-          setVersions((v) => ({ ...v, [id]: saved.version }));
-          setRedigertAv((p) => ({ ...p, [id]: saved.updatedBy }));
-          setSaveMsg(`${id} lagret · ${saved.updatedBy}`);
-        } else {
-          setSaveMsg(`${id}: kunne ikke lagre (beholdt lokalt).`);
-        }
-      })
-      .catch(() => setSaveMsg(`${id}: kunne ikke lagre (beholdt lokalt).`));
-  }
-  function resetPakke() {
-    const diverging = avvikFraModell(tiltak);
-    setTiltak(selectionTiltak.map((t) => ({ ...t })));
-    if (!persistEnabled || diverging.length === 0) {
-      setRedigertAv({});
-      setSaveMsg("");
-      return;
-    }
-    // skriv modell-verdiene tilbake til DB for de tiltakene som avvek
-    setSaveMsg("Tilbakestiller til kalibrert modell …");
-    const byId = new Map(selectionTiltak.map((t) => [t.id, t]));
-    Promise.allSettled(
-      diverging.map((d) =>
-        fetch("/api/pakke-tiltak", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...byId.get(d.id), version: versions[d.id] }),
-        }),
-      ),
-    ).then(() => {
-      setRedigertAv({});
-      setSaveMsg("Tilbakestilt til kalibrert modell.");
-    });
-  }
 
   return (
-    <VStack gap="space-24" className="tu">
+    <VStack gap="space-24" className="tu pb">
       <VStack gap="space-20" className="kidult-reference-header">
         <HStack gap="space-12" align="center" wrap>
           <Button
@@ -449,20 +103,17 @@ export function TiltakspakkeUtvelgelseView() {
                 Hvilke tiltak skal med i første pakke?
               </Heading>
               <BodyLong>
-                De bearbeidede tiltakene er plassert etter forventet{" "}
-                <strong>effekt</strong> og <strong>innsats</strong>. Øvre
-                venstre — der effekten er høy i forhold til innsatsen — er «gjør
-                først». Alle tiltak vises; de uthevede er forslaget til pakke 1,
-                de nedtonede venter. Forslaget samler seg om det høyeste
-                løftepunktet: stillheten før 4-ukers-fristen.{" "}
-                <strong>Klikk en tiltak-kode</strong> (her, i rangeringen eller
-                måldekningen) for full forklaring.
+                Velg hvilke tiltak som skal være med i pakke 1, og se hvorfor.
+                Flytt fritt inn og ut med knappene — måldekning, kjerne/støtte
+                og åpne avklaringer oppdateres med en gang. Forslaget samler seg
+                om det høyeste løftepunktet: stillheten før 4-ukers-fristen.{" "}
+                <strong>Klikk en tiltak-kode</strong> for full forklaring.
               </BodyLong>
             </VStack>
             <ToggleGroup
               label="Velg spor"
               value={view}
-              onChange={(v) => setView(v as View)}
+              onChange={(v) => setView(v as typeof view)}
               data-color="neutral"
               size="small"
             >
@@ -470,58 +121,23 @@ export function TiltakspakkeUtvelgelseView() {
               <ToggleGroup.Item value="sm" label="Den sykmeldte" />
               <ToggleGroup.Item value="begge" label="Begge" />
             </ToggleGroup>
-            <HStack gap="space-8" wrap align="center">
-              <Button
-                variant={editMode ? "secondary" : "primary"}
-                size="small"
-                icon={<PencilIcon aria-hidden />}
-                onClick={() => setEditMode((v) => !v)}
-                aria-pressed={editMode}
-              >
-                {editMode ? "Ferdig med bygging" : "Bygg pakke (live)"}
-              </Button>
-              {editMode && (
-                <Button variant="tertiary" size="small" onClick={resetPakke}>
-                  Nullstill
-                </Button>
-              )}
-            </HStack>
           </VStack>
         </Box>
       </VStack>
 
       <Alert variant="info" size="small">
-        {utkastNote}{" "}
+        Effekt- og innsats-anslagene er et utkast for kalibrering med teamet,
+        ikke en fasit.{" "}
         <AkselLink as={NextLink} href="/tiltakspakke-utvelgelse/rediger">
           Rediger og kalibrer tiltakene (team-delt) →
         </AkselLink>
       </Alert>
 
-      {editMode && (
-        <Alert variant={persistEnabled ? "info" : "warning"} size="small">
-          {persistEnabled ? (
-            <>
-              <strong>Bygg pakke (lagres)</strong> — endringer lagres og deles
-              med teamet. Juster i <strong>«Plassering»</strong>-kolonnen i
-              rangerings-tabellen lenger ned; matrise, måldekning, bang og
-              forslag oppdateres live.
-            </>
-          ) : (
-            <>
-              <strong>Live what-if</strong> — databasen er ikke tilgjengelig, så
-              endringer er midlertidige. Juster i <strong>«Plassering»</strong>
-              -kolonnen i rangerings-tabellen lenger ned; alt oppdateres live.
-            </>
-          )}
-          <span className="tu-save-status muted" aria-live="polite">
-            {saveMsg}
-          </span>
-        </Alert>
-      )}
+      <MaldekningStrip dekning={dekning} />
 
-      <HStack gap="space-8" wrap>
+      <HStack gap="space-8" wrap align="center">
         <Tag variant="success" size="small">
-          {valgte.length} foreslått i pakke 1
+          {valgte.length} i pakke 1
         </Tag>
         <Tag variant="neutral" size="small">
           {kjerne.length} kjerne · {stotte.length} støtte
@@ -529,13 +145,15 @@ export function TiltakspakkeUtvelgelseView() {
         <Tag variant="warning" size="small">
           {valgte.filter((t) => t.blokkertAv).length} med åpen avklaring
         </Tag>
+        <span className="pb-maler-legend">
+          Måler: ●●● høy · ●●○ middels · ●○○ lav
+        </span>
       </HStack>
 
       {avvik.length === 0 ? (
         <Alert variant="success" size="small" className="tu-avvik tu-avvik--ok">
-          Samsvarer med teamets kalibrerte baseline — settet og rekkefølgen er
-          slik vi sist kalibrerte dem (effekt/innsats-skårene er fortsatt
-          utkast).
+          Samsvarer med teamets kalibrerte baseline — settet er slik vi sist
+          kalibrerte det (effekt/innsats-skårene er fortsatt utkast).
         </Alert>
       ) : (
         <Alert variant="warning" size="small" className="tu-avvik">
@@ -548,7 +166,7 @@ export function TiltakspakkeUtvelgelseView() {
                 ? "Dette er lagrede team-endringer."
                 : "Dette er en lokal what-if (ikke lagret)."}
             </span>
-            <Button variant="secondary" size="xsmall" onClick={resetPakke}>
+            <Button variant="secondary" size="xsmall" onClick={reset}>
               Tilbakestill til kalibrert
             </Button>
           </HStack>
@@ -568,232 +186,100 @@ export function TiltakspakkeUtvelgelseView() {
               );
             })}
           </ul>
+          {saveMsg && (
+            <BodyShort size="small" className="muted" aria-live="polite">
+              {saveMsg}
+            </BodyShort>
+          )}
         </Alert>
       )}
 
-      <section
-        className="tu-scroll"
-        aria-label="Effekt × innsats-matrise — bla horisontalt ved behov"
-      >
-        <table className="tu-matrix">
-          <caption className="tu-matrix__caption">
-            Effekt (rad) mot innsats (kolonne) for{" "}
-            {view === "begge" ? "begge spor" : aktorLabel[view].toLowerCase()}.
-            Øvre venstre = høy effekt i forhold til innsats.
-          </caption>
-          <thead>
-            <tr>
-              <td className="tu-matrix__corner" aria-hidden />
-              {INNSATS.map((i) => (
-                <th key={i} scope="col" className="tu-matrix__colhead">
-                  {innsatsLabels[i]}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {EFFEKT.map((e) => (
-              <tr key={e}>
-                <th scope="row" className="tu-matrix__rowhead">
-                  {effektLabels[e]}
-                </th>
-                {INNSATS.map((i) => {
-                  const cell = tiltakAt(i, e, aktorFilter, tiltak);
-                  return (
-                    <td
-                      key={i}
-                      className={`tu-matrix__cell${
-                        erGjorForst(i, e) ? " tu-matrix__cell--first" : ""
-                      }`}
-                    >
-                      {erGjorForst(i, e) && cell.length === 0 && (
-                        <span className="tu-matrix__zone">Gjør først</span>
-                      )}
-                      {cell.map((t) => (
-                        <Chip key={t.id} t={t} />
-                      ))}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      <div className="pb-cols">
+        <section className="pb-col pb-col--inn" aria-label="I pakke 1">
+          <h2 className="pb-col__hd">
+            <span className="pb-col__dot" aria-hidden />I pakke 1
+            <span className="pb-col__count">
+              {kjerne.length} kjerne · {stotte.length} støtte
+            </span>
+          </h2>
+          {valgte.length === 0 ? (
+            <p className="pb-empty">
+              Ingen tiltak i pakke 1 for dette sporet ennå.
+            </p>
+          ) : (
+            valgte.map((t) => (
+              <TiltakKort key={t.id} t={t} inn onToggle={setMedlemskap} />
+            ))
+          )}
+        </section>
 
-      <HStack gap="space-16" wrap className="tu-legend">
-        <span className="tu-legend__item">
-          <i className="tu-legend__sw tu-legend__sw--ag" aria-hidden />
-          Arbeidsgiver (T-tiltak)
-        </span>
-        <span className="tu-legend__item">
-          <i className="tu-legend__sw tu-legend__sw--sm" aria-hidden />
-          Den sykmeldte (ST-tiltak)
-        </span>
-        <span className="tu-legend__item">
-          <CheckmarkCircleIcon aria-hidden /> Foreslått i pakke 1
-        </span>
-        <span className="tu-legend__item">
-          <ExclamationmarkTriangleIcon aria-hidden /> Åpen avklaring / blokkert
-        </span>
-        <span className="tu-legend__item">
-          <i className="tu-legend__sw tu-legend__sw--senere" aria-hidden />
-          Nedtonet = senere (ikke i denne pakken)
-        </span>
-        <span className="tu-legend__item">↔ Toveis kobling</span>
-      </HStack>
+        <section
+          className="pb-col pb-col--ute"
+          aria-label="Kandidater og senere"
+        >
+          <h2 className="pb-col__hd">
+            <span className="pb-col__dot pb-col__dot--ute" aria-hidden />
+            Kandidater og senere
+          </h2>
 
-      <Box
-        className="tu-forslag"
-        borderWidth="1"
-        borderRadius="12"
-        padding="space-24"
-      >
-        <VStack gap="space-16">
-          <VStack gap="space-4">
-            <Heading level="2" size="medium">
-              Forslag: Tiltakspakke 1
-            </Heading>
-            <BodyShort size="small" className="muted">
-              Konsentrert om tidlig varsel + behovsvurdering — fra begge sider,
-              før uke 4. Et utgangspunkt for kalibrering.
-            </BodyShort>
-          </VStack>
+          <h3 className="pb-subhd">Kandidater</h3>
+          {kandidater.length === 0 ? (
+            <p className="pb-empty">Ingen kandidater i dette sporet.</p>
+          ) : (
+            kandidater.map((t) => (
+              <TiltakKort
+                key={t.id}
+                t={t}
+                inn={false}
+                onToggle={setMedlemskap}
+              />
+            ))
+          )}
 
-          <BodyShort size="small" className="tu-ramme">
-            {pakke1Ramme}
-          </BodyShort>
+          <h3 className="pb-subhd">Senere</h3>
+          {senere.length === 0 ? (
+            <p className="pb-empty">Ingen tiltak parkert til senere.</p>
+          ) : (
+            senere.map((t) => (
+              <TiltakKort
+                key={t.id}
+                t={t}
+                inn={false}
+                onToggle={setMedlemskap}
+              />
+            ))
+          )}
+        </section>
+      </div>
 
-          <div className="tu-forslag__cols">
-            <div>
-              <Heading level="3" size="xsmall">
-                Kjerne — bærer pakken
-              </Heading>
-              <ul className="tu-forslag__list">
-                {kjerne.map((t) => (
-                  <ForslagItem key={t.id} t={t} />
-                ))}
-              </ul>
-            </div>
-            <div>
-              <Heading level="3" size="xsmall">
-                Støtte — billig forsterker
-              </Heading>
-              <ul className="tu-forslag__list">
-                {stotte.map((t) => (
-                  <ForslagItem key={t.id} t={t} />
-                ))}
-                {stotte.length === 0 && (
-                  <li className="tu-forslag__row muted">
-                    Ingen rene støttetiltak i dette sporet.
-                  </li>
-                )}
-              </ul>
-            </div>
-          </div>
+      <div>
+        <Button
+          variant="tertiary"
+          size="small"
+          onClick={() => setVisMatrise((v) => !v)}
+          aria-expanded={visMatrise}
+          icon={
+            visMatrise ? (
+              <ChevronUpIcon aria-hidden />
+            ) : (
+              <ChevronDownIcon aria-hidden />
+            )
+          }
+        >
+          {visMatrise ? "Skjul matrise" : "Se som matrise"}
+        </Button>
+        {visMatrise && (
+          <Box marginBlock="space-12 space-0">
+            <MatriseView tiltak={tiltak} view={view} />
+          </Box>
+        )}
+      </div>
 
-          <VStack gap="space-4">
-            <Heading level="3" size="xsmall">
-              Vurdert mot disse kriteriene
-            </Heading>
-            <ol className="tu-kriterier">
-              {pakke1Kriterier.map((k) => (
-                <li key={k}>{k}</li>
-              ))}
-            </ol>
-            <BodyShort size="small" className="muted">
-              Hypotese-merkene viser hvilken virkningshypotese hvert tiltak
-              lader opp til: <b>H1</b> {hypoteseLabel.H1.toLowerCase()},{" "}
-              <b>H2</b> {hypoteseLabel.H2.toLowerCase()}.
-            </BodyShort>
-          </VStack>
-        </VStack>
-      </Box>
-
-      <Box
-        className="tu-prio"
-        borderWidth="1"
-        borderRadius="12"
-        padding="space-24"
-      >
-        <VStack gap="space-20">
-          <VStack gap="space-4">
-            <Heading level="2" size="medium">
-              Prioritering: bang for the buck × måldekning
-            </Heading>
-            <BodyShort size="small" className="muted">
-              Kombinerer effektivitet (effekt ÷ innsats) med hvilke overordnede
-              mål (KR) hvert tiltak lader opp til — så vi ser hva pakke 1
-              dekker, og hva den bevisst lar stå åpent.
-            </BodyShort>
-          </VStack>
-
-          <VStack gap="space-8">
-            <Heading level="3" size="xsmall">
-              Bang for the buck —{" "}
-              {view === "begge" ? "begge spor" : aktorLabel[view].toLowerCase()}
-            </Heading>
-            {editMode && (
-              <BodyShort size="small" className="tu-byggnote">
-                <PencilIcon aria-hidden /> Bygg-modus: endre «Plassering» under
-                for å flytte tiltak inn/ut av pakke 1 — matrise, måldekning og
-                forslag oppdateres live.
-              </BodyShort>
-            )}
-            <div className="tu-scroll">
-              <table className="tu-rang">
-                <caption className="tu-sr">
-                  Tiltak sortert etter effekt delt på innsats, synkende. Uthevet
-                  rad = foreslått i pakke 1.
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Tiltak</th>
-                    <th scope="col" aria-sort="descending">
-                      Effekt ÷ innsats
-                    </th>
-                    <th scope="col">E / I</th>
-                    <th scope="col">Overordnet mål</th>
-                    {editMode && <th scope="col">Plassering</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rangert.map((t) => (
-                    <BangRad
-                      key={t.id}
-                      t={t}
-                      editMode={editMode}
-                      onTier={setTier}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </VStack>
-
-          <VStack gap="space-8">
-            <Heading level="3" size="xsmall">
-              Måldekning — hva pakke 1 treffer, og hullene
-            </Heading>
-            <div className="tu-mal">
-              {KR_ORDER.map((kr) => (
-                <KrRad key={kr} kr={kr} tiltak={dekning[kr]} />
-              ))}
-            </div>
-            <Alert variant="warning" size="small">
-              {krGradertNote}
-            </Alert>
-          </VStack>
-
-          <BodyShort size="small" className="muted">
-            {krUtkastNote}
-          </BodyShort>
-        </VStack>
-      </Box>
+      <OmUtvalget />
 
       <Box borderWidth="1" borderRadius="8" padding="space-16">
         <VStack gap="space-8">
-          <Heading level="3" size="small">
+          <Heading level="2" size="small">
             Slik henger det sammen
           </Heading>
           <BodyShort size="small">

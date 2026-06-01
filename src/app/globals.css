@@ -1709,10 +1709,12 @@ a:where(:not(.aksel-button)) {
   padding: 0.5rem;
   min-width: 9rem;
 }
+/* «Gjør først»-sonen er nøytral, ikke grønn — grønn er frigjort til medlemskap/
+   suksess. Solid ramme + hvit flate skiller sonen fra de dempede cellene. */
 .tu-matrix__cell--first {
   border-style: solid;
-  border-color: var(--ax-border-success);
-  background: var(--ax-bg-success-soft);
+  border-color: var(--ax-border-strong, #b1b8c4);
+  background: var(--a-surface-default, #fff);
 }
 .tu-matrix__zone {
   display: block;
@@ -1720,7 +1722,7 @@ a:where(:not(.aksel-button)) {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #046a2c;
+  color: var(--a-text-subtle, #5b6675);
 }
 .tu__chip {
   display: inline-flex;
@@ -1756,16 +1758,21 @@ a:where(:not(.aksel-button)) {
   border-color: color-mix(in srgb, var(--ax-border-meta-purple) 55%, white);
   color: var(--ax-text-meta-purple);
 }
+/* Medlemskap = sterkere signal: tydelig venstrekant i aktørfargen + halvfet.
+   Hak-ikonet følger aktørfargen (currentColor), ikke grønt. */
+.tu__chip--pakke1 {
+  font-weight: 600;
+}
 .tu__chip--pakke1.tu__chip--ag {
   border-color: var(--ax-border-accent);
-  box-shadow: 0 0 0 1px var(--ax-border-accent);
+  box-shadow: inset 3px 0 0 var(--ax-border-accent);
 }
 .tu__chip--pakke1.tu__chip--sm {
   border-color: var(--ax-border-meta-purple);
-  box-shadow: 0 0 0 1px var(--ax-border-meta-purple);
+  box-shadow: inset 3px 0 0 var(--ax-border-meta-purple);
 }
 .tu__chip--pakke1 .tu__chip-ic {
-  color: #046a2c;
+  color: currentColor;
 }
 .tu__chip--blokkert {
   border-style: dashed;
@@ -2179,4 +2186,262 @@ button.tu__chip:focus-visible,
 .tu-codebtn {
   text-decoration: underline dotted;
   text-underline-offset: 2px;
+}
+
+/* ── Pakke-bygger (utvelgelse v2) ──────────────────────────────────────────
+   Medlemskap er det sterkeste signalet; én lesbar flate. Grønn = kun status. */
+
+/* Måldekning-strip: KR i klartekst, oppdateres live. */
+.pb-maldekning {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--a-border-subtle);
+  border-radius: var(--ax-radius-8);
+  background: var(--a-surface-subtle, #f7f9fc);
+  font-size: 0.85rem;
+}
+.pb-maldekning__lab {
+  font-weight: 700;
+}
+.pb-maldekning__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.pb-kr {
+  border-radius: 999px;
+  padding: 0.05rem 0.6rem;
+  border: 1px solid var(--a-border-subtle);
+  font-size: 0.78rem;
+}
+.pb-kr--ok {
+  background: var(--ax-bg-success-soft);
+  border-color: var(--ax-border-success);
+  color: var(--ax-text-success, #046a2c);
+}
+.pb-kr--gap {
+  background: var(--ax-bg-warning-soft);
+  color: var(--ax-text-warning, #8a6200);
+  border-color: color-mix(in srgb, var(--ax-text-warning, #8a6200) 35%, white);
+}
+.pb-kr--none {
+  background: var(--a-surface-subtle, #f1f3f6);
+  color: var(--a-text-subtle, #5b6675);
+}
+.pb-maler-legend {
+  font-size: 0.78rem;
+  color: var(--a-text-subtle, #5b6675);
+  margin-left: auto;
+}
+
+/* To spalter: I pakke 1 ↔ kandidater/senere. Stables på mobil. */
+.pb-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+@media (max-width: 48rem) {
+  .pb-cols {
+    grid-template-columns: 1fr;
+  }
+}
+.pb-col {
+  min-width: 0;
+}
+.pb-col__hd {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.pb-col__dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--ax-border-accent, #0067c5);
+  flex: none;
+}
+.pb-col__dot--ute {
+  background: var(--a-border-subtle, #c6cad1);
+}
+.pb-col__count {
+  margin-left: auto;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--a-text-subtle, #5b6675);
+}
+.pb-subhd {
+  margin: 0.9rem 0 0.4rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: var(--a-text-subtle, #5b6675);
+}
+.pb-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--a-text-subtle, #5b6675);
+}
+
+/* Tiltak-kort: kode+tittel på én linje, måler, hvorfor, mål-merker, inn/ut. */
+.pb-kort {
+  border: 1px solid var(--a-border-subtle);
+  border-radius: var(--ax-radius-8);
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.5rem;
+  background: var(--a-surface-default, #fff);
+}
+.pb-kort--inn.pb-kort--ag {
+  background: var(--ax-bg-accent-soft);
+  border-color: var(--ax-border-accent);
+  box-shadow: inset 4px 0 0 var(--ax-border-accent);
+}
+.pb-kort--inn.pb-kort--sm {
+  background: var(--ax-bg-meta-purple-soft);
+  border-color: var(--ax-border-meta-purple);
+  box-shadow: inset 4px 0 0 var(--ax-border-meta-purple);
+}
+.pb-kort--ute {
+  background: var(--a-surface-subtle, #f7f9fc);
+}
+.pb-kort__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.pb-kort__label {
+  flex: 1;
+  line-height: 1.35;
+}
+.pb-kort__code {
+  font: inherit;
+  font-weight: 800;
+  color: var(--ax-text-accent, #0067c5);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+}
+.pb-kort--sm .pb-kort__code {
+  color: var(--ax-text-meta-purple, #634689);
+}
+.pb-kort--ute .pb-kort__code {
+  color: var(--a-text-subtle, #5b6675);
+}
+.pb-kort__code:hover {
+  text-decoration-style: solid;
+}
+.pb-kort__code:focus-visible {
+  outline: 2px solid var(--ax-border-focus, #0067c5);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.pb-kort__title {
+  font-weight: 600;
+}
+.pb-kort--ute .pb-kort__title {
+  font-weight: 500;
+}
+.pb-kort__tog {
+  flex: none;
+}
+.pb-kort__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.7rem;
+  margin-top: 0.4rem;
+}
+.pb-maler {
+  font-size: 0.82rem;
+  color: var(--a-text-default, #23262a);
+}
+.pb-maler__lab {
+  color: var(--a-text-subtle, #5b6675);
+}
+.pb-maler__dots {
+  letter-spacing: 0.1em;
+}
+.pb-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.02rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.pb-tag--kjerne {
+  background: var(--ax-bg-accent-soft);
+  color: var(--ax-text-accent, #0067c5);
+  border: 1px solid var(--ax-border-accent);
+}
+.pb-tag--stotte {
+  background: var(--a-surface-subtle, #eef1f5);
+  color: var(--a-text-subtle, #5b6675);
+  border: 1px solid var(--a-border-subtle);
+}
+.pb-tag--avklaring {
+  background: var(--ax-bg-warning-soft);
+  color: var(--ax-text-warning, #8a6200);
+}
+.pb-kort__why {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: var(--a-text-subtle, #475569);
+}
+.pb-kort__kr {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+.pb-krmini {
+  border: 1px solid var(--a-border-subtle);
+  border-radius: 999px;
+  padding: 0 0.5rem;
+  font-size: 0.72rem;
+  color: var(--a-text-subtle, #5b6675);
+}
+
+/* «Om utvalget» — sammenleggbar metode/begrunnelse (lukket som standard). */
+.pb-about {
+  border: 1px solid var(--a-border-subtle);
+  border-radius: var(--ax-radius-8);
+  padding: 0.7rem 0.9rem;
+}
+.pb-about__summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.pb-about__summary:focus-visible {
+  outline: 2px solid var(--ax-border-focus, #0067c5);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.pb-about__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+.pb-about__krit {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.pb-about__note {
+  color: var(--a-text-subtle, #5b6675);
 }

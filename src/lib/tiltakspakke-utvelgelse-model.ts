@@ -517,6 +517,31 @@ export function krDekning(
   return out;
 }
 
+/** Baseline-tier for et tiltak slik den står i den kalibrerte modellen. */
+export function baselineTier(id: string): Tier | undefined {
+  return selectionTiltak.find((t) => t.id === id)?.tier;
+}
+
+/**
+ * Sett medlemskap i pakke 1 for ett tiltak (rent — returnerer ny liste).
+ * `inn = true`  → tier `pakke1`.
+ * `inn = false` → tilbake til baseline-tier (`vurder`/`senere`); var baseline
+ *                 selv `pakke1`, faller tiltaket til `senere`. Slik holder
+ *                 Kandidater/Senere-grupperingen seg meningsfull.
+ */
+export function settMedlemskap(
+  kilde: SelectionTiltak[],
+  id: string,
+  inn: boolean,
+): SelectionTiltak[] {
+  return kilde.map((t) => {
+    if (t.id !== id) return t;
+    if (inn) return { ...t, tier: "pakke1" };
+    const base = baselineTier(id);
+    return { ...t, tier: base && base !== "pakke1" ? base : "senere" };
+  });
+}
+
 /**
  * Tiltak i `kilde` som avviker fra den kalibrerte modellen (tier/effekt/innsats/
  * kjerne). Brukes til å vise om live-pakken er ren kalibrert baseline eller endret.
