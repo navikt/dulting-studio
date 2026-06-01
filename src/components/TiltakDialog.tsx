@@ -44,7 +44,7 @@ function Seksjon({
 /** Det kanoniske tiltak-kortet — samme innhold uansett hvor tiltaket åpnes. */
 function ProfilKort({ p }: { p: TiltakProfil }) {
   const bang = p.bang >= 1 ? p.bang.toFixed(1) : p.bang.toFixed(2);
-  const harAtferd = p.beskrivelse || (p.barriere && p.motivasjon) || p.dult;
+  const harAtferd = (p.barriere && p.motivasjon) || p.dult;
   const harMaaling = p.maaletegn || p.stoppunkt || p.eastFogg || p.forgood;
   const harKobling = p.toveis || p.delt || p.blokkertAv;
   return (
@@ -55,8 +55,8 @@ function ProfilKort({ p }: { p: TiltakProfil }) {
           {p.kjerne ? " · kjerne" : ""}
         </Detail>
         <Dialog.Title>{p.title}</Dialog.Title>
-        {(p.hvorfor || p.beskrivelse) && (
-          <Dialog.Description>{p.hvorfor ?? p.beskrivelse}</Dialog.Description>
+        {(p.beskrivelse || p.hvorfor) && (
+          <Dialog.Description>{p.beskrivelse ?? p.hvorfor}</Dialog.Description>
         )}
       </Dialog.Header>
       <Dialog.Body>
@@ -79,13 +79,15 @@ function ProfilKort({ p }: { p: TiltakProfil }) {
                     .join(" · ")}
                 </Rad>
               )}
+              {p.beskrivelse && p.hvorfor && (
+                <Rad dt="Hvorfor i pakke 1">{p.hvorfor}</Rad>
+              )}
             </dl>
           </Seksjon>
 
           {harAtferd && (
             <Seksjon tittel="Atferd — hvorfor det virker">
               <dl className="dult-ref-dialog__meta">
-                {p.beskrivelse && <Rad dt="Hva det er">{p.beskrivelse}</Rad>}
                 {p.barriere && p.motivasjon && (
                   <Rad dt="Barriere → driver">
                     {p.barriere} → {p.motivasjon}
