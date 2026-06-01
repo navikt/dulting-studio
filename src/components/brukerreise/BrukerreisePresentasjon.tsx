@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
+import { KategoriDialog } from "@/components/KategoriDialog";
 import { TiltakRefTag } from "@/components/TiltakRefTag";
 import { PhaseIcon } from "./icons";
 import type { JourneyData } from "./journey-data";
@@ -172,18 +173,26 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
               )}
               <p className="brC__phaselead">{p.actorGoal}</p>
               <div className="brC__today">
-                <span className="brC__tag brC__tag--barr">
+                <KategoriDialog
+                  navn={p.barriere.kategori}
+                  kind="barriere"
+                  className="brC__tag brC__tag--barr brC__tag--btn"
+                >
                   Barriere · {p.barriere.kategori}
-                </span>
+                </KategoriDialog>
                 <span className="lbl">Faktisk i dag</span>
                 <p>{p.today.text}</p>
                 <p className="brC__ideal">{p.lawIdeal}</p>
               </div>
             </div>
             <div className="brC__phaseright brC__reveal">
-              <span className="brC__tag brC__tag--motiv">
+              <KategoriDialog
+                navn={p.motivasjon.driver}
+                kind="driver"
+                className="brC__tag brC__tag--motiv brC__tag--btn"
+              >
                 Spiller på · {p.motivasjon.driver}
-              </span>
+              </KategoriDialog>
               {(p.screenId ? screenFor(p.screenId) : null) ?? (
                 <NudgeCard nudge={p.dult.nudge} time={p.time} />
               )}

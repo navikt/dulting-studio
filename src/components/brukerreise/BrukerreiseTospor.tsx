@@ -8,6 +8,7 @@ import {
 } from "@navikt/aksel-icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { KategoriDialog } from "@/components/KategoriDialog";
 import { TiltakRefTag } from "@/components/TiltakRefTag";
 import { PhaseIcon } from "./icons";
 import type { JourneyData } from "./journey-data";
@@ -153,9 +154,13 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
                     >
                       I dag
                     </span>
-                    <span className="brA__tag brA__tag--barr">
+                    <KategoriDialog
+                      navn={p.barriere.kategori}
+                      kind="barriere"
+                      className="brA__tag brA__tag--barr brA__tag--btn"
+                    >
                       Barriere · {p.barriere.kategori}
-                    </span>
+                    </KategoriDialog>
                     <p className="lead">{p.today.text}</p>
                     <p className="sub">{p.today.barrier}</p>
                     {p.today.silence && (
@@ -180,9 +185,13 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
                     >
                       Med dulting
                     </span>
-                    <span className="brA__tag brA__tag--motiv">
+                    <KategoriDialog
+                      navn={p.motivasjon.driver}
+                      kind="driver"
+                      className="brA__tag brA__tag--motiv brA__tag--btn"
+                    >
                       Spiller på · {p.motivasjon.driver}
-                    </span>
+                    </KategoriDialog>
                     <p className="lead" style={{ fontWeight: 600 }}>
                       {p.dult.intervention}
                     </p>

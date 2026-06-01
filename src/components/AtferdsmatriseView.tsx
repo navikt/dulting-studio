@@ -7,8 +7,6 @@ import {
   BodyShort,
   Box,
   Button,
-  Detail,
-  Dialog,
   Heading,
   HStack,
   Tag,
@@ -21,14 +19,13 @@ import {
   type Aktor,
   aktorLabel,
   BARRIERER,
-  barriereForklaring,
   DRIVERE,
-  driverForklaring,
   itemsInCell,
   type MatriseItem,
   matriseItems,
 } from "@/lib/atferdsmatrise-model";
 import { AnalyseNav } from "./AnalyseNav";
+import { KategoriDialog } from "./KategoriDialog";
 import { TiltakDialog } from "./TiltakDialog";
 
 /** Klikkbart matrise-element → det delte, kanoniske tiltak-kortet. */
@@ -41,51 +38,6 @@ function MatriseChip({ item }: { item: MatriseItem }) {
     >
       <b>{item.id}</b> {item.title}
     </TiltakDialog>
-  );
-}
-
-/** Klikkbar kategori-overskrift (barriere/driver) → kort definisjon. */
-function KategoriDialog({
-  navn,
-  kind,
-  forklaring,
-}: {
-  navn: string;
-  kind: string;
-  forklaring?: string;
-}) {
-  return (
-    <Dialog>
-      <Dialog.Trigger>
-        <button
-          type="button"
-          className="bm__head-btn"
-          aria-label={`Forklar ${navn}`}
-        >
-          {navn}
-        </button>
-      </Dialog.Trigger>
-      <Dialog.Popup>
-        <Dialog.Header>
-          <Detail uppercase>{kind}</Detail>
-          <Dialog.Title>{navn}</Dialog.Title>
-        </Dialog.Header>
-        <Dialog.Body>
-          <BodyLong>{forklaring ?? "Forklaring kommer."}</BodyLong>
-          <Detail className="bm__dialog-utkast">
-            Kort forklaring lagt til av oss (utkast) — ikke Nudgelabs offisielle
-            definisjon.
-          </Detail>
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Dialog.CloseTrigger>
-            <Button variant="secondary" size="small">
-              Lukk
-            </Button>
-          </Dialog.CloseTrigger>
-        </Dialog.Footer>
-      </Dialog.Popup>
-    </Dialog>
   );
 }
 
@@ -172,9 +124,11 @@ export function AtferdsmatriseView() {
                 <th key={driver} scope="col" className="bm__colhead">
                   <KategoriDialog
                     navn={driver}
-                    kind="Motivasjonsdriver"
-                    forklaring={driverForklaring[driver]}
-                  />
+                    kind="driver"
+                    className="bm__head-btn"
+                  >
+                    {driver}
+                  </KategoriDialog>
                 </th>
               ))}
             </tr>
@@ -185,9 +139,11 @@ export function AtferdsmatriseView() {
                 <th scope="row" className="bm__rowhead">
                   <KategoriDialog
                     navn={barriere}
-                    kind="Barriere"
-                    forklaring={barriereForklaring[barriere]}
-                  />
+                    kind="barriere"
+                    className="bm__head-btn"
+                  >
+                    {barriere}
+                  </KategoriDialog>
                 </th>
                 {DRIVERE.map((driver) => {
                   const cellItems = itemsInCell(aktor, barriere, driver);

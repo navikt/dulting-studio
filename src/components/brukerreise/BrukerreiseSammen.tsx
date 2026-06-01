@@ -8,6 +8,8 @@ import {
 } from "@navikt/aksel-icons";
 import { Schibsted_Grotesk } from "next/font/google";
 import Link from "next/link";
+import { KategoriDialog } from "@/components/KategoriDialog";
+import { TiltakRefTag } from "@/components/TiltakRefTag";
 import { lederJourney } from "./journey-data";
 import { sykmeldtJourney } from "./journey-data-sykmeldt";
 import { NudgeCard } from "./NudgeCard";
@@ -121,12 +123,20 @@ export function BrukerreiseSammen() {
                     Arbeidsgiver
                   </span>
                   <div className="brS__tags">
-                    <span className="brA__tag brA__tag--barr">
+                    <KategoriDialog
+                      navn={l.barriere.kategori}
+                      kind="barriere"
+                      className="brA__tag brA__tag--barr brA__tag--btn"
+                    >
                       Barriere · {l.barriere.kategori}
-                    </span>
-                    <span className="brA__tag brA__tag--motiv">
+                    </KategoriDialog>
+                    <KategoriDialog
+                      navn={l.motivasjon.driver}
+                      kind="driver"
+                      className="brA__tag brA__tag--motiv brA__tag--btn"
+                    >
                       Spiller på · {l.motivasjon.driver}
-                    </span>
+                    </KategoriDialog>
                   </div>
                   <p className="brS__today">
                     <b>I dag</b> {l.today.barrier}
@@ -136,6 +146,14 @@ export function BrukerreiseSammen() {
                     <ArrowRightIcon aria-hidden fontSize="1rem" />
                     {l.dult.desiredBehavior}
                   </p>
+                  <div className="brS__refs">
+                    <span className="brS__refslabel">Tiltak</span>
+                    {l.dult.refs.map((r) =>
+                      /^(ST|T)\d+$/.test(r) ? (
+                        <TiltakRefTag key={r} id={r} />
+                      ) : null,
+                    )}
+                  </div>
                 </div>
 
                 <div className="brS__side brS__side--sykmeldt">
@@ -152,12 +170,20 @@ export function BrukerreiseSammen() {
                     </span>
                   )}
                   <div className="brS__tags">
-                    <span className="brA__tag brA__tag--barr">
+                    <KategoriDialog
+                      navn={s.barriere.kategori}
+                      kind="barriere"
+                      className="brA__tag brA__tag--barr brA__tag--btn"
+                    >
                       Barriere · {s.barriere.kategori}
-                    </span>
-                    <span className="brA__tag brA__tag--motiv">
+                    </KategoriDialog>
+                    <KategoriDialog
+                      navn={s.motivasjon.driver}
+                      kind="driver"
+                      className="brA__tag brA__tag--motiv brA__tag--btn"
+                    >
                       Spiller på · {s.motivasjon.driver}
-                    </span>
+                    </KategoriDialog>
                   </div>
                   <p className="brS__today">
                     <b>I dag</b> {s.today.barrier}
@@ -167,6 +193,14 @@ export function BrukerreiseSammen() {
                     <ArrowRightIcon aria-hidden fontSize="1rem" />
                     {s.dult.desiredBehavior}
                   </p>
+                  <div className="brS__refs">
+                    <span className="brS__refslabel">Tiltak</span>
+                    {s.dult.refs.map((r) =>
+                      /^(ST|T)\d+$/.test(r) ? (
+                        <TiltakRefTag key={r} id={r} />
+                      ) : null,
+                    )}
+                  </div>
                 </div>
               </div>
             );

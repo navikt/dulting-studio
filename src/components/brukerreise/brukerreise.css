@@ -1192,6 +1192,40 @@
   color: var(--good);
   background: var(--good-bg);
 }
+/* klikkbare barriere/driver-chips → kategori-forklaring (samme som matrisen) */
+.brA__tag--btn,
+.brC__tag--btn {
+  border: 0;
+  appearance: none;
+  cursor: pointer;
+  transition: filter 80ms ease;
+}
+.brA__tag--btn:hover,
+.brC__tag--btn:hover {
+  filter: brightness(0.95);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.brA__tag--btn:focus-visible,
+.brC__tag--btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+/* Sammen: hvilke tiltak som er knyttet til steget */
+.brS__refs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.55rem;
+}
+.brS__refslabel {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--a-text-subtle);
+}
 .brA__tag::before,
 .brC__tag::before {
   content: "";
