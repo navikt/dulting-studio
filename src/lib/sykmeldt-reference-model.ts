@@ -331,7 +331,7 @@ export const sykmeldtSupport = [
 ];
 
 export const sykmeldtOpenQuestions = [
-  "Felles vurderingsskjema? ST05 (sykmeldt) og AG DULT-16/24 peker mot samme flate — én delt behovsvurdering sett fra to sider?",
+  "Felles vurderingsskjema? ST05 (sykmeldt) og AG-16/24 peker mot samme flate — én delt behovsvurdering sett fra to sider?",
   "Hvem ser sykmeldtes vurdering: kun Nav, eller også lege/arbeidsgiver — og når utløses AG-varselet (på «ja», eller alltid)?",
   "Kartleggingsspørsmål: nasjonal utrulling endrer alt — hvor mye skal vi designe for en pilot-flate?",
   "Tone i plikt-språket: hvor hardt kan vi snakke om medvirknings-/aktivitetsplikt før det tipper fra «informere» til «presse»?",

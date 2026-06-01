@@ -1,6 +1,6 @@
 // Datagrunnlag for brukerreisen (nærmeste leder).
 // Forankret i det reelle datagrunnlaget:
-//   - råkort:        docs/dulting-tiltaksregister.md (DULT-01..35)
+//   - råkort:        docs/dulting-tiltaksregister.md (AG-01..35)
 //   - bearbeidet:    src/lib/kidult-reference-model.ts (T01..T14)
 //   - atferd:        docs/dulting-atferdskartlegging.md (motivasjon/barriere + KPI)
 //   - scoping:       docs/dulting-scoping-status.md
@@ -110,7 +110,7 @@ export type Phase = {
     intervention: string;
     nudge: Nudge;
     desiredBehavior: string;
-    /** DULT-råkort + T-tiltak som ligger bak. */
+    /** AG-råkort + T-tiltak som ligger bak. */
     refs: string[];
   };
   /** Eksplisitt avveining (vises der vi vurderer noe med tydelig bakside). */
@@ -203,7 +203,7 @@ export const phases: Phase[] = [
       },
       desiredBehavior:
         "Maria åpner riktig person, og forstår hva hun bør gjøre videre.",
-      refs: ["DULT-07", "DULT-11", "DULT-02", "DULT-10", "T03", "T13"],
+      refs: ["AG-07", "AG-11", "AG-02", "AG-10", "T03", "T13"],
     },
     measurements: {
       primary: [
@@ -258,7 +258,7 @@ export const phases: Phase[] = [
       },
       desiredBehavior:
         "Maria tar stilling før fireukersfristen — i stedet for å vente til noen spør.",
-      refs: ["DULT-06", "DULT-20", "DULT-22", "T01"],
+      refs: ["AG-06", "AG-20", "AG-22", "T01"],
     },
     consideration:
       "Vi vurderer eksternt varsel (e-post til arbeidsgiver) i tillegg til oppgaven på Min side arbeidsgiver. Det vil trolig dra flere i gang tidlig — men må veies mot varseltrøtthet, og bør testes isolert.",
@@ -312,7 +312,7 @@ export const phases: Phase[] = [
       },
       desiredBehavior:
         "Maria tar et bevisst valg og går videre til riktig neste steg.",
-      refs: ["DULT-01", "DULT-07", "DULT-15", "T03"],
+      refs: ["AG-01", "AG-07", "AG-15", "T03"],
     },
     consideration:
       "Workshop-innsikt (kandidat, ikke scopet inn): arbeidsgivere mangler ofte info om hva den ansatte får fra Nav — f.eks. unntak fra aktivitetsplikten. Å gi leder relevant kontekst, uten å bryte personvern, kan gjøre vurderingen riktigere.",
@@ -365,7 +365,7 @@ export const phases: Phase[] = [
       },
       desiredBehavior:
         "Maria starter en relevant plan og bruker den i samtalen og tilretteleggingen.",
-      refs: ["DULT-05", "DULT-32", "DULT-02", "T05"],
+      refs: ["AG-05", "AG-32", "AG-02", "T05"],
     },
     measurements: {
       primary: [
@@ -416,7 +416,7 @@ export const phases: Phase[] = [
       },
       desiredBehavior:
         "Planer blir tryggere å dele, og deles tidligere med lege eller Nav.",
-      refs: ["DULT-26", "DULT-27", "DULT-30", "T10", "T11", "Målmodell H2"],
+      refs: ["AG-26", "AG-27", "AG-30", "T10", "T11", "Målmodell H2"],
     },
     consideration:
       "Dulteteknikk for deling: urgency + forhåndsutfylt valg for fastlegen. Drar trolig opp tidlig deling — men må ikke oppleves som press eller føre til at sensitive opplysninger deles ukritisk.",
@@ -468,15 +468,7 @@ export const phases: Phase[] = [
       },
       desiredBehavior:
         "Maria og Jonas avtaler en ny samtale og oppdaterer planen.",
-      refs: [
-        "DULT-12",
-        "DULT-22",
-        "DULT-29",
-        "DULT-31",
-        "DULT-35",
-        "T08",
-        "T06",
-      ],
+      refs: ["AG-12", "AG-22", "AG-29", "AG-31", "AG-35", "T08", "T06"],
     },
     consideration:
       "Større grep (ikke scopet inn nå, men viktig kontekst): gjøre selve planen til et levende dokument — vise forrige samtale, støtte vurdering av hva som er prøvd, og la planen oppdateres i stedet for å måtte lages på nytt. Avgjørende for en kontinuerlig sykefraværsoppfølging.",

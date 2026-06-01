@@ -121,7 +121,7 @@ const agTiltak: SelectionTiltak[] = [
     kjerne: true,
     hypotese: ["H1"],
     blokkertAv:
-      "Åpent: eksakt uke + ekstern varsling (SMS/e-post) som målbart valg. Teknisk: deep-link til riktig person (DULT-23).",
+      "Åpent: eksakt uke + ekstern varsling (SMS/e-post) som målbart valg. Teknisk: deep-link til riktig person (AG-23).",
     guardrail:
       "Unngå varseltrøtthet og for tidlig press; ikke dobbeltvarsle når plan/sak alt er avklart.",
     toveis: "ST04 (sykmeldt får tidsriktig varsel samtidig)",

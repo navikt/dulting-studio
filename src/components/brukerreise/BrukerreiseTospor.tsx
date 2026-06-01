@@ -199,7 +199,7 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
                         if (/^(ST|T)\d+$/.test(r))
                           return <TiltakRefTag key={r} id={r} />;
                         // Råkort (DULT-/SYK-) vises nå inne i tiltak-dialogen, ikke løst.
-                        if (/^(DULT|SYK)-/.test(r)) return null;
+                        if (/^(AG|SYK)-/.test(r)) return null;
                         // Øvrige kilde-pekere (f.eks. «Målmodell H2») beholdes som tekst.
                         return (
                           <span key={r} className="br-ref">

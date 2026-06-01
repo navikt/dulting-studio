@@ -200,7 +200,7 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
                 {p.dult.refs.map((r) => {
                   if (/^(ST|T)\d+$/.test(r))
                     return <TiltakRefTag key={r} id={r} />;
-                  if (/^(DULT|SYK)-/.test(r)) return null;
+                  if (/^(AG|SYK)-/.test(r)) return null;
                   return (
                     <span key={r} className="br-ref">
                       {r}

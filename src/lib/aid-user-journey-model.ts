@@ -82,7 +82,7 @@ export const employerJourneyStages: JourneyStage[] = [
       "Åpning av relevant personside, visning av varsel og overgang til vurdering eller plan.",
     guardrail:
       "Ikke gjør alle sykmeldinger til hastesaker. Varsel må begrenses til relevant populasjon og timing.",
-    sources: ["DULT-07", "DULT-11", "Målmodell H1"],
+    sources: ["AG-07", "AG-11", "Målmodell H1"],
     scope: "both",
   },
   {
@@ -103,7 +103,7 @@ export const employerJourneyStages: JourneyStage[] = [
       "Varsel vist, varsel åpnet, vurdering startet, plan startet før frist.",
     guardrail:
       "Unngå varseltrøtthet, for tidlig press og duplikatvarsel når plan allerede finnes.",
-    sources: ["DULT-06", "DULT-20", "Målmodell: Tidsriktig varsel"],
+    sources: ["AG-06", "AG-20", "Målmodell: Tidsriktig varsel"],
     scope: "first-track",
   },
   {
@@ -124,7 +124,7 @@ export const employerJourneyStages: JourneyStage[] = [
       "Vurdering startet/fullført, valgt utfall, overgang til plan, andel 'plan trengs ikke nå'.",
     guardrail:
       "'Plan trengs ikke nå' må ikke bli en snarvei bort fra oppfølgingsplikten.",
-    sources: ["DULT-01", "DULT-07", "DULT-15", "Analysemodell §6"],
+    sources: ["AG-01", "AG-07", "AG-15", "Analysemodell §6"],
     scope: "first-track",
   },
   {
@@ -145,7 +145,7 @@ export const employerJourneyStages: JourneyStage[] = [
       "Planstart, planfullføring, frafall i planflyt og survey om forståelse.",
     guardrail:
       "Ikke be om diagnose, private forhold eller unødvendig fritekst.",
-    sources: ["DULT-02", "DULT-05", "DULT-10", "DULT-24"],
+    sources: ["AG-02", "AG-05", "AG-10", "AG-24"],
     scope: "landscape",
   },
   {
@@ -166,7 +166,7 @@ export const employerJourneyStages: JourneyStage[] = [
       "Plan delt, tidspunkt for deling og eventuell kobling til relevant legekontakt på aggregert nivå.",
     guardrail:
       "Deling må ikke oppleves som press eller føre til unødvendig sensitive opplysninger.",
-    sources: ["Målmodell H2", "DULT-05", "Analysemodell §3"],
+    sources: ["Målmodell H2", "AG-05", "Analysemodell §3"],
     scope: "landscape",
   },
   {
@@ -187,7 +187,7 @@ export const employerJourneyStages: JourneyStage[] = [
       "Evalueringsdato satt, påminnelse valgt, plan åpnet og justert senere.",
     guardrail:
       "Ingen skjult default på varsling. Ikke skap ekstra administrasjonsbyrde.",
-    sources: ["DULT-08", "DULT-12", "DULT-22"],
+    sources: ["AG-08", "AG-12", "AG-22"],
     scope: "landscape",
   },
 ];
@@ -207,7 +207,7 @@ export const employerClusters: JourneyCluster[] = [
       "Varsel vist, åpnet, vurdering startet, plan startet før frist.",
     guardrail:
       "Varselet må ikke bli støy, kontrollopplevelse eller varsel til irrelevante sykefravær.",
-    sources: ["DULT-06", "DULT-20"],
+    sources: ["AG-06", "AG-20"],
   },
   {
     id: "need-assessment",
@@ -223,7 +223,7 @@ export const employerClusters: JourneyCluster[] = [
       "Fullført vurdering, valgt utfall, overgang til plan og tidlig deling.",
     guardrail:
       "Ingen default på 'plan trengs ikke nå'. Ingen fritekst uten avklaring.",
-    sources: ["DULT-01", "DULT-07", "DULT-15", "DULT-16"],
+    sources: ["AG-01", "AG-07", "AG-15", "AG-16"],
   },
   {
     id: "support-text",
@@ -239,7 +239,7 @@ export const employerClusters: JourneyCluster[] = [
       "Survey om forståelse, mindre frafall og bedre overgang til riktig neste steg.",
     guardrail:
       "Teksten må ikke presse fram feil handling eller skjule valgmuligheter.",
-    sources: ["DULT-02", "DULT-10", "DULT-13"],
+    sources: ["AG-02", "AG-10", "AG-13"],
   },
   {
     id: "guided-plan",
@@ -253,7 +253,7 @@ export const employerClusters: JourneyCluster[] = [
       "Hvis planen oppleves som en samtalestøtte, kan kvaliteten på tilretteleggingen øke.",
     measurement: "Planfullføring, frafall, redigering og survey om nytte.",
     guardrail: "Ikke gjør alt til veiviser eller dokumentasjonsbyrde.",
-    sources: ["DULT-05", "DULT-08", "DULT-19", "DULT-24"],
+    sources: ["AG-05", "AG-08", "AG-19", "AG-24"],
   },
   {
     id: "evaluation",
@@ -268,6 +268,6 @@ export const employerClusters: JourneyCluster[] = [
     measurement:
       "Evalueringsdato, kalender/påminnelse valgt og senere planjustering.",
     guardrail: "Opt-in på påminnelser. Ikke skjult default.",
-    sources: ["DULT-12", "DULT-22"],
+    sources: ["AG-12", "AG-22"],
   },
 ];

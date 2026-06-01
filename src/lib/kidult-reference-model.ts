@@ -208,7 +208,7 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Timely (før frist), Easy (oppgave på riktig person), Salient (tydelig frist)",
         forgood:
           "Respect — opplyse, ikke presse; ikke dobbeltvarsle når saken alt er avklart.",
-        raakort: ["DULT-06", "DULT-20", "DULT-11"],
+        raakort: ["AG-06", "AG-20", "AG-11"],
         sharedWithSykmeldt:
           "↔ speiler den sykmeldtes tidlige plikt-/prosessinfo",
       },
@@ -241,7 +241,7 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Easy (strukturerte valg), Prompt (utløser handling), aktivt valg (ingen default)",
         forgood:
           "Honest + Ownership — mål reell vurdering, ikke klikk; «nei» må ikke bli en snarvei bort fra oppfølgingsplikten.",
-        raakort: ["DULT-01", "DULT-07", "DULT-15", "DULT-16", "DULT-33"],
+        raakort: ["AG-01", "AG-07", "AG-15", "AG-16", "AG-33"],
         sharedWithSykmeldt: "↔ behovsvurderingen speiler sykmeldts ST04/ST05",
       },
     ],
@@ -266,7 +266,7 @@ export const interventionMapPhases: InterventionMapPhase[] = [
         dult: "Bryt planutfyllingen ned i tydelige steg med enklere språk. Lav prioritet — premisset om frafall under utfylling er ikke bekreftet.",
         eastFogg: "Easy (steg + språk), Ability (senker terskel)",
         forgood: "Respect — ikke overforklar eller gjør alt til veiviser.",
-        raakort: ["DULT-05", "DULT-24", "DULT-17"],
+        raakort: ["AG-05", "AG-24", "AG-17"],
       },
       {
         id: "T06",
@@ -279,7 +279,7 @@ export const interventionMapPhases: InterventionMapPhase[] = [
         dult: "Vis at planen er et levende verktøy med «endre/juster»-knapp — ikke hugget i stein.",
         eastFogg: "Easy (endre direkte), Salient (synlig aktiv plan)",
         forgood: "Forgiving — ikke skap ekstra dokumentasjonsbyrde.",
-        raakort: ["DULT-29", "DULT-31", "DULT-35"],
+        raakort: ["AG-29", "AG-31", "AG-35"],
       },
       {
         id: "T07",
@@ -293,7 +293,7 @@ export const interventionMapPhases: InterventionMapPhase[] = [
         dult: "Gjør utkast, gjenstående oppgaver og aktiv plan synlig så arbeidet lett kan gjenopptas.",
         eastFogg: "Easy (gjenoppta utkast), Salient (fremdrift)",
         forgood: "Honest — ikke forveksle fremdrift med faktisk kvalitet.",
-        raakort: ["DULT-08", "DULT-19"],
+        raakort: ["AG-08", "AG-19"],
       },
     ],
   },
@@ -321,7 +321,7 @@ export const interventionMapPhases: InterventionMapPhase[] = [
           "Salient (ny samtale), Timely (påminnelse), Easy (ett klikk i kalender)",
         forgood:
           "Respect + Consent — datoen skal bety noe reelt; ingen skjult default på varsling.",
-        raakort: ["DULT-12", "DULT-22"],
+        raakort: ["AG-12", "AG-22"],
       },
     ],
   },
@@ -345,7 +345,7 @@ export const interventionMapPhases: InterventionMapPhase[] = [
         dult: "Forklar mottaker, formål og nytte av å dele planen tidlig.",
         eastFogg: "Easy (forklart i kontekst), Salient (synlig nytte)",
         forgood: "Respect — ikke gjør deling til press uten kontekst.",
-        raakort: ["DULT-26", "DULT-27"],
+        raakort: ["AG-26", "AG-27"],
       },
       {
         id: "T11",
@@ -373,7 +373,7 @@ export const interventionMapPhases: InterventionMapPhase[] = [
         dult: "Forklar hva Nav lagrer, hva arbeidsgiver bør lagre, og gjenbruk av plan på tvers av perioder.",
         eastFogg: "Easy (forklart), Salient (gjenbruk)",
         forgood: "Lawful — ikke oppfordre til ulovlig lagring.",
-        raakort: ["DULT-28"],
+        raakort: ["AG-28"],
       },
     ],
   },
