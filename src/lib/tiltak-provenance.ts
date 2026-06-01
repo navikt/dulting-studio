@@ -1,4 +1,4 @@
-import { getDultReference } from "./dult-reference-registry";
+import { getAgRaakort } from "./ag-raakort-registry";
 import { interventionMapPhases } from "./kidult-reference-model";
 import { getSykRaakort } from "./sykmeldt-raakort-registry";
 import { sykmeldtMapPhases } from "./sykmeldt-reference-model";
@@ -16,7 +16,7 @@ import {
 /** Den opprinnelige råkort-teksten for en kode (AG/DULT: tittel; sykmeldt/SYK:
  *  verbatim), eller undefined hvis koden ikke er i noe register. */
 export function raakortText(id: string): string | undefined {
-  return getDultReference(id)?.title ?? getSykRaakort(id);
+  return getAgRaakort(id) ?? getSykRaakort(id);
 }
 
 /** Et råkort tiltaket er bearbeidet fra, med opprinnelig tekst der den finnes. */
