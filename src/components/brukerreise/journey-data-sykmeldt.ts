@@ -257,6 +257,8 @@ const phases: Phase[] = [
     title: "Medvirke i og dele planen",
     icon: "share",
     scope: "both",
+    underAvklaring:
+      "Sykmeldt skriver/deler ikke i planen i dag — teknisk blokkert, ligger i «senere»",
     actorGoal:
       "Jonas vil være en aktiv part i planen — og kunne dele den selv.",
     today: {
@@ -281,8 +283,8 @@ const phases: Phase[] = [
         "La Jonas skrive inn og kommentere i planen (asynkront), be arbeidsgiver lage en plan (→ AG-oppgave), og kunne dele planen med lege eller Nav selv.",
       nudge: {
         channel: "plan",
-        title: "Planen er deres — ikke bare lederens",
-        body: "Du kan legge til det du mener er viktig, og dele planen med fastlegen din. Det legen vet om jobben din, hjelper hen å vurdere gradert sykmelding.",
+        title: "Slik det kan bli: planen er deres — ikke bare lederens",
+        body: "Tenk om du selv kunne legge til det du mener er viktig, og dele planen med fastlegen din. Det legen vet om jobben din, hjelper hen å vurdere gradert sykmelding.",
         cta: "Se planen",
       },
       desiredBehavior: "Jonas medvirker konkret, og planen deles tidligere.",
