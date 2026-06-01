@@ -97,7 +97,8 @@ const phases: Phase[] = [
     title: "Tidlig varsel før fristen",
     icon: "bell",
     scope: "both",
-    underAvklaring: "Varsel til sykmeldt henger på behovsvurderingen — under avklaring",
+    underAvklaring:
+      "Varsel til sykmeldt henger på behovsvurderingen — under avklaring",
     actorGoal:
       "Jonas trenger et tidsriktig varsel om at en oppfølgingsplan snart bør vurderes.",
     today: {
