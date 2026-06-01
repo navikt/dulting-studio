@@ -1474,6 +1474,31 @@ a:where(:not(.aksel-button)) {
   color: var(--a-text-subtle);
 }
 
+/* kanonisk tiltak-kort: seksjoner med fine skiller */
+.tp {
+  display: grid;
+}
+.tp__sec {
+  padding: 0.95rem 0;
+}
+.tp__sec:first-child {
+  padding-top: 0;
+}
+.tp__sec:last-child {
+  padding-bottom: 0;
+}
+.tp__sec + .tp__sec {
+  border-top: 1px solid var(--a-border-subtle);
+}
+.tp__h {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--a-text-subtle);
+}
+
 @media (max-width: 48rem) {
   .aid-timeline {
     padding-left: 1.25rem;

@@ -12,8 +12,6 @@ import {
   BodyShort,
   Box,
   Button,
-  Detail,
-  Dialog,
   Heading,
   HStack,
   Tag,
@@ -50,6 +48,7 @@ import {
   utkastNote,
 } from "@/lib/tiltakspakke-utvelgelse-model";
 import { AnalyseNav } from "./AnalyseNav";
+import { TiltakDialog } from "./TiltakDialog";
 
 type View = Aktor | "begge";
 
@@ -132,8 +131,7 @@ function ForslagItem({ t }: { t: SelectionTiltak }) {
   );
 }
 
-/** Klikkbar tiltakskode → Aksel-dialog med full kontekst. Gjenbruker
- *  dult-ref-dialog__meta-stilen, og samme dialog-mønster som DultRefTag. */
+/** Klikkbar tiltakskode → det delte, kanoniske tiltak-kortet (likt overalt). */
 function TiltakDetailTag({
   t,
   className,
@@ -143,96 +141,14 @@ function TiltakDetailTag({
   className?: string;
   children: React.ReactNode;
 }) {
-  const bang = bangForBuck(t);
-  const krs = krFor(t.id);
   return (
-    <Dialog>
-      <Dialog.Trigger>
-        <button
-          type="button"
-          className={className}
-          aria-label={`Vis detaljer for ${t.id}: ${t.title}`}
-        >
-          {children}
-        </button>
-      </Dialog.Trigger>
-      <Dialog.Popup>
-        <Dialog.Header>
-          <Detail uppercase>
-            {t.id} · {aktorLabel[t.aktor]}
-          </Detail>
-          <Dialog.Title>{t.title}</Dialog.Title>
-          <Dialog.Description>
-            {t.steg} · {tierStatus[t.tier]}
-            {t.kjerne ? " · kjerne" : ""}
-          </Dialog.Description>
-        </Dialog.Header>
-        <Dialog.Body>
-          <dl className="dult-ref-dialog__meta">
-            <div>
-              <dt>Effekt × innsats</dt>
-              <dd>
-                {effektLabels[t.effekt]} / {innsatsLabels[t.innsats]} · bang{" "}
-                {bang >= 1 ? bang.toFixed(1) : bang.toFixed(2)}
-              </dd>
-            </div>
-            {krs.length > 0 && (
-              <div>
-                <dt>Overordnet mål</dt>
-                <dd>{krs.map((k) => krLabels[k]).join(" · ")}</dd>
-              </div>
-            )}
-            {t.hypotese && t.hypotese.length > 0 && (
-              <div>
-                <dt>Virkningshypotese</dt>
-                <dd>
-                  {t.hypotese
-                    .map((h) => `${h}: ${hypoteseLabel[h]}`)
-                    .join(" · ")}
-                </dd>
-              </div>
-            )}
-            {t.hvorfor && (
-              <div>
-                <dt>Hvorfor</dt>
-                <dd>{t.hvorfor}</dd>
-              </div>
-            )}
-            {t.toveis && (
-              <div>
-                <dt>Toveis kobling</dt>
-                <dd>↔ {t.toveis}</dd>
-              </div>
-            )}
-            {t.guardrail && (
-              <div>
-                <dt>Guardrail</dt>
-                <dd>{t.guardrail}</dd>
-              </div>
-            )}
-            {t.forgood && (
-              <div>
-                <dt>Etisk merknad (FORGOOD)</dt>
-                <dd>{t.forgood}</dd>
-              </div>
-            )}
-            {t.blokkertAv && (
-              <div>
-                <dt>Åpen avklaring</dt>
-                <dd>{t.blokkertAv}</dd>
-              </div>
-            )}
-          </dl>
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Dialog.CloseTrigger>
-            <Button variant="secondary" size="small">
-              Lukk
-            </Button>
-          </Dialog.CloseTrigger>
-        </Dialog.Footer>
-      </Dialog.Popup>
-    </Dialog>
+    <TiltakDialog
+      id={t.id}
+      className={className}
+      ariaLabel={`Vis detaljer for ${t.id}: ${t.title}`}
+    >
+      {children}
+    </TiltakDialog>
   );
 }
 

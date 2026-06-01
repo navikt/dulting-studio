@@ -29,57 +29,18 @@ import {
   matriseItems,
 } from "@/lib/atferdsmatrise-model";
 import { AnalyseNav } from "./AnalyseNav";
+import { TiltakDialog } from "./TiltakDialog";
 
-/** Klikkbart matrise-element → kort forklaring av hva steget/tiltaket er. */
-function MatriseChip({
-  item,
-  barriere,
-  driver,
-}: {
-  item: MatriseItem;
-  barriere: string;
-  driver: string;
-}) {
+/** Klikkbart matrise-element → det delte, kanoniske tiltak-kortet. */
+function MatriseChip({ item }: { item: MatriseItem }) {
   return (
-    <Dialog>
-      <Dialog.Trigger>
-        <button
-          type="button"
-          className="bm__chip bm__chip--btn"
-          aria-label={`Forklar ${item.id}: ${item.title}`}
-        >
-          <b>{item.id}</b> {item.title}
-        </button>
-      </Dialog.Trigger>
-      <Dialog.Popup>
-        <Dialog.Header>
-          <Detail uppercase>{item.id}</Detail>
-          <Dialog.Title>{item.title}</Dialog.Title>
-          {item.description && (
-            <Dialog.Description>{item.description}</Dialog.Description>
-          )}
-        </Dialog.Header>
-        <Dialog.Body>
-          <dl className="dult-ref-dialog__meta">
-            <div>
-              <dt>Barriere det løser</dt>
-              <dd>{barriere}</dd>
-            </div>
-            <div>
-              <dt>Driver det spiller på</dt>
-              <dd>{driver}</dd>
-            </div>
-          </dl>
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Dialog.CloseTrigger>
-            <Button variant="secondary" size="small">
-              Lukk
-            </Button>
-          </Dialog.CloseTrigger>
-        </Dialog.Footer>
-      </Dialog.Popup>
-    </Dialog>
+    <TiltakDialog
+      id={item.id}
+      className="bm__chip bm__chip--btn"
+      ariaLabel={`Vis tiltak ${item.id}: ${item.title}`}
+    >
+      <b>{item.id}</b> {item.title}
+    </TiltakDialog>
   );
 }
 
@@ -238,12 +199,7 @@ export function AtferdsmatriseView() {
                       }`}
                     >
                       {cellItems.map((item) => (
-                        <MatriseChip
-                          key={item.id}
-                          item={item}
-                          barriere={barriere}
-                          driver={driver}
-                        />
+                        <MatriseChip key={item.id} item={item} />
                       ))}
                     </td>
                   );
