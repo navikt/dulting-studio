@@ -107,6 +107,8 @@ export function JourneyMatrix({ model }: JourneyMatrixProps) {
       {rows.length > 0 && (
         <section
           className="matrix-scroll-container"
+          // biome-ignore lint/a11y/noNoninteractiveTabindex: scroll-container må kunne fokuseres for tastatur-scroll
+          tabIndex={0}
           aria-label="Brukerreisematrise – scroll horisontalt for å se alle kolonner"
         >
           <table className="matrix-table" aria-label="Brukerreisematrise">

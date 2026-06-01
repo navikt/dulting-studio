@@ -1,5 +1,10 @@
 /* Brukerreise — Aksel-fundament + skreddersydd presentasjonslag.
-   Scopet under .br-proto så det ikke lekker ut i resten av appen. */
+   Scopet under .br-proto så det ikke lekker ut i resten av appen.
+
+   BEVISST breakpoint: brukerreisen stables ved 60rem (ikke 48rem som resten av
+   appen). To-spors-layouten (to spor + sentral spine) trenger mer bredde for å
+   ikke bli klemt; under ~960px er ett-kolonne klart mer lesbart. Ikke
+   «harmoniser» til 48rem uten å verifisere to-spor ved 768–960px. */
 
 .br-proto {
   /* palette */

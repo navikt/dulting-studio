@@ -111,7 +111,12 @@ export function AtferdsmatriseView() {
         </Tag>
       </HStack>
 
-      <div className="bm-scroll">
+      <section
+        className="bm-scroll"
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: scroll-container må kunne fokuseres for tastatur-scroll
+        tabIndex={0}
+        aria-label="Atferdsmatrise — bla horisontalt ved behov"
+      >
         <table className="bm" data-aktor={aktor}>
           <caption className="bm__caption">
             Atferdsmatrise for {aktorLabel[aktor].toLowerCase()}: barriere (rad)
@@ -164,7 +169,7 @@ export function AtferdsmatriseView() {
             ))}
           </tbody>
         </table>
-      </div>
+      </section>
 
       <Box borderWidth="1" borderRadius="8" padding="space-16">
         <VStack gap="space-8">
