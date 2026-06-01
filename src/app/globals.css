@@ -2210,26 +2210,7 @@ button.tu__chip:focus-visible,
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
-}
-.pb-kr {
-  border-radius: 999px;
-  padding: 0.05rem 0.6rem;
-  border: 1px solid var(--a-border-subtle);
-  font-size: 0.78rem;
-}
-.pb-kr--ok {
-  background: var(--ax-bg-success-soft);
-  border-color: var(--ax-border-success);
-  color: var(--ax-text-success, #046a2c);
-}
-.pb-kr--gap {
-  background: var(--ax-bg-warning-soft);
-  color: var(--ax-text-warning, #8a6200);
-  border-color: color-mix(in srgb, var(--ax-text-warning, #8a6200) 35%, white);
-}
-.pb-kr--none {
-  background: var(--a-surface-subtle, #f1f3f6);
-  color: var(--a-text-subtle, #5b6675);
+  align-items: center;
 }
 .pb-maler-legend {
   font-size: 0.78rem;
@@ -2372,29 +2353,6 @@ button.tu__chip:focus-visible,
 .pb-maler__dots {
   letter-spacing: 0.1em;
 }
-.pb-tag {
-  font-size: 0.72rem;
-  font-weight: 600;
-  border-radius: 999px;
-  padding: 0.02rem 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-}
-.pb-tag--kjerne {
-  background: var(--ax-bg-accent-soft);
-  color: var(--ax-text-accent, #0067c5);
-  border: 1px solid var(--ax-border-accent);
-}
-.pb-tag--stotte {
-  background: var(--a-surface-subtle, #eef1f5);
-  color: var(--a-text-subtle, #5b6675);
-  border: 1px solid var(--a-border-subtle);
-}
-.pb-tag--avklaring {
-  background: var(--ax-bg-warning-soft);
-  color: var(--ax-text-warning, #8a6200);
-}
 .pb-kort__why {
   margin: 0.4rem 0 0;
   font-size: 0.85rem;
@@ -2406,12 +2364,9 @@ button.tu__chip:focus-visible,
   gap: 0.3rem;
   margin-top: 0.4rem;
 }
-.pb-krmini {
-  border: 1px solid var(--a-border-subtle);
-  border-radius: 999px;
-  padding: 0 0.5rem;
-  font-size: 0.72rem;
-  color: var(--a-text-subtle, #5b6675);
+.pb-kort__kr .navds-tag {
+  /* Aksel Tag-merker for KR — litt tettere på kortet */
+  line-height: 1.3;
 }
 
 /* «Om utvalget» — sammenleggbar metode/begrunnelse (lukket som standard). */

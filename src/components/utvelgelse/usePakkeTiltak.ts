@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import {
   type Aktor,
-  avvikFraModell,
   type Niva,
   type SelectionTiltak,
   selectionTiltak,
@@ -25,10 +24,11 @@ type DbRow = {
 };
 
 /**
- * Eier hele utvelgelses-state: tiltakssettet, spor-valg, delt DB-lagring og
- * avvik mot kalibrert baseline. Modellen er alltid autoritativ; DB-en legger
- * bare på EKTE team-redigeringer (updatedBy != "seed"). Feiler DB → behold
- * modellen (klient-side what-if). Trukket ut av view-en så UI-et blir tynt.
+ * Eier utvelgelses-state: tiltakssettet, spor-valg og delt DB-lagring. Modellen
+ * er alltid autoritativ; DB-en legger bare på EKTE team-redigeringer
+ * (updatedBy != "seed"). Lagring skjer stille i bakgrunnen — å flytte tiltak
+ * inn/ut er en helt vanlig handling, ikke et «avvik». Feiler DB → behold
+ * modellen (klient-side what-if). Visningen er alltid trygg.
  */
 export function usePakkeTiltak() {
   const [view, setView] = useState<View>("ag");
@@ -37,12 +37,7 @@ export function usePakkeTiltak() {
   );
   const [persistEnabled, setPersistEnabled] = useState(false);
   const [versions, setVersions] = useState<Record<string, number>>({});
-  // hvem som sist endret hvert tiltak (kun ekte team-redigeringer, ikke seed)
-  const [redigertAv, setRedigertAv] = useState<Record<string, string>>({});
-  const [saveMsg, setSaveMsg] = useState("");
-
   const aktorFilter = view === "begge" ? undefined : view;
-  const avvik = avvikFraModell(tiltak);
 
   useEffect(() => {
     let aktiv = true;
@@ -54,13 +49,6 @@ export function usePakkeTiltak() {
         if (!aktiv || !Array.isArray(d.tiltak)) return;
         const byId = new Map(d.tiltak.map((r) => [r.id, r]));
         setVersions(Object.fromEntries(d.tiltak.map((r) => [r.id, r.version])));
-        setRedigertAv(
-          Object.fromEntries(
-            d.tiltak
-              .filter((r) => r.updatedBy && r.updatedBy !== "seed")
-              .map((r) => [r.id, r.updatedBy]),
-          ),
-        );
         setTiltak((prev) =>
           prev.map((m) => {
             const r = byId.get(m.id);
@@ -93,7 +81,6 @@ export function usePakkeTiltak() {
     if (!persistEnabled) return; // klient-side what-if — ingen lagring
     const neste = nesteListe.find((x) => x.id === id);
     if (!neste) return;
-    setSaveMsg(`Lagrer ${id} …`);
     fetch("/api/pakke-tiltak", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -102,8 +89,9 @@ export function usePakkeTiltak() {
       .then((r) => r.json().then((d) => ({ status: r.status, d })))
       .then(({ status, d }) => {
         const saved = d?.tiltak as (DbRow & { updatedBy: string }) | undefined;
-        if (status === 409 && saved) {
-          // noen andre lagret i mellomtiden — ta inn deres verdi
+        if (!saved) return;
+        if (status === 409) {
+          // noen andre lagret i mellomtiden — konvergér stille mot deres verdi
           setTiltak((prev) =>
             prev.map((x) =>
               x.id === id
@@ -117,57 +105,13 @@ export function usePakkeTiltak() {
                 : x,
             ),
           );
-          setVersions((v) => ({ ...v, [id]: saved.version }));
-          setRedigertAv((p) => ({ ...p, [id]: saved.updatedBy }));
-          setSaveMsg(`${id}: en annen lagret nettopp — viser deres verdi.`);
-          return;
         }
-        if (saved) {
-          setVersions((v) => ({ ...v, [id]: saved.version }));
-          setRedigertAv((p) => ({ ...p, [id]: saved.updatedBy }));
-          setSaveMsg(`${id} lagret · ${saved.updatedBy}`);
-        } else {
-          setSaveMsg(`${id}: kunne ikke lagre (beholdt lokalt).`);
-        }
+        setVersions((v) => ({ ...v, [id]: saved.version }));
       })
-      .catch(() => setSaveMsg(`${id}: kunne ikke lagre (beholdt lokalt).`));
+      .catch(() => {
+        /* lagring feilet — behold lokal verdi stille (intern demo) */
+      });
   }
 
-  function reset() {
-    const diverging = avvikFraModell(tiltak);
-    setTiltak(selectionTiltak.map((t) => ({ ...t })));
-    if (!persistEnabled || diverging.length === 0) {
-      setRedigertAv({});
-      setSaveMsg("");
-      return;
-    }
-    // skriv modell-verdiene tilbake til DB for de tiltakene som avvek
-    setSaveMsg("Tilbakestiller til kalibrert modell …");
-    const byId = new Map(selectionTiltak.map((t) => [t.id, t]));
-    Promise.allSettled(
-      diverging.map((d) =>
-        fetch("/api/pakke-tiltak", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...byId.get(d.id), version: versions[d.id] }),
-        }),
-      ),
-    ).then(() => {
-      setRedigertAv({});
-      setSaveMsg("Tilbakestilt til kalibrert modell.");
-    });
-  }
-
-  return {
-    view,
-    setView,
-    aktorFilter,
-    tiltak,
-    persistEnabled,
-    saveMsg,
-    redigertAv,
-    avvik,
-    setMedlemskap,
-    reset,
-  };
+  return { view, setView, aktorFilter, tiltak, setMedlemskap };
 }

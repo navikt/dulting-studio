@@ -25,8 +25,6 @@ import {
   krDekning,
   pakke1,
   type SelectionTiltak,
-  selectionTiltak,
-  type Tier,
 } from "@/lib/tiltakspakke-utvelgelse-model";
 import { AnalyseNav } from "./AnalyseNav";
 import { MaldekningStrip } from "./utvelgelse/MaldekningStrip";
@@ -35,28 +33,12 @@ import { OmUtvalget } from "./utvelgelse/OmUtvalget";
 import { TiltakKort } from "./utvelgelse/TiltakKort";
 import { usePakkeTiltak } from "./utvelgelse/usePakkeTiltak";
 
-const tierStatus: Record<Tier, string> = {
-  pakke1: "Foreslått i pakke 1",
-  vurder: "Vurderes",
-  senere: "Senere",
-};
-
 const byBang = (a: SelectionTiltak, b: SelectionTiltak) =>
   bangForBuck(b) - bangForBuck(a) || b.effekt - a.effekt;
 
 export function TiltakspakkeUtvelgelseView() {
-  const {
-    view,
-    setView,
-    aktorFilter,
-    tiltak,
-    persistEnabled,
-    saveMsg,
-    redigertAv,
-    avvik,
-    setMedlemskap,
-    reset,
-  } = usePakkeTiltak();
+  const { view, setView, aktorFilter, tiltak, setMedlemskap } =
+    usePakkeTiltak();
   const [visMatrise, setVisMatrise] = useState(false);
 
   const valgte = pakke1(aktorFilter, tiltak).sort(
@@ -150,50 +132,6 @@ export function TiltakspakkeUtvelgelseView() {
         </span>
       </HStack>
 
-      {avvik.length === 0 ? (
-        <Alert variant="success" size="small" className="tu-avvik tu-avvik--ok">
-          Samsvarer med teamets kalibrerte baseline — settet er slik vi sist
-          kalibrerte det (effekt/innsats-skårene er fortsatt utkast).
-        </Alert>
-      ) : (
-        <Alert variant="warning" size="small" className="tu-avvik">
-          <HStack gap="space-12" align="center" wrap justify="space-between">
-            <span>
-              <strong>
-                {avvik.length} tiltak avviker fra den kalibrerte modellen.
-              </strong>{" "}
-              {persistEnabled
-                ? "Dette er lagrede team-endringer."
-                : "Dette er en lokal what-if (ikke lagret)."}
-            </span>
-            <Button variant="secondary" size="xsmall" onClick={reset}>
-              Tilbakestill til kalibrert
-            </Button>
-          </HStack>
-          <ul className="tu-avvik__liste">
-            {avvik.map((t) => {
-              const m = selectionTiltak.find((x) => x.id === t.id);
-              const tierEndret = m && m.tier !== t.tier;
-              const av = redigertAv[t.id];
-              return (
-                <li key={t.id}>
-                  <b>{t.id}</b> {t.title} —{" "}
-                  {tierEndret && m
-                    ? `${tierStatus[m.tier]} → ${tierStatus[t.tier]}`
-                    : "effekt/innsats endret fra baseline"}
-                  {av ? ` · endret av ${av}` : ""}
-                </li>
-              );
-            })}
-          </ul>
-          {saveMsg && (
-            <BodyShort size="small" className="muted" aria-live="polite">
-              {saveMsg}
-            </BodyShort>
-          )}
-        </Alert>
-      )}
-
       <div className="pb-cols">
         <section className="pb-col pb-col--inn" aria-label="I pakke 1">
           <h2 className="pb-col__hd">
@@ -222,7 +160,6 @@ export function TiltakspakkeUtvelgelseView() {
             Kandidater og senere
           </h2>
 
-          <h3 className="pb-subhd">Kandidater</h3>
           {kandidater.length === 0 ? (
             <p className="pb-empty">Ingen kandidater i dette sporet.</p>
           ) : (

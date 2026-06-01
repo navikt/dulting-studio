@@ -1,6 +1,7 @@
 import { ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
-import { Button } from "@navikt/ds-react";
+import { Button, Tag } from "@navikt/ds-react";
 import {
+  type KrId,
   krFor,
   krKort,
   krLabels,
@@ -8,6 +9,15 @@ import {
 } from "@/lib/tiltakspakke-utvelgelse-model";
 import { TiltakDialog } from "../TiltakDialog";
 import { EffektInnsatsMaler } from "./EffektInnsatsMaler";
+
+/** Hvert overordnet mål får sin egen, stabile farge så det er gjenkjennelig. */
+const KR_COLOR = {
+  KR1: "brand-blue",
+  KR2: "meta-lime",
+  KR3: "brand-magenta",
+  KR4: "brand-beige",
+  KR5: "meta-purple",
+} as const satisfies Record<KrId, string>;
 
 function fallbackHvorfor(t: SelectionTiltak): string {
   if (t.hvorfor) return t.hvorfor;
@@ -18,8 +28,8 @@ function fallbackHvorfor(t: SelectionTiltak): string {
 
 /**
  * Ett tiltak som et kort: kode + tittel på én linje (klikk → kanonisk tiltak-
- * kort), effekt×innsats-måler, én linje hvorfor, mål-merker i klartekst, og
- * inn/ut-knappen som er hovedhandlingen. Likt i begge kolonner.
+ * kort), effekt×innsats-måler, én linje hvorfor, fargede mål-merker (Aksel
+ * Tag), og inn/ut-knappen som er hovedhandlingen. Likt i begge kolonner.
  */
 export function TiltakKort({
   t,
@@ -62,14 +72,23 @@ export function TiltakKort({
         <EffektInnsatsMaler effekt={t.effekt} innsats={t.innsats} />
         {inn &&
           (t.kjerne ? (
-            <span className="pb-tag pb-tag--kjerne">kjerne</span>
+            <Tag size="xsmall" variant="strong" data-color="neutral">
+              kjerne
+            </Tag>
           ) : (
-            <span className="pb-tag pb-tag--stotte">støtte</span>
+            <Tag size="xsmall" variant="outline" data-color="neutral">
+              støtte
+            </Tag>
           ))}
         {t.blokkertAv && (
-          <span className="pb-tag pb-tag--avklaring">
-            <ExclamationmarkTriangleIcon aria-hidden /> åpen avklaring
-          </span>
+          <Tag
+            size="xsmall"
+            variant="moderate"
+            data-color="warning"
+            icon={<ExclamationmarkTriangleIcon aria-hidden />}
+          >
+            åpen avklaring
+          </Tag>
         )}
       </div>
 
@@ -78,9 +97,15 @@ export function TiltakKort({
       {krs.length > 0 && (
         <div className="pb-kort__kr">
           {krs.map((k) => (
-            <span key={k} className="pb-krmini" title={krLabels[k]}>
+            <Tag
+              key={k}
+              size="xsmall"
+              variant="moderate"
+              data-color={KR_COLOR[k]}
+              title={krLabels[k]}
+            >
               {krKort[k]}
-            </span>
+            </Tag>
           ))}
         </div>
       )}
