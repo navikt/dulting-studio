@@ -119,8 +119,8 @@ function ProfilKort({ p }: { p: TiltakProfil }) {
             </Seksjon>
           )}
 
-          {p.raakort.length > 0 && (
-            <Seksjon tittel="Laget av disse råkortene">
+          <Seksjon tittel="Laget av disse råkortene">
+            {p.raakort.length > 0 ? (
               <ul className="tiltak-ref-raakort">
                 {p.raakort.map((r) => (
                   <li key={r.id}>
@@ -129,8 +129,12 @@ function ProfilKort({ p }: { p: TiltakProfil }) {
                   </li>
                 ))}
               </ul>
-            </Seksjon>
-          )}
+            ) : (
+              <p className="tiltak-ref-raakort__empty">
+                Avledet i bearbeidingen — ingen direkte råkort.
+              </p>
+            )}
+          </Seksjon>
         </div>
       </Dialog.Body>
       <Dialog.Footer>

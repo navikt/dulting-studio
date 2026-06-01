@@ -12,6 +12,8 @@ const AG_RAAKORT: Record<string, string> = {
   "AG-01": "Kartlegge behov for oppfølgingsplan",
   "AG-02":
     "En kort tekst som sier noe om verdien ved å følge opp sine sykmeldte",
+  "AG-03":
+    "Samle godt innhold knyttet til tilrettelegging og oppfølging. Ligger spredt og skjult i dag",
   "AG-05":
     "Lag en miniguide innledningsvis til oppfølgingsplanen, eks: 1. Ta en prat først. En kort, uformell samtale gjør alt enklere. Snakk om hva som fungerer og hva som er vanskelig. 2. Skriv ned det viktigste Dere trenger ikke den perfekte løsningen. Bli enige om noe å prøve. 3. Del planen Del med fastlegen og Nav med et par klikk. Bryt prosessen ned til håndterbare steg med handlingsverb. Fjerner juridisk sjargong og fokuserer på hva bruker faktisk skal gjøre.",
   "AG-06":
@@ -20,9 +22,14 @@ const AG_RAAKORT: Record<string, string> = {
     'Per i dag er det ingen "oppgaver" å gjøre når de mottar sykmelding, det er en passiv side med informasjon om gradering og varighet. Kan vi gi dem en gjøre-liste eller noen oppgaver?',
   "AG-08":
     "Kan vi gjøre det mulig for brukerne å markere at de har løst en oppgave, stykke opp oppgaver? Hva bør man gjøre og hva gjenstår?",
+  "AG-09": "Gjenbruke godt innhold inne på innloggede sider",
+  "AG-10":
+    "Det bør stå noe om arbeidsgiver sin plikt, slik at de er obs på ansvar.",
   "AG-11":
     "Når arbeidsgiver logger seg inn på Dine sykmeldte når hen mottar en sykmelding, burde de komme rett inn på personen det gjelder for å se sykmeldingen. Eller i hvert fall tydeliggjøre hvor man skal trykke for å se eller gjøre noe.",
   "AG-12": "Bruke kalenderavtale til evaluering av oppfølgingsplan",
+  "AG-13":
+    "Kan vi få lov å endre teksten her? Vi har fått vite?... av hvem? og i denne virksomheten kan det endres til i din virksomhet, og er virksomhet det ordet man bruker? at alle føler at det er naturlig? Det er også skrivefeil i medarbeiderne (som ikke brukes ellers som begrep). Håper vi kan få skrive om denne boksen.",
   "AG-15":
     "Det burde være funksjonalitet for at arbeidsgiver kan oppgi at det ikke er behov for oppfølgingsplan",
   "AG-16":
@@ -46,6 +53,8 @@ const AG_RAAKORT: Record<string, string> = {
   "AG-31": "Ha med en knapp inne på planen «endre/juster/oppdater plan»",
   "AG-33":
     "Dersom man ikke har behov for en plan kan man her oppgi det, og dele infoen med nav og lege.",
+  "AG-34":
+    "Endre overskrift? … kanskje heller: «Hvem skal du dele oppfølgingsplanen med?» … Burde knappen hete evaluering av oppfølgingsplan …?",
   "AG-35": "Ikke synlig nok at det er den siste / aktive plan",
 };
 

@@ -63,6 +63,14 @@ const sykMap = new Map(
 );
 const selMap = new Map(selectionTiltak.map((t) => [t.id, t]));
 
+/** Råkort for støttetiltak som ikke ligger i kart-modellene (T13/T14), hentet
+ *  fra dekningskartet i docs/dulting-tiltaksregister.md. T11 har bevisst ingen
+ *  (avledet i bearbeidingen) og står derfor ikke her. */
+const STOTTE_RAAKORT: Record<string, string[]> = {
+  T13: ["AG-02", "AG-10"],
+  T14: ["AG-03", "AG-09", "AG-13", "AG-34"],
+};
+
 function raakortRefs(ids: string[]): RaakortRef[] {
   return ids.map((id) => ({ id, tekst: raakortText(id) }));
 }
@@ -73,7 +81,7 @@ export function getTiltakProfil(id: string): TiltakProfil | null {
   if (!base) return null;
   const ag = agMap.get(id);
   const syk = sykMap.get(id);
-  const raakort = ag?.raakort ?? syk?.raakort ?? [];
+  const raakort = ag?.raakort ?? syk?.raakort ?? STOTTE_RAAKORT[id] ?? [];
   return {
     id: base.id,
     aktor: base.aktor,
