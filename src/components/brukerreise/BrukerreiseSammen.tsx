@@ -122,6 +122,20 @@ export function BrukerreiseSammen() {
                   <span className="brS__sidelabel brS__sidelabel--leder">
                     Arbeidsgiver
                   </span>
+                  {!l.underAvklaring && s.underAvklaring && (
+                    // usynlig plassholder så skissene står på lik høyde når bare
+                    // den ene siden har et «under avklaring»-flagg
+                    <span
+                      className="brA__avklaringflag brS__avklaringflag brS__avklaringflag--ghost"
+                      aria-hidden
+                    >
+                      <ExclamationmarkTriangleIcon
+                        aria-hidden
+                        fontSize="0.8rem"
+                      />
+                      {s.underAvklaring}
+                    </span>
+                  )}
                   <div className="brS__tags">
                     <KategoriDialog
                       navn={l.barriere.kategori}

@@ -124,9 +124,10 @@ const phases: Phase[] = [
     },
     dult: {
       intervention:
-        "Et tidsriktig varsel rundt uke 4 (SMS, evt. pop-up i sykmeldings-kvitteringen) som minner om at en plan bør vurderes.",
+        "En tidsriktig oppgave på «Min side for sykmeldte» (med SMS-varsling ved siden av) rundt uke 4, som minner om at en plan bør vurderes.",
       nudge: {
-        channel: "sms",
+        channel: "minside-sykmeldt",
+        via: "sms",
         title: "Snart fire uker — vurder en oppfølgingsplan",
         body: "Det nærmer seg fire uker. Vil du vurdere om du trenger en oppfølgingsplan med lederen din?",
         cta: "Vurder behovet",

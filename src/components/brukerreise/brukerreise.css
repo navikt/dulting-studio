@@ -456,6 +456,10 @@
   align-self: flex-start;
   margin: 0.1rem 0 0.45rem;
 }
+/* reserverer samme høyde på motsatt side så skissene flukter */
+.brS__avklaringflag--ghost {
+  visibility: hidden;
+}
 .brA__panel {
   border-radius: var(--r-md);
   padding: 1rem 1.1rem;

@@ -32,7 +32,9 @@ const channelIcon: Record<ChannelKey, IconKey> = {
   plan: "chat",
   epost: "envelope",
   nav: "share",
-  "minside-sykmeldt": "checklist",
+  // «Min side for sykmeldte» er sykmeldtes varsel-bjelle-flate, parallelt til
+  // msag — bjelle, ikke checklist (som er «gjør-arbeid»-flatene dsm/dsf).
+  "minside-sykmeldt": "bell",
   dsf: "checklist",
   sms: "bell",
   kartlegging: "checklist",

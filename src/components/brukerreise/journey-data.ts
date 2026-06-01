@@ -253,7 +253,7 @@ export const phases: Phase[] = [
     },
     dult: {
       intervention:
-        "Et tidsriktig varsel på «Min side arbeidsgiver» (med mulig e-post-varsling ved siden av), koblet til riktig person før fireukersfristen — som lenker rett til «Dine sykmeldte», der leder tar stilling til behovet.",
+        "En tidsriktig oppgave på «Min side arbeidsgiver» — i varsel-bjella og under «Saker» (Oppfølging), med mulig e-post-varsling ved siden av — koblet til riktig person før fireukersfristen, som lenker rett til «Dine sykmeldte» der leder tar stilling til behovet.",
       nudge: {
         channel: "msag",
         via: "epost",
