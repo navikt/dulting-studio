@@ -163,10 +163,13 @@ export function AtferdsmatriseView() {
                 Hvorfor dultene virker
               </Heading>
               <BodyLong>
-                «Hvorfor»-fundamentet bak reisene: hvert tiltak plassert etter
-                hvilken <strong>barriere</strong> det løser (rad) og hvilken{" "}
+                Her ser du de identifiserte tiltakene og hvorfor de skal virke:
+                hvert tiltak er plassert etter hvilken <strong>barriere</strong>{" "}
+                det skal løse (rad) og hvilken{" "}
                 <strong>motivasjonsdriver</strong> det spiller på (kolonne).
-                Bytt aktør for å se mønsteret i hvert spor.
+                Slik henger atferdslogikken bak hver dult sammen — og du ser
+                hvor tiltakene klynger seg. Bytt aktør for å se mønsteret i
+                hvert spor.
               </BodyLong>
             </VStack>
             <ToggleGroup
@@ -188,7 +191,7 @@ export function AtferdsmatriseView() {
           {aktorLabel[aktor]}
         </Tag>
         <Tag variant="neutral" size="small">
-          {count} {aktor === "arbeidsgiver" ? "steg" : "tiltak"} plassert
+          {count} tiltak plassert
         </Tag>
         <Tag variant="info" size="small">
           4 barrierer × 5 drivere

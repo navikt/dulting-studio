@@ -1,10 +1,11 @@
 // Atferdsmatrise — «hvorfor»-fundamentet visualisert: motivasjon (5 drivere) ×
 // barriere (4 kategorier) fra Nudgelab-atferdskartleggingen. Plotter de
-// bearbeidede tiltakene/stegene etter hvilken barriere de løser og hvilken
-// driver de spiller på. Bygd fra eksisterende, typed datagrunnlag:
-//   - arbeidsgiver: lederJourney.phases (6 steg, hver med barriere + motivasjon)
-//   - sykmeldt:     sykmeldtMapPhases → ST01..ST12 (12 tiltak)
-import { lederJourney } from "@/components/brukerreise/journey-data";
+// bearbeidede TILTAKENE (begge aktører) etter hvilken barriere de løser og
+// hvilken driver de spiller på. Bygd fra de samme tiltaks-modellene som
+// tiltakskartene, så matrisen henger sammen med resten:
+//   - arbeidsgiver: interventionMapPhases → T01..T14 (de med barriere+motivasjon)
+//   - sykmeldt:     sykmeldtMapPhases → ST01..ST12
+import { interventionMapPhases } from "@/lib/kidult-reference-model";
 import { sykmeldtMapPhases } from "@/lib/sykmeldt-reference-model";
 
 export type Aktor = "arbeidsgiver" | "sykmeldt";
@@ -36,13 +37,16 @@ export type MatriseItem = {
   motivasjon: string;
 };
 
-const arbeidsgiverItems: MatriseItem[] = lederJourney.phases.map((p) => ({
-  id: `Steg ${p.n}`,
-  title: p.title,
-  description: p.actorGoal,
-  barriere: p.barriere.kategori,
-  motivasjon: p.motivasjon.driver,
-}));
+const arbeidsgiverItems: MatriseItem[] = interventionMapPhases
+  .flatMap((phase) => phase.tiltak)
+  .filter((t) => t.barriere && t.motivasjon)
+  .map((t) => ({
+    id: t.id,
+    title: t.title,
+    description: t.description,
+    barriere: t.barriere as string,
+    motivasjon: t.motivasjon as string,
+  }));
 
 const sykmeldtItems: MatriseItem[] = sykmeldtMapPhases.flatMap((phase) =>
   phase.tiltak.map((tiltak) => ({
