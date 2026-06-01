@@ -56,13 +56,13 @@ export function ArenaView() {
           </div>
           <ul className="ar-moves">
             <li>
-              <span className="ar-moves__cmd">↓↘→ + P</span> Tidsriktig Dult
+              <span className="ar-moves__cmd">↓↘→ + P</span> Nudge-Albue
             </li>
             <li>
               <span className="ar-moves__cmd">→→ + K</span> Default-Combo
             </li>
             <li>
-              <span className="ar-moves__cmd">↓↑ + P</span> Forankret Jab
+              <span className="ar-moves__cmd">↓↑ + P</span> Confirmshame-Felle
             </li>
           </ul>
         </div>
@@ -81,10 +81,10 @@ export function ArenaView() {
               <span className="ar-moves__cmd">↓↘→ + P</span> Varsel-Spam
             </li>
             <li>
-              <span className="ar-moves__cmd">←→ + K</span> Friksjons-Grep
+              <span className="ar-moves__cmd">←→ + K</span> BankID-Kvelertak
             </li>
             <li>
-              <span className="ar-moves__cmd">↓↓ + P</span> Skjema-Slam
+              <span className="ar-moves__cmd">↓↓ + P</span> Skjemavelde-Slam
             </li>
           </ul>
         </div>

@@ -545,8 +545,8 @@
   margin-top: clamp(4px, 1.2vw, 12px);
   display: grid;
   gap: 3px;
-  font-size: clamp(0.36rem, 0.95vw, 0.5rem);
-  line-height: 1.5;
+  font-size: clamp(0.42rem, 1vw, 0.58rem);
+  line-height: 1.55;
   color: #e7dbff;
   text-shadow: 1px 1px 0 var(--ar-ink);
 }
