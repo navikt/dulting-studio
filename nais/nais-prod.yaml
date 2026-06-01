@@ -15,8 +15,8 @@ spec:
     application:
       enabled: true
       tenant: nav.no # nav.no-tenant — ikke trygdeetaten; Z-identer støttes ikke
-      # Åpent for alle innloggede Nav-ansatte på intern ingress nå (Wonderwall
-      # krever fortsatt innlogging). Lås til team-esyfo senere ved å sette
+      # Åpent for alle innloggede Nav-ansatte (Wonderwall krever fortsatt
+      # innlogging på både ansatt- og intern-ingress). Lås til team-esyfo senere ved å sette
       # allowAllUsers: false og legge til groups under claims (samme blokk som
       # extra under) — NAIS håndhever gruppe-tilgang i Wonderwall-laget:
       #   groups:
@@ -59,6 +59,10 @@ spec:
       # 768Mi gir litt margin for Node 24 + OTel-agent + pg-pool (unngå OOMKill).
       memory: 768Mi
   ingresses:
+    # ansatt: internett-eksponert, men gated av Wonderwall-innlogging (Entra ID) —
+    # Nav-ansatte når den uten naisdevice (på compliant device). Primær inngang nå.
+    # intern: krever naisdevice; beholdt for eksisterende lenker / naisdevice-brukere.
+    - https://dulting-studio.ansatt.nav.no
     - https://dulting-studio.intern.nav.no
   accessPolicy:
     inbound:

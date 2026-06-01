@@ -55,7 +55,7 @@ jobs:
     name: Deploy to prod
     environment:
       name: production
-      url: https://dulting-studio.intern.nav.no
+      url: https://dulting-studio.ansatt.nav.no
     runs-on: ubuntu-latest
     needs:
       - test-and-verify
