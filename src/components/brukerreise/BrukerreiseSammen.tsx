@@ -10,9 +10,9 @@ import { Schibsted_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { KategoriDialog } from "@/components/KategoriDialog";
 import { TiltakRefTag } from "@/components/TiltakRefTag";
-import { DultBeats } from "./DultBeats";
 import { lederJourney } from "./journey-data";
 import { sykmeldtJourney } from "./journey-data-sykmeldt";
+import { NudgeCard } from "./NudgeCard";
 import "./brukerreise.css";
 
 const schibsted = Schibsted_Grotesk({
@@ -156,7 +156,7 @@ export function BrukerreiseSammen() {
                   <p className="brS__today">
                     <b>I dag</b> {l.today.barrier}
                   </p>
-                  <DultBeats dult={l.dult} time={l.time} date={l.date} />
+                  <NudgeCard nudge={l.dult.nudge} time={l.time} />
                   <p className="brS__behav">
                     <ArrowRightIcon aria-hidden fontSize="1rem" />
                     {l.dult.desiredBehavior}
@@ -203,7 +203,7 @@ export function BrukerreiseSammen() {
                   <p className="brS__today">
                     <b>I dag</b> {s.today.barrier}
                   </p>
-                  <DultBeats dult={s.dult} time={s.time} date={s.date} />
+                  <NudgeCard nudge={s.dult.nudge} time={s.time} />
                   <p className="brS__behav">
                     <ArrowRightIcon aria-hidden fontSize="1rem" />
                     {s.dult.desiredBehavior}

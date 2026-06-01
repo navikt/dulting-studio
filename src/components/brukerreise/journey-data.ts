@@ -112,14 +112,6 @@ export type Phase = {
   motivasjon: { driver: MotivasjonsDriver; detalj: string };
   dult: {
     intervention: string;
-    /** Valgfri «oppsett»-beat som skjer FØR selve varselet — f.eks. opt-in i
-        planen. Rendres som et eget kort foran nudge, koblet med en tid-pil.
-        Brukt på evalueringssteget (opt-in → påminnelse). */
-    setup?: Nudge;
-    /** Som setup, men en kort forklarende note i stedet for et handlingskort —
-        f.eks. der den andre parten ikke selv setter opp varselet (sykmeldt får
-        påminnelsen arbeidsgiver valgte i planen). */
-    setupNote?: string;
     nudge: Nudge;
     desiredBehavior: string;
     /** AG-råkort + T-tiltak som ligger bak. */
@@ -472,13 +464,7 @@ export const phases: Phase[] = [
     },
     dult: {
       intervention:
-        "Opt-in i selve planen (etter evalueringsdato-feltet, evt. på oppsummeringssiden): vil du minnes på evalueringen? Default av (guardrail). Sier du ja, varsles BEGGE noen dager før — oppgave på «Min side arbeidsgiver» (+ e-post) og på «Min side for sykmeldte» (+ SMS). Kalenderavtale er et valgfritt tillegg.",
-      setup: {
-        channel: "plan",
-        title: "Vil du ha en påminnelse om evalueringen?",
-        body: "Du satte 12. mars som evalueringsdato. Skal vi minne både deg og den ansatte noen dager før? Kan også legges i kalenderen.",
-        cta: "Ja, sett påminnelse",
-      },
+        "En oppgave-påminnelse til BEGGE noen dager før evalueringsdatoen — på «Min side arbeidsgiver» (+ e-post) og «Min side for sykmeldte» (+ SMS). Den velges som opt-in i selve planen (etter evalueringsdato-feltet, default av — guardrail), så ingen får den uten å ha sagt ja. Kalenderavtale er et valgfritt tillegg.",
       nudge: {
         channel: "msag",
         via: "epost",

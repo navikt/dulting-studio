@@ -10,9 +10,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { KategoriDialog } from "@/components/KategoriDialog";
 import { TiltakRefTag } from "@/components/TiltakRefTag";
-import { DultBeats } from "./DultBeats";
 import { PhaseIcon } from "./icons";
 import type { JourneyData } from "./journey-data";
+import { NudgeCard } from "./NudgeCard";
 
 export function BrukerreiseTospor({ data }: { data: JourneyData }) {
   const pathname = usePathname();
@@ -196,7 +196,7 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
                       {p.dult.intervention}
                     </p>
                     <div style={{ margin: "0.7rem 0 0.2rem" }}>
-                      <DultBeats dult={p.dult} time={p.time} date={p.date} />
+                      <NudgeCard nudge={p.dult.nudge} time={p.time} />
                     </div>
                     <p className="brA__behav">
                       <ArrowRightIcon aria-hidden fontSize="1rem" />

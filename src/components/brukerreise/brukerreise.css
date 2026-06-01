@@ -199,29 +199,6 @@
   color: var(--ink-faint);
   font-variant-numeric: tabular-nums;
 }
-/* to-beats-dult: opt-in → påminnelse, koblet med en tid-pil */
-.br-beats {
-  display: grid;
-  gap: 0.4rem;
-  width: 100%;
-}
-.br-beats__link {
-  justify-self: center;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  color: var(--ink-faint);
-}
-/* forklarende note der parten ikke selv setter opp varselet */
-.br-beats__note {
-  margin: 0;
-  padding: 0.6rem 0.8rem;
-  font-size: 0.8rem;
-  color: var(--ink-soft);
-  background: var(--paper-2);
-  border: 1px dashed var(--hair-strong);
-  border-radius: var(--r-sm);
-}
 .br-nudge__title {
   font-family: var(--font-display);
   font-weight: 700;

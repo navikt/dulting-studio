@@ -12,9 +12,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { KategoriDialog } from "@/components/KategoriDialog";
 import { TiltakRefTag } from "@/components/TiltakRefTag";
-import { DultBeats } from "./DultBeats";
 import { PhaseIcon } from "./icons";
 import type { JourneyData } from "./journey-data";
+import { NudgeCard } from "./NudgeCard";
 import { screenFor } from "./ScreenMock";
 
 export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
@@ -194,7 +194,7 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
                 Spiller på · {p.motivasjon.driver}
               </KategoriDialog>
               {(p.screenId ? screenFor(p.screenId) : null) ?? (
-                <DultBeats dult={p.dult} time={p.time} date={p.date} />
+                <NudgeCard nudge={p.dult.nudge} time={p.time} />
               )}
               <p className="brA__behav" style={{ marginTop: "0.9rem" }}>
                 <PhaseIcon icon={p.icon} fontSize="1rem" />

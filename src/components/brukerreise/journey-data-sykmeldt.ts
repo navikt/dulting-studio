@@ -329,9 +329,7 @@ const phases: Phase[] = [
     },
     dult: {
       intervention:
-        "Jonas lager ikke planen selv, så han setter ikke opp påminnelsen. Arbeidsgiver velger den i planen — og sier de ja, får Jonas den automatisk på «Min side for sykmeldte» (+ SMS) noen dager før, med en mal for hva han bør ta stilling til.",
-      setupNote:
-        "Arbeidsgiver velger påminnelsen i planen — du får den automatisk.",
+        "Jonas lager ikke planen selv, så han setter ikke opp påminnelsen — arbeidsgiver velger den i planen. Sier de ja, får Jonas den automatisk på «Min side for sykmeldte» (+ SMS) noen dager før evalueringsdatoen, med en mal for hva han bør ta stilling til.",
       nudge: {
         channel: "minside-sykmeldt",
         via: "sms",
