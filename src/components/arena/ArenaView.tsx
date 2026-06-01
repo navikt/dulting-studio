@@ -7,10 +7,9 @@ import "./arena.css";
 
 /**
  * «Brukerreise Battle» — rolig, ulenket arkade-intro (rute: /battle).
- * Et frosset action-panel: synthwave-scene med stille ambiens, to fightere i
- * kampstilling, og Hovmester fanget midt i et statisk «VARSEL-SPAM!»-angrep mot
- * NudgeLab. Ingen blits, ingen autopilot — bare en levende, men rolig VS-skjerm.
- * START → forsiden.
+ * En ren VS-skjerm: synthwave-scene med stille ambiens og to fightere som måler
+ * hverandre i kampstilling. Ingen blits, ingen autopilot, ingen slåssing — bare
+ * en levende, men rolig intro. START → forsiden.
  */
 export function ArenaView() {
   return (
@@ -52,7 +51,7 @@ export function ArenaView() {
       <div className="ar-fighters">
         <div className="ar-fighter ar-fighter--p1">
           <span className="ar-fighter__plate">▸ PLAYER 1</span>
-          <div className="ar-fighter__fig ar-fighter__fig--recoil">
+          <div className="ar-fighter__fig">
             <FighterNudgeLab />
           </div>
           <ul className="ar-moves">
@@ -74,7 +73,7 @@ export function ArenaView() {
 
         <div className="ar-fighter ar-fighter--p2">
           <span className="ar-fighter__plate">PLAYER 2 ◂</span>
-          <div className="ar-fighter__fig ar-fighter__fig--lean">
+          <div className="ar-fighter__fig">
             <FighterHovmester />
           </div>
           <ul className="ar-moves">
@@ -89,19 +88,6 @@ export function ArenaView() {
             </li>
           </ul>
         </div>
-
-        {/* statisk varsel-spam-angrep, frosset over NudgeLab */}
-        <div className="ar-sfx ar-sfx--from-p2 ar-sfx--at-p1" aria-hidden>
-          <span className="ar-sfx__word">PLING-PLING!</span>
-          <span className="ar-sfx__move">Varsel-spam</span>
-        </div>
-        {/* små bobler for «spam»-følelsen */}
-        <span className="ar-spam ar-spam--1" aria-hidden>
-          pling!
-        </span>
-        <span className="ar-spam ar-spam--2" aria-hidden>
-          pling!
-        </span>
       </div>
 
       {/* bunn: tittel + START → forsiden */}
