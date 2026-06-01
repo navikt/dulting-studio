@@ -387,7 +387,8 @@
   position: absolute;
   inset: 0;
   transform-origin: left center;
-  animation: ar-fill 1.1s cubic-bezier(0.2, 0.9, 0.2, 1) 0.3s both;
+  /* bredden styres av hp-state (scaleX); jevn tapping ved treff */
+  transition: transform 0.38s cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 .ar-hud__side--p2 .ar-hud__fill {
   transform-origin: right center;
@@ -407,14 +408,6 @@
     var(--ar-gold) 78%,
     #ff5a3c 100%
   );
-}
-@keyframes ar-fill {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(0.92);
-  }
 }
 .ar-hud__meta {
   display: flex;
@@ -498,6 +491,16 @@
   opacity: 0.7;
   pointer-events: none;
   z-index: -1;
+  transition:
+    opacity 0.2s ease,
+    width 0.2s ease,
+    height 0.2s ease;
+}
+/* hover-taunt: gulvet lyser opp under fighteren (inviterer til klikk) */
+.ar-fighter__hit:hover::before {
+  opacity: 1;
+  width: 94%;
+  height: 32px;
 }
 .ar-fighter--p1 .ar-fighter__hit::before {
   background: radial-gradient(circle, rgba(33, 230, 255, 0.9), transparent 70%);
@@ -629,6 +632,145 @@
   }
   100% {
     transform: translateX(0) rotate(0);
+  }
+}
+
+/* offeret rykker bakover + rødt treff-blink (flinch) */
+.ar-fighter--hurt.ar-fighter--p1 .ar-fighter__svg {
+  animation: ar-hurt-l 0.34s ease-out;
+}
+.ar-fighter--hurt.ar-fighter--p2 .ar-fighter__svg {
+  animation: ar-hurt-r 0.34s ease-out;
+}
+@keyframes ar-hurt-l {
+  0% {
+    transform: translateX(0);
+    filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.55)) brightness(2.4)
+      saturate(2);
+  }
+  100% {
+    transform: translateX(-26px) rotate(-4deg);
+  }
+}
+@keyframes ar-hurt-r {
+  0% {
+    transform: translateX(0);
+    filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.55)) brightness(2.4)
+      saturate(2);
+  }
+  100% {
+    transform: translateX(26px) rotate(4deg);
+  }
+}
+
+/* flytende skadetall over offeret */
+.ar-dmg {
+  position: absolute;
+  top: 18%;
+  z-index: 6;
+  font-size: clamp(1rem, 3vw, 2rem);
+  font-weight: 700;
+  color: #fff;
+  -webkit-text-stroke: 2px var(--ar-p2);
+  text-shadow: 0 0 12px var(--ar-p2);
+  pointer-events: none;
+  animation: ar-dmg 0.8s ease-out forwards;
+}
+.ar-dmg--p1 {
+  left: 22%;
+}
+.ar-dmg--p2 {
+  right: 22%;
+}
+@keyframes ar-dmg {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.6);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-46px) scale(1);
+  }
+}
+
+/* combo-teller midt på */
+.ar-combo {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  z-index: 7;
+  translate: -50% 0;
+  text-align: center;
+  pointer-events: none;
+  animation: ar-combo 0.3s ease-out;
+}
+.ar-combo__n {
+  display: block;
+  font-size: clamp(1.4rem, 4vw, 2.6rem);
+  color: var(--ar-gold);
+  -webkit-text-stroke: 2px var(--ar-ink);
+  text-shadow: 0 0 16px var(--ar-gold);
+}
+.ar-combo__lab {
+  font-size: clamp(0.42rem, 1.2vw, 0.66rem);
+  color: #fff;
+  letter-spacing: 2px;
+}
+@keyframes ar-combo {
+  0% {
+    transform: scale(1.6) rotate(-6deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+/* K.O.-banner */
+.ar-ko {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  background: radial-gradient(
+    circle at center,
+    transparent 30%,
+    rgba(5, 3, 15, 0.72)
+  );
+  pointer-events: none;
+}
+.ar-ko__big {
+  font-size: clamp(3rem, 14vw, 11rem);
+  color: #fff;
+  -webkit-text-stroke: clamp(3px, 0.8vw, 7px) var(--ar-p2);
+  text-shadow:
+    0 0 40px var(--ar-p2),
+    0 0 80px var(--ar-mag);
+  animation: ar-ko-in 0.6s cubic-bezier(0.2, 1.6, 0.3, 1) both;
+}
+.ar-ko__who {
+  font-size: clamp(0.7rem, 2.2vw, 1.3rem);
+  color: var(--ar-gold);
+  text-shadow: 3px 3px 0 var(--ar-ink);
+  animation: ar-ko-in 0.5s ease-out 0.25s both;
+}
+@keyframes ar-ko-in {
+  0% {
+    opacity: 0;
+    transform: scale(5) rotate(-14deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.9) rotate(4deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-3deg);
   }
 }
 
@@ -855,6 +997,27 @@
   text-shadow:
     4px 4px 0 var(--ar-mag),
     -2px -2px 0 var(--ar-p1);
+  animation: ar-title-flick 5s steps(1) 1.6s infinite;
+}
+/* sjeldent neon-flimmer (arkade-skilt) */
+@keyframes ar-title-flick {
+  0%,
+  90%,
+  100% {
+    opacity: 1;
+  }
+  91% {
+    opacity: 0.45;
+  }
+  92% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0.35;
+  }
+  96% {
+    opacity: 1;
+  }
 }
 .ar-title b {
   color: var(--ar-gold);
@@ -986,6 +1149,8 @@
   .ar-fighter--p2 .ar-fighter__svg,
   .ar-fighter--lunge.ar-fighter--p1 .ar-fighter__svg,
   .ar-fighter--lunge.ar-fighter--p2 .ar-fighter__svg,
+  .ar-fighter--hurt.ar-fighter--p1 .ar-fighter__svg,
+  .ar-fighter--hurt.ar-fighter--p2 .ar-fighter__svg,
   .ar-fighter--p1 .ar-fighter__plate,
   .ar-fighter--p2 .ar-fighter__plate,
   .ar-steam,
@@ -995,6 +1160,11 @@
   .ar-aura,
   .ar-vs__text,
   .ar-clash.is-on,
+  .ar-dmg,
+  .ar-combo,
+  .ar-ko__big,
+  .ar-ko__who,
+  .ar-title,
   .ar-start,
   .ar-insert {
     animation: none;

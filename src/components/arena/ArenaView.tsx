@@ -1,39 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { ArenaBackdrop } from "./Backdrop";
 import { FighterHovmester, FighterNudgeLab } from "./Fighters";
+import { useBattle } from "./useBattle";
 import "./arena.css";
 
-type Side = "p1" | "p2";
+const NAMES = { p1: "NUDGELAB", p2: "HOVMESTER" } as const;
 
 /**
  * «Brukerreise Battle» — en tullete, ulenket arkade-intro (rute: /arena).
  * Full fighting-game-VS-skjerm: synthwave-arena, helsebarer, to fightere i
- * kampstilling, VS-smell og «FIGHT!». START dropper deg på forsiden.
- * Klikk en fighter → en liten clash (skjermrist + gnist), bare for moro.
+ * kampstilling, VS-smell og «FIGHT!». Klikk en fighter → den slår motstanderen
+ * (helse tappes, flinch, skadetall, combo, K.O. + rematch). START → forsiden.
  */
 export function ArenaView() {
-  const [attacking, setAttacking] = useState<Side | null>(null);
-  const [clashKey, setClashKey] = useState(0);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { hp, attacker, victim, dmgFx, clashKey, combo, ko, attack } =
+    useBattle();
 
-  useEffect(() => {
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
-  }, []);
-
-  function clash(side: Side) {
-    setAttacking(side);
-    setClashKey((k) => k + 1);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setAttacking(null), 470);
-  }
+  const fighterClass = (side: "p1" | "p2") =>
+    `ar-fighter ar-fighter--${side}${
+      attacker === side ? " ar-fighter--lunge" : ""
+    }${victim === side ? " ar-fighter--hurt" : ""}`;
 
   return (
-    <div className={`ar-stage${attacking ? " is-shake" : ""}`}>
+    <div className={`ar-stage${attacker ? " is-shake" : ""}`}>
       {/* bakgrunn: scenen i lag */}
       <ArenaBackdrop />
 
@@ -42,7 +33,10 @@ export function ArenaView() {
         <div className="ar-hud__side ar-hud__side--p1">
           <div className="ar-hud__name">NUDGELAB</div>
           <div className="ar-hud__bar">
-            <span className="ar-hud__fill ar-hud__fill--p1" />
+            <span
+              className="ar-hud__fill ar-hud__fill--p1"
+              style={{ transform: `scaleX(${hp.p1 / 100})` }}
+            />
           </div>
           <div className="ar-hud__meta">
             <span className="ar-hud__stars">★ ★ ★</span>
@@ -58,7 +52,10 @@ export function ArenaView() {
         <div className="ar-hud__side ar-hud__side--p2">
           <div className="ar-hud__name">HOVMESTER</div>
           <div className="ar-hud__bar">
-            <span className="ar-hud__fill ar-hud__fill--p2" />
+            <span
+              className="ar-hud__fill ar-hud__fill--p2"
+              style={{ transform: `scaleX(${hp.p2 / 100})` }}
+            />
           </div>
           <div className="ar-hud__meta">
             <span className="ar-hud__stars">★ ★</span>
@@ -69,17 +66,13 @@ export function ArenaView() {
 
       {/* arena: fighterne + VS */}
       <div className="ar-fighters">
-        <div
-          className={`ar-fighter ar-fighter--p1${
-            attacking === "p1" ? " ar-fighter--lunge" : ""
-          }`}
-        >
+        <div className={fighterClass("p1")}>
           <span className="ar-fighter__plate">▸ PLAYER 1</span>
           <button
             type="button"
             className="ar-fighter__hit"
-            onClick={() => clash("p1")}
-            aria-label="NudgeLab — klikk for et prøveangrep"
+            onClick={() => attack("p1")}
+            aria-label="NudgeLab — klikk for å slå"
           >
             <FighterNudgeLab />
           </button>
@@ -100,17 +93,13 @@ export function ArenaView() {
           <span className="ar-vs__text">VS</span>
         </div>
 
-        <div
-          className={`ar-fighter ar-fighter--p2${
-            attacking === "p2" ? " ar-fighter--lunge" : ""
-          }`}
-        >
+        <div className={fighterClass("p2")}>
           <span className="ar-fighter__plate">PLAYER 2 ◂</span>
           <button
             type="button"
             className="ar-fighter__hit"
-            onClick={() => clash("p2")}
-            aria-label="Hovmester — klikk for et prøveangrep"
+            onClick={() => attack("p2")}
+            aria-label="Hovmester — klikk for å slå"
           >
             <FighterHovmester />
           </button>
@@ -128,7 +117,28 @@ export function ArenaView() {
         </div>
 
         {clashKey > 0 && (
-          <span key={clashKey} className="ar-clash is-on" aria-hidden />
+          <span
+            key={`clash-${clashKey}`}
+            className="ar-clash is-on"
+            aria-hidden
+          />
+        )}
+
+        {dmgFx && (
+          <span
+            key={`dmg-${dmgFx.key}`}
+            className={`ar-dmg ar-dmg--${dmgFx.side}`}
+            aria-hidden
+          >
+            -{dmgFx.dmg}
+          </span>
+        )}
+
+        {combo > 1 && !ko && (
+          <div key={`combo-${combo}`} className="ar-combo" aria-hidden>
+            <span className="ar-combo__n">{combo}</span>
+            <span className="ar-combo__lab">HITS</span>
+          </div>
         )}
       </div>
 
@@ -136,6 +146,14 @@ export function ArenaView() {
       <div className="ar-fight" aria-hidden>
         <span>FIGHT!</span>
       </div>
+
+      {/* K.O. — vises til rematch */}
+      {ko && (
+        <div className="ar-ko" aria-hidden>
+          <span className="ar-ko__big">K.O.!</span>
+          <span className="ar-ko__who">{NAMES[ko]} VINNER</span>
+        </div>
+      )}
 
       {/* bunn: tittel + START → forsiden */}
       <footer className="ar-foot">
@@ -149,8 +167,8 @@ export function ArenaView() {
           INSERT COIN — TRYKK START FOR Å GÅ INN I STUDIO
         </span>
         <p className="ar-fineprint">
-          Et tullete intro. Ingen roboter ble skadet. Klikk en fighter for et
-          prøveangrep.
+          Et tullete intro. Klikk fighterne for å sloss (helt uten konsekvens) —
+          eller trykk START.
         </p>
       </footer>
 
