@@ -53,7 +53,8 @@ const moments: Moment[] = [
   },
   {
     title: "Evaluering og justering",
-    coupling: "Begge minnes på evalueringen, og markerer hva som virker.",
+    coupling:
+      "Arbeidsgiver velger påminnelsen i planen; begge minnes på evalueringen noen dager før.",
   },
 ];
 

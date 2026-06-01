@@ -329,13 +329,9 @@ const phases: Phase[] = [
     },
     dult: {
       intervention:
-        "Når planen lages kan Jonas opt-ine til en påminnelse om evalueringen (default av). Noen dager før datoen kommer påminnelsen på «Min side for sykmeldte» (+ SMS), med en mal for hva han bør ta stilling til.",
-      setup: {
-        channel: "minside-sykmeldt",
-        title: "Vil du minnes på evalueringen?",
-        body: "Vi sender deg en påminnelse noen dager før 12. mars — bare hvis du vil.",
-        cta: "Ja, minn meg på det",
-      },
+        "Jonas lager ikke planen selv, så han setter ikke opp påminnelsen. Arbeidsgiver velger den i planen — og sier de ja, får Jonas den automatisk på «Min side for sykmeldte» (+ SMS) noen dager før, med en mal for hva han bør ta stilling til.",
+      setupNote:
+        "Arbeidsgiver velger påminnelsen i planen — du får den automatisk.",
       nudge: {
         channel: "minside-sykmeldt",
         via: "sms",

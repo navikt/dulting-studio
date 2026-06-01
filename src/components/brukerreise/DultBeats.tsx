@@ -15,12 +15,25 @@ export function DultBeats({
       og mer presist enn fase-etiketten i hjørnet. */
   date?: string;
 }) {
-  if (!dult.setup) return <NudgeCard nudge={dult.nudge} time={time} />;
-  return (
-    <div className="br-beats">
-      <NudgeCard nudge={dult.setup} time="ved planlegging" />
-      <span className="br-beats__link">↓ noen dager før evalueringen</span>
-      <NudgeCard nudge={dult.nudge} time={date ?? time} />
-    </div>
-  );
+  // opt-in-kort foran påminnelsen (arbeidsgiver, i planen)
+  if (dult.setup) {
+    return (
+      <div className="br-beats">
+        <NudgeCard nudge={dult.setup} time="i planen" />
+        <span className="br-beats__link">↓ noen dager før evalueringen</span>
+        <NudgeCard nudge={dult.nudge} time={date ?? time} />
+      </div>
+    );
+  }
+  // forklarende note der parten ikke selv setter opp varselet (sykmeldt)
+  if (dult.setupNote) {
+    return (
+      <div className="br-beats">
+        <p className="br-beats__note">{dult.setupNote}</p>
+        <span className="br-beats__link">↓ noen dager før evalueringen</span>
+        <NudgeCard nudge={dult.nudge} time={date ?? time} />
+      </div>
+    );
+  }
+  return <NudgeCard nudge={dult.nudge} time={time} />;
 }
