@@ -196,7 +196,7 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
                       {p.dult.intervention}
                     </p>
                     <div style={{ margin: "0.7rem 0 0.2rem" }}>
-                      <DultBeats dult={p.dult} time={p.time} />
+                      <DultBeats dult={p.dult} time={p.time} date={p.date} />
                     </div>
                     <p className="brA__behav">
                       <ArrowRightIcon aria-hidden fontSize="1rem" />

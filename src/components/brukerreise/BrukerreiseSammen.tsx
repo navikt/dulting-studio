@@ -155,7 +155,7 @@ export function BrukerreiseSammen() {
                   <p className="brS__today">
                     <b>I dag</b> {l.today.barrier}
                   </p>
-                  <DultBeats dult={l.dult} time={l.time} />
+                  <DultBeats dult={l.dult} time={l.time} date={l.date} />
                   <p className="brS__behav">
                     <ArrowRightIcon aria-hidden fontSize="1rem" />
                     {l.dult.desiredBehavior}
@@ -202,7 +202,7 @@ export function BrukerreiseSammen() {
                   <p className="brS__today">
                     <b>I dag</b> {s.today.barrier}
                   </p>
-                  <DultBeats dult={s.dult} time={s.time} />
+                  <DultBeats dult={s.dult} time={s.time} date={s.date} />
                   <p className="brS__behav">
                     <ArrowRightIcon aria-hidden fontSize="1rem" />
                     {s.dult.desiredBehavior}

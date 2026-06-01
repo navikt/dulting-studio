@@ -194,7 +194,7 @@ export function BrukerreisePresentasjon({ data }: { data: JourneyData }) {
                 Spiller på · {p.motivasjon.driver}
               </KategoriDialog>
               {(p.screenId ? screenFor(p.screenId) : null) ?? (
-                <DultBeats dult={p.dult} time={p.time} />
+                <DultBeats dult={p.dult} time={p.time} date={p.date} />
               )}
               <p className="brA__behav" style={{ marginTop: "0.9rem" }}>
                 <PhaseIcon icon={p.icon} fontSize="1rem" />
