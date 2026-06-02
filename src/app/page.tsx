@@ -10,21 +10,39 @@ const schibsted = Schibsted_Grotesk({
   display: "swap",
 });
 
-const highlights = [
+// Guidet fortelling i kronologisk rekkefølge: først tiltakskartene (fundamentet),
+// så brukerreisene (tiltakene i tid), så utvelgelsen. Sammenslått reise og
+// atferdsmatrise er bevisst nedtonet som «mer å utforske». Hvert steg viser
+// arbeidsgiver- og sykmeldt-sporet side om side der det henger sammen.
+const steps = [
   {
     n: "01",
-    title: "Dagens flyt mot endret flyt",
-    text: "To spor side om side: det som faktisk skjer i dag, mot flyten med små, tidsriktige dult.",
+    kicker: "Fundamentet",
+    title: "Tiltakskartene",
+    text: "Råkortene fra atferdskartleggingen — slått sammen og gruppert til konkrete dulting-tiltak. Ett kart for arbeidsgiver, ett for den sykmeldte.",
+    links: [
+      { href: "/tiltakskart", label: "Arbeidsgivers tiltakskart" },
+      { href: "/tiltakskart/sykmeldt", label: "Den sykmeldtes tiltakskart" },
+    ],
   },
   {
     n: "02",
-    title: "Forankret i datagrunnlaget",
-    text: "Hvert steg er koblet til reelle barrierer, motivasjonsdrivere og dulting-tiltak fra atferdskartleggingen.",
+    kicker: "Tiltakene i tid",
+    title: "Brukerreisene",
+    text: "Tiltakene satt inn i en tidslinje — det som faktisk skjer i dag, mot flyten med små, tidsriktige dult. Hvert spor for seg, side om side.",
+    links: [
+      { href: "/brukerreise/leder", label: "Arbeidsgiver · nærmeste leder" },
+      { href: "/brukerreise/sykmeldt", label: "Den sykmeldte" },
+    ],
   },
   {
     n: "03",
-    title: "Måletegn og guardrails",
-    text: "Hva vi vil oppnå per steg — og hvor vi holder igjen for ikke å presse eller skape varseltrøtthet.",
+    kicker: "Prioritering",
+    title: "Utvelgelsen",
+    text: "Slik prioriterer teamet hvilke tiltak vi tar først — vurdert etter forventet effekt og innsats.",
+    links: [
+      { href: "/tiltakspakke-utvelgelse", label: "Tiltakspakke-utvelgelse" },
+    ],
   },
 ];
 
@@ -39,24 +57,13 @@ export default function Home() {
         <p className="lp__lead">
           Et internt arbeidsverktøy for å styrke dialogen i
           sykefraværsoppfølgingen — der arbeidsgivers tilretteleggingsplikt og
-          den sykmeldtes medvirkning møtes. Vi viser dagens faktiske flyt mot
-          flyten med små, tidsriktige dult.
+          den sykmeldtes medvirkning møtes. Vi går fra tiltakskartene, via
+          brukerreisene, til utvelgelsen.
         </p>
         <div className="lp__cta">
-          <Button as="a" href="/brukerreise/sammen" variant="primary">
-            Se reisen — begge spor side om side
+          <Button as="a" href="/tiltakskart" variant="primary">
+            Start her: tiltakskartene
           </Button>
-          <nav className="lp__cta-also" aria-label="Gå rett til ett spor">
-            <span className="lp__cta-also-label">Eller hvert spor for seg</span>
-            <Link className="lp__cta-link" href="/brukerreise/leder">
-              Arbeidsgiver · nærmeste leder
-              <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-            </Link>
-            <Link className="lp__cta-link" href="/brukerreise/sykmeldt">
-              Den sykmeldte
-              <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-            </Link>
-          </nav>
         </div>
         <p className="lp__note">
           Bevisst avgrenset demo. Alt innhold er syntetisk — ingen reelle
@@ -64,28 +71,37 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="lp__grid" aria-label="Hva brukerreisen viser">
-        {highlights.map((h) => (
-          <article className="lp__card" key={h.n}>
-            <span className="lp__card-num">{h.n}</span>
-            <h2>{h.title}</h2>
-            <p>{h.text}</p>
+      <section className="lp__steps" aria-label="Slik henger det sammen">
+        {steps.map((s) => (
+          <article className="lp__step" key={s.n}>
+            <span className="lp__step-num" aria-hidden>
+              {s.n}
+            </span>
+            <div className="lp__step-body">
+              <span className="lp__step-kicker">{s.kicker}</span>
+              <h2>{s.title}</h2>
+              <p>{s.text}</p>
+              <nav className="lp__step-links" aria-label={`Åpne ${s.title}`}>
+                {s.links.map((l) => (
+                  <Link className="lp__cta-link" href={l.href} key={l.href}>
+                    {l.label}
+                    <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+                  </Link>
+                ))}
+              </nav>
+            </div>
           </article>
         ))}
       </section>
 
-      <nav className="lp__refs" aria-label="Analysen bak reisene">
-        <span className="lp__refs-label">Bak reisene</span>
+      <nav className="lp__refs" aria-label="Mer å utforske">
+        <span className="lp__refs-label">Mer å utforske</span>
+        <Link className="lp__cta-link" href="/brukerreise/sammen">
+          Begge spor i én tidslinje
+          <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+        </Link>
         <Link className="lp__cta-link" href="/atferdsmatrise">
-          Atferdsmatrise
-          <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-        </Link>
-        <Link className="lp__cta-link" href="/tiltakskart">
-          Tiltakskart
-          <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-        </Link>
-        <Link className="lp__cta-link" href="/tiltakspakke-utvelgelse">
-          Utvelgelse
+          Atferdsmatrise — rådata bak kartene
           <ArrowRightIcon aria-hidden fontSize="0.9rem" />
         </Link>
       </nav>

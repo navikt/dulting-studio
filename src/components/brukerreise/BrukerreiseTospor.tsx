@@ -7,7 +7,6 @@ import {
   ExclamationmarkTriangleIcon,
 } from "@navikt/aksel-icons";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { KategoriDialog } from "@/components/KategoriDialog";
 import { TiltakRefTag } from "@/components/TiltakRefTag";
 import { PhaseIcon } from "./icons";
@@ -15,21 +14,12 @@ import type { JourneyData } from "./journey-data";
 import { NudgeCard } from "./NudgeCard";
 
 export function BrukerreiseTospor({ data }: { data: JourneyData }) {
-  const pathname = usePathname();
   const { mission, overordnetMaal, persona, phases, contrast } = data;
 
   return (
     <div className="br-proto">
       <div className="brA">
         <header className="brA__hero">
-          <Link
-            className="brA__present"
-            href={`${pathname}?modus=presentasjon`}
-            scroll={false}
-          >
-            Vis som presentasjon
-            <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-          </Link>
           <div className="brA__track">{mission.track}</div>
           <h1 className="brA__title">{mission.title}</h1>
           <p className="brA__lead">{mission.lead}</p>
@@ -285,14 +275,6 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
           <Link className="brA__summary-cta" href="/brukerreise/sammen">
             Se begge spor side om side
             <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-          </Link>
-          <Link
-            className="brA__summary-link"
-            href={`${pathname}?modus=presentasjon`}
-            scroll={false}
-          >
-            Se reisen som presentasjon
-            <ArrowRightIcon aria-hidden fontSize="0.85rem" />
           </Link>
         </section>
       </div>

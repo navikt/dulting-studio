@@ -43,7 +43,7 @@ body {
    (Button as="a"). Aksel setter knappefargen i et @layer; en ulagdelt
    a{color:inherit} slår lagdelte regler uansett spesifisitet og ga svart
    tekst på blå primærknapp (3.3:1). :where() holder spesifisiteten på rein
-   a (0,0,1) så egne lenke-klasser (.brA__present m.fl. som setter color:#fff)
+   a (0,0,1) så egne lenke-klasser (.brA__summary-cta m.fl. som setter color:#fff)
    fortsatt vinner; :not(.aksel-button) lar Aksel eie knappefargen. */
 a:where(:not(.aksel-button)) {
   color: inherit;
@@ -329,57 +329,94 @@ a:where(:not(.aksel-button)) {
   color: #046a2c;
   font-weight: 600;
 }
-.lp__grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  max-width: 58rem;
+/* Guidet fortelling: nummererte steg i kronologisk rekkefølge (kart → reiser →
+   utvelgelse). Stort nummer-chip til venstre, innhold + lenker til høyre. */
+.lp__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-width: 56rem;
   margin: 0 auto;
 }
-.lp__card {
+.lp__step {
+  display: flex;
+  gap: 1.3rem;
   background: var(--a-surface-default);
   border: 1px solid var(--a-border-subtle);
   border-radius: var(--lp-radius);
-  padding: 1.6rem 1.7rem;
+  padding: 1.5rem 1.7rem;
   box-shadow: var(--lp-shadow);
   transition:
     transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 @media (hover: hover) {
-  .lp__card:hover {
+  .lp__step:hover {
     transform: translateY(-3px);
     box-shadow: var(--lp-shadow-hover);
   }
 }
-.lp__card-num {
+.lp__step-num {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.7rem;
+  height: 2.7rem;
+  border-radius: 50%;
   font-family: var(--lp-display);
   font-weight: 800;
-  font-size: 0.85rem;
-  letter-spacing: 0.04em;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
   color: #0067c5;
+  background: rgb(0 103 197 / 8%);
 }
-.lp__card h2 {
+.lp__step-body {
+  flex: 1;
+  min-width: 0;
+}
+.lp__step-kicker {
+  font-family: var(--lp-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--a-text-subtle);
+}
+.lp__step h2 {
   font-family: var(--lp-display);
   font-weight: 700;
-  font-size: 1.1rem;
-  line-height: 1.25;
-  margin: 0.35rem 0 0.5rem;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  margin: 0.15rem 0 0.4rem;
   color: #0a2540;
 }
-.lp__card p {
+.lp__step p {
   margin: 0;
   color: #475569;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: 0.97rem;
+  line-height: 1.55;
+  max-width: 48ch;
+}
+.lp__step-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  margin-top: 0.9rem;
+}
+@media (max-width: 560px) {
+  .lp__step {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
 }
 
-/* Rolig entré: heltens innhold og kortene stiger inn ved last. fill-mode
+/* Rolig entré: heltens innhold og stegene stiger inn ved last. fill-mode
    «backwards» gir from-tilstanden under delay, og slipper underliggende verdier
-   tilbake etterpå — så kort-hover (translateY) ikke overstyres. */
+   tilbake etterpå — så steg-hover (translateY) ikke overstyres. */
 @media (prefers-reduced-motion: no-preference) {
   .lp__hero > *,
-  .lp__card {
+  .lp__step {
     animation: lp-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   }
   .lp__hero > *:nth-child(2) {
@@ -391,11 +428,14 @@ a:where(:not(.aksel-button)) {
   .lp__hero > *:nth-child(4) {
     animation-delay: 0.15s;
   }
-  .lp__card:nth-child(2) {
-    animation-delay: 0.08s;
+  .lp__step:nth-child(1) {
+    animation-delay: 0.1s;
   }
-  .lp__card:nth-child(3) {
-    animation-delay: 0.16s;
+  .lp__step:nth-child(2) {
+    animation-delay: 0.18s;
+  }
+  .lp__step:nth-child(3) {
+    animation-delay: 0.26s;
   }
 }
 @keyframes lp-rise {

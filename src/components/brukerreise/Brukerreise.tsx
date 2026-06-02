@@ -22,7 +22,8 @@ const schibsted = Schibsted_Grotesk({
  *  - standard: tospor (arbeidsverktøy) — «I dag» mot «Med dulting»
  *  - `?modus=presentasjon`: full-skjerm scrollytelling (presentasjonsmodus)
  *
- * Tospor-visningen har en «Vis som presentasjon»-knapp; presentasjonen en «Lukk».
+ * Scrollytelling-inngangen er midlertidig tatt ut av tospor-visningen; ruten
+ * består og nås via `?modus=presentasjon` (presentasjonen har en «Lukk»).
  */
 export function Brukerreise({ data }: { data: JourneyData }) {
   const searchParams = useSearchParams();

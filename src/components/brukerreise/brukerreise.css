@@ -1115,25 +1115,6 @@
   color: #fff;
 }
 
-/* present-mode entry/exit buttons */
-.brA__present {
-  position: absolute;
-  top: 2.5rem;
-  right: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font: 700 0.82rem / 1 var(--font-display);
-  color: #fff;
-  background: var(--ink);
-  text-decoration: none;
-  padding: 0.6rem 1rem;
-  border-radius: 999px;
-  box-shadow: var(--shadow-md);
-}
-.brA__present:hover {
-  background: #14365f;
-}
 .brA__hero {
   position: relative;
 }
@@ -1161,7 +1142,6 @@
 
 /* Synlig tastatur-fokus på egne lenker/knapper (WCAG 2.4.7 / 1.4.11).
    Lyse outlines på mørk bakgrunn, accent på lys. */
-.brA__present:focus-visible,
 .brS__navlink:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -1171,14 +1151,6 @@
 .br-nudge__cta:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px;
-}
-
-@media (max-width: 60rem) {
-  .brA__present {
-    position: static;
-    margin-top: 1rem;
-    align-self: flex-start;
-  }
 }
 
 /* =====================================================================
@@ -1578,24 +1550,6 @@
   background: #1a6ac4;
 }
 .brA__summary-cta:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
-}
-.brA__summary-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #b9cbe6;
-  text-decoration: none;
-}
-.brA__summary-link:hover {
-  color: #fff;
-  text-decoration: underline;
-}
-.brA__summary-link:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px;
 }

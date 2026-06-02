@@ -4,20 +4,23 @@ import { Heading } from "@navikt/ds-react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 
-// Slank toppnav: merket (→ forsiden) + to toppnivå-innganger, Brukerreise og
-// Analyse. Bevisst holdt lett så den ikke bryter brukerreisenes immersive verden.
-// Pipeline-en (Prosjekter → import/inbox/studio) er fortsatt ute av navigasjonen
-// (DB-rutene ikke provisjonert i prod); koden/rutene består og nås via URL.
-const ANALYSE_PREFIXES = [
-  "/atferdsmatrise",
-  "/tiltakskart",
-  "/tiltakspakke-utvelgelse",
+// Flat toppnav: merket (→ forsiden) + de tre toppnivå-innganger i fortelle-
+// rekkefølge — Tiltakskart, Brukerreise, Utvelgelse. Atferdsmatrisen (rådata)
+// og den sammenslåtte reisen er bevisst nedtonet til forsidens «mer å utforske»
+// og nås via URL. Pipeline-en (Prosjekter → import/inbox/studio) er fortsatt
+// ute av navigasjonen (DB-rutene ikke provisjonert i prod); koden/rutene består.
+const NAV = [
+  { href: "/tiltakskart", label: "Tiltakskart", prefix: "/tiltakskart" },
+  { href: "/brukerreise/leder", label: "Brukerreise", prefix: "/brukerreise" },
+  {
+    href: "/tiltakspakke-utvelgelse",
+    label: "Utvelgelse",
+    prefix: "/tiltakspakke-utvelgelse",
+  },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const brukerreiseActive = pathname.startsWith("/brukerreise");
-  const analyseActive = ANALYSE_PREFIXES.some((p) => pathname.startsWith(p));
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -28,24 +31,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </NextLink>
           </Heading>
           <nav className="app-nav" aria-label="Hovednavigasjon">
-            <NextLink
-              href="/brukerreise/sammen"
-              className={`app-nav__link${
-                brukerreiseActive ? " app-nav__link--active" : ""
-              }`}
-              aria-current={brukerreiseActive ? "page" : undefined}
-            >
-              Brukerreise
-            </NextLink>
-            <NextLink
-              href="/atferdsmatrise"
-              className={`app-nav__link${
-                analyseActive ? " app-nav__link--active" : ""
-              }`}
-              aria-current={analyseActive ? "page" : undefined}
-            >
-              Analyse
-            </NextLink>
+            {NAV.map((item) => {
+              const active = pathname.startsWith(item.prefix);
+              return (
+                <NextLink
+                  key={item.href}
+                  href={item.href}
+                  className={`app-nav__link${
+                    active ? " app-nav__link--active" : ""
+                  }`}
+                  aria-current={active ? "page" : undefined}
+                >
+                  {item.label}
+                </NextLink>
+              );
+            })}
           </nav>
         </div>
       </header>
