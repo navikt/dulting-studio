@@ -1,5 +1,4 @@
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { Button } from "@navikt/ds-react";
 import { Schibsted_Grotesk } from "next/font/google";
 import Link from "next/link";
 
@@ -10,39 +9,43 @@ const schibsted = Schibsted_Grotesk({
   display: "swap",
 });
 
-// Guidet fortelling i kronologisk rekkefølge: først tiltakskartene (fundamentet),
-// så brukerreisene (tiltakene i tid), så utvelgelsen. Sammenslått reise og
-// atferdsmatrise er bevisst nedtonet som «mer å utforske». Hvert steg viser
-// arbeidsgiver- og sykmeldt-sporet side om side der det henger sammen.
-const steps = [
+// Forsiden = aktør-gruppert hub. To likestilte spor (arbeidsgiver / den
+// sykmeldte), hver med sitt tiltakskart og sin brukerreise. Under sporene
+// binder «Begge spor i én tidslinje» dem sammen (selve poenget), og en
+// «på tvers»-rad gir analyseverktøyene (utvelgelse, atferdsmatrise). Leser som
+// en fortelling man kan presentere ovenfra og ned — og fungerer som et
+// verktøys hjem der alt er ett klikk unna.
+const actors = [
   {
-    n: "01",
-    kicker: "Fundamentet",
-    title: "Tiltakskartene",
-    text: "Råkortene fra atferdskartleggingen — slått sammen og gruppert til konkrete dulting-tiltak. Ett kart for arbeidsgiver, ett for den sykmeldte.",
+    key: "ag",
+    label: "Arbeidsgiver",
+    sub: "nærmeste leder",
+    desc: "Tiltakskartet og brukerreisen for den som følger opp den sykmeldte.",
     links: [
-      { href: "/tiltakskart", label: "Arbeidsgivers tiltakskart" },
-      { href: "/tiltakskart/sykmeldt", label: "Den sykmeldtes tiltakskart" },
+      { href: "/tiltakskart", label: "Tiltakskart" },
+      { href: "/brukerreise/leder", label: "Brukerreise" },
     ],
   },
   {
-    n: "02",
-    kicker: "Tiltakene i tid",
-    title: "Brukerreisene",
-    text: "Tiltakene satt inn i en tidslinje — det som faktisk skjer i dag, mot flyten med små, tidsriktige dult. Hvert spor for seg, side om side.",
+    key: "sm",
+    label: "Den sykmeldte",
+    sub: "den ansatte",
+    desc: "Tiltakskartet og brukerreisen for den som er sykmeldt.",
     links: [
-      { href: "/brukerreise/leder", label: "Arbeidsgiver · nærmeste leder" },
-      { href: "/brukerreise/sykmeldt", label: "Den sykmeldte" },
+      { href: "/tiltakskart/sykmeldt", label: "Tiltakskart" },
+      { href: "/brukerreise/sykmeldt", label: "Brukerreise" },
     ],
   },
+];
+
+const acrossLinks = [
   {
-    n: "03",
-    kicker: "Prioritering",
-    title: "Utvelgelsen",
-    text: "Slik prioriterer teamet hvilke tiltak vi tar først — vurdert etter forventet effekt og innsats.",
-    links: [
-      { href: "/tiltakspakke-utvelgelse", label: "Tiltakspakke-utvelgelse" },
-    ],
+    href: "/tiltakspakke-utvelgelse",
+    label: "Utvelgelse — hvilke tiltak først",
+  },
+  {
+    href: "/atferdsmatrise",
+    label: "Atferdsmatrise — barriere × motivasjon",
   },
 ];
 
@@ -57,53 +60,66 @@ export default function Home() {
         <p className="lp__lead">
           Et internt arbeidsverktøy for å styrke dialogen i
           sykefraværsoppfølgingen — der arbeidsgivers tilretteleggingsplikt og
-          den sykmeldtes medvirkning møtes. Vi går fra tiltakskartene, via
-          brukerreisene, til utvelgelsen.
+          den sykmeldtes medvirkning møtes.
         </p>
-        <div className="lp__cta">
-          <Button as="a" href="/tiltakskart" variant="primary">
-            Start her: tiltakskartene
-          </Button>
-        </div>
         <p className="lp__note">
           Bevisst avgrenset demo. Alt innhold er syntetisk — ingen reelle
           personer, saker eller personopplysninger.
         </p>
       </section>
 
-      <section className="lp__steps" aria-label="Slik henger det sammen">
-        {steps.map((s) => (
-          <article className="lp__step" key={s.n}>
-            <span className="lp__step-num" aria-hidden>
-              {s.n}
-            </span>
-            <div className="lp__step-body">
-              <span className="lp__step-kicker">{s.kicker}</span>
-              <h2>{s.title}</h2>
-              <p>{s.text}</p>
-              <nav className="lp__step-links" aria-label={`Åpne ${s.title}`}>
-                {s.links.map((l) => (
-                  <Link className="lp__cta-link" href={l.href} key={l.href}>
+      <section className="lp__pick" aria-labelledby="lp-pick-h">
+        <h2 id="lp-pick-h" className="lp__section-label">
+          Velg et spor
+        </h2>
+        <div className="lp__actors">
+          {actors.map((a) => (
+            <article
+              className={`lp__actor lp__actor--${a.key}`}
+              key={a.key}
+              aria-labelledby={`lp-actor-${a.key}`}
+            >
+              <span className="lp__actor-eyebrow">Spor</span>
+              <h3 className="lp__actor-label" id={`lp-actor-${a.key}`}>
+                {a.label}
+                <span className="lp__actor-sub">{a.sub}</span>
+              </h3>
+              <p className="lp__actor-desc">{a.desc}</p>
+              <nav
+                className="lp__actor-links"
+                aria-label={`${a.label} — flater`}
+              >
+                {a.links.map((l) => (
+                  <Link className="lp__actor-link" href={l.href} key={l.href}>
                     {l.label}
                     <ArrowRightIcon aria-hidden fontSize="0.9rem" />
                   </Link>
                 ))}
               </nav>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))}
+        </div>
       </section>
 
-      <nav className="lp__refs" aria-label="Mer å utforske">
-        <span className="lp__refs-label">Mer å utforske</span>
-        <Link className="lp__cta-link" href="/brukerreise/sammen">
-          Begge spor i én tidslinje
-          <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-        </Link>
-        <Link className="lp__cta-link" href="/atferdsmatrise">
-          Atferdsmatrise — rådata bak kartene
-          <ArrowRightIcon aria-hidden fontSize="0.9rem" />
-        </Link>
+      <Link className="lp__bridge" href="/brukerreise/sammen">
+        <span className="lp__bridge-text">
+          <span className="lp__bridge-title">Begge spor i én tidslinje</span>
+          <span className="lp__bridge-sub">
+            Samme touchpoints, side om side — slik arbeidsgiver og den sykmeldte
+            møtes.
+          </span>
+        </span>
+        <ArrowRightIcon aria-hidden fontSize="1.2rem" />
+      </Link>
+
+      <nav className="lp__refs" aria-label="På tvers">
+        <span className="lp__refs-label">På tvers</span>
+        {acrossLinks.map((l) => (
+          <Link className="lp__cta-link" href={l.href} key={l.href}>
+            {l.label}
+            <ArrowRightIcon aria-hidden fontSize="0.9rem" />
+          </Link>
+        ))}
       </nav>
     </div>
   );

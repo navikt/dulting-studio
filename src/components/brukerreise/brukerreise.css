@@ -1119,6 +1119,26 @@
   position: relative;
 }
 
+/* «← Forsiden»-tilbakelenke øverst i brukerreise-heltene — konsistent med
+   tilbakeknappen på analyse-sidene, lett nok til ikke å bryte immersjonen. */
+.brA__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.9rem;
+  font: 600 0.85rem / 1 var(--font-body);
+  color: var(--ink-faint);
+  text-decoration: none;
+}
+.brA__back:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+.brA__back:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .brC__close {
   position: fixed;
   top: 1.1rem;

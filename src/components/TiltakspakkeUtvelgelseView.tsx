@@ -26,7 +26,6 @@ import {
   pakke1,
   type SelectionTiltak,
 } from "@/lib/tiltakspakke-utvelgelse-model";
-import { AnalyseNav } from "./AnalyseNav";
 import { MaldekningStrip } from "./utvelgelse/MaldekningStrip";
 import { MatriseView } from "./utvelgelse/MatriseView";
 import { OmUtvalget } from "./utvelgelse/OmUtvalget";
@@ -68,7 +67,6 @@ export function TiltakspakkeUtvelgelseView() {
             Forsiden
           </Button>
         </HStack>
-        <AnalyseNav />
 
         <Box background="info-soft" borderRadius="12" padding="space-24">
           <VStack gap="space-12">

@@ -92,7 +92,7 @@ const phases: Phase[] = [
   {
     n: "02",
     id: "tidlig-signal",
-    time: "Uke 1–4",
+    time: "Uke 1–3",
     date: "frem til 3. februar",
     title: "Tidlig varsel før fristen",
     icon: "bell",

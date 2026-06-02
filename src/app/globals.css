@@ -90,6 +90,9 @@ a:where(:not(.aksel-button)) {
 }
 
 .app-header__brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   text-decoration: none;
   color: var(--a-text-default);
 }
@@ -103,6 +106,7 @@ a:where(:not(.aksel-button)) {
   margin: 0 0 0 auto;
   padding: 0;
   display: flex;
+  flex-wrap: wrap;
   gap: var(--ax-space-4);
 }
 
@@ -130,6 +134,25 @@ a:where(:not(.aksel-button)) {
   outline-offset: 2px;
 }
 
+/* Nedtrekk-trigger (Tiltakskart / Brukerreise) — ser ut som en nav-lenke, med
+   en chevron som snur når menyen er åpen. Arver .app-nav__link for størrelse,
+   aktiv- og hover-tilstand. */
+.app-nav__trigger {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  gap: var(--ax-space-2, 0.25rem);
+}
+.app-nav__chev {
+  font-size: 1.1rem;
+  transition: transform 0.15s ease;
+}
+.app-nav__trigger[aria-expanded="true"] .app-nav__chev {
+  transform: rotate(180deg);
+}
+
 .app-main {
   flex: 1;
   background: var(--a-surface-subtle);
@@ -143,6 +166,19 @@ a:where(:not(.aksel-button)) {
 
 .muted {
   color: var(--a-text-subtle);
+}
+
+/* Visuelt skjult, men tilgjengelig for skjermleser (aktiv-tilstand på nav). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* =====================================================================
@@ -167,7 +203,7 @@ a:where(:not(.aksel-button)) {
   flex-direction: column;
   align-items: center;
   gap: 1.1rem;
-  padding: clamp(2.5rem, 8vw, 6rem) 1rem clamp(2rem, 5vw, 3.5rem);
+  padding: clamp(2.5rem, 8vw, 6rem) 1rem clamp(1.25rem, 3vw, 2rem);
   /* svært subtil lysglød fra toppen — løfter uten å bli gimmick */
   background: radial-gradient(
     60% 60% at 50% -8%,
@@ -202,7 +238,7 @@ a:where(:not(.aksel-button)) {
   font-size: clamp(1.05rem, 2vw, 1.3rem);
   line-height: 1.5;
   color: #475569;
-  max-width: 54ch;
+  max-width: 46ch;
   margin: 0;
 }
 .lp__cta {
@@ -230,7 +266,7 @@ a:where(:not(.aksel-button)) {
   gap: 0.3rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #0067c5;
+  color: #00357a;
   text-decoration: none;
   padding: 0.2rem 0.15rem;
   border-radius: 6px;
@@ -252,10 +288,11 @@ a:where(:not(.aksel-button)) {
   outline-offset: 2px;
 }
 .lp__note {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   color: var(--a-text-subtle);
+  opacity: 0.85;
   max-width: 52ch;
-  margin: 0.4rem 0 0;
+  margin: 0.2rem 0 0;
 }
 .lp__refs {
   display: flex;
@@ -272,38 +309,6 @@ a:where(:not(.aksel-button)) {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--a-text-subtle);
-}
-
-/* Delt analyse-navigasjon (atferdsmatrise / tiltakskart / utvelgelse) */
-.analyse-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-.analyse-nav__tab {
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-decoration: none;
-  color: var(--ax-text-accent);
-  background: var(--ax-bg-accent-soft);
-  border: 1px solid var(--ax-border-accent);
-  border-radius: var(--ax-radius-full, 999px);
-  padding: 0.3rem 0.85rem;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
-}
-.analyse-nav__tab:hover {
-  background: var(--ax-bg-accent-moderate-hover, #cce0f5);
-}
-.analyse-nav__tab--active {
-  color: #fff;
-  background: var(--ax-bg-accent-strong);
-  border-color: var(--ax-bg-accent-strong);
-}
-.analyse-nav__tab:focus-visible {
-  outline: 3px solid var(--ax-border-focus, #0067c5);
-  outline-offset: 2px;
 }
 
 /* Team-delt tiltak-editor */
@@ -329,94 +334,203 @@ a:where(:not(.aksel-button)) {
   color: #046a2c;
   font-weight: 600;
 }
-/* Guidet fortelling: nummererte steg i kronologisk rekkefølge (kart → reiser →
-   utvelgelse). Stort nummer-chip til venstre, innhold + lenker til høyre. */
-.lp__steps {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+/* Aktør-gruppert hub: to likestilte spor-kort, farge-kodet (AG blå / SM Aksel
+   meta-purple). Hvert kort = eyebrow + aktør-tittel + beskrivelse + to flate-
+   lenker (Tiltakskart / Brukerreise). */
+.lp__pick {
+  margin-top: clamp(0.5rem, 2vw, 1rem);
+}
+.lp__section-label {
+  font-family: var(--lp-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--a-text-subtle);
+  margin: 0 0 0.9rem;
+}
+.lp__actors {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
   max-width: 56rem;
   margin: 0 auto;
 }
-.lp__step {
+.lp__actor {
+  --lp-actor-accent: #0067c5;
+  /* tekst-trygg variant (≥4.5:1 på hvitt) for eyebrow/hover; accent brukes til
+     grafikk (topp-kant, pil, hairline) der 3:1 holder. */
+  --lp-actor-ink: #00519e;
   display: flex;
-  gap: 1.3rem;
+  flex-direction: column;
   background: var(--a-surface-default);
   border: 1px solid var(--a-border-subtle);
+  border-top: 3px solid var(--lp-actor-accent);
   border-radius: var(--lp-radius);
-  padding: 1.5rem 1.7rem;
+  padding: 1.5rem 1.7rem 1.7rem;
   box-shadow: var(--lp-shadow);
   transition:
     transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
+.lp__actor--sm {
+  --lp-actor-accent: #905bd3;
+  --lp-actor-ink: #6a2f9e;
+}
 @media (hover: hover) {
-  .lp__step:hover {
+  .lp__actor:hover {
     transform: translateY(-3px);
     box-shadow: var(--lp-shadow-hover);
   }
 }
-.lp__step-num {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.7rem;
-  height: 2.7rem;
-  border-radius: 50%;
-  font-family: var(--lp-display);
-  font-weight: 800;
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
-  color: #0067c5;
-  background: rgb(0 103 197 / 8%);
-}
-.lp__step-body {
-  flex: 1;
-  min-width: 0;
-}
-.lp__step-kicker {
+.lp__actor-eyebrow {
   font-family: var(--lp-display);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--a-text-subtle);
+  color: var(--lp-actor-ink);
 }
-.lp__step h2 {
+.lp__actor-label {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   font-family: var(--lp-display);
-  font-weight: 700;
-  font-size: 1.2rem;
-  line-height: 1.2;
-  margin: 0.15rem 0 0.4rem;
+  font-weight: 800;
+  font-size: 1.4rem;
+  line-height: 1.1;
+  margin: 0.25rem 0 0.5rem;
   color: #0a2540;
 }
-.lp__step p {
-  margin: 0;
+.lp__actor-sub {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  margin-left: 0.1rem;
+  color: var(--a-text-subtle);
+}
+.lp__actor-desc {
+  margin: 0 0 1.1rem;
   color: #475569;
   font-size: 0.97rem;
-  line-height: 1.55;
-  max-width: 48ch;
+  line-height: 1.5;
 }
-.lp__step-links {
+.lp__actor-links {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.4rem;
-  margin-top: 0.9rem;
+  gap: 0.6rem;
+  margin-top: auto;
 }
-@media (max-width: 560px) {
-  .lp__step {
-    flex-direction: column;
-    gap: 0.7rem;
+.lp__actor-link {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  font-family: var(--lp-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #0a2540;
+  text-decoration: none;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--a-border-subtle);
+  border-left: 3px solid
+    color-mix(in srgb, var(--lp-actor-accent) 40%, var(--a-border-subtle));
+  border-radius: 10px;
+  background: var(--a-surface-subtle, #f7f9fc);
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background 0.15s ease;
+}
+.lp__actor-link svg {
+  color: var(--lp-actor-accent);
+  transition: transform 0.15s ease;
+}
+.lp__actor-link:hover {
+  border-color: var(--lp-actor-accent);
+  color: var(--lp-actor-ink);
+  background: #fff;
+}
+.lp__actor-link:hover svg {
+  transform: translateX(3px);
+}
+.lp__actor-link:focus-visible {
+  outline: 3px solid var(--ax-border-focus, #0067c5);
+  outline-offset: 2px;
+}
+
+/* Broen: binder de to sporene sammen (→ sammen-reisen). Subtil blå→lilla vask
+   som speiler tidslinjens aktør-farger. */
+.lp__bridge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  max-width: 56rem;
+  margin: 1rem auto 0;
+  padding: 1.05rem 1.5rem;
+  text-decoration: none;
+  border: 1px solid var(--a-border-subtle);
+  border-radius: var(--lp-radius);
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, #0067c5 7%, var(--a-surface-default)),
+    color-mix(in srgb, #905bd3 8%, var(--a-surface-default))
+  );
+  box-shadow: var(--lp-shadow);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+@media (hover: hover) {
+  .lp__bridge:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--lp-shadow-hover);
+  }
+}
+.lp__bridge:focus-visible {
+  outline: 3px solid var(--ax-border-focus, #0067c5);
+  outline-offset: 2px;
+}
+.lp__bridge svg {
+  flex: none;
+  color: #6a2f9e;
+  transition: transform 0.2s ease;
+}
+.lp__bridge:hover svg {
+  transform: translateX(4px);
+}
+.lp__bridge-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.lp__bridge-title {
+  font-family: var(--lp-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #0a2540;
+}
+.lp__bridge-sub {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #475569;
+}
+@media (max-width: 640px) {
+  .lp__actors {
+    grid-template-columns: 1fr;
   }
 }
 
-/* Rolig entré: heltens innhold og stegene stiger inn ved last. fill-mode
+/* Rolig entré: heltens innhold og spor-kortene stiger inn ved last. fill-mode
    «backwards» gir from-tilstanden under delay, og slipper underliggende verdier
-   tilbake etterpå — så steg-hover (translateY) ikke overstyres. */
+   tilbake etterpå — så kort-hover (translateY) ikke overstyres. */
 @media (prefers-reduced-motion: no-preference) {
   .lp__hero > *,
-  .lp__step {
+  .lp__actor {
     animation: lp-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   }
   .lp__hero > *:nth-child(2) {
@@ -428,14 +542,11 @@ a:where(:not(.aksel-button)) {
   .lp__hero > *:nth-child(4) {
     animation-delay: 0.15s;
   }
-  .lp__step:nth-child(1) {
-    animation-delay: 0.1s;
+  .lp__actor:nth-child(1) {
+    animation-delay: 0.12s;
   }
-  .lp__step:nth-child(2) {
-    animation-delay: 0.18s;
-  }
-  .lp__step:nth-child(3) {
-    animation-delay: 0.26s;
+  .lp__actor:nth-child(2) {
+    animation-delay: 0.2s;
   }
 }
 @keyframes lp-rise {

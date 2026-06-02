@@ -2,6 +2,7 @@
 "use client";
 
 import {
+  ArrowLeftIcon,
   ArrowRightIcon,
   CheckmarkCircleIcon,
   ExclamationmarkTriangleIcon,
@@ -20,6 +21,9 @@ export function BrukerreiseTospor({ data }: { data: JourneyData }) {
     <div className="br-proto">
       <div className="brA">
         <header className="brA__hero">
+          <Link className="brA__back" href="/">
+            <ArrowLeftIcon aria-hidden fontSize="0.9rem" /> Forsiden
+          </Link>
           <div className="brA__track">{mission.track}</div>
           <h1 className="brA__title">{mission.title}</h1>
           <p className="brA__lead">{mission.lead}</p>

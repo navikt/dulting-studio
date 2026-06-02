@@ -24,7 +24,6 @@ import {
   type MatriseItem,
   matriseItems,
 } from "@/lib/atferdsmatrise-model";
-import { AnalyseNav } from "./AnalyseNav";
 import { KategoriDialog } from "./KategoriDialog";
 import { TiltakDialog } from "./TiltakDialog";
 
@@ -59,7 +58,6 @@ export function AtferdsmatriseView() {
             Forsiden
           </Button>
         </HStack>
-        <AnalyseNav />
 
         <Box background="info-soft" borderRadius="12" padding="space-24">
           <VStack gap="space-12">

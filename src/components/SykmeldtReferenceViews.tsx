@@ -22,7 +22,6 @@ import {
   sykmeldtSupport,
   sykmeldtTotalTiltak,
 } from "@/lib/sykmeldt-reference-model";
-import { AnalyseNav } from "./AnalyseNav";
 import { TiltakDialog } from "./TiltakDialog";
 
 /** Kompakt, klikkbart tiltakskort i sykmeldt-kartet. Flisen er triggeren; det
@@ -117,7 +116,6 @@ export function SykmeldtInterventionMapView() {
             Forsiden
           </Button>
         </HStack>
-        <AnalyseNav />
 
         <Box background="info-soft" borderRadius="12" padding="space-24">
           <VStack gap="space-12">
@@ -181,10 +179,14 @@ export function SykmeldtInterventionMapView() {
       <BodyShort size="small" className="muted">
         Kilde: <code>docs/dulting-tiltaksregister-sykmeldt-bearbeidet.md</code>.
         Se også{" "}
+        <AkselLink as={NextLink} href="/brukerreise/sykmeldt">
+          den sykmeldtes brukerreise
+        </AkselLink>
+        ,{" "}
         <AkselLink as={NextLink} href="/tiltakskart">
           arbeidsgiver-tiltakskartet
-        </AkselLink>{" "}
-        og{" "}
+        </AkselLink>
+        ,{" "}
         <AkselLink as={NextLink} href="/atferdsmatrise">
           atferdsmatrisen
         </AkselLink>{" "}

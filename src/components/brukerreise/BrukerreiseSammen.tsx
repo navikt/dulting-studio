@@ -3,6 +3,7 @@
 // eksisterende datagrunnlagene (lederJourney + sykmeldtJourney) og NudgeCard.
 // De to reisene er bygd AG-parallelt (6 steg, samme uker), så de zippes på indeks.
 import {
+  ArrowLeftIcon,
   ArrowRightIcon,
   ExclamationmarkTriangleIcon,
 } from "@navikt/aksel-icons";
@@ -66,6 +67,9 @@ export function BrukerreiseSammen() {
     <div className={`br-proto ${schibsted.variable}`}>
       <div className="brS">
         <header className="brS__hero">
+          <Link className="brA__back" href="/">
+            <ArrowLeftIcon aria-hidden fontSize="0.9rem" /> Forsiden
+          </Link>
           <div className="brA__track">Begge spor · oppfølging av sykmeldte</div>
           <h1 className="brS__title">Ett touchpoint, to sider</h1>
           <p className="brS__lead">

@@ -31,7 +31,6 @@ import {
   openJourneyQuestions,
   supportTiltak,
 } from "@/lib/kidult-reference-model";
-import { AnalyseNav } from "./AnalyseNav";
 import { TiltakDialog } from "./TiltakDialog";
 
 type ReferenceView = "journey" | "map";
@@ -77,7 +76,6 @@ function ReferenceHeader({
           Forsiden
         </Button>
       </HStack>
-      <AnalyseNav />
 
       <Box background="info-soft" borderRadius="12" padding="space-24">
         <VStack gap="space-12">

@@ -1,17 +1,8 @@
-import { HStack, Loader } from "@navikt/ds-react";
-import { Suspense } from "react";
-import { KidultJourneyView } from "@/components/KidultReferenceViews";
+import { redirect } from "next/navigation";
 
+// Den bare /brukerreise-ruten er ikke lenger en inngang (toppnav + forside peker
+// på de konkrete sporene). Send videre til arbeidsgiver-reisen så ingen lander
+// på den løse referansevisningen ved et uhell.
 export default function BrukerreisePage() {
-  return (
-    <Suspense
-      fallback={
-        <HStack justify="center" padding="space-32">
-          <Loader size="xlarge" title="Laster brukerreise ..." />
-        </HStack>
-      }
-    >
-      <KidultJourneyView />
-    </Suspense>
-  );
+  redirect("/brukerreise/leder");
 }
