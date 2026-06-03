@@ -69,6 +69,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const utvelgelseActive = pathname.startsWith("/tiltakspakke-utvelgelse");
   const matriseActive = pathname.startsWith("/atferdsmatrise");
+  const malingActive = pathname.startsWith("/maling");
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -110,6 +111,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               aria-current={matriseActive ? "page" : undefined}
             >
               Atferdsmatrise
+            </NextLink>
+            <NextLink
+              href="/maling"
+              title="Dummy måle-dashboard — KPI, trend og funnel med segmentering"
+              className={`app-nav__link${
+                malingActive ? " app-nav__link--active" : ""
+              }`}
+              aria-current={malingActive ? "page" : undefined}
+            >
+              Måling
             </NextLink>
           </nav>
         </div>

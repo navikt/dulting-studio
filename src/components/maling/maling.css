@@ -1,0 +1,765 @@
+/* Måle-siden — eget presentasjonslag, scopet under .mal så det ikke lekker.
+   Speiler rammeverket i docs/maling-rammeverk.md. Tre KATEGORISK ulike
+   segment-farger (slate / lilla / blå) — IKKE opacity på én blå — så A/B/C er
+   skillbare for fargeblinde, på projektor og mot WCAG 1.4.11. Tall er illustrative. */
+
+.mal {
+  --mal-ink: #0a2540;
+  --mal-ink-2: #34465c;
+  --mal-ink-faint: #5b6675;
+  --mal-line: #e3e8ef;
+  --mal-line-soft: #eef2f7;
+  --mal-card: #ffffff;
+  --mal-ag: #0067c5;
+  --mal-ag-ink: #00417e;
+  --mal-sm: #905bd3;
+  --mal-sm-ink: #5f339e;
+  --mal-ok: #1a7f55;
+  --mal-ok-bg: #e7f4ee;
+  --mal-warn: #8a5a00;
+  --mal-warn-bg: #fbf3e0;
+  --mal-off: #56606e;
+  --mal-off-bg: #eef1f5;
+
+  /* segment-farger — tre distinkte hue-er, definert ÉN gang og gjenbrukt
+     på swatch, toggle, trendlinje, funnel-fyll og KPI-minibar. */
+  --seg-a: #6f7d90; /* slate (kontroll) */
+  --seg-a-ink: #41505f;
+  --seg-c: #905bd3; /* lilla (ikke opt-in) */
+  --seg-c-ink: #5f339e;
+  --seg-b: #0067c5; /* blå (opt-in) */
+  --seg-b-ink: #00417e;
+
+  --mal-radius: 16px;
+  --mal-shadow:
+    0 1px 2px rgba(10, 37, 64, 0.04), 0 8px 28px -18px rgba(10, 37, 64, 0.28);
+
+  --mal-display:
+    var(--font-schibsted), "Schibsted Grotesk", system-ui, sans-serif;
+  --mal-body: "Source Sans 3", system-ui, -apple-system, sans-serif;
+
+  max-width: 70rem;
+  margin: 0 auto;
+  color: var(--mal-ink);
+  font-family: var(--mal-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+.mal * {
+  box-sizing: border-box;
+}
+
+/* ---- dummy banner ---- */
+.mal__dummy {
+  display: block;
+  margin-bottom: 22px;
+  padding: 11px 16px;
+  border-radius: 12px;
+  background: var(--mal-warn-bg);
+  border: 1px solid #f0dca6;
+  color: #5a4300;
+  font-size: 13px;
+  line-height: 1.45;
+  font-family: var(--mal-body);
+}
+.mal__dummy b {
+  color: #4a3700;
+}
+
+/* ---- header ---- */
+.mal__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mal-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--mal-ink-faint);
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+}
+.mal__back:hover {
+  color: var(--mal-ag-ink);
+}
+.mal__eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mal-ag-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.mal__eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  background: var(--mal-ag);
+  border-radius: 2px;
+}
+.mal__title {
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 16px 0 0;
+  font-weight: 800;
+  max-width: 18ch;
+}
+.mal__lede {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--mal-ink-2);
+  max-width: 62ch;
+  margin: 16px 0 0;
+  font-family: var(--mal-body);
+}
+.mal__frame {
+  margin: 20px 0 0;
+  padding: 13px 16px 13px 18px;
+  border-left: 3px solid var(--mal-ag);
+  background: linear-gradient(
+    100deg,
+    rgba(0, 103, 197, 0.06),
+    rgba(144, 91, 211, 0.05)
+  );
+  border-radius: 0 12px 12px 0;
+  font-size: 14.5px;
+  color: var(--mal-ink-2);
+  max-width: 72ch;
+  font-family: var(--mal-body);
+}
+.mal__frame b {
+  color: var(--mal-ink);
+}
+
+/* ---- section scaffolding ---- */
+.mal__sec {
+  margin-top: 48px;
+}
+.mal__sec-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.mal__sec-num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--mal-ag);
+  border: 1.5px solid var(--mal-ag);
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.mal__h2 {
+  font-size: 21px;
+  letter-spacing: -0.01em;
+  margin: 0;
+  font-weight: 700;
+}
+.mal__sec-sub {
+  font-size: 13.5px;
+  color: var(--mal-ink-faint);
+  margin: 3px 0 0;
+  font-family: var(--mal-body);
+}
+
+/* ---- swatches (delt av toggle, legend, funnel) ---- */
+.mal__sw {
+  width: 22px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+.mal__sw--line {
+  height: 3px;
+  border-radius: 2px;
+}
+.mal__sw--a {
+  background: var(--seg-a);
+}
+.mal__sw--c {
+  background: var(--seg-c);
+}
+.mal__sw--b {
+  background: var(--seg-b);
+}
+
+/* ---- segment toggle (segmentert kontroll) ---- */
+.mal__toggle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  background: var(--mal-line-soft);
+  padding: 5px;
+  border-radius: 14px;
+}
+.mal__toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mal-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mal-ink-2);
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.mal__toggle-btn:not(.mal__toggle-btn--on):hover {
+  background: #fff;
+}
+.mal__toggle-btn:focus-visible {
+  outline: 3px solid var(--mal-ag);
+  outline-offset: 2px;
+}
+.mal__toggle-txt b {
+  font-weight: 800;
+}
+.mal__toggle-btn--on {
+  color: #fff;
+  box-shadow:
+    0 1px 2px rgba(10, 37, 64, 0.18),
+    0 6px 16px -8px rgba(10, 37, 64, 0.5);
+}
+.mal__toggle-btn--a.mal__toggle-btn--on {
+  background: #41505f;
+}
+.mal__toggle-btn--c.mal__toggle-btn--on {
+  background: var(--seg-c-ink);
+}
+.mal__toggle-btn--b.mal__toggle-btn--on {
+  background: var(--seg-b-ink);
+}
+.mal__toggle-btn--on .mal__sw {
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.85);
+}
+.mal__toggle-check {
+  font-weight: 800;
+  margin-left: 1px;
+}
+
+.mal__optin {
+  margin: 16px 0 0;
+  font-family: var(--mal-body);
+  font-size: 13.5px;
+  color: var(--mal-ink-2);
+  background: var(--mal-line-soft);
+  border-radius: 12px;
+  padding: 12px 16px;
+  line-height: 1.5;
+}
+.mal__optin-num {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--mal-ag-ink);
+  font-family: var(--mal-display);
+  margin-right: 2px;
+}
+.mal__optin-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--mal-ok-bg);
+  color: var(--mal-ok);
+  padding: 2px 7px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* den rene (poolede) sammenligningen — framhevet */
+.mal__pooled {
+  margin: 12px 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: linear-gradient(
+    100deg,
+    rgba(0, 103, 197, 0.07),
+    rgba(144, 91, 211, 0.05)
+  );
+  border: 1px solid #cfe0f3;
+  border-left: 3px solid var(--mal-ag);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-family: var(--mal-body);
+  font-size: 13.5px;
+  color: var(--mal-ink-2);
+  line-height: 1.5;
+}
+.mal__pooled-tag {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mal-ag-ink);
+  flex: none;
+}
+.mal__pooled-num {
+  color: var(--mal-ag-ink);
+  font-size: 16px;
+  font-weight: 800;
+  font-family: var(--mal-display);
+}
+.mal__pooled-body b {
+  color: var(--mal-ink);
+}
+
+/* ---- KPI-fliser ---- */
+.mal__kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(186px, 1fr));
+  gap: 12px;
+}
+.mal__kpi {
+  background: var(--mal-card);
+  border: 1px solid var(--mal-line);
+  border-radius: 14px;
+  padding: 16px 16px 15px;
+  box-shadow: var(--mal-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.mal__kpi-sub {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mal-ink-faint);
+}
+.mal__kpi-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  min-height: 2.6em;
+}
+.mal__kpi-val {
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  margin-top: auto;
+  padding-top: 4px;
+}
+.mal__kpi-unit {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--mal-ink-faint);
+  margin-left: 2px;
+}
+.mal__kpi-delta {
+  font-family: var(--mal-body);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.mal__kpi-delta--clean {
+  color: var(--mal-ok);
+}
+.mal__kpi-delta--conf {
+  color: var(--mal-ink-2);
+}
+.mal__kpi-delta--base {
+  color: var(--mal-ink-faint);
+  font-weight: 600;
+}
+.mal__kpi-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 3px;
+}
+.mal__kpi-minibar {
+  height: 5px;
+  background: var(--mal-line-soft);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.mal__kpi-minifill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  opacity: 0.7;
+}
+.mal__kpi-minifill--on {
+  opacity: 1;
+}
+.mal__kpi-note {
+  font-size: 12px;
+  color: var(--mal-ink-faint);
+  margin: 14px 0 0;
+  line-height: 1.5;
+  font-family: var(--mal-body);
+}
+.mal__kpi-note b {
+  color: var(--mal-ink-2);
+}
+
+/* ---- panels (trend + funnel) ---- */
+.mal__panel {
+  background: var(--mal-card);
+  border: 1px solid var(--mal-line);
+  border-radius: var(--mal-radius);
+  padding: 22px 24px 24px;
+  box-shadow: var(--mal-shadow);
+}
+.mal__legend {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.mal__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--mal-ink-2);
+  font-weight: 600;
+  font-family: var(--mal-body);
+}
+.mal__syn {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  font-style: italic;
+}
+
+/* ---- trend chart ---- */
+.mal__chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.mal__grid {
+  stroke: var(--mal-line);
+  stroke-width: 1;
+}
+.mal__ytick {
+  fill: var(--mal-ink-faint);
+  font-size: 9px;
+  text-anchor: end;
+  font-family: var(--mal-body);
+}
+.mal__xtick {
+  fill: var(--mal-ink-faint);
+  font-size: 9px;
+  text-anchor: middle;
+  font-family: var(--mal-body);
+}
+.mal__line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.mal__line--a {
+  stroke: var(--seg-a);
+}
+.mal__line--c {
+  stroke: var(--seg-c);
+}
+.mal__line--b {
+  stroke: var(--seg-b);
+}
+.mal__line--on {
+  opacity: 1;
+  stroke-width: 3;
+}
+.mal__dotend--a {
+  fill: var(--seg-a);
+}
+.mal__dotend--c {
+  fill: var(--seg-c);
+}
+.mal__dotend--b {
+  fill: var(--seg-b);
+}
+.mal__endlbl {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mal-body);
+}
+.mal__endlbl--a {
+  fill: var(--seg-a-ink);
+}
+.mal__endlbl--c {
+  fill: var(--seg-c-ink);
+}
+.mal__endlbl--b {
+  fill: var(--seg-b-ink);
+}
+.mal__endlbl--on {
+  font-weight: 800;
+}
+
+/* ---- funnel ---- */
+.mal__funnel {
+  display: grid;
+  gap: 4px;
+}
+.mal__step {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 9px 0;
+}
+.mal__step + .mal__step {
+  border-top: 1px solid var(--mal-line-soft);
+}
+.mal__step-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--mal-ink);
+}
+.mal__step-sub {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--mal-ink-faint);
+  margin-top: 2px;
+  font-family: var(--mal-body);
+}
+.mal__bars {
+  display: grid;
+  gap: 5px;
+}
+.mal__bar {
+  display: grid;
+  grid-template-columns: 13px 1fr 50px;
+  align-items: center;
+  gap: 9px;
+}
+.mal__bar-seg {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--mal-ink-faint);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.mal__track {
+  height: 16px;
+  background: var(--mal-line-soft);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.mal__fill {
+  height: 100%;
+  border-radius: 5px;
+}
+.mal__fill--a {
+  background: var(--seg-a);
+}
+.mal__fill--c {
+  background: var(--seg-c);
+}
+.mal__fill--b {
+  background: var(--seg-b);
+}
+.mal__val {
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--mal-ink-2);
+  text-align: right;
+}
+.mal__gapnote {
+  font-size: 12px;
+  color: var(--mal-ink-faint);
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--mal-line);
+  line-height: 1.55;
+  font-family: var(--mal-body);
+}
+.mal__gapnote b {
+  color: var(--mal-ag-ink);
+}
+
+/* ---- KR-status ---- */
+.mal__krgrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.mal__kr {
+  background: var(--mal-card);
+  border: 1px solid var(--mal-line);
+  border-radius: 14px;
+  padding: 15px 15px 16px;
+  box-shadow: var(--mal-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.mal__kr-code {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--mal-ink);
+}
+.mal__kr-desc {
+  font-size: 12.5px;
+  color: var(--mal-ink-2);
+  line-height: 1.35;
+  flex: 1;
+  font-family: var(--mal-body);
+}
+.mal__pill {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+.mal__pill--primary {
+  background: var(--mal-ok-bg);
+  color: var(--mal-ok);
+}
+.mal__pill--off {
+  background: var(--mal-off-bg);
+  color: var(--mal-off);
+}
+.mal__kr-data {
+  font-size: 11.5px;
+  color: var(--mal-ink-faint);
+  line-height: 1.35;
+  font-family: var(--mal-body);
+}
+.mal__kr-check {
+  color: var(--mal-ok);
+  font-weight: 800;
+}
+
+/* ---- datakilder + guardrails ---- */
+.mal__two {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 16px;
+}
+.mal__mini {
+  background: var(--mal-card);
+  border: 1px solid var(--mal-line);
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: var(--mal-shadow);
+}
+.mal__mini-h {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.mal__srcrow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--mal-ink-2);
+  padding: 7px 0;
+  font-family: var(--mal-body);
+}
+.mal__srcrow + .mal__srcrow {
+  border-top: 1px solid var(--mal-line-soft);
+}
+.mal__tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 6px;
+  flex: none;
+  margin-top: 1px;
+  font-family: var(--mal-display);
+}
+.mal__tag--reg {
+  background: #e7f0fb;
+  color: var(--mal-ag-ink);
+}
+.mal__tag--tel {
+  background: #eef7f1;
+  color: var(--mal-ok);
+}
+.mal__tag--sur {
+  background: #f3ecfb;
+  color: var(--mal-sm-ink);
+}
+.mal__guardstat {
+  display: flex;
+  gap: 22px;
+  margin: 0 0 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--mal-line-soft);
+}
+.mal__guardstat > div {
+  display: flex;
+  flex-direction: column;
+}
+.mal__guardstat-num {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--mal-ink);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.mal__guardstat > div span {
+  font-size: 11.5px;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  margin-top: 3px;
+}
+.mal__guard {
+  margin: 0;
+  padding-left: 18px;
+}
+.mal__guard li {
+  font-size: 13px;
+  color: var(--mal-ink-2);
+  line-height: 1.5;
+  margin-bottom: 7px;
+  font-family: var(--mal-body);
+}
+.mal__guard b {
+  color: var(--mal-ink);
+}
+
+.mal__foot {
+  margin-top: 40px;
+  font-size: 12px;
+  color: var(--mal-ink-faint);
+  text-align: center;
+  font-family: var(--mal-body);
+}
+
+@media (max-width: 52rem) {
+  .mal__krgrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .mal__two {
+    grid-template-columns: 1fr;
+  }
+  .mal__step {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}

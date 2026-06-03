@@ -47,6 +47,10 @@ const acrossLinks = [
     href: "/atferdsmatrise",
     label: "Atferdsmatrise — barriere × motivasjon",
   },
+  {
+    href: "/maling",
+    label: "Måling — dashboard (dummy)",
+  },
 ];
 
 export default function Home() {
