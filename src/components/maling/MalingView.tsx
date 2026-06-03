@@ -4,11 +4,13 @@
 // (docs/maling-rammeverk.md) konkret: hvordan skjermen KUNNE sett ut, med
 // A/B/C-segmentering. ALLE TALL ER SYNTETISKE. Ingen live data, ingen personer.
 // Bygd inn i appen (Aksel-palett), ikke en egen tjeneste.
+//
+// Siden leser top-ned som virkningskjeden: kart → nære spaker (hardt) →
+// mekanisme (opplevd/Lumi) → ringvirkning (bekreftende) → datakilder/vakt.
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import { Schibsted_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { useState } from "react";
-import { type KrId, krLabels } from "@/lib/tiltakspakke-utvelgelse-model";
 import "./maling.css";
 
 const schibsted = Schibsted_Grotesk({
@@ -19,8 +21,6 @@ const schibsted = Schibsted_Grotesk({
 });
 
 // Tre KATEGORISK ulike farger (ikke opacity på én blå) — slate / lilla / blå.
-// Definert via CSS-variabler i maling.css; her holder vi rede på rekkefølge,
-// etiketter og hvilken sammenligning som er ren vs. konfundert.
 type Seg = "A" | "C" | "B";
 const SEGS: Seg[] = ["A", "C", "B"];
 const SEG_SHORT: Record<Seg, string> = {
@@ -33,6 +33,26 @@ const SEG_FULL: Record<Seg, string> = {
   C: "Pakke, ikke opt-in",
   B: "Pakke + opt-in",
 };
+
+// --- virkningskjede (theory of change): tre høyder ---
+const CHAIN_LEVERS = [
+  "Forklare hvorfor (forståelse)",
+  "Tidlig varsel (opt-in)",
+  "Behovsvurdering ≤ uke 4",
+  "Plan laget & delt i tide",
+  "Uten å vente på veileder",
+];
+type ChainKind = "now" | "far" | "later";
+const CHAIN_KR: { label: string; status: string; kind: ChainKind }[] = [
+  {
+    label: "Flere / tidligere oppfølgingsplaner",
+    status: "Sikter på nå",
+    kind: "now",
+  },
+  { label: "↑ Gradert sykmelding", status: "Lang horisont", kind: "far" },
+  { label: "Kortere sykefravær", status: "Lang horisont", kind: "far" },
+  { label: "Flere dialogmøte 1", status: "Senere · kun Lumi", kind: "later" },
+];
 
 type Kpi = {
   label: string;
@@ -112,38 +132,72 @@ const TREND: Record<Seg, number[]> = {
   B: [2, 9, 26, 49, 58, 63, 66, 68],
 };
 
-const KRS: {
-  id: KrId;
-  status: string;
-  kind: "primary" | "off";
-  data: string;
+// Mekanisme/opplevelse (Lumi) — to surveyer (AG + sykmeldt), kjørt på ALLE
+// segmenter inkl. kontroll, så forskjellen er synlig. Segment-styrt.
+type MechVals = Record<Seg, { ag: number; sm: number }>;
+const MECHANISM: { q: string; vals: MechVals }[] = [
+  {
+    q: "Forstår hvorfor oppfølging er viktig",
+    vals: {
+      A: { ag: 48, sm: 42 },
+      C: { ag: 61, sm: 55 },
+      B: { ag: 79, sm: 72 },
+    },
+  },
+  {
+    q: "Kom tidlig i kontakt",
+    vals: {
+      A: { ag: 44, sm: 39 },
+      C: { ag: 52, sm: 47 },
+      B: { ag: 71, sm: 64 },
+    },
+  },
+  {
+    q: "Opplevde det som støtte, ikke press",
+    vals: {
+      A: { ag: 55, sm: 46 },
+      C: { ag: 60, sm: 52 },
+      B: { ag: 68, sm: 59 },
+    },
+  },
+  {
+    q: "Fant tilrettelegging som funka",
+    vals: {
+      A: { ag: 41, sm: 38 },
+      C: { ag: 47, sm: 43 },
+      B: { ag: 55, sm: 51 },
+    },
+  },
+];
+
+// Ringvirkning (lang horisont, bekreftende) — kun gradert + fravær.
+// Pakke samlet (B+C) vs. kontroll = den rene sammenligningen.
+const RIPPLE: {
+  label: string;
+  sub: string;
+  pakke: string;
+  kontroll: string;
+  delta: string;
 }[] = [
   {
-    id: "KR1",
-    status: "Primær nå",
-    kind: "primary",
-    data: "Hard data · register",
+    label: "Gradert sykmelding",
+    sub: "register-fotavtrykk av at tilrettelegging skjedde",
+    pakke: "38 %",
+    kontroll: "31 %",
+    delta: "+7 pp ↑",
   },
   {
-    id: "KR2",
-    status: "Primær nå",
-    kind: "primary",
-    data: "Hard data · register",
+    label: "Median fraværslengde",
+    sub: "det endelige O1-utfallet",
+    pakke: "41 dager",
+    kontroll: "46 dager",
+    delta: "−5 dager ↓",
   },
-  {
-    id: "KR3",
-    status: "Primær nå",
-    kind: "primary",
-    data: "Hard data · plan- vs. forespørsel-tid",
-  },
-  {
-    id: "KR4",
-    status: "Senere satsing",
-    kind: "off",
-    data: "utenfor første pakke",
-  },
-  { id: "KR5", status: "Via lege (H2)", kind: "off", data: "indirekte · treg" },
 ];
+
+// Opplevd press/varseltrøtthet (Lumi) — vi kan ikke flytte objektiv
+// varseltrøtthet (1 varsel = dråpe i havet); vi måler det opplevde.
+const PRESS_FELT = 9;
 
 // --- trend-geometri ---
 const TW = 360;
@@ -192,16 +246,76 @@ export function MalingView() {
         Viser segment {seg} — {SEG_FULL[seg]}
       </div>
 
-      {/* SEGMENT-VELGER */}
-      <section className="mal__sec" aria-labelledby="mal-seg-h">
+      {/* 1 — VIRKNINGSKJEDE (kart) */}
+      <section className="mal__sec" aria-labelledby="mal-chain-h">
         <div className="mal__sec-head">
           <span className="mal__sec-num">1</span>
+          <div>
+            <h2 className="mal__h2" id="mal-chain-h">
+              Slik henger det sammen
+            </h2>
+            <p className="mal__sec-sub">
+              Vi måler og styrer venstre side hardt nå. Høyre side lader vi opp
+              til — tregt og bekreftende. Statusfargene er ikke segment-farger
+              (grønn = sikter på nå).
+            </p>
+          </div>
+        </div>
+        <div className="mal__chain">
+          <div className="mal__chain-col">
+            <span className="mal__chain-head">Spaker vi rører nå</span>
+            {CHAIN_LEVERS.map((l) => (
+              <span className="mal__chain-lever" key={l}>
+                {l}
+              </span>
+            ))}
+          </div>
+          <span className="mal__chain-arrow" aria-hidden>
+            →
+          </span>
+          <div className="mal__chain-col">
+            <span className="mal__chain-head">Mellomliggende mål</span>
+            {CHAIN_KR.map((kr) => (
+              <div
+                className={`mal__chain-kr mal__chain-kr--${kr.kind}`}
+                key={kr.label}
+              >
+                {kr.label}
+                <span className="mal__chain-status">{kr.status}</span>
+              </div>
+            ))}
+          </div>
+          <span className="mal__chain-arrow" aria-hidden>
+            →
+          </span>
+          <div className="mal__chain-col mal__chain-col--goal">
+            <span className="mal__chain-head">Overordnet mål</span>
+            <div className="mal__chain-goal">
+              <b>O1</b>
+              <span className="mal__chain-goal-t">Redusert sykefravær</span>
+              <span className="mal__chain-goal-s">
+                ved bruk av dulting (AID / IA)
+              </span>
+            </div>
+          </div>
+        </div>
+        <p className="mal__chain-note">
+          «Forklare hvorfor» måles i mekanisme-laget (§5), ikke som et eget
+          O1-mål.
+        </p>
+      </section>
+
+      {/* 2 — SEGMENT + KPI */}
+      <section className="mal__sec" aria-labelledby="mal-seg-h">
+        <div className="mal__sec-head">
+          <span className="mal__sec-num">2</span>
           <div>
             <h2 className="mal__h2" id="mal-seg-h">
               Velg hvem tallene gjelder
             </h2>
             <p className="mal__sec-sub">
-              Styrer KPI-ene og trenden under. Funnelen viser alle tre samtidig.
+              Styrer KPI-ene, trenden og mekanismen. Funnelen viser alle tre;
+              ringvirkninger vises pakke vs. kontroll.
             </p>
           </div>
         </div>
@@ -242,16 +356,11 @@ export function MalingView() {
           <span className="mal__pooled-body">
             <b className="mal__pooled-num">+{POOLED_PLAN_DELTA} pp</b> plan
             laget for <b>pakke samlet (B+C)</b> mot kontroll — region avgjør,
-            ikke selvvalg. Dette er tallet å stole på for «virket pakka».
+            ikke selvvalg (før/etter, diff-in-diff; forutsatt planer telles på
+            tvers av Nav + LPS). Dette er tallet å stole på for «virket pakka».
           </span>
         </div>
-      </section>
 
-      {/* KPI-FLISER */}
-      <section className="mal__sec" aria-labelledby="mal-kpi-h">
-        <h2 className="sr-only" id="mal-kpi-h">
-          Nøkkeltall for valgt segment
-        </h2>
         <div className="mal__kpis">
           {KPIS.map((k) => {
             const v = k.vals[seg];
@@ -306,10 +415,10 @@ export function MalingView() {
         </p>
       </section>
 
-      {/* TREND */}
+      {/* 3 — TREND */}
       <section className="mal__sec" aria-labelledby="mal-trend-h">
         <div className="mal__sec-head">
-          <span className="mal__sec-num">2</span>
+          <span className="mal__sec-num">3</span>
           <div>
             <h2 className="mal__h2" id="mal-trend-h">
               Andel med plan over tid
@@ -417,10 +526,10 @@ export function MalingView() {
         </div>
       </section>
 
-      {/* FUNNEL */}
+      {/* 4 — FUNNEL */}
       <section className="mal__sec" aria-labelledby="mal-funnel-h">
         <div className="mal__sec-head">
-          <span className="mal__sec-num">3</span>
+          <span className="mal__sec-num">4</span>
           <div>
             <h2 className="mal__h2" id="mal-funnel-h">
               Funnelen — hvor vi mister folk
@@ -484,43 +593,117 @@ export function MalingView() {
         </div>
       </section>
 
-      {/* KR-STATUS */}
-      <section className="mal__sec" aria-labelledby="mal-kr-h">
+      {/* 5 — MEKANISME (Lumi) */}
+      <section className="mal__sec" aria-labelledby="mal-mech-h">
         <div className="mal__sec-head">
-          <span className="mal__sec-num">4</span>
+          <span className="mal__sec-num">5</span>
           <div>
-            <h2 className="mal__h2" id="mal-kr-h">
-              Hvilke høynivå-mål sikter pakke 1 på?
+            <h2 className="mal__h2" id="mal-mech-h">
+              Mekanismen — møtes de tidligere og bedre?
             </h2>
             <p className="mal__sec-sub">
-              Hva vi prøver å flytte nå — og hva som er bevisst utsatt. ✓ = hard
-              datakilde, ikke bevist effekt.
+              Kanarifuglen: går planene opp <i>uten</i> at dette gjør det, har
+              vi skapt papir, ikke dialog. Kjørt på alle segmenter — flipp til A
+              for kontroll.
             </p>
           </div>
         </div>
-        <div className="mal__krgrid">
-          {KRS.map((kr) => (
-            <div className="mal__kr" key={kr.id}>
-              <span className="mal__kr-code">{kr.id}</span>
-              <span className="mal__kr-desc">{krLabels[kr.id]}</span>
-              <span className={`mal__pill mal__pill--${kr.kind}`}>
-                {kr.status}
-              </span>
-              <div className="mal__kr-data">
-                {kr.kind === "primary" && (
-                  <span className="mal__kr-check">✓</span>
-                )}{" "}
-                {kr.data}
+        <div className="mal__panel">
+          <div className="mal__legend">
+            <span className="mal__legend-item">
+              <span className="mal__sw mal__sw--ag" /> Arbeidsgiver
+            </span>
+            <span className="mal__legend-item">
+              <span className="mal__sw mal__sw--sm" /> Den sykmeldte
+            </span>
+            <span className="mal__syn">
+              Lumi · viser {SEG_FULL[seg]} · syntetiske
+            </span>
+          </div>
+          <p className="sr-only">
+            Tallene under gjelder segment {SEG_FULL[seg]}.
+          </p>
+          <div className="mal__mech">
+            {MECHANISM.map((m) => {
+              const mv = m.vals[seg];
+              return (
+                <div className="mal__mech-row" key={m.q}>
+                  <span className="mal__mech-q">{m.q}</span>
+                  <span className="mal__mech-actor">
+                    <span className="mal__mech-track">
+                      <span
+                        className="mal__mech-bar mal__mech-bar--ag"
+                        style={{ width: `${mv.ag}%` }}
+                      />
+                    </span>
+                    <b>{mv.ag}%</b>
+                    <i>AG</i>
+                  </span>
+                  <span className="mal__mech-actor">
+                    <span className="mal__mech-track">
+                      <span
+                        className="mal__mech-bar mal__mech-bar--sm"
+                        style={{ width: `${mv.sm}%` }}
+                      />
+                    </span>
+                    <b>{mv.sm}%</b>
+                    <i>sykmeldt</i>
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mal__gapnote">
+            <b>«Hvorfor» måles direkte i Lumi</b> (forstår de hvorfor). Vil vi
+            vite om <i>hvorfor</i> driver de harde atferdene, må vi a/b-teste
+            selve hvorfor-forklaringen — ellers er det korrelasjon (de
+            engasjerte både forstår og handler), samme felle som opt-in.
+          </p>
+        </div>
+      </section>
+
+      {/* 6 — RINGVIRKNING (lang horisont) */}
+      <section className="mal__sec" aria-labelledby="mal-ripple-h">
+        <div className="mal__sec-head">
+          <span className="mal__sec-num">6</span>
+          <div>
+            <h2 className="mal__h2" id="mal-ripple-h">
+              Ringvirkninger — lang horisont
+            </h2>
+            <p className="mal__sec-sub">
+              Hard register-data, men treg og konfundert.{" "}
+              <b>Bekreftende — ikke et runde-1-løfte.</b> Pakke samlet vs.
+              kontroll — segment-velgeren styrer ikke dette (opt-in-splitt ville
+              gjeninnført seleksjons-konfunderingen).
+            </p>
+          </div>
+        </div>
+        <div className="mal__ripple">
+          {RIPPLE.map((r) => (
+            <div className="mal__ripple-card" key={r.label}>
+              <span className="mal__ripple-label">{r.label}</span>
+              <span className="mal__ripple-sub">{r.sub}</span>
+              <div className="mal__ripple-vals">
+                <span className="mal__ripple-pakke">
+                  {r.pakke}
+                  <i>pakke</i>
+                </span>
+                <span className="mal__ripple-vs">vs</span>
+                <span className="mal__ripple-kontroll">
+                  {r.kontroll}
+                  <i>kontroll</i>
+                </span>
+                <span className="mal__ripple-delta">{r.delta}</span>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* DATAKILDER + GUARDRAILS */}
+      {/* 7 — DATAKILDER + GUARDRAILS */}
       <section className="mal__sec" aria-labelledby="mal-src-h">
         <div className="mal__sec-head">
-          <span className="mal__sec-num">5</span>
+          <span className="mal__sec-num">7</span>
           <div>
             <h2 className="mal__h2" id="mal-src-h">
               Datakilder og guardrails
@@ -534,25 +717,25 @@ export function MalingView() {
           <div className="mal__mini">
             <h3 className="mal__mini-h">Datakilder</h3>
             <div className="mal__srcrow">
-              <span className="mal__tag mal__tag--reg">Hard data</span>
+              <span className="mal__tag mal__tag--reg">Database</span>
               <span>
-                Register + base: plan laget, tidspunkt, sending til lege/Nav,
-                forespørsel (→ KR3), <b>opt-in valgt, oppgave fullført</b>,
-                planer per fravær, funnel-kohort. Det autoritative laget.
+                Hard: sykmeldinger m/ gradering, oppfølgingsplaner (Nav + LPS —
+                to apper), veileders forespørsel (→ KR3), alle varsler per
+                person, funnel-kohort. Det autoritative laget.
               </span>
             </div>
             <div className="mal__srcrow">
-              <span className="mal__tag mal__tag--tel">Trend (mykt)</span>
+              <span className="mal__tag mal__tag--tel">Umami</span>
               <span>
-                Telemetri: visninger og åpninger. Indikativt — ikke
-                autoritativt, ikke til styring.
+                Trend (mykt): klikk, navigasjon, valg. Indikativt — ikke
+                autoritativt, kryss-sjekkes mot Lumi.
               </span>
             </div>
             <div className="mal__srcrow">
-              <span className="mal__tag mal__tag--sur">Survey</span>
+              <span className="mal__tag mal__tag--sur">Lumi</span>
               <span>
-                Forståelse av plikt/rettigheter, opplevd press vs. støtte
-                (Lumi).
+                Survey (to: AG + sykmeldt): tillit, opplevd kontakt/press,
+                tilrettelegging som funka, opt-in-opplevelse.
               </span>
             </div>
           </div>
@@ -560,12 +743,8 @@ export function MalingView() {
             <h3 className="mal__mini-h">Guardrails</h3>
             <div className="mal__guardstat">
               <div>
-                <b className="mal__guardstat-num">4%</b>
-                <span>avmelding av påminnelse</span>
-              </div>
-              <div>
-                <b className="mal__guardstat-num">11%</b>
-                <span>ignorerte varsel</span>
+                <b className="mal__guardstat-num">{PRESS_FELT}%</b>
+                <span>opplevd press (Lumi)</span>
               </div>
             </div>
             <ul className="mal__guard">
@@ -573,12 +752,13 @@ export function MalingView() {
                 <b>Ingen skjult default</b> på varsling — opt-in respekteres.
               </li>
               <li>
-                <b>Varseltrøtthet</b> følges (tallene over) mot
-                opt-in-gevinsten.
+                <b>Varseltrøtthet = opplevd</b>: vi kan ikke flytte objektiv
+                varseltrøtthet (1 varsel = dråpe i havet), så vi måler det
+                opplevde presset (Lumi) mot opt-in-gevinsten.
               </li>
               <li>
-                <b>Forkast</b> hvis avmelding &gt; 15 % eller opplevd press ↑ i
-                survey.
+                <b>Forkast</b> hvis opplevd press over kontroll + 5 pp
+                (forhåndsdefinert).
               </li>
             </ul>
           </div>

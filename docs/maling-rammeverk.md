@@ -23,6 +23,57 @@ er et *internt* planleggingsverktøy, bl.a. for å sjekke at planen har én driv
 per KR (dekningssjekken i §4). Den sjekken skal *forenes med* NudgeLabs tiltak,
 ikke erstatte dem.
 
+## Oppdatert etter grilling (2026-06-03) — overordnede mål + datakilder
+
+**Nordstjerne = O1 (redusert sykefravær via dulting).** Måle-siden fikk en
+*virkningskjede* øverst — tre høyder venstre→høyre: **spaker vi rører nå** (tidlig
+varsel, behovsvurdering, plan laget/delt, uten å vente) → **mellomliggende mål** (O1
+sine høynivå-KR-er: flere/tidligere planer = sikter på nå · ↑ gradert · kortere
+fravær = lang horisont · dialogmøte 1 = senere/kun Lumi) → **O1**. Rammet som «dit
+vi lader opp, ikke det vi flytter nå». Kun O1 (O2 = intern kompetanse hører til en
+team-/porteføljevisning). Koblingen tegnes som ÉN kjede + gruppering, ikke et nett
+av piler.
+
+**Mekanisme-måling (Lumi) — kanaria-fuglen.** Hele kjeden hviler på at leder og
+sykmeldt møtes tidligere og bedre. Måles via **to Lumi-surveyer (AG + sykmeldt)**:
+kom de tidlig i kontakt, opplevdes det som støtte ikke press, fant de tilrettelegging
+som funka. Går planene opp UTEN at dette gjør det → papir, ikke dialog.
+
+**Ringvirkning (lang horisont, bekreftende).** Kun **gradert sykmelding +
+fraværslengde** — begge hard register, men treg + konfundert, merket «ikke et
+runde-1-løfte». Gradert = register-fotavtrykket av at tilrettelegging skjedde
+(triangulerer Lumi «fant tilrettelegging som funka»). Omkringliggende produkter
+(dialogmøte 2, aktivitetskrav, behovsrettet oppfølging) er **bevisst droppet** — for
+langt unna.
+
+**Faktiske datakilde-verktøy (erstatter den generiske §7-listen):**
+- **Database** (hard, autoritativt): hele Norges sykmeldinger m/ gradering;
+  oppfølgingsplaner fra **Nav + LPS — to apper, to DB-er** (opt-in kan flytte
+  plan-laging Nav↔LPS → tell på tvers, ellers falskt frafall + kanal-skift-konfunder);
+  veileders forespørsel (→ KR3); **alle varsler per person**; nedstrøms-produkt-data.
+- **Umami** (trend/mykt): klikk, navigasjon, valg. Indikativt, ikke til styring;
+  kryss-sjekkes mot Lumi (dårlig tilbakemelding ↔ hva de gjorde i løsningen).
+- **Lumi** (survey): tillit, opplevd kontakt/press, tilrettelegging, opt-in-opplevelse.
+  To surveyer (AG + sykmeldt), fri segmentering.
+
+**Korreksjon — varseltrøtthet er Lumi/opplevd, ikke hard DB.** Vi kan ikke flytte
+*objektiv* varseltrøtthet (1 opt-in-varsel = dråpe i havet), og all-varsler-data er
+usikker tillatelse. Guardrailen måler derfor **opplevd press (Lumi)**. Og: sykefravær
++ gradert ER hard register-målbart — lang horisont + konfundert, ikke «via lege/ikke nå».
+
+**«Hvorfor» som egen måling + segmentert mekanisme.** NudgeLab vekter *hvorfor* tungt
+(EAST: tydelig hvorfor → mer handling). Lagt inn: «forklare hvorfor» som en spake, og
+«forstår hvorfor oppfølging er viktig» som en Lumi-måling i mekanisme-laget (ikke på
+mellomliggende mål — forståelse er mekanisme, ikke O1-utfall). Mekanisme-laget **kjøres
+på alle segmenter inkl. kontroll** og er segment-styrt, så effekten er synlig (flipp til
+A). For å *tilskrive* hard-atferd til «hvorfor» må selve hvorfor-forklaringen a/b-testes —
+ellers korrelasjon (engasjerte både forstår og handler). **Segment-omfang:** toggle styrer
+KPI/trend/mekanisme; funnel viser alle tre; ringvirkning holder pakke-vs-kontroll
+(opt-in-splitt = konfunder). **Andre segmenteringer (senere, ikke nå):** virksomhetsstørrelse
+(små bedrifter mangler rutiner), gradert vs. full, unge ansatte.
+
+---
+
 ## 1. Nivåene
 
 | Nivå | Måler | Datakilde | Rolle |
