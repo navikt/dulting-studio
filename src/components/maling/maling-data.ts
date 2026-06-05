@@ -521,53 +521,65 @@ export const VARSEL_ETIKK = {
 // 5-punkts «i hvilken grad»-skala (1 = i svært liten grad, 5 = i svært stor grad).
 // Snittscore per arm/segment og aktør. Hard effekt måles i register, ikke her.
 export type LumiAktorScore = { ag: number; sm: number };
+
+/**
+ * LumiSpørsmål — ett Lumi-spørsmål på 1–5-skalaen.
+ *
+ * kunPakke: true  → spørsmålet gjelder bare pakke-armen (f.eks. om påminnelsen).
+ *   Kontroll-armen får ingen påminnelse, så en kontroll-score gir ingen mening.
+ *   kontroll er utelatt (undefined) for disse.
+ *
+ * kunPakke: false/undefined → sammenlignbart spørsmål; begge armer besvarer det.
+ *   kontroll er alltid satt.
+ */
 export type LumiSpørsmål = {
   q: string;
   tag: string;
   status: "bra" | "følg-med";
-  kontroll: LumiAktorScore;
+  /** Kun satt for sammenlignbare spørsmål (kunPakke falsy). */
+  kontroll?: LumiAktorScore;
   pakke: {
     "takket-ja": LumiAktorScore;
     "ikke-svart": LumiAktorScore;
   };
+  /** true → spørsmålet stilles bare til pakke-armen (kontroll er utelatt). */
+  kunPakke?: boolean;
 };
 
 export const LUMI_MAX = 5; // Lumi-native (1–5 rating / 5-punkts «i hvilken grad»). Bytt konstant hvis Lumi bygger custom n-punkts Likert.
 export const LUMI_SKALA = "1 = i svært liten grad · 5 = i svært stor grad";
 
+// ---- Sammenlignbare spørsmål (begge armer) ----
+// Kontroll-armen og pakke-armen besvarer disse. Pakke ≥ kontroll på alle fire.
+
+// ---- Kun-pakka-spørsmål (om påminnelsen) ----
+// Kontroll-armen får INGEN påminnelse — det gir ingen mening å sammenligne.
+// kontroll er derfor utelatt.
+
 export const LUMI_SPORSMAL: LumiSpørsmål[] = [
+  // --- Sammenlignbare ---
   {
-    q: "I hvilken grad opplevde du at det var tydelig hvorfor tidlig oppfølging er viktig?",
+    q: "I hvilken grad forstod du hvorfor tidlig oppfølging er viktig?",
     tag: "forståelse",
     status: "bra",
-    kontroll: { ag: 3.1, sm: 2.8 },
+    kontroll: { ag: 3.1, sm: 2.9 },
     pakke: {
-      "takket-ja": { ag: 4.3, sm: 4.0 },
-      "ikke-svart": { ag: 3.6, sm: 3.3 },
+      "takket-ja": { ag: 4.4, sm: 4.1 },
+      "ikke-svart": { ag: 3.7, sm: 3.4 },
     },
   },
   {
-    q: "I hvilken grad opplevde du at arbeidsgiver og du kom tidligere i kontakt?",
-    tag: "tidlig-kontakt",
+    q: "I hvilken grad opplevde du at kontakten kom raskt nok i gang?",
+    tag: "kontakt",
     status: "bra",
-    kontroll: { ag: 2.9, sm: 2.6 },
+    kontroll: { ag: 2.8, sm: 2.6 },
     pakke: {
-      "takket-ja": { ag: 4.0, sm: 3.7 },
-      "ikke-svart": { ag: 3.3, sm: 3.0 },
+      "takket-ja": { ag: 4.0, sm: 3.8 },
+      "ikke-svart": { ag: 3.3, sm: 3.1 },
     },
   },
   {
-    q: "I hvilken grad opplevde du at påminnelsene føltes som støtte snarere enn press?",
-    tag: "støtte-ikke-press",
-    status: "følg-med",
-    kontroll: { ag: 3.4, sm: 3.0 },
-    pakke: {
-      "takket-ja": { ag: 3.9, sm: 3.5 },
-      "ikke-svart": { ag: 3.5, sm: 3.2 },
-    },
-  },
-  {
-    q: "I hvilken grad opplevde du at dere fant tilrettelegging som kunne fungere?",
+    q: "I hvilken grad fant dere tilrettelegging som kunne fungere?",
     tag: "tilrettelegging",
     status: "følg-med",
     kontroll: { ag: 2.7, sm: 2.5 },
@@ -577,13 +589,34 @@ export const LUMI_SPORSMAL: LumiSpørsmål[] = [
     },
   },
   {
-    q: "I hvilken grad opplevde du at du visste hva du selv kunne bidra med?",
+    q: "I hvilken grad visste du hva du selv kunne bidra med?",
     tag: "egen-rolle",
     status: "bra",
-    kontroll: { ag: 3.0, sm: 2.7 },
+    kontroll: { ag: 3.0, sm: 2.8 },
+    pakke: {
+      "takket-ja": { ag: 4.2, sm: 3.9 },
+      "ikke-svart": { ag: 3.5, sm: 3.2 },
+    },
+  },
+  // --- Kun pakka (om påminnelsen) ---
+  {
+    q: "I hvilken grad opplevde du påminnelsen som støtte, ikke mas?",
+    tag: "støtte",
+    status: "følg-med",
+    kunPakke: true,
+    pakke: {
+      "takket-ja": { ag: 3.8, sm: 3.5 },
+      "ikke-svart": { ag: 3.4, sm: 3.1 },
+    },
+  },
+  {
+    q: "I hvilken grad hjalp påminnelsen deg å komme i gang i tide?",
+    tag: "kom-i-gang",
+    status: "bra",
+    kunPakke: true,
     pakke: {
       "takket-ja": { ag: 4.1, sm: 3.8 },
-      "ikke-svart": { ag: 3.4, sm: 3.1 },
+      "ikke-svart": { ag: 3.5, sm: 3.2 },
     },
   },
 ];

@@ -850,6 +850,74 @@
     0 0 0 2px #fff,
     0 0 0 3px var(--pakke);
 }
+
+/* ---- Lumi: status-badge — mykere enn NAV-Tag default ---- */
+/* Overrider pill-radius og fyll slik at de ikke ligner form-valideringspiller.
+   Bruker høy spesifisitet i stedet for !important. */
+.mal__panel .mal__lk-status-tag {
+  border-radius: var(--mal-radius);
+  font-weight: 500;
+}
+
+/* ---- Lumi: spørsmåls-meta-rad (badge + kun-pakka-note) ---- */
+.mal__lk-q-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+/* ---- Lumi: kun-pakka-note ---- */
+.mal__lk-kunpakke-note {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
+  background: var(--kontroll-soft);
+  border-radius: 6px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+/* ---- Lumi: gruppe-headings ---- */
+.mal__lk-gruppe {
+  margin-bottom: 4px;
+}
+.mal__lk-gruppe + .mal__lk-gruppe {
+  margin-top: 24px;
+}
+.mal__lk-gruppe-tittel {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
+  margin: 0 0 4px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--mal-line);
+}
+
+/* Kun-pakka-gruppen: lett bakgrunn for å tydeliggjøre at kontroll er fraværende */
+.mal__lk-gruppe--kunpakke {
+  background: var(--kontroll-soft);
+  border-radius: 10px;
+  padding: 12px 14px 4px;
+}
+.mal__lk-gruppe--kunpakke .mal__lk-gruppe-tittel {
+  color: var(--kontroll-ink);
+}
+
+/* ---- Lumi: spørsmålstekst-kontrast ---- */
+/* Sikre at spørsmålsteksten bruker --mal-ink-2 minimum (ikke den svakeste grå) */
+.mal__lk-sporsmal-q > span:first-child {
+  color: var(--mal-ink-2);
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: var(--mal-body);
+}
+
 /* ---- funnel / trakt ---- */
 /* Funnel: divergerende SVG — pakke til venstre, kontroll til høyre */
 .mal__trakt-svg {

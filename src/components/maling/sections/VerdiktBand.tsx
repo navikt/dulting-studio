@@ -96,11 +96,14 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
     forrigeDelta: kr3Delta,
   });
 
-  // Mekanisme: Lumi — alltid alle-pool
-  const mp = LUMI_SPORSMAL.map((s) => lumiForSegment(s, "alle"));
+  // Mekanisme: Lumi — alltid alle-pool, men KUN sammenlignbare spørsmål
+  // (kunPakke-spørsmål har ingen kontroll-arm og skal ikke påvirke snittet).
+  const sammenlignbare = LUMI_SPORSMAL.filter((s) => !s.kunPakke);
+  const mp = sammenlignbare.map((s) => lumiForSegment(s, "alle"));
   const pakkeSnitt = mean(mp.flatMap((x) => [x.ag, x.sm]));
   const kontrollSnitt = mean(
-    LUMI_SPORSMAL.flatMap((s) => [s.kontroll.ag, s.kontroll.sm]),
+    // biome-ignore lint/style/noNonNullAssertion: sammenlignbare har alltid kontroll
+    sammenlignbare.flatMap((s) => [s.kontroll!.ag, s.kontroll!.sm]),
   );
   const mekanismeOk = mekanismeOkFn(pakkeSnitt, kontrollSnitt);
 
