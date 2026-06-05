@@ -88,6 +88,7 @@ export function KrBevisSection({
                     <span
                       className="mal__cmp-fill mal__cmp-fill--pakke"
                       style={{ width: `${pakkeVerdi}%` }}
+                      aria-hidden="true"
                     />
                   </span>
                   <b className="mal__cmp-val">{pakkeVerdi}%</b>
@@ -98,6 +99,7 @@ export function KrBevisSection({
                     <span
                       className="mal__cmp-fill mal__cmp-fill--kontroll"
                       style={{ width: `${s.metrikk.kontroll}%` }}
+                      aria-hidden="true"
                     />
                   </span>
                   <b className="mal__cmp-val">{s.metrikk.kontroll}%</b>

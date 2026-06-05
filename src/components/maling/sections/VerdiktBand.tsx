@@ -132,12 +132,18 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
         <span className="mal__verdikt-eyebrow">
           Tiltakspakke 1 · pilot T&amp;F · {periodeNavn}
         </span>
-        <span className={`mal__verdikt-pille ${pilleKlasse(samlet)}`}>
-          <span aria-hidden>{pilleSymbol(samlet)}</span> {pilleTekst(samlet)}
-        </span>
+        {/* <output> = implicit role="status" + aria-live="polite"; announces verdict on period/segment change */}
+        <output aria-atomic="true" style={{ display: "contents" }}>
+          <span className={`mal__verdikt-pille ${pilleKlasse(samlet)}`}>
+            <span aria-hidden>{pilleSymbol(samlet)}</span> {pilleTekst(samlet)}
+          </span>
+        </output>
       </div>
 
-      <p className="mal__verdikt-dom">{domSetning(samlet)}</p>
+      {/* dom-setning inside a second live region so it is announced alongside the pille */}
+      <output aria-atomic="true">
+        <p className="mal__verdikt-dom">{domSetning(samlet)}</p>
+      </output>
 
       <div className="mal__vfliser">
         {/* KR1 */}

@@ -23,6 +23,9 @@ export function Kontrollinje({
 }: KontrollinjeProps) {
   return (
     <section className="mal__kontrollinje" aria-label="Kontroller">
+      {/* sr-only heading to preserve h1→h2 hierarchy before #kr-bevis-h */}
+      <h2 className="sr-only">Filtrer visningen</h2>
+
       {/* sr-only live-region: annonser segmentbytte til skjermleser */}
       <span aria-live="polite" className="sr-only">
         Viser: {SEGMENT_LABEL[segment]}.

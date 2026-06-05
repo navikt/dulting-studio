@@ -73,11 +73,13 @@ export function SurvivalKurve({
           {`Linjediagram, kumulativ andel der planen er ${kortLabel} per uke. Uke 8: ${pakkeLabel} ${pakkeSluttPlan} prosent, kontroll ${kontrollSluttPlan} prosent. Detaljer i tabellen under.`}
         </desc>
 
-        {[0, 20, 40, 60].map((g) => (
+        {[0, 20, 40, 60].map((g, idx) => (
           <g key={g}>
             <line x1={TL} x2={TR} y1={ty(g)} y2={ty(g)} className="mal__grid" />
             <text x={TL - 6} y={ty(g) + 3} className="mal__ytick">
               {g}
+              {/* append % unit on the top tick */}
+              {idx === 3 ? "%" : ""}
             </text>
           </g>
         ))}
@@ -125,12 +127,16 @@ export function SurvivalKurve({
         <caption>
           Kumulativ andel der planen er {kortLabel} (%) per uke. Pakke ={" "}
           {pakkeLabel}.
+          {visOptInSplitt &&
+            " Inkluderer opt-in-splitt: «Takket ja» og «Ikke svart»."}
         </caption>
         <thead>
           <tr>
             <th>Uke</th>
             <th>Pakke</th>
             <th>Kontroll</th>
+            {visOptInSplitt && takketJaKurve && <th>Takket ja</th>}
+            {visOptInSplitt && ikkeSvartKurve && <th>Ikke svart</th>}
           </tr>
         </thead>
         <tbody>
@@ -139,6 +145,12 @@ export function SurvivalKurve({
               <td>{w}</td>
               <td>{pakkeKurve[i]}</td>
               <td>{kontrollKurve[i]}</td>
+              {visOptInSplitt && takketJaKurve && (
+                <td>{takketJaKurve[i] ?? ""}</td>
+              )}
+              {visOptInSplitt && ikkeSvartKurve && (
+                <td>{ikkeSvartKurve[i] ?? ""}</td>
+              )}
             </tr>
           ))}
         </tbody>
