@@ -1,7 +1,9 @@
 /* Måle-siden — eget presentasjonslag, scopet under .mal så det ikke lekker.
-   Speiler rammeverket i docs/maling-rammeverk.md. Tre KATEGORISK ulike
-   segment-farger (slate / lilla / blå) — IKKE opacity på én blå — så A/B/C er
-   skillbare for fargeblinde, på projektor og mot WCAG 1.4.11. Tall er illustrative. */
+   Speiler rammeverket i docs/maling-rammeverk.md. Fortellingen er to armer:
+   PAKKE (blå) vs. KONTROLL (slate). Respons på påminnelse er et filterlag, ikke en
+   tredje serie. To distinkte hue-er + form (heltrukket vs. stiplet) + direkte
+   tallabels gjør seriene skillbare uten farge (WCAG 1.4.1/1.4.11).
+   Alle tall er illustrative/syntetiske. */
 
 .mal {
   --mal-ink: #0a2540;
@@ -10,30 +12,26 @@
   --mal-line: #e3e8ef;
   --mal-line-soft: #eef2f7;
   --mal-card: #ffffff;
-  --mal-ag: #0067c5;
-  --mal-ag-ink: #00417e;
-  --mal-sm: #905bd3;
-  --mal-sm-ink: #5f339e;
+
+  /* arm-farger — definert ÉN gang, gjenbrukt overalt */
+  --pakke: #0067c5; /* blå */
+  --pakke-ink: #00417e;
+  --pakke-soft: #e7f0fb;
+  --kontroll: #6f7d90; /* slate */
+  --kontroll-ink: #41505f;
+  --kontroll-soft: #eef1f5;
+
+  /* aktør-farger i Lumi-laget — bevisst utenfor arm-paletten */
+  --mech-ag: #0f7a8a;
+  --mech-sm: #b5470c;
+
   --mal-ok: #1a7f55;
   --mal-ok-ink: #0f5a3a;
   --mal-ok-bg: #e7f4ee;
-  /* aktør-farger i mekanisme-laget — bevisst UTENFOR segment-paletten
-     (slate/lilla/blå) så de ikke forveksles med A/C/B. */
-  --mech-ag: #0f7a8a;
-  --mech-sm: #b5470c;
   --mal-warn: #8a5a00;
   --mal-warn-bg: #fbf3e0;
-  --mal-off: #56606e;
-  --mal-off-bg: #eef1f5;
-
-  /* segment-farger — tre distinkte hue-er, definert ÉN gang og gjenbrukt
-     på swatch, toggle, trendlinje, funnel-fyll og KPI-minibar. */
-  --seg-a: #6f7d90; /* slate (kontroll) */
-  --seg-a-ink: #41505f;
-  --seg-c: #905bd3; /* lilla (ikke opt-in) */
-  --seg-c-ink: #5f339e;
-  --seg-b: #0067c5; /* blå (opt-in) */
-  --seg-b-ink: #00417e;
+  --mal-bad: #b23434;
+  --mal-bad-bg: #fbe9e9;
 
   --mal-radius: 16px;
   --mal-shadow:
@@ -84,14 +82,19 @@
   margin-bottom: 1.5rem;
 }
 .mal__back:hover {
-  color: var(--mal-ag-ink);
+  color: var(--pakke-ink);
+}
+.mal__back:focus-visible {
+  outline: 3px solid var(--ax-border-focus, var(--pakke));
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 .mal__eyebrow {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--mal-ag-ink);
+  color: var(--pakke-ink);
   display: inline-flex;
   align-items: center;
   gap: 9px;
@@ -100,7 +103,7 @@
   content: "";
   width: 22px;
   height: 2px;
-  background: var(--mal-ag);
+  background: var(--pakke);
   border-radius: 2px;
 }
 .mal__title {
@@ -109,7 +112,7 @@
   letter-spacing: -0.02em;
   margin: 16px 0 0;
   font-weight: 800;
-  max-width: 18ch;
+  max-width: 20ch;
 }
 .mal__lede {
   font-size: 18px;
@@ -122,12 +125,8 @@
 .mal__frame {
   margin: 20px 0 0;
   padding: 13px 16px 13px 18px;
-  border-left: 3px solid var(--mal-ag);
-  background: linear-gradient(
-    100deg,
-    rgba(0, 103, 197, 0.06),
-    rgba(144, 91, 211, 0.05)
-  );
+  border-left: 3px solid var(--pakke);
+  background: rgba(0, 103, 197, 0.06);
   border-radius: 0 12px 12px 0;
   font-size: 14.5px;
   color: var(--mal-ink-2);
@@ -148,12 +147,15 @@
   gap: 14px;
   margin-bottom: 18px;
 }
+.mal__sec-head--inner {
+  margin-bottom: 14px;
+}
 .mal__sec-num {
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   font-size: 13px;
-  color: var(--mal-ag);
-  border: 1.5px solid var(--mal-ag);
+  color: var(--pakke);
+  border: 1.5px solid var(--pakke);
   width: 26px;
   height: 26px;
   border-radius: 8px;
@@ -167,267 +169,266 @@
   margin: 0;
   font-weight: 700;
 }
+.mal__h3 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 700;
+}
 .mal__sec-sub {
   font-size: 13.5px;
   color: var(--mal-ink-faint);
   margin: 3px 0 0;
   font-family: var(--mal-body);
+  line-height: 1.45;
 }
-
-/* ---- swatches (delt av toggle, legend, funnel) ---- */
-.mal__sw {
-  width: 22px;
-  height: 10px;
-  border-radius: 3px;
-  flex: none;
-}
-.mal__sw--line {
-  height: 3px;
-  border-radius: 2px;
-}
-.mal__sw--a {
-  background: var(--seg-a);
-}
-.mal__sw--c {
-  background: var(--seg-c);
-}
-.mal__sw--b {
-  background: var(--seg-b);
-}
-.mal__sw--ag {
-  background: var(--mech-ag);
-}
-.mal__sw--sm {
-  background: var(--mech-sm);
-}
-
-/* ---- segment toggle (segmentert kontroll) ---- */
-.mal__toggle {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  background: var(--mal-line-soft);
-  padding: 5px;
-  border-radius: 14px;
-}
-.mal__toggle-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--mal-body);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--mal-ink-2);
-  background: transparent;
-  border: 1.5px solid transparent;
-  border-radius: 999px;
-  padding: 8px 14px;
-  cursor: pointer;
-  transition:
-    background 0.12s ease,
-    color 0.12s ease,
-    box-shadow 0.12s ease;
-}
-.mal__toggle-btn:not(.mal__toggle-btn--on):hover {
-  background: #fff;
-}
-.mal__toggle-btn:focus-visible {
-  outline: 3px solid var(--mal-ag);
-  outline-offset: 2px;
-}
-.mal__toggle-txt b {
-  font-weight: 800;
-}
-.mal__toggle-btn--on {
-  color: #fff;
-  box-shadow:
-    0 1px 2px rgba(10, 37, 64, 0.18),
-    0 6px 16px -8px rgba(10, 37, 64, 0.5);
-}
-.mal__toggle-btn--a.mal__toggle-btn--on {
-  background: #41505f;
-}
-.mal__toggle-btn--c.mal__toggle-btn--on {
-  background: var(--seg-c-ink);
-}
-.mal__toggle-btn--b.mal__toggle-btn--on {
-  background: var(--seg-b-ink);
-}
-.mal__toggle-btn--on .mal__sw {
-  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.85);
-}
-.mal__toggle-check {
-  font-weight: 800;
-  margin-left: 1px;
-}
-
-.mal__optin {
-  margin: 16px 0 0;
-  font-family: var(--mal-body);
-  font-size: 13.5px;
-  color: var(--mal-ink-2);
-  background: var(--mal-line-soft);
-  border-radius: 12px;
-  padding: 12px 16px;
-  line-height: 1.5;
-}
-.mal__optin-num {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--mal-ag-ink);
-  font-family: var(--mal-display);
-  margin-right: 2px;
-}
-.mal__optin-tag {
-  font-size: 10.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  background: var(--mal-ok-bg);
-  color: var(--mal-ok);
-  padding: 2px 7px;
-  border-radius: 6px;
-  white-space: nowrap;
-}
-
-/* den rene (poolede) sammenligningen — framhevet */
-.mal__pooled {
-  margin: 12px 0 0;
+.mal__sec-note {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
-  background: linear-gradient(
-    100deg,
-    rgba(0, 103, 197, 0.07),
-    rgba(144, 91, 211, 0.05)
-  );
-  border: 1px solid #cfe0f3;
-  border-left: 3px solid var(--mal-ag);
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-family: var(--mal-body);
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--mal-ink-2);
-  line-height: 1.5;
+  font-family: var(--mal-body);
+  line-height: 1.45;
+  margin: 10px 0 0;
 }
-.mal__pooled-tag {
+
+/* ---- forsøksdesign: armer ---- */
+.mal__arms {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.mal__arm {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--mal-line);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: var(--mal-shadow);
+  border-top: 4px solid var(--mal-line);
+}
+.mal__arm--pakke {
+  border-top-color: var(--pakke);
+  background: linear-gradient(180deg, var(--pakke-soft), #fff 60%);
+}
+.mal__arm--kontroll {
+  border-top-color: var(--kontroll);
+  background: linear-gradient(180deg, var(--kontroll-soft), #fff 60%);
+}
+.mal__arm-tag {
   font-size: 10.5px;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--mal-ag-ink);
-  flex: none;
+  color: var(--mal-ink-2);
 }
-.mal__pooled-num {
-  color: var(--mal-ag-ink);
-  font-size: 16px;
+.mal__arm-navn {
+  font-size: 19px;
   font-weight: 800;
-  font-family: var(--mal-display);
+  letter-spacing: -0.01em;
 }
-.mal__pooled-body b {
-  color: var(--mal-ink);
+.mal__arm--pakke .mal__arm-navn {
+  color: var(--pakke-ink);
+}
+.mal__arm--kontroll .mal__arm-navn {
+  color: var(--kontroll-ink);
+}
+.mal__arm-desc {
+  font-size: 13px;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
+  line-height: 1.45;
 }
 
-/* ---- KPI-fliser ---- */
+.mal__design-grid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.mal__design-card {
+  border: 1px solid var(--mal-line);
+  border-radius: 14px;
+  padding: 15px 17px 16px;
+  box-shadow: var(--mal-shadow);
+  background: var(--mal-card);
+}
+.mal__design-card--segment {
+  border-style: dashed;
+  border-color: #c9d2de;
+  background: var(--mal-line-soft);
+}
+.mal__design-h {
+  margin: 0 0 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.mal__design-list {
+  margin: 0;
+  padding-left: 17px;
+}
+.mal__design-list li {
+  font-size: 12.5px;
+  color: var(--mal-ink-2);
+  line-height: 1.45;
+  margin-bottom: 6px;
+  font-family: var(--mal-body);
+}
+
+/* ---- KPI-fliser (styringstall) ---- */
 .mal__kpis {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(186px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
 }
 .mal__kpi {
   background: var(--mal-card);
   border: 1px solid var(--mal-line);
   border-radius: 14px;
-  padding: 16px 16px 15px;
+  padding: 16px 18px 16px;
   box-shadow: var(--mal-shadow);
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
+}
+.mal__kpi--filtered {
+  border-color: #f0dca6;
+  background: linear-gradient(180deg, #fffaf0 0%, #ffffff 42%);
 }
 .mal__kpi-sub {
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--mal-ink-faint);
+  color: var(--pakke-ink); /* already dark enough — #00417e passes AA at this weight */
 }
 .mal__kpi-label {
-  font-size: 12.5px;
+  font-size: 15px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.25;
   letter-spacing: -0.01em;
-  min-height: 2.6em;
 }
-.mal__kpi-val {
-  font-size: 38px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-  margin-top: auto;
-  padding-top: 4px;
+
+/* sammenligningsstolper pakke vs kontroll */
+.mal__cmp {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
 }
-.mal__kpi-unit {
-  font-size: 17px;
+.mal__cmp-row {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 0.8fr) 1fr 42px;
+  align-items: center;
+  gap: 9px;
+}
+.mal__cmp-name {
+  font-size: 11.5px;
   font-weight: 700;
-  color: var(--mal-ink-faint);
-  margin-left: 2px;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
+}
+.mal__cmp-track {
+  height: 16px;
+  background: var(--mal-line-soft);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.mal__cmp-fill {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+}
+.mal__cmp-fill--pakke {
+  background: var(--pakke);
+}
+.mal__cmp-fill--kontroll {
+  background: var(--kontroll);
+}
+.mal__cmp-val {
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 .mal__kpi-delta {
   font-family: var(--mal-body);
-  font-size: 11.5px;
-  font-weight: 700;
-}
-.mal__kpi-delta--clean {
-  color: var(--mal-ok);
-}
-.mal__kpi-delta--conf {
-  color: var(--mal-ink-2);
-}
-.mal__kpi-delta--base {
-  color: var(--mal-ink-faint);
-  font-weight: 600;
-}
-.mal__kpi-mini {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin-top: 3px;
-}
-.mal__kpi-minibar {
-  height: 5px;
-  background: var(--mal-line-soft);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.mal__kpi-minifill {
-  display: block;
-  height: 100%;
-  border-radius: 3px;
-  opacity: 0.7;
-}
-.mal__kpi-minifill--on {
-  opacity: 1;
-}
-.mal__kpi-note {
   font-size: 12px;
-  color: var(--mal-ink-faint);
-  margin: 14px 0 0;
-  line-height: 1.5;
-  font-family: var(--mal-body);
+  font-weight: 700;
+  color: var(--mal-ok-ink);
 }
-.mal__kpi-note b {
+.mal__kpi-seg {
+  font-family: var(--mal-body);
+  font-size: 12px;
+  color: var(--mal-ink-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.mal__kpi-sekundar {
+  font-family: var(--mal-body);
+  font-size: 11.5px;
+  color: var(--mal-ink-faint);
+  border-top: 1px dashed var(--mal-line);
+  padding-top: 8px;
+}
+.mal__kpi-sekundar b {
   color: var(--mal-ink-2);
 }
 
-/* ---- panels (trend + funnel) ---- */
+/* ---- metric explainer ---- */
+.mal__explain {
+  margin-top: 4px;
+  border-top: 1px solid var(--mal-line-soft);
+  padding-top: 10px;
+}
+.mal__explain-def {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  color: var(--mal-ink-2);
+  line-height: 1.45;
+  font-family: var(--mal-body);
+}
+.mal__explain-dl {
+  margin: 6px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mal__explain-row {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
+}
+.mal__explain-row dt {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--mal-ink-faint);
+}
+.mal__explain-row dd {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--mal-ink-2);
+  line-height: 1.4;
+  font-family: var(--mal-body);
+}
+
+/* ---- panels ---- */
 .mal__panel {
   background: var(--mal-card);
   border: 1px solid var(--mal-line);
   border-radius: var(--mal-radius);
   padding: 22px 24px 24px;
   box-shadow: var(--mal-shadow);
+}
+.mal__panel--curve {
+  margin-top: 16px;
 }
 .mal__legend {
   display: flex;
@@ -453,7 +454,44 @@
   font-style: italic;
 }
 
-/* ---- trend chart ---- */
+/* swatches */
+.mal__sw {
+  width: 22px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+.mal__sw--line {
+  height: 0;
+  border-top: 3px solid currentColor;
+  border-radius: 0;
+}
+.mal__sw--dashed {
+  border-top-style: dashed;
+}
+.mal__sw--pakke {
+  background: var(--pakke);
+  color: var(--pakke);
+}
+.mal__sw--kontroll {
+  background: var(--kontroll);
+  color: var(--kontroll);
+}
+.mal__sw--split-ja {
+  color: var(--pakke);
+  /* fine dots — matches stroke-dasharray="2 3" on the polyline */
+  border-top-style: dotted;
+  border-top-width: 3px;
+  opacity: 0.65;
+}
+.mal__sw--split-nei {
+  color: #7b61ff;
+  /* dashes — matches stroke-dasharray="6 3" on the polyline */
+  border-top-style: dashed;
+  opacity: 0.65;
+}
+
+/* ---- trend/kurve chart ---- */
 .mal__chart {
   width: 100%;
   height: auto;
@@ -462,6 +500,19 @@
 .mal__grid {
   stroke: var(--mal-line);
   stroke-width: 1;
+}
+.mal__frist {
+  stroke: var(--mal-warn);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.7;
+}
+.mal__frist-lbl {
+  fill: var(--mal-warn);
+  font-size: 8px;
+  font-weight: 700;
+  text-anchor: middle;
+  font-family: var(--mal-body);
 }
 .mal__ytick {
   fill: var(--mal-ink-faint);
@@ -480,192 +531,68 @@
   stroke-width: 2;
   stroke-linejoin: round;
   stroke-linecap: round;
-  opacity: 0.7;
 }
-.mal__line--a {
-  stroke: var(--seg-a);
+.mal__line--pakke {
+  stroke: var(--pakke);
 }
-.mal__line--c {
-  stroke: var(--seg-c);
+.mal__line--kontroll {
+  stroke: var(--kontroll);
 }
-.mal__line--b {
-  stroke: var(--seg-b);
+.mal__line--dashed {
+  stroke-dasharray: 5 4;
 }
 .mal__line--on {
-  opacity: 1;
   stroke-width: 3;
 }
-.mal__dotend--a {
-  fill: var(--seg-a);
+.mal__line--split-ja {
+  stroke: var(--pakke);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 3; /* fine dots — WCAG 1.4.1: pattern, not just color */
+  opacity: 0.55;
 }
-.mal__dotend--c {
-  fill: var(--seg-c);
+.mal__line--split-nei {
+  stroke: #7b61ff;
+  stroke-width: 1.5;
+  stroke-dasharray: 6 3; /* dashes — WCAG 1.4.1: pattern, not just color */
+  opacity: 0.55;
 }
-.mal__dotend--b {
-  fill: var(--seg-b);
-}
-.mal__endlbl {
-  font-size: 10px;
-  font-weight: 700;
-  font-family: var(--mal-body);
-}
-.mal__endlbl--a {
-  fill: var(--seg-a-ink);
-}
-.mal__endlbl--c {
-  fill: var(--seg-c-ink);
-}
-.mal__endlbl--b {
-  fill: var(--seg-b-ink);
-}
-.mal__endlbl--on {
-  font-weight: 800;
-}
-
-/* ---- funnel ---- */
-.mal__funnel {
-  display: grid;
-  gap: 4px;
-}
-.mal__step {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 18px;
-  align-items: center;
-  padding: 9px 0;
-}
-.mal__step + .mal__step {
-  border-top: 1px solid var(--mal-line-soft);
-}
-.mal__step-label {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--mal-ink);
-}
-.mal__step-sub {
-  display: block;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--mal-ink-faint);
-  margin-top: 2px;
-  font-family: var(--mal-body);
-}
-.mal__bars {
-  display: grid;
-  gap: 5px;
-}
-.mal__bar {
-  display: grid;
-  grid-template-columns: 13px 1fr 50px;
-  align-items: center;
-  gap: 9px;
-}
-.mal__bar-seg {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--mal-ink-faint);
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-.mal__track {
-  height: 16px;
-  background: var(--mal-line-soft);
-  border-radius: 5px;
-  overflow: hidden;
-}
-.mal__fill {
-  height: 100%;
-  border-radius: 5px;
-}
-.mal__fill--a {
-  background: var(--seg-a);
-}
-.mal__fill--c {
-  background: var(--seg-c);
-}
-.mal__fill--b {
-  background: var(--seg-b);
-}
-.mal__val {
-  font-size: 12px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--mal-ink-2);
-  text-align: right;
-}
-.mal__gapnote {
-  font-size: 12px;
-  color: var(--mal-ink-faint);
-  margin: 16px 0 0;
-  padding-top: 14px;
+.mal__curve-explain {
+  margin-top: 16px;
   border-top: 1px solid var(--mal-line);
-  line-height: 1.55;
-  font-family: var(--mal-body);
-}
-.mal__gapnote b {
-  color: var(--mal-ag-ink);
+  padding-top: 14px;
 }
 
-/* ---- KR-status ---- */
-.mal__krgrid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+/* ---- KrBevisSection: periode-trend + hendelse-velger ---- */
+.mal__kpi-periode-trend {
+  font-family: var(--mal-body);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--mal-ink-faint);
 }
-.mal__kr {
-  background: var(--mal-card);
-  border: 1px solid var(--mal-line);
-  border-radius: 14px;
-  padding: 15px 15px 16px;
-  box-shadow: var(--mal-shadow);
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
+.mal__event-selector {
+  margin-bottom: 14px;
 }
-.mal__kr-code {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+.mal__frist-callout {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  background: var(--pakke-soft);
+  border-radius: 10px;
+  font-family: var(--mal-body);
+  font-size: 13px;
+  color: var(--mal-ink-2);
+  line-height: 1.45;
+}
+.mal__frist-callout b {
   color: var(--mal-ink);
 }
-.mal__kr-desc {
-  font-size: 12.5px;
-  color: var(--mal-ink-2);
-  line-height: 1.35;
-  flex: 1;
-  font-family: var(--mal-body);
-}
-.mal__pill {
-  align-self: flex-start;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 9px;
-  border-radius: 999px;
-  letter-spacing: 0.02em;
-}
-.mal__pill--primary {
-  background: var(--mal-ok-bg);
-  color: var(--mal-ok);
-}
-.mal__pill--off {
-  background: var(--mal-off-bg);
-  color: var(--mal-off);
-}
-.mal__kr-data {
-  font-size: 11.5px;
-  color: var(--mal-ink-faint);
-  line-height: 1.35;
-  font-family: var(--mal-body);
-}
-.mal__kr-check {
-  color: var(--mal-ok);
-  font-weight: 800;
+.mal__split-toggle {
+  margin-bottom: 14px;
 }
 
-/* ---- datakilder + guardrails ---- */
+/* ---- prompt-timing + standardvalg ---- */
 .mal__two {
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 .mal__mini {
@@ -676,50 +603,125 @@
   box-shadow: var(--mal-shadow);
 }
 .mal__mini-h {
-  margin: 0 0 12px;
-  font-size: 14px;
+  margin: 0 0 10px;
+  font-size: 15px;
   font-weight: 700;
 }
-.mal__srcrow {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+.mal__mini-lede {
+  margin: 0 0 14px;
   font-size: 13px;
   color: var(--mal-ink-2);
-  padding: 7px 0;
+  line-height: 1.45;
   font-family: var(--mal-body);
 }
-.mal__srcrow + .mal__srcrow {
-  border-top: 1px solid var(--mal-line-soft);
-}
-.mal__tag {
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 3px 7px;
-  border-radius: 6px;
-  flex: none;
-  margin-top: 1px;
+.mal__big {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--pakke-ink);
   font-family: var(--mal-display);
+  margin-right: 3px;
 }
-.mal__tag--reg {
-  background: #e7f0fb;
-  color: var(--mal-ag-ink);
+
+.mal__valg {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
 }
-.mal__tag--tel {
-  background: #eef7f1;
-  color: var(--mal-ok);
+.mal__valg-lbl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
 }
-.mal__tag--sur {
-  background: #f3ecfb;
-  color: var(--mal-sm-ink);
+.mal__valg-track {
+  height: 14px;
+  background: var(--mal-line-soft);
+  border-radius: 5px;
+  overflow: hidden;
 }
+.mal__valg-fill {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  background: var(--pakke);
+}
+.mal__valg-val {
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.mal__valg-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 38px;
+  align-items: center;
+  gap: 9px;
+}
+.mal__valg-notes {
+  margin: 12px 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+.mal__valg-notes li {
+  font-size: 12px;
+  color: var(--mal-ink-2);
+  line-height: 1.45;
+  margin-bottom: 5px;
+  font-family: var(--mal-body);
+}
+.mal__valg-notes b {
+  color: var(--mal-ink);
+}
+
+/* ---- levering, adopsjon og guardrail (påminnelse-seksjon) ---- */
+.mal__levering-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 38px auto;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.mal__levering-lbl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
+}
+.mal__levering-fill {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+}
+.mal__levering-fill--ok {
+  background: var(--pakke);
+}
+.mal__levering-fill--guard {
+  background: var(--mal-warn);
+}
+.mal__levering-val {
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.mal__levering-tag {
+  flex: none;
+}
+.mal__press-xref {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--mal-ink-faint);
+  line-height: 1.45;
+  font-family: var(--mal-body);
+  font-style: italic;
+}
+
 .mal__guardstat {
   display: flex;
-  gap: 22px;
-  margin: 0 0 12px;
-  padding-bottom: 12px;
+  gap: 24px;
+  margin: 14px 0 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--mal-line-soft);
   border-bottom: 1px solid var(--mal-line-soft);
 }
 .mal__guardstat > div {
@@ -744,7 +746,7 @@
   padding-left: 18px;
 }
 .mal__guard li {
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--mal-ink-2);
   line-height: 1.5;
   margin-bottom: 7px;
@@ -754,173 +756,246 @@
   color: var(--mal-ink);
 }
 
-/* ---- virkningskjede (theory of change) ---- */
-.mal__chain {
-  display: flex;
-  align-items: stretch;
-  gap: 10px;
-}
-.mal__chain-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  background: var(--mal-card);
-  border: 1px solid var(--mal-line);
-  border-radius: 14px;
-  padding: 14px 14px 15px;
-  box-shadow: var(--mal-shadow);
-}
-.mal__chain-col--goal {
-  flex: 0.85;
-  justify-content: center;
-  background: linear-gradient(
-    160deg,
-    rgba(0, 103, 197, 0.08),
-    rgba(144, 91, 211, 0.06)
-  );
-  border-color: #cfe0f3;
-}
-.mal__chain-head {
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--mal-ink-faint);
-  margin-bottom: 3px;
-}
-.mal__chain-lever {
-  font-family: var(--mal-body);
+/* ---- Lumi-scale (shared info chip) ---- */
+.mal__lumi-scale {
+  margin: 0 0 16px;
   font-size: 12.5px;
-  font-weight: 600;
   color: var(--mal-ink-2);
+  font-family: var(--mal-body);
   background: var(--mal-line-soft);
-  border-radius: 8px;
-  padding: 7px 10px;
-}
-.mal__chain-kr {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--mal-ink);
-  line-height: 1.3;
-  border-radius: 8px;
-  padding: 8px 10px;
-  border-left: 3px solid var(--mal-line);
-  background: var(--mal-line-soft);
-}
-.mal__chain-kr--now {
-  border-left-color: var(--mal-ok);
-}
-.mal__chain-kr--far {
-  border-left-color: var(--mal-ag);
-}
-.mal__chain-kr--later {
-  border-left-color: var(--mal-off);
-}
-.mal__chain-status {
-  display: block;
-  font-family: var(--mal-body);
-  font-size: 10.5px;
-  font-weight: 700;
-  margin-top: 3px;
-  color: var(--mal-ink-faint);
-}
-.mal__chain-kr--now .mal__chain-status {
-  color: var(--mal-ok-ink);
-}
-.mal__chain-arrow {
-  align-self: center;
-  font-size: 20px;
-  color: var(--mal-ink-faint);
-  flex: none;
-}
-.mal__chain-goal {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.mal__chain-goal b {
-  font-size: 13px;
-  color: var(--mal-ag-ink);
-  font-weight: 800;
-}
-.mal__chain-goal-t {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-}
-.mal__chain-goal-s {
-  font-family: var(--mal-body);
-  font-size: 11.5px;
-  color: var(--mal-ink-faint);
-}
-.mal__chain-note {
-  margin: 12px 0 0;
-  font-family: var(--mal-body);
-  font-size: 11.5px;
-  color: var(--mal-ink-faint);
+  border-radius: 10px;
+  padding: 10px 14px;
+  line-height: 1.45;
 }
 
-/* ---- mekanisme (Lumi) ---- */
-.mal__mech {
+/* ---- Lumi: punktplott (1–5 skala) ---- */
+.mal__lk-sporsmal {
   display: flex;
   flex-direction: column;
 }
-.mal__mech-row {
+
+.mal__lk-rad {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 20px;
   align-items: center;
-  padding: 9px 0;
+  padding: 14px 0;
 }
-.mal__mech-row + .mal__mech-row {
+.mal__lk-rad + .mal__lk-rad {
   border-top: 1px solid var(--mal-line-soft);
 }
-.mal__mech-q {
+
+.mal__lk-sporsmal-q {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
   font-size: 13.5px;
   font-weight: 600;
   color: var(--mal-ink);
 }
-.mal__mech-actor {
-  display: grid;
-  grid-template-columns: 1fr 40px 26px;
-  align-items: center;
-  gap: 6px;
+
+/* axis container — relative so dots can be absolutely positioned */
+.mal__lk-scale {
+  position: relative;
+  height: 32px;
+  margin: 10px 8px 0;
 }
-.mal__mech-track {
-  height: 10px;
-  background: var(--mal-line-soft);
-  border-radius: 4px;
-  overflow: hidden;
+
+.mal__lk-ticks {
+  position: absolute;
+  inset: 0;
+  top: -14px;
 }
-.mal__mech-bar {
-  height: 100%;
-  border-radius: 4px;
-}
-.mal__mech-bar--ag {
-  background: var(--mech-ag);
-}
-.mal__mech-bar--sm {
-  background: var(--mech-sm);
-}
-.mal__mech-actor b {
-  font-size: 13px;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-}
-.mal__mech-actor i {
-  font-style: normal;
+.mal__lk-tick {
+  position: absolute;
+  transform: translateX(-50%);
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--mal-ink-faint);
+  font-variant-numeric: tabular-nums;
   font-family: var(--mal-body);
 }
 
-/* ---- ringvirkning (lang horisont) ---- */
+.mal__lk-axline {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--mal-line);
+  transform: translateY(-50%);
+}
+
+/* dot shared */
+.mal__lk-dot {
+  display: block;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex: none;
+}
+
+/* legend variant (no positioning) */
+.mal__legend-item .mal__lk-dot {
+  position: static;
+  transform: none;
+  width: 12px;
+  height: 12px;
+}
+
+.mal__lk-dot--kontroll {
+  background: var(--kontroll);
+}
+.mal__lk-dot--pakke {
+  background: var(--pakke);
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 3px var(--pakke);
+}
+
+/* ---- Lumi: status-badge — mykere enn NAV-Tag default ---- */
+/* Overrider pill-radius og fyll slik at de ikke ligner form-valideringspiller.
+   Bruker høy spesifisitet i stedet for !important. */
+.mal__panel .mal__lk-status-tag {
+  border-radius: var(--mal-radius);
+  font-weight: 500;
+}
+
+/* ---- Lumi: spørsmåls-meta-rad (badge + kun-pakka-note) ---- */
+.mal__lk-q-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+/* ---- Lumi: kun-pakka-note ---- */
+.mal__lk-kunpakke-note {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
+  background: var(--kontroll-soft);
+  border-radius: 6px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+/* ---- Lumi: gruppe-headings ---- */
+.mal__lk-gruppe {
+  margin-bottom: 4px;
+}
+.mal__lk-gruppe + .mal__lk-gruppe {
+  margin-top: 24px;
+}
+.mal__lk-gruppe-tittel {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
+  margin: 0 0 4px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--mal-line);
+}
+
+/* Kun-pakka-gruppen: lett bakgrunn for å tydeliggjøre at kontroll er fraværende */
+.mal__lk-gruppe--kunpakke {
+  background: var(--kontroll-soft);
+  border-radius: 10px;
+  padding: 12px 14px 4px;
+}
+.mal__lk-gruppe--kunpakke .mal__lk-gruppe-tittel {
+  color: var(--kontroll-ink);
+}
+
+/* ---- Lumi: spørsmålstekst-kontrast ---- */
+/* Sikre at spørsmålsteksten bruker --mal-ink-2 minimum (ikke den svakeste grå) */
+.mal__lk-sporsmal-q > span:first-child {
+  color: var(--mal-ink-2);
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: var(--mal-body);
+}
+
+/* ---- funnel / trakt ---- */
+/* Funnel: divergerende SVG — pakke til venstre, kontroll til høyre */
+.mal__trakt-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 6px 0 2px;
+}
+.mal__trakt-silhuett--pakke {
+  fill: var(--pakke);
+  opacity: 0.1;
+}
+.mal__trakt-silhuett--kontroll {
+  fill: var(--kontroll);
+  opacity: 0.1;
+}
+.mal__trakt-akse {
+  stroke: var(--mal-line);
+  stroke-width: 1;
+}
+.mal__trakt-rekt--pakke {
+  fill: var(--pakke);
+}
+.mal__trakt-rekt--kontroll {
+  fill: var(--kontroll);
+}
+.mal__trakt-tlabel {
+  fill: var(--mal-ink);
+  font-size: 12.5px;
+  font-weight: 700;
+  font-family: var(--mal-display);
+}
+.mal__trakt-tsub {
+  fill: var(--mal-ink-faint);
+  font-size: 11px;
+  font-weight: 500;
+}
+.mal__trakt-tpct {
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--mal-body);
+}
+.mal__trakt-tpct--pakke {
+  fill: var(--pakke-ink);
+}
+.mal__trakt-tpct--kontroll {
+  fill: var(--kontroll-ink);
+}
+.mal__trakt-fall {
+  fill: var(--mal-warn);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--mal-body);
+}
+.mal__gapnote {
+  font-size: 12px;
+  color: var(--mal-ink-faint);
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--mal-line);
+  line-height: 1.55;
+  font-family: var(--mal-body);
+}
+.mal__gapnote b {
+  color: var(--pakke-ink);
+}
+
+/* ---- lang horisont ---- */
 .mal__ripple {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 .mal__ripple-card {
@@ -940,13 +1015,14 @@
   font-size: 11.5px;
   color: var(--mal-ink-faint);
   font-family: var(--mal-body);
-  margin: 2px 0 10px;
+  margin: 2px 0 12px;
 }
 .mal__ripple-vals {
   display: flex;
   align-items: baseline;
   gap: 12px;
   flex-wrap: wrap;
+  margin-top: auto;
 }
 .mal__ripple-pakke,
 .mal__ripple-kontroll {
@@ -958,7 +1034,7 @@
 .mal__ripple-pakke {
   font-size: 24px;
   font-weight: 800;
-  color: var(--mal-ag-ink);
+  color: var(--pakke-ink);
 }
 .mal__ripple-kontroll {
   font-size: 20px;
@@ -981,12 +1057,106 @@
   color: var(--mal-ink-faint);
   font-family: var(--mal-body);
 }
-.mal__ripple-delta {
-  margin-left: auto;
-  align-self: center;
+.mal__ripple-forbehold {
+  margin: 4px 0 8px;
+  align-self: flex-start;
+}
+.mal__ripple-locked {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mal__ripple-locked-txt {
+  margin: 0;
+  font-size: 12px;
+  color: var(--mal-ink-2);
+  line-height: 1.4;
+  font-family: var(--mal-body);
+}
+
+/* ---- datagrunnlag ---- */
+.mal__datatop {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 14px;
+}
+.mal__srcrow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   font-size: 13px;
+  color: var(--mal-ink-2);
+  padding: 8px 0;
+  font-family: var(--mal-body);
+}
+.mal__srcrow + .mal__srcrow {
+  border-top: 1px solid var(--mal-line-soft);
+}
+.mal__tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 6px;
+  flex: none;
+  margin-top: 1px;
+  font-family: var(--mal-display);
+}
+.mal__tag--reg {
+  background: var(--pakke-soft);
+  color: var(--pakke-ink);
+}
+.mal__tag--sur {
+  background: #f3ecfb;
+  color: #5f339e;
+}
+.mal__data-rolle {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--mal-ink-2);
+  line-height: 1.5;
+  font-family: var(--mal-body);
+  background: var(--mal-ok-bg);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.mal__contract {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.mal__contract-card {
+  border: 1px solid var(--mal-line);
+  border-radius: 12px;
+  padding: 13px 15px;
+  background: var(--mal-line-soft);
+}
+.mal__contract-h {
+  font-size: 11px;
   font-weight: 800;
-  color: var(--mal-ok-ink);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mal-ink-faint);
+}
+.mal__contract-card dd {
+  margin: 6px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.mal__contract-v {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--mal-ink);
+}
+.mal__contract-t {
+  font-size: 12px;
+  color: var(--mal-ink-2);
+  line-height: 1.4;
   font-family: var(--mal-body);
 }
 
@@ -998,23 +1168,362 @@
   font-family: var(--mal-body);
 }
 
+/* ---- kontrollinje ---- */
+.mal__kontrollinje {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 0;
+  padding: 12px 28px;
+  background: #f7f9fc;
+  border: 1px solid #dde3ec;
+  border-top: none;
+  border-radius: 0 0 var(--mal-radius) var(--mal-radius);
+  font-family: var(--mal-body);
+}
+.mal__kontrollinje-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--kontroll-ink);
+  white-space: nowrap;
+  margin-right: 4px;
+}
+.mal__kontrollinje-periode {
+  /* Make Aksel Select slim so it fits the bar */
+  max-width: 130px;
+}
+.mal__kontrollinje-sublabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--kontroll-ink);
+  white-space: nowrap;
+  margin-left: 4px;
+}
+.mal__kontrollinje-merknad {
+  flex-basis: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--mal-ink-2);
+  max-width: 78ch;
+}
+
+/* ---- verdikt-band ---- */
+.mal__verdikt {
+  margin: 24px 0 0;
+  border: 1.5px solid var(--pakke);
+  border-radius: var(--mal-radius) var(--mal-radius) 0 0;
+  background: linear-gradient(170deg, var(--pakke-soft) 0%, #fff 60%);
+  box-shadow:
+    0 1px 2px rgba(10, 37, 64, 0.04),
+    0 12px 36px -16px rgba(0, 103, 197, 0.22);
+  padding: 28px 28px 26px;
+}
+.mal__verdikt-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.mal__verdikt-eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mal-ink-2);
+}
+.mal__verdikt-dom {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--mal-ink);
+  margin: 0 0 22px;
+  line-height: 1.25;
+  max-width: 64ch;
+}
+.mal__verdikt-pille {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 16px 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: var(--mal-body);
+  white-space: nowrap;
+}
+.mal__verdikt-pille--paa-vei {
+  background: var(--mal-ok-bg);
+  color: var(--mal-ok-ink);
+  border: 1.5px solid var(--mal-ok);
+}
+.mal__verdikt-pille--folg-med {
+  background: var(--mal-warn-bg);
+  color: var(--mal-warn);
+  border: 1.5px solid #e8b04a;
+}
+.mal__verdikt-pille--ikke-paa-vei {
+  background: var(--mal-bad-bg);
+  color: var(--mal-bad);
+  border: 1.5px solid var(--mal-bad);
+}
+.mal__vfliser {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+.mal__vflis {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border: 1px solid var(--mal-line);
+  border-top: 4px solid var(--mal-line);
+  border-radius: 12px;
+  padding: 14px 16px 16px;
+  background: var(--mal-card);
+  box-shadow: var(--mal-shadow);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.mal__vflis:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 2px rgba(10, 37, 64, 0.04),
+    0 12px 32px -14px rgba(10, 37, 64, 0.32);
+}
+.mal__vflis:focus-visible {
+  outline: 3px solid var(--ax-border-focus, var(--pakke));
+  outline-offset: 2px;
+}
+.mal__vflis--paa-vei {
+  border-top-color: var(--mal-ok);
+}
+.mal__vflis--folg-med {
+  border-top-color: var(--mal-warn);
+}
+.mal__vflis--ikke-paa-vei {
+  border-top-color: var(--mal-bad);
+}
+.mal__vflis--noytral {
+  border-top-color: var(--mal-line);
+}
+.mal__vflis-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--kontroll-ink);
+}
+.mal__vflis-tall {
+  font-size: 30px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--mal-ink);
+}
+.mal__vflis-pp {
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--mal-ok-ink);
+  font-family: var(--mal-body);
+}
+.mal__vflis-pp--noytral {
+  color: var(--mal-ink-faint);
+}
+.mal__vflis-delta {
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+}
+.mal__vflis-sym {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--mal-ink-2);
+  margin: 4px 0 2px;
+}
+.mal__vflis-sub {
+  font-size: 11.5px;
+  font-family: var(--mal-body);
+  color: var(--mal-ink-2);
+  line-height: 1.35;
+}
+.mal__vflis-sub--warn {
+  color: var(--mal-warn);
+  font-weight: 600;
+}
+.mal__vflis-sub--faint {
+  color: var(--mal-ink-faint);
+}
+
+/* ---- VerdiktBand: KR-kode som liten eyebrow over plain label ---- */
+.mal__vflis-eyebrow {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  line-height: 1;
+}
+
+/* Override: label is now the prominent text (not uppercase), eyebrow handles the code */
+.mal__vflis .mal__vflis-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--mal-ink);
+  margin-top: 1px;
+}
+
+/* ---- Trend chip: visually distinct from vs-control delta ---- */
+/* Used in both VerdiktBand tiles and KrBevisSection KPI cards */
+.mal__vflis-trend-chip,
+.mal__kpi-trend-chip {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--mal-line-soft);
+  border: 1px solid var(--mal-line);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+/* ---- Lang horisont: to-kolonne rad for de to kompakte kortene ---- */
+.mal__ripple--row {
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 12px;
+}
+
+/* Bredere kort for fraværslengde (full bredde under raden) */
+.mal__ripple-card--wide {
+  border: 1px solid var(--mal-line);
+  border-radius: 14px;
+  padding: 16px 18px 20px;
+  box-shadow: var(--mal-shadow);
+  background: var(--mal-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.mal__ripple-sub--note {
+  font-size: 11px;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  margin-left: 4px;
+  align-self: flex-end;
+}
+
+/* Wrapper for survival-kurven inne i fraværslengde-kortet */
+.mal__fravars-kurve-wrap {
+  margin-top: 16px;
+  border-top: 1px solid var(--mal-line-soft);
+  padding-top: 14px;
+}
+
+/* Caption under survival-kurven */
+.mal__curve-caption {
+  font-size: 12px;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  margin: 8px 0 0;
+  line-height: 1.45;
+}
+
+/* ---- delta-hierarki: vs-kontroll label (primær) + trend-chip (sekundær) ---- */
+/* Tiny uppercase label before the delta value — makes "vs control" instantly clear */
+.mal__vflis-pp-lbl,
+.mal__kpi-delta-lbl {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  display: block;
+  margin-bottom: 1px;
+}
+
+/* ---- levering: guardrail micro-note ---- */
+.mal__levering-guard-note {
+  grid-column: 1 / -1;
+  font-size: 11.5px;
+  color: var(--mal-ink-2);
+  line-height: 1.45;
+  font-family: var(--mal-body);
+  padding: 4px 0 2px;
+}
+
+/* ---- lang horisont tile: «bekrefter senere» hint row ---- */
+.mal__vflis--bekrefter {
+  opacity: 0.82;
+}
+.mal__vflis-lh-hint {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+.mal__vflis-lh-forlop {
+  font-weight: 400;
+  color: var(--mal-ink-faint);
+}
+.mal__vflis-sym--muted {
+  color: var(--mal-ink-faint);
+  opacity: 0.55;
+}
+
+/* ---- fraværskurve: in-graph direction cue ---- */
+.mal__fravars-cue {
+  fill: var(--mal-ink-faint);
+  font-size: 8px;
+  font-family: var(--mal-body);
+  font-style: italic;
+}
+
+/* ---- responsivt ---- */
 @media (max-width: 52rem) {
+  .mal__arms,
+  .mal__design-grid,
   .mal__two,
-  .mal__ripple {
+  .mal__ripple,
+  .mal__ripple--row {
     grid-template-columns: 1fr;
   }
-  .mal__step,
-  .mal__mech-row {
+  .mal__vfliser {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mal__kontrollinje {
+    padding: 10px 12px;
+  }
+  .mal__lk-rad {
     grid-template-columns: 1fr;
     gap: 8px;
   }
-  .mal__chain {
-    flex-direction: column;
-  }
-  .mal__chain-col--goal {
-    flex: 1;
-  }
-  .mal__chain-arrow {
-    transform: rotate(90deg);
+  .mal__levering-row {
+    grid-template-columns: 110px 1fr 34px auto;
   }
 }
