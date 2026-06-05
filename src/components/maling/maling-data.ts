@@ -639,8 +639,8 @@ export const FUNNEL: FunnelSteg[] = [
     pakke: { "takket-ja": 33, "ikke-svart": 19 },
   },
   {
-    label: "Fortsatt aktiv",
-    sub: "evaluering valgt",
+    label: "Evaluerer planen",
+    sub: "oppfølging valgt",
     kontroll: 11,
     pakke: { "takket-ja": 26, "ikke-svart": 14 },
   },
