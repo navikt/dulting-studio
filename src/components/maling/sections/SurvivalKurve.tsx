@@ -75,13 +75,7 @@ export function SurvivalKurve({
 
         {[0, 20, 40, 60].map((g) => (
           <g key={g}>
-            <line
-              x1={TL}
-              x2={TR}
-              y1={ty(g)}
-              y2={ty(g)}
-              className="mal__grid"
-            />
+            <line x1={TL} x2={TR} y1={ty(g)} y2={ty(g)} className="mal__grid" />
             <text x={TL - 6} y={ty(g) + 3} className="mal__ytick">
               {g}
             </text>

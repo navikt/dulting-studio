@@ -17,10 +17,10 @@ import { DatagrunnlagSection } from "./sections/DatagrunnlagSection";
 import { ForsoksdesignSection } from "./sections/ForsoksdesignSection";
 import { FunnelSection } from "./sections/FunnelSection";
 import { Kontrollinje } from "./sections/Kontrollinje";
+import { KrBevisSection } from "./sections/KrBevisSection";
 import { LangHorisontSection } from "./sections/LangHorisontSection";
 import { LumiSection } from "./sections/LumiSection";
 import { PromptTimingSection } from "./sections/PromptTimingSection";
-import { StyringstallSection } from "./sections/StyringstallSection";
 import { VerdiktBand } from "./sections/VerdiktBand";
 import { useSegmentFilter } from "./useSegmentFilter";
 
@@ -71,7 +71,7 @@ export function MalingView() {
         periode={periode}
         onPeriode={setPeriode}
       />
-      <StyringstallSection onSegmentChange={setSegment} segment={segment} />
+      <KrBevisSection segment={segment} periode={periode} />
       <ForsoksdesignSection />
       <PromptTimingSection />
       <LumiSection segment={segment} />
