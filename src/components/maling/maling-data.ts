@@ -427,53 +427,62 @@ export function pakkeKurveForSegment(
   return seg === "alle" ? poolKurve(pakke) : pakke[seg];
 }
 
-// ---- prompt-timing: traff påminnelsen mens det var tid? ----
+// ---- varsel-levering og adopsjon: nådde påminnelsen fram — og ble den brukt? ----
+//
+// Påminnelsen er deterministisk timet: den sendes når et forløp er på vei til å
+// passere uke 4 uten plan. Distribusjonen av "når den kom" gir ingen mening.
+// Det som teller er: ble den levert i tide? Ble den brukt? Ble urene varsler luket ut?
 
-export type TimingBøtte = {
+export type VarselLeveringRad = {
+  /** Kortlabel for visning */
   label: string;
+  /** Verdi i prosent */
   andel: number;
-  iTide: boolean;
+  /** Positiv (ok) eller negativ (guardrail-avvik) retning for farging */
+  retning: "ok" | "guard";
+  /** Full forklaring av hva andelen betyr */
   merknad: string;
 };
 
-export const PROMPT_TIMING: TimingBøtte[] = [
+export const VARSEL_LEVERING: VarselLeveringRad[] = [
   {
-    label: "Uke 1–2",
-    andel: 38,
-    iTide: true,
-    merknad: "God margin til behovsvurdering og plan før uke 4.",
+    label: "Levert i tide",
+    andel: 94,
+    retning: "ok",
+    merknad:
+      "Av forløp som trengte et varsel (på vei til å passere uke 4 uten plan), fikk 94 % det faktisk levert før fristen. Nær 100 % by design — avvik indikerer gap eller bugs.",
   },
   {
-    label: "Uke 3",
-    andel: 34,
-    iTide: true,
-    merknad: "Fortsatt tid til å handle før fristen.",
+    label: "Brukt (adopsjon)",
+    andel: 61,
+    retning: "ok",
+    merknad:
+      "Av dem som fikk varselet, startet eller laget 61 % en plan etterpå. Dette er det faktiske dulte-signalet — vi ser om varselet faktisk utløste handling.",
   },
   {
-    label: "Uke 4",
-    andel: 18,
-    iTide: true,
-    merknad: "Knapp margin — treffer akkurat fristen.",
-  },
-  {
-    label: "Etter uke 4",
-    andel: 10,
-    iTide: false,
-    merknad: "For sent: fristen er passert før påminnelsen traff.",
+    label: "Luket ut (guardrail)",
+    andel: 7,
+    retning: "guard",
+    merknad:
+      "7 % av varsler var for sene (etter frist) eller duplikate (plan fantes allerede) og telles ikke som dult. Disse skal lukes ut — ikke feilrettes bakover, men elimineres i neste iterasjon.",
   },
 ];
 
-export const PROMPT_TIMING_FORKLARING: MetrikkForklaring = {
+export const VARSEL_LEVERING_FORKLARING: MetrikkForklaring = {
   definisjon:
-    "Når i forløpet opt-in-påminnelsen traff, målt mot uke-4-fristen.",
-  krKobling: "Mekanisme bak KR1/KR2 — riktig timing er en forutsetning.",
-  datakilde: "Aggregat fra register: varseltidspunkt mot forløpsstart.",
-  tidsvindu: "Uke 1 til etter uke 4.",
-  segmenter: "Gjelder opt-in-segmentet — de som faktisk får påminnelsen.",
+    "Levering: andel forløp som trengte et varsel og faktisk fikk det i tide. Adopsjon: andel som laget/startet plan etter varselet. Guardrail: andel varsler som var for sene eller duplikate og ble luket ut.",
+  krKobling:
+    "Mekanisme bak KR1/KR2 — varselet er en forutsetning, men bare hvis det leveres i tide og faktisk tas i bruk.",
+  datakilde:
+    "Aggregat fra register: varseltidspunkt, planstart/-opprettelse, og duplikat-sjekk mot eksisterende plan.",
+  tidsvindu: "Per forløp: uke 1–4 for levering, uke 1–6 for adopsjon.",
+  segmenter:
+    "Gjelder opt-in-segmentet — de som takket ja og dermed er i scope for varselet.",
   tolkning:
-    "En påminnelse som kommer etter uke 4 kan ikke ha hjulpet planen i tide.",
+    "Høy levering + høy adopsjon = varselet fungerer som tiltenkt. Lav levering = teknisk gap. Lav adopsjon = varselet treffer ikke riktig. Høy guardrail-andel = vi maser unødig.",
   usikkerhet: "Andeler er syntetiske; reelt produkt ville hatt KI.",
-  guardrail: "For sene varsler skal lukes ut, ikke telles som dult.",
+  guardrail:
+    "For sene/duplikate varsler skal lukes ut, ikke telles som dult. Opplevd press måles separat i Lumi.",
 };
 
 // ---- standardvalg / varsling: segment + etikkspor ----

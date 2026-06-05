@@ -1,37 +1,34 @@
 import { Tag } from "@navikt/ds-react";
 import {
-  PROMPT_TIMING,
-  PROMPT_TIMING_FORKLARING,
   VARSEL_ETIKK,
+  VARSEL_LEVERING,
+  VARSEL_LEVERING_FORKLARING,
   VARSEL_VALG,
 } from "../maling-data";
 import { MetricExplainer } from "./MetricExplainer";
 import { SectionHead } from "./SectionHead";
 
 /**
- * Prompt-timing og standardvalg/varsling. Viser om påminnelsen traff mens det
- * fortsatt var tid før uke 4, og behandler varselvalget som etikkspor
- * (takket ja / ikke svart, tidspunkt, kobling til tidligere plan,
- * Lumi-guardrail for press).
+ * Levering, adopsjon og guardrail for påminnelsen.
  *
- * Dette er et fast opt-in-/etikkspor: bare opt-in-segmentet får påminnelsen, så
- * tallene gjelder alltid opt-in og påvirkes ikke av segmentfilteret over.
- * Derfor tar seksjonen ikke imot `segment`.
+ * Påminnelsen er deterministisk timet — den sendes når et forløp er på vei til
+ * å passere uke 4 uten plan. Det som måles er derfor IKKE «når kom den», men:
+ *   1. Ble den levert i tide? (nær 100 % by design; avvik = gap/bugs)
+ *   2. Ble den brukt? (adopsjonssignal — faktisk dult)
+ *   3. Ble urene varsler luket ut? (guardrail: for sene / duplikate)
+ *
+ * Opt-in/opt-out spores separat og påvirkes ikke av segmentfilteret over.
+ * Opplevd press bor i VerdiktBand/VARSEL_ETIKK og kryssrefereres herfra.
  */
 export function PromptTimingSection() {
-  const iTide = PROMPT_TIMING.filter((b) => b.iTide).reduce(
-    (sum, b) => sum + b.andel,
-    0,
-  );
-
   return (
     <section id="timing" className="mal__sec" aria-labelledby="mal-timing-h">
       <SectionHead
         num={3}
         headingId="mal-timing-h"
-        title="Traff påminnelsen i tide?"
+        title="Nådde påminnelsen fram — og blir den brukt?"
       >
-        Traff påminnelsen mens det fortsatt var tid til å handle?
+        Levering, adopsjon og guardrail for påminnelsen (opt-in-segmentet).
       </SectionHead>
 
       <p className="mal__sec-note">
@@ -43,47 +40,50 @@ export function PromptTimingSection() {
       </p>
 
       <div className="mal__two">
-        {/* prompt-timing */}
+        {/* levering + adopsjon + guardrail */}
         <div className="mal__mini">
-          <h3 className="mal__mini-h">Når kom påminnelsen?</h3>
+          <h3 className="mal__mini-h">Levering og adopsjon</h3>
           <p className="mal__mini-lede">
-            <b className="mal__big">{iTide}%</b> av opt-in-segmentet fikk
-            påminnelsen i tide til behovsvurdering og plan før uke 4.
+            Av forløp som trengte et varsel — ble det levert, og ble det brukt?
           </p>
           <div
-            className="mal__timing"
+            className="mal__valg"
             role="img"
-            aria-label={`Fordeling av når påminnelsen traff: ${PROMPT_TIMING.map((b) => `${b.label} ${b.andel} prosent${b.iTide ? " i tide" : " for sent"}`).join(", ")}.`}
+            aria-label={`Varsel-levering og adopsjon: ${VARSEL_LEVERING.map((r) => `${r.label} ${r.andel} prosent`).join(", ")}.`}
           >
-            {PROMPT_TIMING.map((b) => (
-              <div className="mal__timing-row" key={b.label}>
-                <span className="mal__timing-lbl">{b.label}</span>
-                <span className="mal__timing-track">
+            {VARSEL_LEVERING.map((r) => (
+              <div className="mal__levering-row" key={r.label}>
+                <span className="mal__levering-lbl">{r.label}</span>
+                <span className="mal__valg-track">
                   <span
-                    className={`mal__timing-fill mal__timing-fill--${b.iTide ? "ok" : "late"}`}
-                    style={{ width: `${b.andel}%` }}
+                    className={`mal__levering-fill mal__levering-fill--${r.retning}`}
+                    style={{ width: `${r.andel}%` }}
                   />
                 </span>
-                <span className="mal__timing-val">{b.andel}%</span>
+                <span className="mal__levering-val">{r.andel}%</span>
                 <Tag
-                  variant={b.iTide ? "success" : "error"}
+                  variant={r.retning === "ok" ? "success" : "warning"}
                   size="xsmall"
-                  className="mal__timing-tag"
+                  className="mal__levering-tag"
                 >
-                  {b.iTide ? "i tide" : "for sent"}
+                  {r.retning === "ok" ? "ok" : "lukes ut"}
                 </Tag>
               </div>
             ))}
           </div>
-          <ul className="mal__timing-notes">
-            {PROMPT_TIMING.map((b) => (
-              <li key={b.label}>
-                <b>{b.label}:</b> {b.merknad}
+          <ul className="mal__valg-notes">
+            {VARSEL_LEVERING.map((r) => (
+              <li key={r.label}>
+                <b>{r.label}:</b> {r.merknad}
               </li>
             ))}
           </ul>
+          <p className="mal__press-xref">
+            Opplevd press måles i Lumi (kun pakka) og er guardrail for
+            verdiktet.
+          </p>
           <div className="mal__curve-explain">
-            <MetricExplainer forklaring={PROMPT_TIMING_FORKLARING} />
+            <MetricExplainer forklaring={VARSEL_LEVERING_FORKLARING} />
           </div>
         </div>
 

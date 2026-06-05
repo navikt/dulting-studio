@@ -617,48 +617,29 @@
   margin-right: 3px;
 }
 
-.mal__timing,
 .mal__valg {
   display: flex;
   flex-direction: column;
   gap: 7px;
 }
-.mal__timing-row {
-  display: grid;
-  grid-template-columns: 64px 1fr 38px auto;
-  align-items: center;
-  gap: 9px;
-}
-.mal__timing-lbl,
 .mal__valg-lbl {
   font-size: 12px;
   font-weight: 600;
   color: var(--mal-ink-2);
   font-family: var(--mal-body);
 }
-.mal__timing-track,
 .mal__valg-track {
   height: 14px;
   background: var(--mal-line-soft);
   border-radius: 5px;
   overflow: hidden;
 }
-.mal__timing-fill,
 .mal__valg-fill {
   display: block;
   height: 100%;
   border-radius: 5px;
-}
-.mal__timing-fill--ok {
-  background: var(--mal-ok);
-}
-.mal__timing-fill--late {
-  background: var(--mal-bad);
-}
-.mal__valg-fill {
   background: var(--pakke);
 }
-.mal__timing-val,
 .mal__valg-val {
   font-size: 12px;
   font-weight: 800;
@@ -671,13 +652,11 @@
   align-items: center;
   gap: 9px;
 }
-.mal__timing-notes,
 .mal__valg-notes {
   margin: 12px 0 0;
   padding-left: 0;
   list-style: none;
 }
-.mal__timing-notes li,
 .mal__valg-notes li {
   font-size: 12px;
   color: var(--mal-ink-2);
@@ -685,9 +664,50 @@
   margin-bottom: 5px;
   font-family: var(--mal-body);
 }
-.mal__timing-notes b,
 .mal__valg-notes b {
   color: var(--mal-ink);
+}
+
+/* ---- levering, adopsjon og guardrail (påminnelse-seksjon) ---- */
+.mal__levering-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 38px auto;
+  align-items: center;
+  gap: 9px;
+}
+.mal__levering-lbl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
+}
+.mal__levering-fill {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+}
+.mal__levering-fill--ok {
+  background: var(--mal-ok);
+}
+.mal__levering-fill--guard {
+  background: var(--mal-warn);
+}
+.mal__levering-val {
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.mal__levering-tag {
+  flex: none;
+}
+.mal__press-xref {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--mal-ink-faint);
+  line-height: 1.45;
+  font-family: var(--mal-body);
+  font-style: italic;
 }
 
 .mal__guardstat {
@@ -1374,7 +1394,7 @@
     grid-template-columns: 1fr;
     gap: 8px;
   }
-  .mal__timing-row {
-    grid-template-columns: 56px 1fr 34px auto;
+  .mal__levering-row {
+    grid-template-columns: 110px 1fr 34px auto;
   }
 }
