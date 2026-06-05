@@ -2,6 +2,15 @@ import { ReadMore, Tag } from "@navikt/ds-react";
 import { DATAGRUNNLAG, FORSOKSDESIGN } from "../maling-data";
 import { SectionHead } from "./SectionHead";
 
+// Arbeidsgiver-boksar per region. Armen bestemmes av REGION (heile T&F = pakke,
+// resten av Norge = kontroll), ikkje innad i eit fylke.
+const REGION_ARBEIDSGIVERE = [
+  { id: "tf-a", x: 16, arm: "pakke" as const },
+  { id: "tf-b", x: 122, arm: "pakke" as const },
+  { id: "no-a", x: 256, arm: "kontroll" as const },
+  { id: "no-b", x: 362, arm: "kontroll" as const },
+];
+
 /**
  * Metode og datagrunnlag — samlet seksjon bak ein ReadMore-utvider.
  * Innheld forsøksdesign (to armer, tildelingsenhet, måleenhet, segment) og
@@ -25,7 +34,7 @@ export function MetodeOgData() {
       </SectionHead>
 
       <ReadMore header="Metode &amp; datagrunnlag" defaultOpen={false}>
-        {/* ---- Flernivå-figur ---- */}
+        {/* ---- Region → arbeidsgiver → forløp ---- */}
         <div className="mal__panel" style={{ marginBottom: "20px" }}>
           <p
             style={{
@@ -35,157 +44,139 @@ export function MetodeOgData() {
               color: "var(--mal-ink)",
             }}
           >
-            Allokeringshierarki
+            Slik tildeles arm: region → arbeidsgiver → forløp
           </p>
           <svg
             className="mal__nivaa-svg"
-            viewBox="0 0 480 210"
-            aria-label="Tre-nivå-diagram: Fylke (Troms og Finnmark) inneheld to arbeidsgiver-boksar — éin pakke-blå og éin kontroll-grå — kvar med fleire sykmeldte-sirklar."
+            viewBox="0 0 480 216"
+            aria-label="To-region-diagram: hele Troms og Finnmark får tiltakspakka (alle arbeidsgivere blå), resten av Norge er kontroll (alle grå). Forløp (sykmeldte) er nøstet under hver arbeidsgiver."
             role="img"
             width="480"
-            height="210"
+            height="216"
             style={{ width: "100%", height: "auto", display: "block" }}
           >
-            {/* Fylke-boks */}
+            {/* Region: Troms og Finnmark = tiltakspakke */}
             <rect
               x="4"
-              y="4"
-              width="472"
-              height="202"
+              y="22"
+              width="228"
+              height="190"
               rx="12"
               ry="12"
-              fill="none"
-              stroke="var(--mal-line)"
-              strokeWidth="1.5"
-            />
-            <text
-              x="16"
-              y="22"
-              fontSize="11"
-              fontWeight="700"
-              fill="var(--mal-ink-faint)"
-              fontFamily="var(--mal-body)"
-            >
-              Fylke (Troms og Finnmark)
-            </text>
-
-            {/* Tiltaksarm — arbeidsgiver 1 */}
-            <rect
-              x="20"
-              y="34"
-              width="210"
-              height="158"
-              rx="10"
-              ry="10"
               fill="var(--pakke-soft)"
               stroke="var(--pakke)"
               strokeWidth="1.5"
             />
             <text
-              x="32"
-              y="54"
-              fontSize="11"
+              x="16"
+              y="40"
+              fontSize="11.5"
               fontWeight="700"
               fill="var(--pakke-ink)"
               fontFamily="var(--mal-body)"
             >
-              Arbeidsgiver A
+              Troms og Finnmark
             </text>
             <text
-              x="32"
-              y="68"
+              x="16"
+              y="55"
               fontSize="9.5"
+              fontWeight="700"
               fill="var(--pakke-ink)"
               fontFamily="var(--mal-body)"
             >
-              Tiltaksarm
+              → Tiltakspakke (alle arbeidsgivere)
             </text>
-            {/* Sykmeldte-prikkar (pakke) */}
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <circle
-                key={`p${i}`}
-                cx={50 + (i % 3) * 52}
-                cy={108 + Math.floor(i / 3) * 48}
-                r="14"
-                fill="var(--pakke)"
-                fillOpacity="0.22"
-                stroke="var(--pakke)"
-                strokeWidth="1.5"
-              />
-            ))}
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <text
-                key={`pt${i}`}
-                x={50 + (i % 3) * 52}
-                y={112 + Math.floor(i / 3) * 48}
-                fontSize="9"
-                textAnchor="middle"
-                fill="var(--pakke-ink)"
-                fontWeight="600"
-                fontFamily="var(--mal-body)"
-              >
-                Sm
-              </text>
-            ))}
 
-            {/* Kontrollarm — arbeidsgiver 2 */}
+            {/* Region: Resten av Norge = kontroll */}
             <rect
-              x="250"
-              y="34"
-              width="210"
-              height="158"
-              rx="10"
-              ry="10"
+              x="244"
+              y="22"
+              width="232"
+              height="190"
+              rx="12"
+              ry="12"
               fill="var(--kontroll-soft)"
               stroke="var(--kontroll)"
               strokeWidth="1.5"
             />
             <text
-              x="262"
-              y="54"
-              fontSize="11"
+              x="256"
+              y="40"
+              fontSize="11.5"
               fontWeight="700"
               fill="var(--kontroll-ink)"
               fontFamily="var(--mal-body)"
             >
-              Arbeidsgiver B
+              Resten av Norge
             </text>
             <text
-              x="262"
-              y="68"
+              x="256"
+              y="55"
               fontSize="9.5"
+              fontWeight="700"
               fill="var(--kontroll-ink)"
               fontFamily="var(--mal-body)"
             >
-              Kontrollarm
+              → Kontroll
             </text>
-            {/* Sykmeldte-prikkar (kontroll) */}
-            {[0, 1, 2, 3, 4].map((i) => (
-              <circle
-                key={`k${i}`}
-                cx={280 + (i % 3) * 52}
-                cy={108 + Math.floor(i / 3) * 48}
-                r="14"
-                fill="var(--kontroll)"
-                fillOpacity="0.22"
-                stroke="var(--kontroll)"
-                strokeWidth="1.5"
-              />
-            ))}
-            {[0, 1, 2, 3, 4].map((i) => (
-              <text
-                key={`kt${i}`}
-                x={280 + (i % 3) * 52}
-                y={112 + Math.floor(i / 3) * 48}
-                fontSize="9"
-                textAnchor="middle"
-                fill="var(--kontroll-ink)"
-                fontWeight="600"
-                fontFamily="var(--mal-body)"
-              >
-                Sm
-              </text>
-            ))}
+
+            {/* Arbeidsgiver-boksar (alle same arm som regionen) + forløp */}
+            {REGION_ARBEIDSGIVERE.map((e) => {
+              const col =
+                e.arm === "pakke" ? "var(--pakke)" : "var(--kontroll)";
+              const ink =
+                e.arm === "pakke" ? "var(--pakke-ink)" : "var(--kontroll-ink)";
+              return (
+                <g key={e.id}>
+                  <rect
+                    x={e.x}
+                    y="64"
+                    width="100"
+                    height="138"
+                    rx="9"
+                    ry="9"
+                    fill="#fff"
+                    stroke={col}
+                    strokeWidth="1.25"
+                  />
+                  <text
+                    x={e.x + 10}
+                    y="81"
+                    fontSize="9.5"
+                    fontWeight="700"
+                    fill={ink}
+                    fontFamily="var(--mal-body)"
+                  >
+                    Arbeidsgiver
+                  </text>
+                  {[0, 1, 2].map((d) => (
+                    <g key={`${e.id}-${d}`}>
+                      <circle
+                        cx={e.x + 50}
+                        cy={104 + d * 32}
+                        r="11"
+                        fill={col}
+                        fillOpacity="0.22"
+                        stroke={col}
+                        strokeWidth="1.4"
+                      />
+                      <text
+                        x={e.x + 50}
+                        y={108 + d * 32}
+                        fontSize="8.5"
+                        textAnchor="middle"
+                        fontWeight="600"
+                        fill={ink}
+                        fontFamily="var(--mal-body)"
+                      >
+                        Sm
+                      </text>
+                    </g>
+                  ))}
+                </g>
+              );
+            })}
           </svg>
           <p
             style={{
@@ -196,8 +187,11 @@ export function MetodeOgData() {
               lineHeight: 1.5,
             }}
           >
-            Allokering skjer på arbeidsgiver-nivå; forløp (sykmeldte) er nøstet
-            under. (Lisa eier allokeringen.)
+            Armen bestemmes av <b>region</b>: hele Troms og Finnmark får
+            tiltakspakka, resten av Norge er kontroll. Allokeringen registreres
+            på arbeidsgiver (underenhet) — så <b>alle</b> arbeidsgivere i
+            T&amp;F er i pakka — og forløp (sykmeldte, «Sm») er nøstet under.
+            Regionene sammenlignes som diff-in-diff. (Lisa eier allokeringen.)
           </p>
         </div>
 
