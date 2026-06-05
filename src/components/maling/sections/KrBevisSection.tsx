@@ -1,6 +1,6 @@
 "use client";
 
-import { Switch, Tag, ToggleGroup } from "@navikt/ds-react";
+import { Switch, ToggleGroup } from "@navikt/ds-react";
 import { useState } from "react";
 import {
   deltaForrigePeriode,
@@ -112,15 +112,6 @@ export function KrBevisSection({
               <span className="mal__kpi-periode-trend">
                 {pd >= 0 ? "▲" : "▼"} {Math.abs(pd)} pp fra forrige periode
               </span>
-
-              {visRespons && (
-                <span className="mal__kpi-seg">
-                  {SEGMENT_LABEL[segment]} er en responsgruppe.{" "}
-                  <Tag variant="warning" size="xsmall">
-                    Viser forskjell, ikke effekt
-                  </Tag>
-                </span>
-              )}
 
               {s.id === "kr3" && (
                 <span className="mal__kpi-sekundar">

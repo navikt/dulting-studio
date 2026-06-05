@@ -45,8 +45,10 @@ export function Kontrollinje({
         ))}
       </ToggleGroup>
 
+      <span className="mal__kontrollinje-sublabel">Periode</span>
       <Select
         label="Periode"
+        hideLabel
         size="small"
         value={String(periode)}
         onChange={(e) => onPeriode(Number(e.target.value))}
@@ -60,9 +62,15 @@ export function Kontrollinje({
       </Select>
 
       {erResponsSegment(segment) ? (
-        <Tag variant="warning" size="small">
-          Viser forskjell, ikke effekt
-        </Tag>
+        <span className="mal__kontrollinje-merknad">
+          <Tag variant="warning" size="small">
+            Responsgruppe
+          </Tag>
+          <span>
+            Disse valgte selv om de ville ha påminnelse, så forskjellen mot
+            kontroll er et <b>mønster — ikke en bevist effekt</b> av tiltaket.
+          </span>
+        </span>
       ) : (
         <Tag variant="neutral" size="small">
           Hovedtall

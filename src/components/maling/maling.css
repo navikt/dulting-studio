@@ -831,111 +831,59 @@
     0 0 0 3px var(--pakke);
 }
 /* ---- funnel / trakt ---- */
-.mal__trakt {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  align-items: center;
-}
-
-.mal__trakt-steg {
+/* Funnel: divergerende SVG — pakke til venstre, kontroll til høyre */
+.mal__trakt-svg {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.mal__trakt-steg + .mal__trakt-steg {
-  margin-top: 2px;
-}
-
-/* Merke for største fall — vises over steget der fallet starter */
-.mal__trakt-fall-merke {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-  margin-top: 6px;
-}
-.mal__trakt-fall-pil {
-  font-size: 11px;
-  color: var(--mal-warn);
-}
-
-/* Rad-container: centred, relative for kontroll-linje */
-.mal__trakt-rad {
-  position: relative;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  min-height: 46px;
-}
-
-/* Blå sentert søyle */
-.mal__trakt-bar {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  background: var(--pakke);
-  border-radius: 6px;
-  min-height: 46px;
-  box-sizing: border-box;
-  transition: width 0.25s ease;
-}
-
-.mal__trakt-bar-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.25;
-  flex: 1;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.mal__trakt-bar-sub {
+  height: auto;
   display: block;
+  margin: 6px 0 2px;
+}
+.mal__trakt-silhuett--pakke {
+  fill: var(--pakke);
+  opacity: 0.1;
+}
+.mal__trakt-silhuett--kontroll {
+  fill: var(--kontroll);
+  opacity: 0.1;
+}
+.mal__trakt-akse {
+  stroke: var(--mal-line);
+  stroke-width: 1;
+}
+.mal__trakt-rekt--pakke {
+  fill: var(--pakke);
+}
+.mal__trakt-rekt--kontroll {
+  fill: var(--kontroll);
+}
+.mal__trakt-tlabel {
+  fill: var(--mal-ink);
+  font-size: 12.5px;
+  font-weight: 700;
+  font-family: var(--mal-display);
+}
+.mal__trakt-tsub {
+  fill: var(--mal-ink-faint);
   font-size: 11px;
   font-weight: 500;
-  opacity: 0.8;
-  font-family: var(--mal-body);
 }
-
-.mal__trakt-bar-pct {
-  font-size: 15px;
-  font-weight: 800;
-  color: #fff;
-  font-variant-numeric: tabular-nums;
-  margin-left: 12px;
-  flex: none;
-}
-
-/* Kontroll: tynn grå senterlinje med %-tall til høyre */
-.mal__trakt-kontroll {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 2px;
-  background: var(--kontroll);
-  opacity: 0.55;
-  border-radius: 2px;
-  pointer-events: none;
-}
-.mal__trakt-kontroll-pct {
-  position: absolute;
-  right: -38px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 11px;
+.mal__trakt-tpct {
+  font-size: 12px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: var(--kontroll-ink);
   font-family: var(--mal-body);
-  white-space: nowrap;
+}
+.mal__trakt-tpct--pakke {
+  fill: var(--pakke-ink);
+}
+.mal__trakt-tpct--kontroll {
+  fill: var(--kontroll-ink);
+}
+.mal__trakt-fall {
+  fill: var(--mal-warn);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--mal-body);
 }
 .mal__gapnote {
   font-size: 12px;
@@ -1150,6 +1098,24 @@
 .mal__kontrollinje-periode {
   /* Make Aksel Select slim so it fits the bar */
   max-width: 130px;
+}
+.mal__kontrollinje-sublabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mal-ink-2);
+  white-space: nowrap;
+  margin-left: 4px;
+}
+.mal__kontrollinje-merknad {
+  flex-basis: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--mal-ink-2);
+  max-width: 78ch;
 }
 
 /* ---- verdikt-band ---- */
