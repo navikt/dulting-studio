@@ -124,7 +124,7 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
     >
       <div className="mal__verdikt-top">
         <span className="mal__verdikt-eyebrow">
-          Er vi på rett vei? · tiltakspakke 1 · pilot T&amp;F · {periodeNavn}
+          Tiltakspakke 1 · pilot T&amp;F · {periodeNavn}
         </span>
         <span className={`mal__verdikt-pille ${pilleKlasse(samlet)}`}>
           <span aria-hidden>{pilleSymbol(samlet)}</span> {pilleTekst(samlet)}

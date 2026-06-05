@@ -18,7 +18,7 @@ export function LangHorisontSection() {
       aria-labelledby="mal-lang-h"
     >
       <SectionHead
-        num={6}
+        num={5}
         headingId="mal-lang-h"
         title="Bekreftes det på lang sikt?"
       >

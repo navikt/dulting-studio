@@ -30,7 +30,7 @@ export function LumiSection({ segment }: { segment: Segment }) {
   return (
     <section id="mekanisme" className="mal__sec" aria-labelledby="mal-lumi-h">
       <SectionHead
-        num={4}
+        num={2}
         headingId="mal-lumi-h"
         title="Bedres dialogen — eller lager vi bare papir?"
       >

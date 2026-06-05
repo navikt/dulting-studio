@@ -13,13 +13,12 @@ import Link from "next/link";
 import { useState } from "react";
 import "./maling.css";
 import { PERIODER } from "./maling-data";
-import { DatagrunnlagSection } from "./sections/DatagrunnlagSection";
-import { ForsoksdesignSection } from "./sections/ForsoksdesignSection";
 import { FunnelSection } from "./sections/FunnelSection";
 import { Kontrollinje } from "./sections/Kontrollinje";
 import { KrBevisSection } from "./sections/KrBevisSection";
 import { LangHorisontSection } from "./sections/LangHorisontSection";
 import { LumiSection } from "./sections/LumiSection";
+import { MetodeOgData } from "./sections/MetodeOgData";
 import { PromptTimingSection } from "./sections/PromptTimingSection";
 import { VerdiktBand } from "./sections/VerdiktBand";
 import { useSegmentFilter } from "./useSegmentFilter";
@@ -51,16 +50,13 @@ export function MalingView() {
         <span className="mal__eyebrow">
           Måling · tiltakspakke 1 · pilot Troms og Finnmark
         </span>
-        <h1 className="mal__title">Virker pakka? Kontroll vs. tiltakspakke</h1>
+        <h1 className="mal__title">Er vi på rett vei?</h1>
         <p className="mal__lede">
-          Ett forsøk med to armer: underenheter med tiltakspakka mot
-          underenheter uten. Først sjekker vi om flere kommer i gang med
-          oppfølgingsplanen i tide.
+          Pakke vs. kontroll: ser vi de tidlige endringene vi hadde håpet på?
         </p>
         <p className="mal__frame">
-          <b>Les tallene slik:</b> alle i tiltakspakka mot kontroll er
-          hovedsvaret. Responsgruppene viser hvem som takket ja eller ikke
-          svarte på påminnelsen.
+          <b>Les tallene slik:</b> pakke vs. kontroll er hovedsvaret;
+          responsgrupper viser mønster, ikke effekt.
         </p>
       </header>
 
@@ -72,12 +68,11 @@ export function MalingView() {
         onPeriode={setPeriode}
       />
       <KrBevisSection segment={segment} periode={periode} />
-      <ForsoksdesignSection />
-      <PromptTimingSection />
       <LumiSection segment={segment} />
+      <PromptTimingSection />
       <FunnelSection segment={segment} />
       <LangHorisontSection />
-      <DatagrunnlagSection />
+      <MetodeOgData />
 
       <p className="mal__foot">
         Dummy-dashboard · speiler <code>docs/maling-rammeverk.md</code> · alle

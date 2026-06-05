@@ -36,7 +36,7 @@ export function FunnelSection({ segment }: { segment: Segment }) {
   return (
     <section id="funnel" className="mal__sec" aria-labelledby="mal-funnel-h">
       <SectionHead
-        num={5}
+        num={4}
         headingId="mal-funnel-h"
         title="Hvor faller folk av?"
       >
