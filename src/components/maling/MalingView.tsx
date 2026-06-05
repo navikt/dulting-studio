@@ -12,15 +12,17 @@ import { Schibsted_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { useState } from "react";
 import "./maling.css";
-import { SEGMENT_LABEL, type Segment } from "./maling-data";
+import { PERIODER } from "./maling-data";
 import { DatagrunnlagSection } from "./sections/DatagrunnlagSection";
 import { ForsoksdesignSection } from "./sections/ForsoksdesignSection";
 import { FunnelSection } from "./sections/FunnelSection";
+import { Kontrollinje } from "./sections/Kontrollinje";
 import { LangHorisontSection } from "./sections/LangHorisontSection";
 import { LumiSection } from "./sections/LumiSection";
 import { PromptTimingSection } from "./sections/PromptTimingSection";
-import { SegmentFilterSection } from "./sections/SegmentFilterSection";
 import { StyringstallSection } from "./sections/StyringstallSection";
+import { VerdiktBand } from "./sections/VerdiktBand";
+import { useSegmentFilter } from "./useSegmentFilter";
 
 const schibsted = Schibsted_Grotesk({
   subsets: ["latin"],
@@ -30,7 +32,8 @@ const schibsted = Schibsted_Grotesk({
 });
 
 export function MalingView() {
-  const [segment, setSegment] = useState<Segment>("alle");
+  const { segment, setSegment } = useSegmentFilter();
+  const [periode, setPeriode] = useState(PERIODER.length - 1);
 
   return (
     <div className={`mal ${schibsted.variable}`}>
@@ -61,12 +64,13 @@ export function MalingView() {
         </p>
       </header>
 
-      {/* aria-live: annonser segmentbytte til skjermleser */}
-      <div aria-live="polite" className="sr-only">
-        Filter: {SEGMENT_LABEL[segment]}.
-      </div>
-
-      <SegmentFilterSection segment={segment} onChange={setSegment} />
+      <VerdiktBand segment={segment} periode={periode} />
+      <Kontrollinje
+        segment={segment}
+        onSegment={setSegment}
+        periode={periode}
+        onPeriode={setPeriode}
+      />
       <StyringstallSection onSegmentChange={setSegment} segment={segment} />
       <ForsoksdesignSection />
       <PromptTimingSection />

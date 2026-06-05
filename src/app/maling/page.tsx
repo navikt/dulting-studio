@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { MalingView } from "@/components/maling/MalingView";
 
 export const metadata: Metadata = {
@@ -14,5 +15,9 @@ export const metadata: Metadata = {
  * DB-fri og uten rådata (trygt i demoen).
  */
 export default function MalingPage() {
-  return <MalingView />;
+  return (
+    <Suspense fallback={null}>
+      <MalingView />
+    </Suspense>
+  );
 }
