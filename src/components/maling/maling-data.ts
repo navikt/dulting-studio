@@ -535,11 +535,12 @@ export type LumiSpørsmål = {
   };
 };
 
+export const LUMI_MAX = 5; // Lumi-native (1–5 rating / 5-punkts «i hvilken grad»). Bytt konstant hvis Lumi bygger custom n-punkts Likert.
 export const LUMI_SKALA = "1 = i svært liten grad · 5 = i svært stor grad";
 
 export const LUMI_SPORSMAL: LumiSpørsmål[] = [
   {
-    q: "Forstår folk hvorfor tidlig oppfølging er viktig?",
+    q: "I hvilken grad opplevde du at det var tydelig hvorfor tidlig oppfølging er viktig?",
     tag: "forståelse",
     status: "bra",
     kontroll: { ag: 3.1, sm: 2.8 },
@@ -549,7 +550,7 @@ export const LUMI_SPORSMAL: LumiSpørsmål[] = [
     },
   },
   {
-    q: "Kommer arbeidsgiver og den sykmeldte tidligere i kontakt?",
+    q: "I hvilken grad opplevde du at arbeidsgiver og du kom tidligere i kontakt?",
     tag: "tidlig-kontakt",
     status: "bra",
     kontroll: { ag: 2.9, sm: 2.6 },
@@ -559,7 +560,7 @@ export const LUMI_SPORSMAL: LumiSpørsmål[] = [
     },
   },
   {
-    q: "Oppleves påminnelsene som støtte, ikke press?",
+    q: "I hvilken grad opplevde du at påminnelsene føltes som støtte snarere enn press?",
     tag: "støtte-ikke-press",
     status: "følg-med",
     kontroll: { ag: 3.4, sm: 3.0 },
@@ -569,7 +570,7 @@ export const LUMI_SPORSMAL: LumiSpørsmål[] = [
     },
   },
   {
-    q: "Finner de tilrettelegging som kan fungere?",
+    q: "I hvilken grad opplevde du at dere fant tilrettelegging som kunne fungere?",
     tag: "tilrettelegging",
     status: "følg-med",
     kontroll: { ag: 2.7, sm: 2.5 },
@@ -579,7 +580,7 @@ export const LUMI_SPORSMAL: LumiSpørsmål[] = [
     },
   },
   {
-    q: "Vet folk hva de selv kan bidra med?",
+    q: "I hvilken grad opplevde du at du visste hva du selv kunne bidra med?",
     tag: "egen-rolle",
     status: "bra",
     kontroll: { ag: 3.0, sm: 2.7 },
@@ -609,6 +610,10 @@ export function lumiForSegment(s: LumiSpørsmål, seg: Segment): LumiAktorScore 
 
 function round1(n: number): number {
   return Math.round(n * 10) / 10;
+}
+
+export function lumiPosisjon(score: number): number {
+  return Math.round(((score - 1) / (LUMI_MAX - 1)) * 100);
 }
 
 // ---- funnel: diagnoseverktøy ----

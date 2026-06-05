@@ -56,3 +56,16 @@ describe("verdikt", () => {
     expect(samletVerdikt(krer, { mekanismeOk: false, guardrailOk: true })).toBe("folg-med");
   });
 });
+
+describe("lumi-skala", () => {
+  it("bruker 1–5-skala (Lumi-native), via LUMI_MAX", () => {
+    expect(LUMI_MAX).toBe(5);
+    expect(LUMI_SKALA).toContain("1");
+    expect(LUMI_SKALA).toContain("5");
+  });
+  it("plasserer score som prosent av 1..LUMI_MAX", () => {
+    expect(lumiPosisjon(1)).toBe(0);
+    expect(lumiPosisjon(3)).toBe(50);
+    expect(lumiPosisjon(5)).toBe(100);
+  });
+});
