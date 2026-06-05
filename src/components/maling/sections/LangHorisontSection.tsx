@@ -12,11 +12,15 @@ export function LangHorisontSection() {
   const kort = [gradertAndel, tidTilGradering, fraværslengde];
 
   return (
-    <section className="mal__sec" aria-labelledby="mal-lang-h">
+    <section
+      id="lang-horisont"
+      className="mal__sec"
+      aria-labelledby="mal-lang-h"
+    >
       <SectionHead
         num={6}
         headingId="mal-lang-h"
-        title="Lang horisont — bekreftende"
+        title="Bekreftes det på lang sikt?"
       >
         Dette er viktige sluttmål, men de kommer senere og må defineres av fag
         og Data Science før vi bruker dem som fasit.
@@ -35,6 +39,15 @@ export function LangHorisontSection() {
             <div className="mal__ripple-card" key={k.tittel}>
               <span className="mal__ripple-label">{k.tittel}</span>
               <span className="mal__ripple-sub">{k.enhet}</span>
+              {k === gradertAndel && (
+                <Tag
+                  variant="warning"
+                  size="xsmall"
+                  className="mal__ripple-forbehold"
+                >
+                  Operasjonalisering ikke avklart
+                </Tag>
+              )}
               {venter ? (
                 <div className="mal__ripple-locked">
                   <Tag variant="warning" size="small">

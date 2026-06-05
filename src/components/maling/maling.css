@@ -1094,6 +1094,10 @@
   color: var(--mal-ink-faint);
   font-family: var(--mal-body);
 }
+.mal__ripple-forbehold {
+  margin: 4px 0 8px;
+  align-self: flex-start;
+}
 .mal__ripple-locked {
   margin-top: auto;
   display: flex;

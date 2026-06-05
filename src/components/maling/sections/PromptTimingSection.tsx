@@ -25,11 +25,11 @@ export function PromptTimingSection() {
   );
 
   return (
-    <section className="mal__sec" aria-labelledby="mal-timing-h">
+    <section id="timing" className="mal__sec" aria-labelledby="mal-timing-h">
       <SectionHead
         num={3}
         headingId="mal-timing-h"
-        title="Påminnelse og timing"
+        title="Traff påminnelsen i tide?"
       >
         Traff påminnelsen mens det fortsatt var tid til å handle?
       </SectionHead>
@@ -90,6 +90,10 @@ export function PromptTimingSection() {
         {/* standardvalg / varsling — etikkspor */}
         <div className="mal__mini">
           <h3 className="mal__mini-h">Svar på påminnelsen</h3>
+          <p className="mal__mini-lede">
+            Sporer hvem som velger påminnelse (opt-in) og hvem som ikke svarer
+            eller melder seg av (opt-out).
+          </p>
           <div
             className="mal__valg"
             role="img"
