@@ -408,10 +408,10 @@
   border-radius: 999px;
   display: inline-block;
 }
-.mal__response-dot--opt-in {
+.mal__response-dot--takket-ja {
   background: var(--pakke);
 }
-.mal__response-dot--ikke-opt-in {
+.mal__response-dot--ikke-svart {
   background: #7b61ff;
 }
 .mal__response-dot--kontroll {
@@ -485,10 +485,10 @@
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
-.mal__response-bar--opt-in .mal__response-fill {
+.mal__response-bar--takket-ja .mal__response-fill {
   background: var(--pakke);
 }
-.mal__response-bar--ikke-opt-in .mal__response-fill {
+.mal__response-bar--ikke-svart .mal__response-fill {
   background: #7b61ff;
 }
 .mal__kpis {

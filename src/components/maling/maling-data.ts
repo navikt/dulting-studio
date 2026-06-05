@@ -12,37 +12,52 @@
 // ---- armer og segmenter ----
 
 export type Arm = "kontroll" | "pakke";
-export type ResponsSegment = "opt-in" | "ikke-opt-in";
+export type ResponsSegment = "takket-ja" | "ikke-svart";
 export type Segment = "alle" | ResponsSegment;
 
-export const SEGMENTER: Segment[] = ["alle", "opt-in", "ikke-opt-in"];
+export const SEGMENTER: Segment[] = ["alle", "takket-ja", "ikke-svart"];
 
 export const SEGMENT_LABEL: Record<Segment, string> = {
   alle: "Alle i tiltakspakka",
-  "opt-in": "Takket ja",
-  "ikke-opt-in": "Ikke svart",
+  "takket-ja": "Takket ja",
+  "ikke-svart": "Ikke svart",
 };
 
 export const SEGMENT_FORKLARING: Record<Segment, string> = {
   alle: "Alle i tiltakspakka sammenlignes med kontroll. Dette er hovedtallet.",
-  "opt-in":
+  "takket-ja":
     "Takket ja til påminnelse. Gruppen kan være mer motivert fra før, så dette viser forskjell, ikke ren effekt.",
-  "ikke-opt-in":
+  "ikke-svart":
     "Har fått tiltakspakka, men svarte ikke på spørsmålet om påminnelse. Brukes som sammenligning inni pakka.",
 };
 
 // Andel av pakke-armen i hver responsgruppe. Vekter pool-tallet «Alle i pakka».
 export const SEGMENT_ANDEL: Record<ResponsSegment, number> = {
-  "opt-in": 55,
-  "ikke-opt-in": 45,
+  "takket-ja": 55,
+  "ikke-svart": 45,
 };
 
 // ---- generiske tall-typer ----
 
 export type SegmentTall = {
-  "opt-in": number;
-  "ikke-opt-in": number;
+  "takket-ja": number;
+  "ikke-svart": number;
 };
+
+const RESPONS_VERDIER: ResponsSegment[] = ["takket-ja", "ikke-svart"];
+
+export function parseSegmentParam(param: string | null): Segment {
+  if (!param) return "alle";
+  const [dim, val] = param.split(":");
+  if (dim !== "respons") return "alle";
+  return (RESPONS_VERDIER as string[]).includes(val)
+    ? (val as Segment)
+    : "alle";
+}
+
+export function segmentToParam(seg: Segment): string {
+  return seg === "alle" ? "" : `respons:${seg}`;
+}
 
 export type ArmMetrikk = {
   kontroll: number;
@@ -50,14 +65,14 @@ export type ArmMetrikk = {
 };
 
 const W = {
-  "opt-in": SEGMENT_ANDEL["opt-in"] / 100,
-  "ikke-opt-in": SEGMENT_ANDEL["ikke-opt-in"] / 100,
+  "takket-ja": SEGMENT_ANDEL["takket-ja"] / 100,
+  "ikke-svart": SEGMENT_ANDEL["ikke-svart"] / 100,
 } as const;
 
 /** Vektet pakke-pool (segment = «alle»). */
 export function poolTall(s: SegmentTall): number {
   return Math.round(
-    W["opt-in"] * s["opt-in"] + W["ikke-opt-in"] * s["ikke-opt-in"],
+    W["takket-ja"] * s["takket-ja"] + W["ikke-svart"] * s["ikke-svart"],
   );
 }
 
@@ -158,7 +173,7 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
       enhet: "%",
       metrikk: {
         kontroll: 34,
-        pakke: { "opt-in": 68, "ikke-opt-in": 41 },
+        pakke: { "takket-ja": 68, "ikke-svart": 41 },
       },
       retning: "opp",
       forklaring: {
@@ -179,8 +194,8 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
     kurve: {
       kontroll: [1, 3, 8, 18, 24, 29, 32, 34],
       pakke: {
-        "opt-in": [2, 9, 26, 49, 58, 63, 66, 68],
-        "ikke-opt-in": [1, 4, 11, 24, 31, 37, 40, 41],
+        "takket-ja": [2, 9, 26, 49, 58, 63, 66, 68],
+        "ikke-svart": [1, 4, 11, 24, 31, 37, 40, 41],
       },
     },
     forklaring: {
@@ -206,7 +221,7 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
       enhet: "%",
       metrikk: {
         kontroll: 28,
-        pakke: { "opt-in": 58, "ikke-opt-in": 35 },
+        pakke: { "takket-ja": 58, "ikke-svart": 35 },
       },
       retning: "opp",
       forklaring: {
@@ -225,8 +240,8 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
     kurve: {
       kontroll: [0, 2, 6, 14, 20, 24, 27, 28],
       pakke: {
-        "opt-in": [1, 6, 19, 40, 49, 54, 57, 58],
-        "ikke-opt-in": [0, 3, 8, 20, 27, 31, 34, 35],
+        "takket-ja": [1, 6, 19, 40, 49, 54, 57, 58],
+        "ikke-svart": [0, 3, 8, 20, 27, 31, 34, 35],
       },
     },
     forklaring: {
@@ -252,7 +267,7 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
       enhet: "%",
       metrikk: {
         kontroll: 18,
-        pakke: { "opt-in": 41, "ikke-opt-in": 22 },
+        pakke: { "takket-ja": 41, "ikke-svart": 22 },
       },
       retning: "opp",
       forklaring: {
@@ -271,8 +286,8 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
     kurve: {
       kontroll: [0, 1, 4, 9, 12, 15, 17, 18],
       pakke: {
-        "opt-in": [0, 3, 12, 28, 34, 38, 40, 41],
-        "ikke-opt-in": [0, 1, 5, 12, 16, 19, 21, 22],
+        "takket-ja": [0, 3, 12, 28, 34, 38, 40, 41],
+        "ikke-svart": [0, 1, 5, 12, 16, 19, 21, 22],
       },
     },
     forklaring: {
@@ -298,7 +313,7 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
       enhet: "%",
       metrikk: {
         kontroll: 9,
-        pakke: { "opt-in": 24, "ikke-opt-in": 13 },
+        pakke: { "takket-ja": 24, "ikke-svart": 13 },
       },
       retning: "opp",
       forklaring: {
@@ -317,8 +332,8 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
     kurve: {
       kontroll: [0, 0, 2, 5, 8, 11, 14, 15],
       pakke: {
-        "opt-in": [0, 1, 6, 17, 23, 28, 31, 33],
-        "ikke-opt-in": [0, 1, 3, 9, 12, 15, 18, 19],
+        "takket-ja": [0, 1, 6, 17, 23, 28, 31, 33],
+        "ikke-svart": [0, 1, 3, 9, 12, 15, 18, 19],
       },
     },
     forklaring: {
@@ -351,7 +366,7 @@ export const STYRINGSTALL_FASTE: Styringstall[] = [
     enhet: "%",
     metrikk: {
       kontroll: 29,
-      pakke: { "opt-in": 60, "ikke-opt-in": 35 },
+      pakke: { "takket-ja": 60, "ikke-svart": 35 },
     },
     retning: "opp",
     forklaring: {
@@ -375,7 +390,7 @@ export const STYRINGSTALL_FASTE: Styringstall[] = [
     enhet: "%",
     metrikk: {
       kontroll: 12,
-      pakke: { "opt-in": 38, "ikke-opt-in": 16 },
+      pakke: { "takket-ja": 38, "ikke-svart": 16 },
     },
     retning: "opp",
     forklaring: {
@@ -398,20 +413,20 @@ export const STYRINGSTALL_FASTE: Styringstall[] = [
 // Sekundærsignal til KR3 — lavere = bedre.
 export const PURRING_ANDEL: ArmMetrikk = {
   kontroll: 41,
-  pakke: { "opt-in": 18, "ikke-opt-in": 33 },
+  pakke: { "takket-ja": 18, "ikke-svart": 33 },
 };
 
 // ---- KR1 læringsvisning: tid til første plan (survival-lignende) ----
 
 export type SegmentKurve = {
-  "opt-in": number[];
-  "ikke-opt-in": number[];
+  "takket-ja": number[];
+  "ikke-svart": number[];
 };
 
 export function poolKurve(k: SegmentKurve): number[] {
-  return k["opt-in"].map((_, i) =>
+  return k["takket-ja"].map((_, i) =>
     Math.round(
-      W["opt-in"] * k["opt-in"][i] + W["ikke-opt-in"] * k["ikke-opt-in"][i],
+      W["takket-ja"] * k["takket-ja"][i] + W["ikke-svart"] * k["ikke-svart"][i],
     ),
   );
 }
@@ -515,8 +530,8 @@ export type LumiSpørsmål = {
   status: "bra" | "følg-med";
   kontroll: LumiAktorScore;
   pakke: {
-    "opt-in": LumiAktorScore;
-    "ikke-opt-in": LumiAktorScore;
+    "takket-ja": LumiAktorScore;
+    "ikke-svart": LumiAktorScore;
   };
 };
 
@@ -529,8 +544,8 @@ export const LUMI_SPORSMAL: LumiSpørsmål[] = [
     status: "bra",
     kontroll: { ag: 3.1, sm: 2.8 },
     pakke: {
-      "opt-in": { ag: 4.3, sm: 4.0 },
-      "ikke-opt-in": { ag: 3.6, sm: 3.3 },
+      "takket-ja": { ag: 4.3, sm: 4.0 },
+      "ikke-svart": { ag: 3.6, sm: 3.3 },
     },
   },
   {
@@ -539,8 +554,8 @@ export const LUMI_SPORSMAL: LumiSpørsmål[] = [
     status: "bra",
     kontroll: { ag: 2.9, sm: 2.6 },
     pakke: {
-      "opt-in": { ag: 4.0, sm: 3.7 },
-      "ikke-opt-in": { ag: 3.3, sm: 3.0 },
+      "takket-ja": { ag: 4.0, sm: 3.7 },
+      "ikke-svart": { ag: 3.3, sm: 3.0 },
     },
   },
   {
@@ -549,8 +564,8 @@ export const LUMI_SPORSMAL: LumiSpørsmål[] = [
     status: "følg-med",
     kontroll: { ag: 3.4, sm: 3.0 },
     pakke: {
-      "opt-in": { ag: 3.9, sm: 3.5 },
-      "ikke-opt-in": { ag: 3.5, sm: 3.2 },
+      "takket-ja": { ag: 3.9, sm: 3.5 },
+      "ikke-svart": { ag: 3.5, sm: 3.2 },
     },
   },
   {
@@ -559,8 +574,8 @@ export const LUMI_SPORSMAL: LumiSpørsmål[] = [
     status: "følg-med",
     kontroll: { ag: 2.7, sm: 2.5 },
     pakke: {
-      "opt-in": { ag: 3.5, sm: 3.3 },
-      "ikke-opt-in": { ag: 3.0, sm: 2.9 },
+      "takket-ja": { ag: 3.5, sm: 3.3 },
+      "ikke-svart": { ag: 3.0, sm: 2.9 },
     },
   },
   {
@@ -569,8 +584,8 @@ export const LUMI_SPORSMAL: LumiSpørsmål[] = [
     status: "bra",
     kontroll: { ag: 3.0, sm: 2.7 },
     pakke: {
-      "opt-in": { ag: 4.1, sm: 3.8 },
-      "ikke-opt-in": { ag: 3.4, sm: 3.1 },
+      "takket-ja": { ag: 4.1, sm: 3.8 },
+      "ikke-svart": { ag: 3.4, sm: 3.1 },
     },
   },
 ];
@@ -580,10 +595,12 @@ export function lumiForSegment(s: LumiSpørsmål, seg: Segment): LumiAktorScore 
     const p = s.pakke;
     return {
       ag: round1(
-        W["opt-in"] * p["opt-in"].ag + W["ikke-opt-in"] * p["ikke-opt-in"].ag,
+        W["takket-ja"] * p["takket-ja"].ag +
+          W["ikke-svart"] * p["ikke-svart"].ag,
       ),
       sm: round1(
-        W["opt-in"] * p["opt-in"].sm + W["ikke-opt-in"] * p["ikke-opt-in"].sm,
+        W["takket-ja"] * p["takket-ja"].sm +
+          W["ikke-svart"] * p["ikke-svart"].sm,
       ),
     };
   }
@@ -608,31 +625,31 @@ export const FUNNEL: FunnelSteg[] = [
     label: "Sykmelding mottatt",
     sub: "kohort-inngang",
     kontroll: 100,
-    pakke: { "opt-in": 100, "ikke-opt-in": 100 },
+    pakke: { "takket-ja": 100, "ikke-svart": 100 },
   },
   {
     label: "Lager plan",
     sub: "påminnelse ~uke 4",
     kontroll: 34,
-    pakke: { "opt-in": 68, "ikke-opt-in": 41 },
+    pakke: { "takket-ja": 68, "ikke-svart": 41 },
   },
   {
     label: "Deler med legen",
     sub: "≤ uke 4",
     kontroll: 18,
-    pakke: { "opt-in": 41, "ikke-opt-in": 22 },
+    pakke: { "takket-ja": 41, "ikke-svart": 22 },
   },
   {
     label: "Deler med Nav",
     sub: "≤ uke 8",
     kontroll: 15,
-    pakke: { "opt-in": 33, "ikke-opt-in": 19 },
+    pakke: { "takket-ja": 33, "ikke-svart": 19 },
   },
   {
     label: "Fortsatt aktiv",
     sub: "evaluering valgt",
     kontroll: 11,
-    pakke: { "opt-in": 26, "ikke-opt-in": 14 },
+    pakke: { "takket-ja": 26, "ikke-svart": 14 },
   },
 ];
 

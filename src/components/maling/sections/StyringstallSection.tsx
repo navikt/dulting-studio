@@ -24,7 +24,10 @@ const tx = (i: number) => TL + (i * (TR - TL)) / (TID_TIL_PLAN_UKER.length - 1);
 const ty = (v: number) => TB - (v / TMAX) * (TB - TT);
 const punkter = (arr: number[]) =>
   arr.map((v, i) => `${tx(i).toFixed(1)},${ty(v).toFixed(1)}`).join(" ");
-const RESPONS_SEGMENTER: Exclude<Segment, "alle">[] = ["opt-in", "ikke-opt-in"];
+const RESPONS_SEGMENTER: Exclude<Segment, "alle">[] = [
+  "takket-ja",
+  "ikke-svart",
+];
 
 export function StyringstallSection({
   segment,
@@ -92,7 +95,7 @@ export function StyringstallSection({
         </div>
         <div className="mal__journey-legend" aria-hidden>
           <span>
-            <i className="mal__response-dot mal__response-dot--opt-in" />
+            <i className="mal__response-dot mal__response-dot--takket-ja" />
             {pakkeLabel}
           </span>
           <span>
@@ -113,11 +116,11 @@ export function StyringstallSection({
           </div>
           <div className="mal__response-legend" aria-hidden>
             <span>
-              <i className="mal__response-dot mal__response-dot--opt-in" />
+              <i className="mal__response-dot mal__response-dot--takket-ja" />
               Takket ja
             </span>
             <span>
-              <i className="mal__response-dot mal__response-dot--ikke-opt-in" />
+              <i className="mal__response-dot mal__response-dot--ikke-svart" />
               Ikke svart
             </span>
           </div>
