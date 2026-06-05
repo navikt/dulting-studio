@@ -732,3 +732,23 @@ export type MetrikkForklaring = {
   usikkerhet: string;
   guardrail?: string;
 };
+
+// ---- periode-historikk og delta ----
+
+export const PERIODER = ["Uke 9", "Uke 10", "Uke 11", "Uke 12"] as const;
+
+// Syntetisk uke-historikk per KR (pakke-pool, alle-segment). Siste = dagens tall.
+const KR_SERIE: Record<"kr1" | "kr2" | "kr3", number[]> = {
+  kr1: [47, 51, 53, 56],
+  kr2: [40, 44, 47, 49],
+  kr3: [21, 24, 26, 28],
+};
+
+export function krSerie(id: "kr1" | "kr2" | "kr3"): number[] {
+  return KR_SERIE[id];
+}
+
+export function deltaForrigePeriode(serie: number[], periode: number): number {
+  if (periode <= 0) return 0;
+  return serie[periode] - serie[periode - 1];
+}

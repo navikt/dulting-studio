@@ -4,6 +4,9 @@ import {
   SEGMENT_LABEL,
   segmentToParam,
 } from "./maling-data";
+import { deltaForrigePeriode, PERIODER, krSerie } from "./maling-data";
+import { krStatus, samletVerdikt } from "./maling-data";
+import { LUMI_MAX, LUMI_SKALA, lumiPosisjon } from "./maling-data";
 
 describe("segment-param", () => {
   it("parser gyldig respons-param", () => {
@@ -21,5 +24,17 @@ describe("segment-param", () => {
   });
   it("har lesbare etiketter", () => {
     expect(SEGMENT_LABEL["takket-ja"]).toBe("Takket ja");
+  });
+});
+
+describe("periode-delta", () => {
+  it("regner differanse mot forrige periode", () => {
+    expect(deltaForrigePeriode([30, 33, 36], 2)).toBe(3);
+    expect(deltaForrigePeriode([30, 33, 36], 0)).toBe(0); // ingen forrige
+  });
+  it("har en uke-serie per KR med inneværende sist", () => {
+    const s = krSerie("kr1");
+    expect(s.length).toBe(PERIODER.length);
+    expect(s.at(-1)).toBe(56); // matcher KR1 pakke-pool i dag
   });
 });
