@@ -172,8 +172,8 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
       tittel: "Plan opprettet ≤ uke 4",
       enhet: "%",
       metrikk: {
-        kontroll: 34,
-        pakke: { "takket-ja": 68, "ikke-svart": 41 },
+        kontroll: 18,
+        pakke: { "takket-ja": 49, "ikke-svart": 24 },
       },
       retning: "opp",
       forklaring: {
@@ -220,8 +220,8 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
       tittel: "Plan ferdigstilt ≤ uke 4",
       enhet: "%",
       metrikk: {
-        kontroll: 28,
-        pakke: { "takket-ja": 58, "ikke-svart": 35 },
+        kontroll: 14,
+        pakke: { "takket-ja": 40, "ikke-svart": 20 },
       },
       retning: "opp",
       forklaring: {
@@ -266,8 +266,8 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
       tittel: "Plan delt med lege ≤ uke 4",
       enhet: "%",
       metrikk: {
-        kontroll: 18,
-        pakke: { "takket-ja": 41, "ikke-svart": 22 },
+        kontroll: 9,
+        pakke: { "takket-ja": 28, "ikke-svart": 12 },
       },
       retning: "opp",
       forklaring: {
@@ -312,8 +312,8 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
       tittel: "Plan delt med Nav ≤ uke 4",
       enhet: "%",
       metrikk: {
-        kontroll: 9,
-        pakke: { "takket-ja": 24, "ikke-svart": 13 },
+        kontroll: 5,
+        pakke: { "takket-ja": 17, "ikke-svart": 9 },
       },
       retning: "opp",
       forklaring: {
@@ -744,7 +744,7 @@ export const PERIODER = ["Uke 9", "Uke 10", "Uke 11", "Uke 12"] as const;
 
 // Syntetisk uke-historikk per KR (pakke-pool, alle-segment). Siste = dagens tall.
 const KR_SERIE: Record<"kr1" | "kr2" | "kr3", number[]> = {
-  kr1: [47, 51, 53, 56],
+  kr1: [31, 34, 36, 38],
   kr2: [40, 44, 47, 49],
   kr3: [21, 24, 26, 28],
 };

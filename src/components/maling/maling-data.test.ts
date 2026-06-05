@@ -40,7 +40,7 @@ describe("periode-delta", () => {
   it("har en uke-serie per KR med inneværende sist", () => {
     const s = krSerie("kr1");
     expect(s.length).toBe(PERIODER.length);
-    expect(s.at(-1)).toBe(56); // matcher KR1 pakke-pool i dag
+    expect(s.at(-1)).toBe(38); // matcher KR1 pakke-pool ved uke 4 (survival-kurve)
   });
 });
 
