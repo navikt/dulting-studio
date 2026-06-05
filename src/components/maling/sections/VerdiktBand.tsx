@@ -141,18 +141,20 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
         <a
           href="#kr-bevis"
           className={`mal__vflis ${tilstandKlasse(kr1Tilstand)}`}
-          aria-label={`KR1: plan i tide. Pakke ${kr1Pakke} %, kontroll ${kr1Kontroll} %, gap +${kr1Pakke - kr1Kontroll} pp. ${kr1Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr1Delta)} pp fra forrige periode. Gå til bevis.`}
+          aria-label={`KR1: plan i tide. Pakke ${kr1Pakke} %, kontroll ${kr1Kontroll} %, gap +${kr1Pakke - kr1Kontroll} prosentpoeng. ${kr1Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr1Delta)} prosentpoeng fra forrige periode. Gå til bevis.`}
         >
-          <span className="mal__vflis-label">KR1 plan i tide</span>
+          <span className="mal__vflis-eyebrow">KR1</span>
+          <span className="mal__vflis-label">Plan i tide</span>
           <span className="mal__vflis-tall">{kr1Pakke}%</span>
           <span
             className={`mal__vflis-pp ${kr1Pakke - kr1Kontroll >= 0 ? "" : "mal__vflis-pp--noytral"}`}
           >
             {kr1Pakke - kr1Kontroll >= 0 ? "+" : ""}
-            {kr1Pakke - kr1Kontroll} pp vs kontroll
+            {kr1Pakke - kr1Kontroll} prosentpoeng mer enn kontroll
           </span>
-          <span className="mal__vflis-delta">
-            {kr1Delta >= 0 ? "▲" : "▼"} {Math.abs(kr1Delta)} pp fra forrige
+          <span className="mal__vflis-trend-chip">
+            Trend: {kr1Delta >= 0 ? "▲" : "▼"} {Math.abs(kr1Delta)} fra forrige
+            uke
           </span>
         </a>
 
@@ -160,18 +162,20 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
         <a
           href="#kr-bevis"
           className={`mal__vflis ${tilstandKlasse(kr2Tilstand)}`}
-          aria-label={`KR2: behov vurdert. Pakke ${kr2Pakke} %, kontroll ${kr2Kontroll} %, gap +${kr2Pakke - kr2Kontroll} pp. ${kr2Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr2Delta)} pp fra forrige periode. Gå til bevis.`}
+          aria-label={`KR2: tar stilling til behov. Pakke ${kr2Pakke} %, kontroll ${kr2Kontroll} %, gap +${kr2Pakke - kr2Kontroll} prosentpoeng. ${kr2Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr2Delta)} prosentpoeng fra forrige periode. Gå til bevis.`}
         >
-          <span className="mal__vflis-label">KR2 behov vurdert</span>
+          <span className="mal__vflis-eyebrow">KR2</span>
+          <span className="mal__vflis-label">Tar stilling til behov</span>
           <span className="mal__vflis-tall">{kr2Pakke}%</span>
           <span
             className={`mal__vflis-pp ${kr2Pakke - kr2Kontroll >= 0 ? "" : "mal__vflis-pp--noytral"}`}
           >
             {kr2Pakke - kr2Kontroll >= 0 ? "+" : ""}
-            {kr2Pakke - kr2Kontroll} pp vs kontroll
+            {kr2Pakke - kr2Kontroll} prosentpoeng mer enn kontroll
           </span>
-          <span className="mal__vflis-delta">
-            {kr2Delta >= 0 ? "▲" : "▼"} {Math.abs(kr2Delta)} pp fra forrige
+          <span className="mal__vflis-trend-chip">
+            Trend: {kr2Delta >= 0 ? "▲" : "▼"} {Math.abs(kr2Delta)} fra forrige
+            uke
           </span>
         </a>
 
@@ -179,18 +183,20 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
         <a
           href="#kr-bevis"
           className={`mal__vflis ${tilstandKlasse(kr3Tilstand)}`}
-          aria-label={`KR3: uten å vente. Pakke ${kr3Pakke} %, kontroll ${kr3Kontroll} %, gap +${kr3Pakke - kr3Kontroll} pp. ${kr3Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr3Delta)} pp fra forrige periode. Gå til bevis.`}
+          aria-label={`KR3: plan uten å vente på Nav. Pakke ${kr3Pakke} %, kontroll ${kr3Kontroll} %, gap +${kr3Pakke - kr3Kontroll} prosentpoeng. ${kr3Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr3Delta)} prosentpoeng fra forrige periode. Gå til bevis.`}
         >
-          <span className="mal__vflis-label">KR3 uten å vente</span>
+          <span className="mal__vflis-eyebrow">KR3</span>
+          <span className="mal__vflis-label">Plan uten å vente på Nav</span>
           <span className="mal__vflis-tall">{kr3Pakke}%</span>
           <span
             className={`mal__vflis-pp ${kr3Pakke - kr3Kontroll >= 0 ? "" : "mal__vflis-pp--noytral"}`}
           >
             {kr3Pakke - kr3Kontroll >= 0 ? "+" : ""}
-            {kr3Pakke - kr3Kontroll} pp vs kontroll
+            {kr3Pakke - kr3Kontroll} prosentpoeng mer enn kontroll
           </span>
-          <span className="mal__vflis-delta">
-            {kr3Delta >= 0 ? "▲" : "▼"} {Math.abs(kr3Delta)} pp fra forrige
+          <span className="mal__vflis-trend-chip">
+            Trend: {kr3Delta >= 0 ? "▲" : "▼"} {Math.abs(kr3Delta)} fra forrige
+            uke
           </span>
         </a>
 

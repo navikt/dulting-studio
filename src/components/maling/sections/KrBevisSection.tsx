@@ -106,11 +106,11 @@ export function KrBevisSection({
 
               <span className="mal__kpi-delta">
                 {delta >= 0 ? "+" : ""}
-                {delta} pp mot kontroll
+                {delta} prosentpoeng mer enn kontroll
               </span>
 
-              <span className="mal__kpi-periode-trend">
-                {pd >= 0 ? "▲" : "▼"} {Math.abs(pd)} pp fra forrige periode
+              <span className="mal__kpi-trend-chip">
+                Trend: {pd >= 0 ? "▲" : "▼"} {Math.abs(pd)} fra forrige uke
               </span>
 
               {s.id === "kr3" && (
@@ -160,10 +160,10 @@ export function KrBevisSection({
 
         {/* Binær frist-callout */}
         <p className="mal__frist-callout">
-          <b>Ved frist uke 4:</b> {pakkeLabel}{" "}
+          <b>Ved uke 4-frist:</b> {pakkeLabel}{" "}
           <b>
             {pakkeVedFrist}% ({fristDelta >= 0 ? "+" : ""}
-            {fristDelta} pp)
+            {fristDelta} prosentpoeng)
           </b>{" "}
           vs. kontroll <b>{kontrollVedFrist}%</b>
         </p>
@@ -175,7 +175,7 @@ export function KrBevisSection({
             checked={visOptInSplitt}
             onChange={(e) => setVisOptInSplitt(e.target.checked)}
           >
-            Vis opt-in-splitt
+            Del opp i «takket ja» og «ikke svart»
           </Switch>
         </div>
 

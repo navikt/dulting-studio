@@ -1274,12 +1274,94 @@
   color: var(--mal-ink-faint);
 }
 
+/* ---- VerdiktBand: KR-kode som liten eyebrow over plain label ---- */
+.mal__vflis-eyebrow {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  line-height: 1;
+}
+
+/* Override: label is now the prominent text (not uppercase), eyebrow handles the code */
+.mal__vflis .mal__vflis-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--mal-ink);
+  margin-top: 1px;
+}
+
+/* ---- Trend chip: visually distinct from vs-control delta ---- */
+/* Used in both VerdiktBand tiles and KrBevisSection KPI cards */
+.mal__vflis-trend-chip,
+.mal__kpi-trend-chip {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--mal-line-soft);
+  border: 1px solid var(--mal-line);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+/* ---- Lang horisont: to-kolonne rad for de to kompakte kortene ---- */
+.mal__ripple--row {
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 12px;
+}
+
+/* Bredere kort for fraværslengde (full bredde under raden) */
+.mal__ripple-card--wide {
+  border: 1px solid var(--mal-line);
+  border-radius: 14px;
+  padding: 16px 18px 20px;
+  box-shadow: var(--mal-shadow);
+  background: var(--mal-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.mal__ripple-sub--note {
+  font-size: 11px;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  margin-left: 4px;
+  align-self: flex-end;
+}
+
+/* Wrapper for survival-kurven inne i fraværslengde-kortet */
+.mal__fravars-kurve-wrap {
+  margin-top: 16px;
+  border-top: 1px solid var(--mal-line-soft);
+  padding-top: 14px;
+}
+
+/* Caption under survival-kurven */
+.mal__curve-caption {
+  font-size: 12px;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  margin: 8px 0 0;
+  line-height: 1.45;
+}
+
 /* ---- responsivt ---- */
 @media (max-width: 52rem) {
   .mal__arms,
   .mal__design-grid,
   .mal__two,
-  .mal__ripple {
+  .mal__ripple,
+  .mal__ripple--row {
     grid-template-columns: 1fr;
   }
   .mal__vfliser {

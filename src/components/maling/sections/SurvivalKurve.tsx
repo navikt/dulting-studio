@@ -91,7 +91,7 @@ export function SurvivalKurve({
         {/* uke-4-frist markert */}
         <line x1={tx(3)} x2={tx(3)} y1={TT} y2={TB} className="mal__frist" />
         <text x={tx(3)} y={TT - 3} className="mal__frist-lbl">
-          frist u4
+          uke 4-frist
         </text>
 
         {/* kontroll: stiplet */}
