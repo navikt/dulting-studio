@@ -23,14 +23,6 @@ export const SEGMENT_LABEL: Record<Segment, string> = {
   "ikke-svart": "Ikke svart",
 };
 
-export const SEGMENT_FORKLARING: Record<Segment, string> = {
-  alle: "Alle i tiltakspakka sammenlignes med kontroll. Dette er hovedtallet.",
-  "takket-ja":
-    "Takket ja til påminnelse. Gruppen kan være mer motivert fra før, så dette viser forskjell, ikke ren effekt.",
-  "ikke-svart":
-    "Har fått tiltakspakka, men svarte ikke på spørsmålet om påminnelse. Brukes som sammenligning inni pakka.",
-};
-
 // Andel av pakke-armen i hver responsgruppe. Vekter pool-tallet «Alle i pakka».
 export const SEGMENT_ANDEL: Record<ResponsSegment, number> = {
   "takket-ja": 55,
@@ -352,10 +344,6 @@ export const PLAN_HENDELSER: PlanHendelse[] = [
 
 export function planHendelseById(id: PlanHendelseId): PlanHendelse {
   return PLAN_HENDELSER.find((h) => h.id === id) ?? PLAN_HENDELSER[0];
-}
-
-export function styringstallForHendelse(id: PlanHendelseId): Styringstall[] {
-  return [planHendelseById(id).styringstall, ...STYRINGSTALL_FASTE];
 }
 
 export const STYRINGSTALL_FASTE: Styringstall[] = [
