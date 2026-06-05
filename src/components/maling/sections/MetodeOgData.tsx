@@ -20,7 +20,7 @@ export function MetodeOgData() {
         headingId="mal-metode-h"
         title="Slik er forsøket satt opp og hvor tallene kommer fra"
       >
-        Detaljer om forsøksdesign og datagrunnlag — collapsed by default for å
+        Detaljer om forsøksdesign og datagrunnlag — skjult som standard for å
         holde dashboardet fokusert.
       </SectionHead>
 
