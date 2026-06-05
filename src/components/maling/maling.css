@@ -809,7 +809,7 @@
   color: var(--mal-ink);
 }
 
-/* ---- Lumi ---- */
+/* ---- Lumi-scale (shared info chip) ---- */
 .mal__lumi-scale {
   margin: 0 0 16px;
   font-size: 12.5px;
@@ -820,21 +820,25 @@
   padding: 10px 14px;
   line-height: 1.45;
 }
-.mal__lumi {
+
+/* ---- Lumi: punktplott (1–5 skala) ---- */
+.mal__lk-sporsmal {
   display: flex;
   flex-direction: column;
 }
-.mal__lumi-row {
+
+.mal__lk-rad {
   display: grid;
   grid-template-columns: 1.7fr 1fr;
-  gap: 16px;
+  gap: 20px;
   align-items: center;
-  padding: 11px 0;
+  padding: 14px 0;
 }
-.mal__lumi-row + .mal__lumi-row {
+.mal__lk-rad + .mal__lk-rad {
   border-top: 1px solid var(--mal-line-soft);
 }
-.mal__lumi-q {
+
+.mal__lk-sporsmal-q {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -843,39 +847,67 @@
   font-weight: 600;
   color: var(--mal-ink);
 }
-.mal__lumi-scores {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 0;
+
+/* axis container — relative so dots can be absolutely positioned */
+.mal__lk-scale {
+  position: relative;
+  height: 32px;
+  margin: 10px 8px 0;
 }
-.mal__lumi-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+
+.mal__lk-ticks {
+  position: absolute;
+  inset: 0;
+  top: -14px;
 }
-.mal__lumi-cell dt {
+.mal__lk-tick {
+  position: absolute;
+  transform: translateX(-50%);
   font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-weight: 600;
   color: var(--mal-ink-faint);
-}
-.mal__lumi-cell dd {
-  margin: 0;
-  font-size: 15px;
   font-variant-numeric: tabular-nums;
-  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
 }
-.mal__lumi-cell--ref dd {
-  color: var(--mal-ink-faint);
-  font-size: 13px;
+
+.mal__lk-axline {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--mal-line);
+  transform: translateY(-50%);
 }
-.mal__lumi-ag {
-  color: var(--mech-ag);
+
+/* dot shared */
+.mal__lk-dot {
+  display: block;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex: none;
 }
-.mal__lumi-sm {
-  color: var(--mech-sm);
+
+/* legend variant (no positioning) */
+.mal__legend-item .mal__lk-dot {
+  position: static;
+  transform: none;
+  width: 12px;
+  height: 12px;
+}
+
+.mal__lk-dot--kontroll {
+  background: var(--kontroll);
+}
+.mal__lk-dot--pakke {
+  background: var(--pakke);
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 3px var(--pakke);
 }
 /* ---- funnel ---- */
 .mal__funnel {
@@ -1331,7 +1363,7 @@
     justify-self: start;
   }
   .mal__step,
-  .mal__lumi-row {
+  .mal__lk-rad {
     grid-template-columns: 1fr;
     gap: 8px;
   }

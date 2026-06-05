@@ -1,21 +1,39 @@
 import { Tag } from "@navikt/ds-react";
 import {
+  LUMI_MAX,
   LUMI_SKALA,
   LUMI_SPORSMAL,
   lumiForSegment,
+  lumiPosisjon,
   SEGMENT_LABEL,
   type Segment,
 } from "../maling-data";
 import { SectionHead } from "./SectionHead";
 
+function round1(n: number): number {
+  return Math.round(n * 10) / 10;
+}
+
+/** Gjennomsnitts-score for én aktørgruppe (ag+sm / 2). */
+function snitt(score: { ag: number; sm: number }): number {
+  return round1((score.ag + score.sm) / 2);
+}
+
 /**
- * Lumi viser om tiltaket oppleves riktig. Hold teksten enkel: dette er tidlige
- * signaler, ikke bevis for effekt.
+ * Mekanisme-lag: ett punktplott per Lumi-spørsmål på skala 1–5.
+ * Grå prikk = kontroll, blå prikk = tiltakspakke for valgt segment.
+ * Den synlige avstanden mellom prikkene er pakke-vs-kontroll-differansen.
  */
 export function LumiSection({ segment }: { segment: Segment }) {
+  const midtTick = Math.ceil(LUMI_MAX / 2); // = 3
+
   return (
-    <section className="mal__sec" aria-labelledby="mal-lumi-h">
-      <SectionHead num={4} headingId="mal-lumi-h" title="Er vi på riktig vei?">
+    <section id="mekanisme" className="mal__sec" aria-labelledby="mal-lumi-h">
+      <SectionHead
+        num={4}
+        headingId="mal-lumi-h"
+        title="Bedres dialogen — eller lager vi bare papir?"
+      >
         Lumi gir tidlige signaler fra arbeidsgiver og den sykmeldte. Vi vil se
         mer forståelse, tidligere kontakt og lite opplevd press.
       </SectionHead>
@@ -28,20 +46,33 @@ export function LumiSection({ segment }: { segment: Segment }) {
 
         <div className="mal__legend">
           <span className="mal__legend-item">
-            <span className="mal__sw mal__sw--ag" /> Arbeidsgiver
+            <span
+              className="mal__lk-dot mal__lk-dot--kontroll"
+              aria-hidden="true"
+            />
+            Kontroll
           </span>
           <span className="mal__legend-item">
-            <span className="mal__sw mal__sw--sm" /> Den sykmeldte
+            <span
+              className="mal__lk-dot mal__lk-dot--pakke"
+              aria-hidden="true"
+            />
+            Tiltakspakke
           </span>
           <span className="mal__syn">Lumi · syntetiske tall</span>
         </div>
 
-        <div className="mal__lumi">
+        <div className="mal__lk-sporsmal">
           {LUMI_SPORSMAL.map((s) => {
-            const pakke = lumiForSegment(s, segment);
+            const pakkeScore = lumiForSegment(s, segment);
+            const pakkeSnitt = snitt(pakkeScore);
+            const kontrollSnitt = snitt(s.kontroll);
+            const pakkePct = lumiPosisjon(pakkeSnitt);
+            const kontrollPct = lumiPosisjon(kontrollSnitt);
+
             return (
-              <div className="mal__lumi-row" key={s.tag}>
-                <div className="mal__lumi-q">
+              <div className="mal__lk-rad" key={s.tag}>
+                <div className="mal__lk-sporsmal-q">
                   <span>{s.q}</span>
                   <Tag
                     variant={s.status === "bra" ? "success" : "warning"}
@@ -50,32 +81,54 @@ export function LumiSection({ segment }: { segment: Segment }) {
                     {s.status === "bra" ? "Ser lovende ut" : "Følg med"}
                   </Tag>
                 </div>
-                <dl
-                  className="mal__lumi-scores"
-                  aria-label={`${s.q} Pakke ${SEGMENT_LABEL[segment]}: arbeidsgiver ${pakke.ag}, sykmeldt ${pakke.sm}. Kontroll: arbeidsgiver ${s.kontroll.ag}, sykmeldt ${s.kontroll.sm}. Skala 1 til 5.`}
+
+                <div
+                  className="mal__lk-scale"
+                  role="img"
+                  aria-label={`${s.q} — Pakke ${pakkeSnitt.toFixed(1)} av ${LUMI_MAX}, kontroll ${kontrollSnitt.toFixed(1)} av ${LUMI_MAX}.`}
                 >
-                  <div className="mal__lumi-cell">
-                    <dt>Pakke</dt>
-                    <dd>
-                      <b className="mal__lumi-ag">{pakke.ag.toFixed(1)}</b> /{" "}
-                      <b className="mal__lumi-sm">{pakke.sm.toFixed(1)}</b>
-                    </dd>
+                  {/* Tick-merker */}
+                  <div className="mal__lk-ticks" aria-hidden="true">
+                    <span className="mal__lk-tick" style={{ left: "0%" }}>
+                      1
+                    </span>
+                    <span
+                      className="mal__lk-tick"
+                      style={{ left: `${lumiPosisjon(midtTick)}%` }}
+                    >
+                      {midtTick}
+                    </span>
+                    <span className="mal__lk-tick" style={{ left: "100%" }}>
+                      {LUMI_MAX}
+                    </span>
                   </div>
-                  <div className="mal__lumi-cell mal__lumi-cell--ref">
-                    <dt>Kontroll</dt>
-                    <dd>
-                      {s.kontroll.ag.toFixed(1)} / {s.kontroll.sm.toFixed(1)}
-                    </dd>
-                  </div>
-                </dl>
+
+                  {/* Aksellinje */}
+                  <div className="mal__lk-axline" aria-hidden="true" />
+
+                  {/* Kontroll-prikk (grå) */}
+                  <span
+                    className="mal__lk-dot mal__lk-dot--kontroll"
+                    style={{ left: `${kontrollPct}%` }}
+                    aria-hidden="true"
+                  />
+
+                  {/* Pakke-prikk (blå) */}
+                  <span
+                    className="mal__lk-dot mal__lk-dot--pakke"
+                    style={{ left: `${pakkePct}%` }}
+                    aria-hidden="true"
+                  />
+                </div>
               </div>
             );
           })}
         </div>
 
         <p className="mal__gapnote">
-          Lumi svarer på om tiltaket kjennes nyttig og trygt. Om AID faktisk når
-          målene sine, leser vi i styringstallene over.
+          Lumi svarer på om tiltaket kjennes nyttig og trygt — dette er tidlige
+          signaler, ikke bevis for effekt. Om AID faktisk når målene sine, leser
+          vi i styringstallene over.
         </p>
       </div>
     </section>
