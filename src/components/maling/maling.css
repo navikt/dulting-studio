@@ -695,6 +695,16 @@
 .mal__sw--sm {
   background: var(--mech-sm);
 }
+.mal__sw--split-ja {
+  color: var(--pakke);
+  border-top-style: dotted;
+  opacity: 0.65;
+}
+.mal__sw--split-nei {
+  color: #7b61ff;
+  border-top-style: dotted;
+  opacity: 0.65;
+}
 
 /* ---- trend/kurve chart ---- */
 .mal__chart {
@@ -748,6 +758,16 @@
 }
 .mal__line--on {
   stroke-width: 3;
+}
+.mal__line--split-ja {
+  stroke: var(--pakke);
+  stroke-width: 1.5;
+  opacity: 0.55;
+}
+.mal__line--split-nei {
+  stroke: #7b61ff;
+  stroke-width: 1.5;
+  opacity: 0.55;
 }
 .mal__curve-explain {
   margin-top: 16px;
