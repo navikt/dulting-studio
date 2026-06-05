@@ -752,3 +752,28 @@ export function deltaForrigePeriode(serie: number[], periode: number): number {
   if (periode <= 0) return 0;
   return serie[periode] - serie[periode - 1];
 }
+
+// ---- verdikt-beregning ----
+
+export type KrTilstand = "paa-vei" | "folg-med" | "ikke-paa-vei";
+const MARGIN_TERSKEL = 5; // prosentpoeng — illustrativ
+
+export function krStatus(x: {
+  pakke: number;
+  kontroll: number;
+  forrigeDelta: number;
+}): KrTilstand {
+  if (x.pakke < x.kontroll) return "ikke-paa-vei";
+  if (x.pakke - x.kontroll < MARGIN_TERSKEL || x.forrigeDelta < 0) return "folg-med";
+  return "paa-vei";
+}
+
+export function samletVerdikt(
+  krer: readonly KrTilstand[],
+  vakt: { mekanismeOk: boolean; guardrailOk: boolean },
+): KrTilstand {
+  if (krer.some((k) => k === "ikke-paa-vei")) return "ikke-paa-vei";
+  const alleKrPaaVei = krer.every((k) => k === "paa-vei");
+  if (alleKrPaaVei && vakt.mekanismeOk && vakt.guardrailOk) return "paa-vei";
+  return "folg-med";
+}

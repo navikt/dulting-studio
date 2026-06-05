@@ -38,3 +38,21 @@ describe("periode-delta", () => {
     expect(s.at(-1)).toBe(56); // matcher KR1 pakke-pool i dag
   });
 });
+
+describe("verdikt", () => {
+  it("KR er på vei når margin >= terskel og trenden ikke faller", () => {
+    expect(krStatus({ pakke: 56, kontroll: 34, forrigeDelta: 3 })).toBe("paa-vei");
+  });
+  it("følg-med ved liten margin eller fallende trend", () => {
+    expect(krStatus({ pakke: 35, kontroll: 34, forrigeDelta: 2 })).toBe("folg-med");
+    expect(krStatus({ pakke: 56, kontroll: 34, forrigeDelta: -2 })).toBe("folg-med");
+  });
+  it("ikke på vei når pakke ligger under kontroll", () => {
+    expect(krStatus({ pakke: 30, kontroll: 34, forrigeDelta: 0 })).toBe("ikke-paa-vei");
+  });
+  it("samlet verdikt nedgraderes hvis mekanisme svikter (papir, ikke dult)", () => {
+    const krer = ["paa-vei", "paa-vei", "paa-vei"] as const;
+    expect(samletVerdikt(krer, { mekanismeOk: true, guardrailOk: true })).toBe("paa-vei");
+    expect(samletVerdikt(krer, { mekanismeOk: false, guardrailOk: true })).toBe("folg-med");
+  });
+});
