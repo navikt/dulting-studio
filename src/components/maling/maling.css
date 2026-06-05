@@ -909,73 +909,112 @@
     0 0 0 2px #fff,
     0 0 0 3px var(--pakke);
 }
-/* ---- funnel ---- */
-.mal__funnel {
-  display: grid;
-  gap: 4px;
-}
-.mal__step {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 18px;
+/* ---- funnel / trakt ---- */
+.mal__trakt {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   align-items: center;
-  padding: 9px 0;
 }
-.mal__step + .mal__step {
-  border-top: 1px solid var(--mal-line-soft);
+
+.mal__trakt-steg {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.mal__step-label {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--mal-ink);
-}
-.mal__step-sub {
-  display: block;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--mal-ink-faint);
+.mal__trakt-steg + .mal__trakt-steg {
   margin-top: 2px;
+}
+
+/* Merke for største fall — vises over steget der fallet starter */
+.mal__trakt-fall-merke {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  margin-top: 6px;
+}
+.mal__trakt-fall-pil {
+  font-size: 11px;
+  color: var(--mal-warn);
+}
+
+/* Rad-container: centred, relative for kontroll-linje */
+.mal__trakt-rad {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  min-height: 46px;
+}
+
+/* Blå sentert søyle */
+.mal__trakt-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--pakke);
+  border-radius: 6px;
+  min-height: 46px;
+  box-sizing: border-box;
+  transition: width 0.25s ease;
+}
+
+.mal__trakt-bar-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mal__trakt-bar-sub {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.8;
   font-family: var(--mal-body);
 }
-.mal__bars {
-  display: grid;
-  gap: 5px;
-}
-.mal__bar {
-  display: grid;
-  grid-template-columns: 13px 1fr 50px;
-  align-items: center;
-  gap: 9px;
-}
-.mal__bar-seg {
-  font-size: 10px;
+
+.mal__trakt-bar-pct {
+  font-size: 15px;
   font-weight: 800;
-  color: var(--mal-ink-faint);
-  text-align: center;
+  color: #fff;
   font-variant-numeric: tabular-nums;
+  margin-left: 12px;
+  flex: none;
 }
-.mal__track {
-  height: 16px;
-  background: var(--mal-line-soft);
-  border-radius: 5px;
-  overflow: hidden;
-}
-.mal__fill {
-  height: 100%;
-  border-radius: 5px;
-}
-.mal__fill--pakke {
-  background: var(--pakke);
-}
-.mal__fill--kontroll {
+
+/* Kontroll: tynn grå senterlinje med %-tall til høyre */
+.mal__trakt-kontroll {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 2px;
   background: var(--kontroll);
+  opacity: 0.55;
+  border-radius: 2px;
+  pointer-events: none;
 }
-.mal__val {
-  font-size: 12px;
+.mal__trakt-kontroll-pct {
+  position: absolute;
+  right: -38px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: var(--mal-ink-2);
-  text-align: right;
+  color: var(--kontroll-ink);
+  font-family: var(--mal-body);
+  white-space: nowrap;
 }
 .mal__gapnote {
   font-size: 12px;
@@ -1362,7 +1401,6 @@
   .mal__filter-controls {
     justify-self: start;
   }
-  .mal__step,
   .mal__lk-rad {
     grid-template-columns: 1fr;
     gap: 8px;
