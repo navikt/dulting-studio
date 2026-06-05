@@ -222,7 +222,7 @@
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--kontroll-ink);
+  color: var(--mal-ink-2);
 }
 .mal__arm-navn {
   font-size: 19px;
@@ -679,6 +679,7 @@
   grid-template-columns: 130px 1fr 38px auto;
   align-items: center;
   gap: 9px;
+  flex-wrap: wrap;
 }
 .mal__levering-lbl {
   font-size: 12px;
@@ -692,7 +693,7 @@
   border-radius: 5px;
 }
 .mal__levering-fill--ok {
-  background: var(--mal-ok);
+  background: var(--pakke);
 }
 .mal__levering-fill--guard {
   background: var(--mal-warn);
@@ -1448,6 +1449,59 @@
   font-family: var(--mal-body);
   margin: 8px 0 0;
   line-height: 1.45;
+}
+
+/* ---- delta-hierarki: vs-kontroll label (primær) + trend-chip (sekundær) ---- */
+/* Tiny uppercase label before the delta value — makes "vs control" instantly clear */
+.mal__vflis-pp-lbl,
+.mal__kpi-delta-lbl {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+  display: block;
+  margin-bottom: 1px;
+}
+
+/* ---- levering: guardrail micro-note ---- */
+.mal__levering-guard-note {
+  grid-column: 1 / -1;
+  font-size: 11.5px;
+  color: var(--mal-ink-2);
+  line-height: 1.45;
+  font-family: var(--mal-body);
+  padding: 4px 0 2px;
+}
+
+/* ---- lang horisont tile: «bekrefter senere» hint row ---- */
+.mal__vflis--bekrefter {
+  opacity: 0.82;
+}
+.mal__vflis-lh-hint {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mal-ink-2);
+  font-family: var(--mal-body);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+.mal__vflis-lh-forlop {
+  font-weight: 400;
+  color: var(--mal-ink-faint);
+}
+.mal__vflis-sym--muted {
+  color: var(--mal-ink-faint);
+  opacity: 0.55;
+}
+
+/* ---- fraværskurve: in-graph direction cue ---- */
+.mal__fravars-cue {
+  fill: var(--mal-ink-faint);
+  font-size: 8px;
+  font-family: var(--mal-body);
+  font-style: italic;
 }
 
 /* ---- responsivt ---- */

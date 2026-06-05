@@ -670,13 +670,13 @@ export const FUNNEL: FunnelSteg[] = [
   },
   {
     label: "Deler med legen",
-    sub: "≤ uke 4",
+    sub: "totalt",
     kontroll: 18,
     pakke: { "takket-ja": 41, "ikke-svart": 22 },
   },
   {
     label: "Deler med Nav",
-    sub: "≤ uke 8",
+    sub: "totalt",
     kontroll: 15,
     pakke: { "takket-ja": 33, "ikke-svart": 19 },
   },

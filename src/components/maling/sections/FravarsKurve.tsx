@@ -7,6 +7,8 @@
  * - Pakke ligger UNDER kontroll (raskere tilbake = lavere kurve = bedre)
  */
 
+import { useId } from "react";
+
 // --- kurve-geometri ---
 const FW = 360;
 const FL = 30;
@@ -34,6 +36,12 @@ export function FravarsKurve({
   survivalKontroll,
 }: FravarsKurveProps) {
   const yTicks = [0, 25, 50, 75, 100];
+  const titleId = useId();
+  const descId = useId();
+
+  // In-graph direction cue: placed in upper-right of chart area
+  const cueX = FR - 4;
+  const cueY = FT + 8;
 
   return (
     <div>
@@ -53,12 +61,12 @@ export function FravarsKurve({
         className="mal__chart"
         viewBox={`0 0 ${FW} 128`}
         role="img"
-        aria-labelledby="fravars-curve-title fravars-curve-desc"
+        aria-labelledby={`${titleId} ${descId}`}
       >
-        <title id="fravars-curve-title">
+        <title id={titleId}>
           Andel fortsatt sykmeldt over tid — tiltakspakke mot kontroll
         </title>
-        <desc id="fravars-curve-desc">
+        <desc id={descId}>
           {`Linjediagram, andel fortsatt sykmeldt per uke. Ved uke ${survivalUker.at(-1)}: tiltakspakke ${survivalPakke.at(-1)} prosent, kontroll ${survivalKontroll.at(-1)} prosent. Tiltakspakka faller raskere (kortere fravær). Detaljer i tabellen under.`}
         </desc>
 
@@ -107,6 +115,11 @@ export function FravarsKurve({
           points={punkter(survivalPakke, survivalUker)}
           className="mal__line mal__line--pakke mal__line--on"
         />
+
+        {/* In-graph direction cue — visual aid */}
+        <text x={cueX} y={cueY} textAnchor="end" className="mal__fravars-cue">
+          ↓ lavere = kortere fravær = bedre
+        </text>
       </svg>
 
       {/* sr-only tabell */}
@@ -133,8 +146,8 @@ export function FravarsKurve({
       </table>
 
       <p className="mal__curve-caption">
-        Raskere fall = kortere fravær. Median er ett punkt; tidslinja viser hele
-        forløpet (Christians survival-poeng).
+        Foreløpig. Raskere fall = kortere fravær. Tidslinja viser hele forløpet,
+        ikke bare medianen.
       </p>
     </div>
   );

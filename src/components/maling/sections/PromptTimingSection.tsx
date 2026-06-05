@@ -54,10 +54,11 @@ export function PromptTimingSection() {
             {VARSEL_LEVERING.map((r) => (
               <div className="mal__levering-row" key={r.label}>
                 <span className="mal__levering-lbl">{r.label}</span>
-                <span className="mal__valg-track">
+                <span className="mal__valg-track" aria-hidden="true">
                   <span
                     className={`mal__levering-fill mal__levering-fill--${r.retning}`}
                     style={{ width: `${r.andel}%` }}
+                    aria-hidden="true"
                   />
                 </span>
                 <span className="mal__levering-val">{r.andel}%</span>
@@ -68,6 +69,12 @@ export function PromptTimingSection() {
                 >
                   {r.retning === "ok" ? "ok" : "lukes ut"}
                 </Tag>
+                {r.retning === "guard" && (
+                  <span className="mal__levering-guard-note">
+                    Varsler som var for sene eller dupliserte — holdt utenfor,
+                    ikke talt som dult.
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -102,10 +109,11 @@ export function PromptTimingSection() {
             {VARSEL_VALG.map((v) => (
               <div className="mal__valg-row" key={v.status}>
                 <span className="mal__valg-lbl">{v.status}</span>
-                <span className="mal__valg-track">
+                <span className="mal__valg-track" aria-hidden="true">
                   <span
                     className="mal__valg-fill"
                     style={{ width: `${v.andel}%` }}
+                    aria-hidden="true"
                   />
                 </span>
                 <span className="mal__valg-val">{v.andel}%</span>

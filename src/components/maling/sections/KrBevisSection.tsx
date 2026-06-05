@@ -107,12 +107,13 @@ export function KrBevisSection({
               </div>
 
               <span className="mal__kpi-delta">
+                <span className="mal__kpi-delta-lbl">vs. kontroll</span>{" "}
                 {delta >= 0 ? "+" : ""}
-                {delta} prosentpoeng mer enn kontroll
+                {delta} pp
               </span>
 
               <span className="mal__kpi-trend-chip">
-                Trend: {pd >= 0 ? "▲" : "▼"} {Math.abs(pd)} fra forrige uke
+                vs. forrige uke {pd >= 0 ? "▲" : "▼"} {Math.abs(pd)}
               </span>
 
               {s.id === "kr3" && (
