@@ -1,12 +1,17 @@
 import { describe, expect, it } from "vitest";
 import {
+  deltaForrigePeriode,
+  krSerie,
+  krStatus,
+  LUMI_MAX,
+  LUMI_SKALA,
+  lumiPosisjon,
+  PERIODER,
   parseSegmentParam,
   SEGMENT_LABEL,
+  samletVerdikt,
   segmentToParam,
 } from "./maling-data";
-import { deltaForrigePeriode, PERIODER, krSerie } from "./maling-data";
-import { krStatus, samletVerdikt } from "./maling-data";
-import { LUMI_MAX, LUMI_SKALA, lumiPosisjon } from "./maling-data";
 
 describe("segment-param", () => {
   it("parser gyldig respons-param", () => {
@@ -41,19 +46,31 @@ describe("periode-delta", () => {
 
 describe("verdikt", () => {
   it("KR er på vei når margin >= terskel og trenden ikke faller", () => {
-    expect(krStatus({ pakke: 56, kontroll: 34, forrigeDelta: 3 })).toBe("paa-vei");
+    expect(krStatus({ pakke: 56, kontroll: 34, forrigeDelta: 3 })).toBe(
+      "paa-vei",
+    );
   });
   it("følg-med ved liten margin eller fallende trend", () => {
-    expect(krStatus({ pakke: 35, kontroll: 34, forrigeDelta: 2 })).toBe("folg-med");
-    expect(krStatus({ pakke: 56, kontroll: 34, forrigeDelta: -2 })).toBe("folg-med");
+    expect(krStatus({ pakke: 35, kontroll: 34, forrigeDelta: 2 })).toBe(
+      "folg-med",
+    );
+    expect(krStatus({ pakke: 56, kontroll: 34, forrigeDelta: -2 })).toBe(
+      "folg-med",
+    );
   });
   it("ikke på vei når pakke ligger under kontroll", () => {
-    expect(krStatus({ pakke: 30, kontroll: 34, forrigeDelta: 0 })).toBe("ikke-paa-vei");
+    expect(krStatus({ pakke: 30, kontroll: 34, forrigeDelta: 0 })).toBe(
+      "ikke-paa-vei",
+    );
   });
   it("samlet verdikt nedgraderes hvis mekanisme svikter (papir, ikke dult)", () => {
     const krer = ["paa-vei", "paa-vei", "paa-vei"] as const;
-    expect(samletVerdikt(krer, { mekanismeOk: true, guardrailOk: true })).toBe("paa-vei");
-    expect(samletVerdikt(krer, { mekanismeOk: false, guardrailOk: true })).toBe("folg-med");
+    expect(samletVerdikt(krer, { mekanismeOk: true, guardrailOk: true })).toBe(
+      "paa-vei",
+    );
+    expect(samletVerdikt(krer, { mekanismeOk: false, guardrailOk: true })).toBe(
+      "folg-med",
+    );
   });
 });
 

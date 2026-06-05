@@ -769,7 +769,8 @@ export function krStatus(x: {
   forrigeDelta: number;
 }): KrTilstand {
   if (x.pakke < x.kontroll) return "ikke-paa-vei";
-  if (x.pakke - x.kontroll < MARGIN_TERSKEL || x.forrigeDelta < 0) return "folg-med";
+  if (x.pakke - x.kontroll < MARGIN_TERSKEL || x.forrigeDelta < 0)
+    return "folg-med";
   return "paa-vei";
 }
 
