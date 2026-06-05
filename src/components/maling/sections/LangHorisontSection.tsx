@@ -1,5 +1,5 @@
 import { Tag } from "@navikt/ds-react";
-import { LANG_HORISONT } from "../maling-data";
+import { LANG_HORISONT, type LangHorisontKort } from "../maling-data";
 import { SectionHead } from "./SectionHead";
 
 /**
@@ -9,7 +9,11 @@ import { SectionHead } from "./SectionHead";
  */
 export function LangHorisontSection() {
   const { gradertAndel, tidTilGradering, fraværslengde } = LANG_HORISONT;
-  const kort = [gradertAndel, tidTilGradering, fraværslengde];
+  const kort: LangHorisontKort[] = [
+    gradertAndel,
+    tidTilGradering,
+    fraværslengde,
+  ];
 
   return (
     <section
@@ -57,6 +61,42 @@ export function LangHorisontSection() {
                     {"venterPå" in k ? k.venterPå : ""}
                   </p>
                 </div>
+              ) : k.status === "foreløpig" ? (
+                <>
+                  <Tag
+                    variant="warning"
+                    size="xsmall"
+                    className="mal__ripple-forbehold"
+                  >
+                    Foreløpig
+                  </Tag>
+                  <div
+                    className="mal__ripple-vals"
+                    role="img"
+                    aria-label={`${k.tittel}: pakke ${k.pakke} ${enhetKort}, kontroll ${k.kontroll} ${enhetKort}. Foreløpig tall.`}
+                  >
+                    <span className="mal__ripple-pakke">
+                      {k.pakke}
+                      {enhetKort === "%" ? "%" : ""}
+                      <i>pakke</i>
+                    </span>
+                    <span className="mal__ripple-vs" aria-hidden>
+                      vs
+                    </span>
+                    <span className="mal__ripple-kontroll">
+                      {k.kontroll}
+                      {enhetKort === "%" ? "%" : ""}
+                      <i>kontroll</i>
+                    </span>
+                  </div>
+                  {"forbehold" in k && (
+                    <p className="mal__ripple-locked-txt">
+                      {"forbehold" in k
+                        ? (k as { forbehold: string }).forbehold
+                        : ""}
+                    </p>
+                  )}
+                </>
               ) : (
                 <div
                   className="mal__ripple-vals"
@@ -84,8 +124,8 @@ export function LangHorisontSection() {
       </div>
       <p className="mal__gapnote">
         Gradering trianguleres mot Lumi «fant tilrettelegging som funket».
-        Fraværslengde vises først når forløpsdefinisjonen er faggodkjent — den
-        er bevisst låst til da.
+        Fraværslengde er foreløpig — forløpsdefinisjonen (v0.9) må faggodkjennes
+        før tallene kan brukes som fasit.
       </p>
     </section>
   );

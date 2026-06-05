@@ -1,11 +1,13 @@
 "use client";
 import {
   deltaForrigePeriode,
+  guardrailOk as guardrailOkFn,
   type KrTilstand,
   krSerie,
   krStatus,
   LUMI_SPORSMAL,
   lumiForSegment,
+  mekanismeOk as mekanismeOkFn,
   PERIODER,
   PLAN_HENDELSER,
   pakkeForSegment,
@@ -54,7 +56,7 @@ function domSetning(t: KrTilstand): string {
   if (t === "paa-vei")
     return "Pakka flytter de tidlige plan-atferdene. Følg med på opplevd press.";
   if (t === "folg-med")
-    return "Pakka gir positive signaler, men gapet er ikke trygt nok ennå — fortsett å følge med.";
+    return "KR-ene er på vei, men opplevd press øker i pakka — følg med.";
   return "Pakka viser ikke klar effekt mot kontroll — vurder justeringer.";
 }
 
@@ -100,12 +102,13 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
   const kontrollSnitt = mean(
     LUMI_SPORSMAL.flatMap((s) => [s.kontroll.ag, s.kontroll.sm]),
   );
-  const mekanismeOk = pakkeSnitt > kontrollSnitt;
+  const mekanismeOk = mekanismeOkFn(pakkeSnitt, kontrollSnitt);
 
-  // Guardrail: press-differanse ≤ 5
-  const pressDiff =
-    VARSEL_ETIKK.pressFelt.pakke - VARSEL_ETIKK.pressFelt.kontroll;
-  const guardrailOk = pressDiff <= 5;
+  // Guardrail: opplevd press skal ikke øke (lavere = bedre)
+  const guardrailOk = guardrailOkFn(
+    VARSEL_ETIKK.pressFelt.pakke,
+    VARSEL_ETIKK.pressFelt.kontroll,
+  );
 
   const samlet = samletVerdikt([kr1Tilstand, kr2Tilstand, kr3Tilstand], {
     mekanismeOk,

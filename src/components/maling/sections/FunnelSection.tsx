@@ -62,7 +62,10 @@ export function FunnelSection({ segment }: { segment: Segment }) {
         title="Hvor faller folk av?"
       >
         Pakke ({SEGMENT_LABEL[segment]}) vokser til venstre, kontroll til høyre
-        — gapet er pakkens løft, og det største fallet er der flyten stopper.
+        — gapet er pakkens løft, og det største fallet er der flyten stopper.{" "}
+        Funnelen viser andelen av kohorten som når hvert steg{" "}
+        <strong>uansett når</strong> i forløpet (totalt over forløpet) — ikke
+        «innen uke 4» slik KR-kortene gjør.
       </SectionHead>
 
       <div className="mal__panel">
@@ -185,6 +188,13 @@ export function FunnelSection({ segment }: { segment: Segment }) {
             ))}
           </tbody>
         </table>
+
+        {fallIdx > 0 && (
+          <p className="sr-only">
+            Største fall: mellom {steg[fallIdx - 1].label} og{" "}
+            {steg[fallIdx].label}.
+          </p>
+        )}
 
         <p className="mal__gapnote">
           <b>Les den som diagnose:</b> det største fallet mellom to steg er der

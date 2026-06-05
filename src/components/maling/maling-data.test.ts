@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   deltaForrigePeriode,
+  guardrailOk,
   krSerie,
   krStatus,
   LUMI_MAX,
   LUMI_SKALA,
   lumiPosisjon,
+  mekanismeOk,
   PERIODER,
   parseSegmentParam,
   SEGMENT_LABEL,
@@ -84,5 +86,16 @@ describe("lumi-skala", () => {
     expect(lumiPosisjon(1)).toBe(0);
     expect(lumiPosisjon(3)).toBe(50);
     expect(lumiPosisjon(5)).toBe(100);
+  });
+});
+
+describe("verdikt-vakter", () => {
+  it("mekanismeOk: pakke må ligge minst MEKANISME_MARGIN (0.3) over kontroll", () => {
+    expect(mekanismeOk(3.8, 3.0)).toBe(true); // gap 0.8 >= 0.3
+    expect(mekanismeOk(3.05, 3.0)).toBe(false); // gap 0.05 < 0.3
+  });
+  it("guardrailOk: press (lavere=bedre) skal ikke øke mer enn PRESS_TOLERANSE (0)", () => {
+    expect(guardrailOk(5, 6)).toBe(true); // press falt (5 - 6 = -1 <= 0)
+    expect(guardrailOk(9, 6)).toBe(false); // press økte (9 - 6 = 3 > 0)
   });
 });

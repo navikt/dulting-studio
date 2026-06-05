@@ -622,7 +622,7 @@ export const FUNNEL: FunnelSteg[] = [
   },
   {
     label: "Lager plan",
-    sub: "påminnelse ~uke 4",
+    sub: "lager plan totalt",
     kontroll: 34,
     pakke: { "takket-ja": 68, "ikke-svart": 41 },
   },
@@ -648,6 +648,21 @@ export const FUNNEL: FunnelSteg[] = [
 
 // ---- lang horisont: bekreftende, DS-/fag-definert ----
 
+export type LangHorisontKortStatus = "klar" | "foreløpig" | "venter";
+
+export type LangHorisontKort = {
+  tittel: string;
+  enhet: string;
+  kontroll: number;
+  pakke: number;
+  status: LangHorisontKortStatus;
+  venterPå?: string;
+  forbehold?: string;
+  survivalUker?: number[];
+  survivalKontroll?: number[];
+  survivalPakke?: number[];
+};
+
 export const LANG_HORISONT = {
   gradertAndel: {
     tittel: "Andel forløp med minst én gradering",
@@ -668,11 +683,14 @@ export const LANG_HORISONT = {
     enhet: "dager (median)",
     kontroll: 46,
     pakke: 41,
-    status: "venter" as const,
-    venterPå:
-      "Krever godkjent forløpsdefinisjon fra fag/DS før tallet kan brukes.",
+    status: "foreløpig" as const,
+    forbehold:
+      "Foreløpig — forløpsdefinisjonen (v0.9) er ikke faggodkjent ennå. Tidsserie/survival er Christians anbefaling.",
+    survivalUker: [0, 2, 4, 6, 8, 10, 12, 14, 16],
+    survivalKontroll: [100, 93, 82, 69, 57, 47, 40, 34, 30],
+    survivalPakke: [100, 90, 74, 58, 45, 36, 30, 26, 23],
   },
-};
+} satisfies Record<string, LangHorisontKort>;
 
 // ---- datagrunnlag / aggregatkontrakt ----
 
@@ -750,6 +768,25 @@ export function deltaForrigePeriode(serie: number[], periode: number): number {
 
 export type KrTilstand = "paa-vei" | "folg-med" | "ikke-paa-vei";
 const MARGIN_TERSKEL = 5; // prosentpoeng — illustrativ
+
+export const MEKANISME_MARGIN = 0.3; // poeng på Lumi-skalaen
+export const PRESS_TOLERANSE = 0; // prosentpoeng — press skal ikke øke
+
+/** Mekanismen er ok bare hvis pakke ligger en MARGIN over kontroll (ikke bare > 0). */
+export function mekanismeOk(
+  pakkeSnitt: number,
+  kontrollSnitt: number,
+): boolean {
+  return pakkeSnitt - kontrollSnitt >= MEKANISME_MARGIN;
+}
+
+/** Guardrail (opplevd press, lavere = bedre): ok bare hvis press IKKE øker mer enn toleransen. */
+export function guardrailOk(
+  pressPakke: number,
+  pressKontroll: number,
+): boolean {
+  return pressPakke - pressKontroll <= PRESS_TOLERANSE;
+}
 
 export function krStatus(x: {
   pakke: number;
