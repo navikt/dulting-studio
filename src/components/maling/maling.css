@@ -1404,7 +1404,9 @@
   box-shadow: var(--mal-shadow);
   text-decoration: none;
   color: inherit;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
 }
 .mal__vflis:hover {
   transform: translateY(-2px);

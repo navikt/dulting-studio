@@ -1,0 +1,222 @@
+"use client";
+import {
+  deltaForrigePeriode,
+  type KrTilstand,
+  krSerie,
+  krStatus,
+  LUMI_SPORSMAL,
+  lumiForSegment,
+  PERIODER,
+  PLAN_HENDELSER,
+  pakkeForSegment,
+  type Segment,
+  STYRINGSTALL_FASTE,
+  samletVerdikt,
+  VARSEL_ETIKK,
+} from "../maling-data";
+
+/** Lokal hjelpefunksjon — ikke eksportert. */
+function mean(vals: number[]): number {
+  if (vals.length === 0) return 0;
+  return vals.reduce((a, b) => a + b, 0) / vals.length;
+}
+
+type VerdiktBandProps = {
+  segment: Segment;
+  periode: number;
+};
+
+function tilstandKlasse(t: KrTilstand): string {
+  if (t === "paa-vei") return "mal__vflis--paa-vei";
+  if (t === "folg-med") return "mal__vflis--folg-med";
+  return "mal__vflis--ikke-paa-vei";
+}
+
+function pilleKlasse(t: KrTilstand): string {
+  if (t === "paa-vei") return "mal__verdikt-pille--paa-vei";
+  if (t === "folg-med") return "mal__verdikt-pille--folg-med";
+  return "mal__verdikt-pille--ikke-paa-vei";
+}
+
+function pilleSymbol(t: KrTilstand): string {
+  if (t === "paa-vei") return "✓";
+  if (t === "folg-med") return "!";
+  return "✕";
+}
+
+function pilleTekst(t: KrTilstand): string {
+  if (t === "paa-vei") return "PÅ RETT VEI";
+  if (t === "folg-med") return "FØLG MED";
+  return "IKKE PÅ VEI";
+}
+
+function domSetning(t: KrTilstand): string {
+  if (t === "paa-vei")
+    return "Pakka flytter de tidlige plan-atferdene. Følg med på opplevd press.";
+  if (t === "folg-med")
+    return "Pakka gir positive signaler, men gapet er ikke trygt nok ennå — fortsett å følge med.";
+  return "Pakka viser ikke klar effekt mot kontroll — vurder justeringer.";
+}
+
+export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
+  // KR1: første plan-hendelse = «opprettet»
+  const kr1raw = PLAN_HENDELSER[0].styringstall;
+  const kr1Pakke = pakkeForSegment(kr1raw.metrikk, "alle");
+  const kr1Kontroll = kr1raw.metrikk.kontroll;
+  const kr1Delta = deltaForrigePeriode(krSerie("kr1"), periode);
+  const kr1Tilstand = krStatus({
+    pakke: kr1Pakke,
+    kontroll: kr1Kontroll,
+    forrigeDelta: kr1Delta,
+  });
+
+  // KR2
+  // biome-ignore lint/style/noNonNullAssertion: vi vet at kr2 finnes
+  const kr2raw = STYRINGSTALL_FASTE.find((s) => s.id === "kr2")!;
+  const kr2Pakke = pakkeForSegment(kr2raw.metrikk, "alle");
+  const kr2Kontroll = kr2raw.metrikk.kontroll;
+  const kr2Delta = deltaForrigePeriode(krSerie("kr2"), periode);
+  const kr2Tilstand = krStatus({
+    pakke: kr2Pakke,
+    kontroll: kr2Kontroll,
+    forrigeDelta: kr2Delta,
+  });
+
+  // KR3
+  // biome-ignore lint/style/noNonNullAssertion: vi vet at kr3 finnes
+  const kr3raw = STYRINGSTALL_FASTE.find((s) => s.id === "kr3")!;
+  const kr3Pakke = pakkeForSegment(kr3raw.metrikk, "alle");
+  const kr3Kontroll = kr3raw.metrikk.kontroll;
+  const kr3Delta = deltaForrigePeriode(krSerie("kr3"), periode);
+  const kr3Tilstand = krStatus({
+    pakke: kr3Pakke,
+    kontroll: kr3Kontroll,
+    forrigeDelta: kr3Delta,
+  });
+
+  // Mekanisme: Lumi — alltid alle-pool
+  const mp = LUMI_SPORSMAL.map((s) => lumiForSegment(s, "alle"));
+  const pakkeSnitt = mean(mp.flatMap((x) => [x.ag, x.sm]));
+  const kontrollSnitt = mean(
+    LUMI_SPORSMAL.flatMap((s) => [s.kontroll.ag, s.kontroll.sm]),
+  );
+  const mekanismeOk = pakkeSnitt > kontrollSnitt;
+
+  // Guardrail: press-differanse ≤ 5
+  const pressDiff =
+    VARSEL_ETIKK.pressFelt.pakke - VARSEL_ETIKK.pressFelt.kontroll;
+  const guardrailOk = pressDiff <= 5;
+
+  const samlet = samletVerdikt([kr1Tilstand, kr2Tilstand, kr3Tilstand], {
+    mekanismeOk,
+    guardrailOk,
+  });
+
+  // Periodevisning for eyebrow
+  const periodeNavn = PERIODER[periode];
+
+  return (
+    <div
+      className="mal__verdikt"
+      // re-render trigger — segment/periode drives via props
+      data-segment={segment}
+      data-periode={periode}
+    >
+      <div className="mal__verdikt-top">
+        <span className="mal__verdikt-eyebrow">
+          Er vi på rett vei? · tiltakspakke 1 · pilot T&amp;F · {periodeNavn}
+        </span>
+        <span className={`mal__verdikt-pille ${pilleKlasse(samlet)}`}>
+          <span aria-hidden>{pilleSymbol(samlet)}</span> {pilleTekst(samlet)}
+        </span>
+      </div>
+
+      <p className="mal__verdikt-dom">{domSetning(samlet)}</p>
+
+      <div className="mal__vfliser">
+        {/* KR1 */}
+        <a
+          href="#kr-bevis"
+          className={`mal__vflis ${tilstandKlasse(kr1Tilstand)}`}
+          aria-label={`KR1: plan i tide. Pakke ${kr1Pakke} %, kontroll ${kr1Kontroll} %, gap +${kr1Pakke - kr1Kontroll} pp. ${kr1Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr1Delta)} pp fra forrige periode. Gå til bevis.`}
+        >
+          <span className="mal__vflis-label">KR1 plan i tide</span>
+          <span className="mal__vflis-tall">{kr1Pakke}%</span>
+          <span
+            className={`mal__vflis-pp ${kr1Pakke - kr1Kontroll >= 0 ? "" : "mal__vflis-pp--noytral"}`}
+          >
+            {kr1Pakke - kr1Kontroll >= 0 ? "+" : ""}
+            {kr1Pakke - kr1Kontroll} pp vs kontroll
+          </span>
+          <span className="mal__vflis-delta">
+            {kr1Delta >= 0 ? "▲" : "▼"} {Math.abs(kr1Delta)} pp fra forrige
+          </span>
+        </a>
+
+        {/* KR2 */}
+        <a
+          href="#kr-bevis"
+          className={`mal__vflis ${tilstandKlasse(kr2Tilstand)}`}
+          aria-label={`KR2: behov vurdert. Pakke ${kr2Pakke} %, kontroll ${kr2Kontroll} %, gap +${kr2Pakke - kr2Kontroll} pp. ${kr2Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr2Delta)} pp fra forrige periode. Gå til bevis.`}
+        >
+          <span className="mal__vflis-label">KR2 behov vurdert</span>
+          <span className="mal__vflis-tall">{kr2Pakke}%</span>
+          <span
+            className={`mal__vflis-pp ${kr2Pakke - kr2Kontroll >= 0 ? "" : "mal__vflis-pp--noytral"}`}
+          >
+            {kr2Pakke - kr2Kontroll >= 0 ? "+" : ""}
+            {kr2Pakke - kr2Kontroll} pp vs kontroll
+          </span>
+          <span className="mal__vflis-delta">
+            {kr2Delta >= 0 ? "▲" : "▼"} {Math.abs(kr2Delta)} pp fra forrige
+          </span>
+        </a>
+
+        {/* KR3 */}
+        <a
+          href="#kr-bevis"
+          className={`mal__vflis ${tilstandKlasse(kr3Tilstand)}`}
+          aria-label={`KR3: uten å vente. Pakke ${kr3Pakke} %, kontroll ${kr3Kontroll} %, gap +${kr3Pakke - kr3Kontroll} pp. ${kr3Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr3Delta)} pp fra forrige periode. Gå til bevis.`}
+        >
+          <span className="mal__vflis-label">KR3 uten å vente</span>
+          <span className="mal__vflis-tall">{kr3Pakke}%</span>
+          <span
+            className={`mal__vflis-pp ${kr3Pakke - kr3Kontroll >= 0 ? "" : "mal__vflis-pp--noytral"}`}
+          >
+            {kr3Pakke - kr3Kontroll >= 0 ? "+" : ""}
+            {kr3Pakke - kr3Kontroll} pp vs kontroll
+          </span>
+          <span className="mal__vflis-delta">
+            {kr3Delta >= 0 ? "▲" : "▼"} {Math.abs(kr3Delta)} pp fra forrige
+          </span>
+        </a>
+
+        {/* Dialog (Lumi) */}
+        <a
+          href="#mekanisme"
+          className="mal__vflis mal__vflis--folg-med"
+          aria-label={`Dialog via Lumi. Pakke-snitt ${pakkeSnitt.toFixed(1)} vs kontroll-snitt ${kontrollSnitt.toFixed(1)} på 1–5-skala. Opplevd press: pakke ${VARSEL_ETIKK.pressFelt.pakke} % vs kontroll ${VARSEL_ETIKK.pressFelt.kontroll} %. Gå til mekanisme.`}
+        >
+          <span className="mal__vflis-label">Dialog (Lumi)</span>
+          <span className="mal__vflis-sym">{mekanismeOk ? "▲" : "▼"}</span>
+          <span className="mal__vflis-sub mal__vflis-sub--warn">
+            press: følg med
+          </span>
+        </a>
+
+        {/* Lang horisont */}
+        <a
+          href="#lang-horisont"
+          className="mal__vflis mal__vflis--noytral"
+          aria-label="Lang horisont: bekrefter senere. Data ikke tilgjengelig ennå. Gå til lang horisont."
+        >
+          <span className="mal__vflis-label">Lang horisont</span>
+          <span className="mal__vflis-sym">○</span>
+          <span className="mal__vflis-sub mal__vflis-sub--faint">
+            bekrefter senere
+          </span>
+        </a>
+      </div>
+    </div>
+  );
+}

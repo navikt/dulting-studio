@@ -22,13 +22,15 @@ export function Kontrollinje({
   onPeriode,
 }: KontrollinjeProps) {
   return (
-    <div className="mal__kontrollinje" role="region" aria-label="Kontroller">
+    <section className="mal__kontrollinje" aria-label="Kontroller">
       {/* sr-only live-region: annonser segmentbytte til skjermleser */}
       <span aria-live="polite" className="sr-only">
         Viser: {SEGMENT_LABEL[segment]}.
       </span>
 
-      <span className="mal__kontrollinje-label">Hvem i tiltakspakka ser vi på?</span>
+      <span className="mal__kontrollinje-label">
+        Hvem i tiltakspakka ser vi på?
+      </span>
 
       <ToggleGroup
         value={segment}
@@ -66,6 +68,6 @@ export function Kontrollinje({
           Hovedtall
         </Tag>
       )}
-    </div>
+    </section>
   );
 }
