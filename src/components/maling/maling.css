@@ -1300,6 +1300,186 @@
   font-family: var(--mal-body);
 }
 
+/* ---- kontrollinje ---- */
+.mal__kontrollinje {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 0;
+  padding: 10px 16px;
+  background: var(--mal-line-soft);
+  border: 1px solid var(--mal-line);
+  border-top: none;
+  border-radius: 0 0 var(--mal-radius) var(--mal-radius);
+  font-family: var(--mal-body);
+}
+.mal__kontrollinje-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mal-ink-2);
+  white-space: nowrap;
+  margin-right: 4px;
+}
+.mal__kontrollinje-periode {
+  /* Make Aksel Select slim so it fits the bar */
+  max-width: 130px;
+}
+
+/* ---- verdikt-band ---- */
+.mal__verdikt {
+  margin: 24px 0 0;
+  border: 1.5px solid var(--pakke);
+  border-radius: var(--mal-radius) var(--mal-radius) 0 0;
+  background: linear-gradient(180deg, var(--pakke-soft) 0%, #fff 55%);
+  box-shadow: var(--mal-shadow);
+  padding: 20px 22px 22px;
+}
+.mal__verdikt-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.mal__verdikt-eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pakke-ink);
+  opacity: 0.75;
+}
+.mal__verdikt-dom {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--mal-ink);
+  margin: 0 0 18px;
+  line-height: 1.3;
+}
+.mal__verdikt-pille {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-family: var(--mal-body);
+  white-space: nowrap;
+}
+.mal__verdikt-pille--paa-vei {
+  background: var(--mal-ok-bg);
+  color: var(--mal-ok-ink);
+  border: 1.5px solid var(--mal-ok);
+}
+.mal__verdikt-pille--folg-med {
+  background: var(--mal-warn-bg);
+  color: var(--mal-warn);
+  border: 1.5px solid #e8b04a;
+}
+.mal__verdikt-pille--ikke-paa-vei {
+  background: var(--mal-bad-bg);
+  color: var(--mal-bad);
+  border: 1.5px solid var(--mal-bad);
+}
+.mal__vfliser {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+.mal__vflis {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid var(--mal-line);
+  border-top: 4px solid var(--mal-line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: var(--mal-card);
+  box-shadow: var(--mal-shadow);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.mal__vflis:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 2px rgba(10, 37, 64, 0.04),
+    0 12px 32px -14px rgba(10, 37, 64, 0.32);
+}
+.mal__vflis:focus-visible {
+  outline: 3px solid var(--ax-border-focus, var(--pakke));
+  outline-offset: 2px;
+}
+.mal__vflis--paa-vei {
+  border-top-color: var(--mal-ok);
+}
+.mal__vflis--folg-med {
+  border-top-color: var(--mal-warn);
+}
+.mal__vflis--ikke-paa-vei {
+  border-top-color: var(--mal-bad);
+}
+.mal__vflis--noytral {
+  border-top-color: var(--mal-line);
+}
+.mal__vflis-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mal-ink-faint);
+}
+.mal__vflis-tall {
+  font-size: 26px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--mal-ink);
+}
+.mal__vflis-pp {
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--mal-ok-ink);
+  font-family: var(--mal-body);
+}
+.mal__vflis-pp--noytral {
+  color: var(--mal-ink-faint);
+}
+.mal__vflis-delta {
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--mal-ink-faint);
+  font-family: var(--mal-body);
+}
+.mal__vflis-sym {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--mal-ink-2);
+  margin: 4px 0 2px;
+}
+.mal__vflis-sub {
+  font-size: 11.5px;
+  font-family: var(--mal-body);
+  color: var(--mal-ink-2);
+  line-height: 1.35;
+}
+.mal__vflis-sub--warn {
+  color: var(--mal-warn);
+  font-weight: 600;
+}
+.mal__vflis-sub--faint {
+  color: var(--mal-ink-faint);
+}
+
 /* ---- responsivt ---- */
 @media (max-width: 52rem) {
   .mal__response-row,
@@ -1310,6 +1490,12 @@
   .mal__two,
   .mal__ripple {
     grid-template-columns: 1fr;
+  }
+  .mal__vfliser {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mal__kontrollinje {
+    padding: 10px 12px;
   }
   .mal__filter-controls {
     justify-self: start;
