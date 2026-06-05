@@ -72,6 +72,40 @@ KPI/trend/mekanisme; funnel viser alle tre; ringvirkning holder pakke-vs-kontrol
 (opt-in-splitt = konfunder). **Andre segmenteringer (senere, ikke nå):** virksomhetsstørrelse
 (små bedrifter mangler rutiner), gradert vs. full, unge ansatte.
 
+## Dashboardfortelling (måle-siden `/maling`, 2026-06-05)
+
+Måle-siden er reframet fra likestilt A/C/B-segmentvisning til én fortelling:
+**kontroll vs. tiltakspakke**. Endringene speiler beslutningene over.
+
+Hovedgrepene:
+
+- **To armer, ikke tre.** Underenhet er tildelingsenhet, mens
+  sykefraværsforløp/person er måleenhet.
+- **Responsfilteret ligger øverst.** Standardvisningen er alle i tiltakspakka
+  mot kontroll. Brukeren kan velge `Takket ja` eller `Ikke svart` for å forstå
+  mønstre inni pakka.
+- **Respons velges i én klikkbar graf.** KPI-kortene skal ikke ha egne kopier av
+  filterknapper. Grafen setter samme globale filter som kontrollen øverst.
+- **Responsgrupper er ikke ren effekt.** De viser forskjeller mellom grupper som
+  har valgt ulikt. Dashboardet sier derfor «viser forskjell, ikke effekt».
+- **Ingen `Takket nei` i dashboardet.** Det er ikke et designet valg i dagens
+  flyt. For å unngå misforståelser viser vi bare `Takket ja` og `Ikke svart`.
+- **KR1 vises som planløype.** Styringstallet bruker `Plan opprettet ≤ uke 4`.
+  De strengere hendelsene `Plan ferdigstilt`, `Delt med lege` og `Delt med Nav`
+  vises samlet i en egen løype, uten å styre resten av dashboardet.
+- **KR3** måler `Plan før Nav-purring`, med `Andel som får purring` som
+  sekundærsignal.
+- **Lumi** vises som en enkel retningstest: forstår folk mer, kommer de tidligere
+  i kontakt, og oppleves tiltaket som støtte heller enn press?
+- **Funnelen er diagnose**, ikke hovedbevis. **Lang horisont** (gradert,
+  fraværslengde) er bekreftende; fraværslengde er låst til fag/DS godkjenner
+  forløpsdefinisjonen.
+
+Aggregatbehov fra datamarkedsplassen: Studio konsumerer kun godkjente
+aggregater, aldri rådata eller persondata. Hver leveranse trenger minste
+celletall (5 forløp) med sekundær suppresjon, konfidensintervall og en
+definisjonsversjon. DS eier rådata, modellering og aggregering.
+
 ---
 
 ## 1. Nivåene
@@ -113,6 +147,12 @@ stegene (telle samme personer/fravær over tid), ikke bare totaler per steg.
 
 ## 3. Segmentering & kausalitet — det viktigste
 
+> **Merk (historikk):** Avsnittet under er den opprinnelige A/B/C-analysen.
+> Primærdesignet er nå **kontroll vs. tiltakspakke (to armer)**. Respons på
+> påminnelse er et filter inni pakka, ikke en egen arm. I dashboardet brukes
+> klarspråk: `Takket ja` og `Ikke svart`. Det finnes ikke et eget nei-valg i
+> dagens design, så det vises ikke i dashboardet.
+
 Pakke 1 rulles ut per **region** (Troms og Finnmark først); alle der får hele
 pakka. Opt-in-varselet er ett tiltak *inni* pakka — du tilhører pakka selv om du
 ikke opter inn. Det gir tre grupper:
@@ -152,10 +192,11 @@ sterkeste enkelttiltaket — men siden opt-in er selvvalgt, kan B vs. C aldri
 - **Ren opt-in uten randomisering:** da må vi være tydelige på at vi *ikke* kan
   isolere varselets effekt rent — B vs. C er signal, ikke bevis.
 
-**Konsekvens:** segmentering (A/B/C) er en akse som kutter gjennom *hele*
-funnelen. Hvert nivå-1/2-tall rapporteres som 2–3 linjer oppå hverandre — gapene
-mellom linjene er historien. Opt-in-status låses ved steg 1 (før utfallene), så
-den er en ren forhånds-variabel å segmentere på.
+**Konsekvens:** segmentering på opt-in/opt-out kutter gjennom *hele* funnelen
+inni pakke-armen. Primærtallet er kontroll vs. tiltakspakke; segmentene er en
+tilleggsanalyse rapportert som linjer oppå pakke-linjen — gapene mellom linjene
+er historien. Opt-in-status låses ved steg 1 (før utfallene), så den er en ren
+forhånds-variabel å segmentere på.
 
 ## 4. Hvilke høynivå-mål kan pakke 1 faktisk påvirke nå?
 
@@ -244,8 +285,8 @@ En liten backlog å ta stilling til, ikke vedta nå:
   Survey + evt. «info vist»-telemetri.
 - **Varseltrøtthet som målt størrelse:** avmeldinger, ignorerte varsel, opt-out
   av påminnelse — guardrailen gjort målbar.
-- **Opt-out-eksperiment** for varselet (fra §3) — den reneste veien til varselets
-  effekt.
+- **Opt-out-eksperiment** for varselet (historikk fra §3) — vurdert som renere vei
+  til varselets effekt, men er ikke primærdesignet og vises ikke i dashboardet.
 - **Sykmeldt-medvirkning** (ST05 toveis, «medvirke/dele plan» er teknisk blokkert
   i dag) — måles først når besluttet og bygd.
 - **Lang-kobling KR5/H2:** plan delt tidlig → vurdert gradert → kortere fravær.
@@ -272,5 +313,6 @@ En liten backlog å ta stilling til, ikke vedta nå:
    en guardrail.
 3. **Skill hard data fra survey bevisst:** register = *hva skjedde*; survey =
    *forstod de plikten / følte de seg presset*.
-4. **Segmenter alltid (A/B/C)** — uten det er hvert annet tall konfundert av
-   opt-in-seleksjon.
+4. **Primærdesignet er kontroll vs. tiltakspakke (to armer).** Respons på
+   påminnelse er et filter inni pakka, ikke en egen arm. Bruk responsgrupper til
+   læring, men presenter dem som forskjeller, ikke som ren effekt.
