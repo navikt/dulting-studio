@@ -32,8 +32,6 @@ export function FunnelSection({ segment }: { segment: Segment }) {
     };
     let pakkeVerdi: number;
     let pakkeErNA: boolean;
-    let pakkeKunOensker: boolean;
-
     if (erSammenlignbar(pakkeTall)) {
       // Sammenlignbart steg (alle unntatt Behovsvurdering): «alle» gir pool
       pakkeVerdi = pakkeForSegment(
@@ -41,7 +39,6 @@ export function FunnelSection({ segment }: { segment: Segment }) {
         segment,
       );
       pakkeErNA = false;
-      pakkeKunOensker = false;
     } else {
       // Nullbart steg (Behovsvurdering)
       const verdi = pakkeForSegmentNullbar(
@@ -50,14 +47,12 @@ export function FunnelSection({ segment }: { segment: Segment }) {
       );
       pakkeErNA = verdi === null;
       pakkeVerdi = verdi ?? 0;
-      pakkeKunOensker = verdi !== null && segment === "alle";
     }
 
     return {
       ...s,
       pakke: pakkeVerdi,
       pakkeErNA,
-      pakkeKunOensker,
     };
   });
 
@@ -232,7 +227,6 @@ export function FunnelSection({ segment }: { segment: Segment }) {
                   className="mal__trakt-tpct mal__trakt-tpct--pakke"
                 >
                   {s.pakke} %
-                  {s.pakkeKunOensker ? " (kun Ønsker påminnelse)" : ""}
                 </text>
 
                 {harKontroll ? (
@@ -293,13 +287,7 @@ export function FunnelSection({ segment }: { segment: Segment }) {
             {steg.map((s) => (
               <tr key={s.label}>
                 <td>{s.label}</td>
-                <td>
-                  {s.pakkeErNA
-                    ? "Ikke aktuelt"
-                    : s.pakkeKunOensker
-                      ? `${s.pakke} (kun Ønsker påminnelse)`
-                      : s.pakke}
-                </td>
+                <td>{s.pakkeErNA ? "Ikke aktuelt" : s.pakke}</td>
                 <td>{s.kontroll !== null ? s.kontroll : "Ikke aktuelt"}</td>
               </tr>
             ))}
