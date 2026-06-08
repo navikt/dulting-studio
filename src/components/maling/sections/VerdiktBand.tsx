@@ -227,7 +227,7 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
           <a
             href="#kr-bevis"
             className={`mal__vflis ${tilstandKlasse(kr2Tilstand as KrTilstand)}`}
-            aria-label={`KR2: tar stilling til behov. Pakke ${kr2Pakke} %${kr2Kontroll !== null ? `, kontroll ${kr2Kontroll} %, gap +${kr2Pakke - kr2Kontroll} prosentpoeng vs. kontroll` : ""}. ${kr2Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr2Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`}
+            aria-label={`KR2: tar stilling til behov. Pakke ${kr2Pakke} %${kr2Kontroll !== null ? `, kontroll ${kr2Kontroll} %, gap ${kr2Pakke - kr2Kontroll >= 0 ? "+" : ""}${kr2Pakke - kr2Kontroll} prosentpoeng vs. kontroll` : ""}. ${kr2Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr2Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`}
           >
             <span className="mal__vflis-eyebrow">KR2</span>
             <span className="mal__vflis-label">Tar stilling til behov</span>
