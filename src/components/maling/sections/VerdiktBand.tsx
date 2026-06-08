@@ -1,8 +1,6 @@
 "use client";
-import { Tag } from "@navikt/ds-react";
 import {
   deltaForrigePeriode,
-  erKausalKontekst,
   guardrailOk as guardrailOkFn,
   type KrTilstand,
   krSerieForSegment,
@@ -14,7 +12,7 @@ import {
   PERIODER,
   PLAN_HENDELSER,
   pakkeForSegment,
-  SEGMENT_LABEL,
+  pakkeForSegmentNullbar,
   type Segment,
   STYRINGSTALL_FASTE,
   samletVerdikt,
@@ -58,16 +56,8 @@ function pilleTekst(t: KrTilstand): string {
 
 function domSetning(
   t: KrTilstand,
-  opts: { guardrailOk: boolean; mekanismeOk: boolean; kausal: boolean },
+  opts: { guardrailOk: boolean; mekanismeOk: boolean },
 ): string {
-  if (!opts.kausal) {
-    // Responsgruppe — mønster, ikke bevist effekt
-    if (t === "paa-vei")
-      return "Mønster for gruppen: KR-ene ligger over kontroll, men gruppen er selvvalgt — ikke en bevist effekt.";
-    if (t === "ikke-paa-vei")
-      return "Mønster for gruppen: KR-ene skiller seg ikke tydelig fra kontroll. Gruppen er selvvalgt — ikke en bevist effekt.";
-    return "Mønster for gruppen: KR-ene viser en positiv retning, men gruppen er selvvalgt — følg med.";
-  }
   if (t === "paa-vei")
     return "Pakka flytter de tidlige plan-atferdene. Følg med på opplevd press.";
   if (t === "ikke-paa-vei")
@@ -81,8 +71,6 @@ function domSetning(
 }
 
 export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
-  const kausal = erKausalKontekst(segment);
-
   // KR1: første plan-hendelse = «opprettet»
   const kr1raw = PLAN_HENDELSER[0].styringstall;
   const kr1Pakke = pakkeForSegment(kr1raw.metrikk, segment);
@@ -97,20 +85,28 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
     forrigeDelta: kr1Delta,
   });
 
-  // KR2
+  // KR2 — kan være N/A (null) for segmentet
   // biome-ignore lint/style/noNonNullAssertion: vi vet at kr2 finnes
   const kr2raw = STYRINGSTALL_FASTE.find((s) => s.id === "kr2")!;
-  const kr2Pakke = pakkeForSegment(kr2raw.metrikk, segment);
-  const kr2Kontroll = kr2raw.metrikk.kontroll;
-  const kr2Delta = deltaForrigePeriode(
-    krSerieForSegment("kr2", segment),
-    periode,
+  const kr2PakkeNullbar = pakkeForSegmentNullbar(
+    kr2raw.metrikk as {
+      kontroll: number | null;
+      pakke: { "takket-ja": number; "ikke-svart": number | null };
+    },
+    segment,
   );
-  const kr2Tilstand = krStatus({
-    pakke: kr2Pakke,
-    kontroll: kr2Kontroll,
-    forrigeDelta: kr2Delta,
-  });
+  const kr2ErNA = kr2PakkeNullbar === null;
+  const kr2Pakke = kr2PakkeNullbar ?? 0;
+  const kr2Kontroll = (kr2raw.metrikk as { kontroll: number | null }).kontroll;
+  const kr2Serie = krSerieForSegment("kr2", segment);
+  const kr2Delta = deltaForrigePeriode(kr2Serie, periode);
+  const kr2Tilstand: KrTilstand | null = kr2ErNA
+    ? null
+    : krStatus({
+        pakke: kr2Pakke,
+        kontroll: kr2Kontroll,
+        forrigeDelta: kr2Delta,
+      });
 
   // KR3
   // biome-ignore lint/style/noNonNullAssertion: vi vet at kr3 finnes
@@ -143,7 +139,13 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
     VARSEL_ETIKK.pressFelt.kontroll,
   );
 
-  const samlet = samletVerdikt([kr1Tilstand, kr2Tilstand, kr3Tilstand], {
+  // A4: Ekskluder KR2 fra verdiktet når det er N/A
+  const krTilstander: KrTilstand[] =
+    kr2Tilstand !== null
+      ? [kr1Tilstand, kr2Tilstand, kr3Tilstand]
+      : [kr1Tilstand, kr3Tilstand];
+
+  const samlet = samletVerdikt(krTilstander, {
     mekanismeOk,
     guardrailOk,
   });
@@ -173,32 +175,16 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
       {/* dom-setning inside a second live region so it is announced alongside the pille */}
       <output aria-atomic="true">
         <p className="mal__verdikt-dom">
-          {domSetning(samlet, { guardrailOk, mekanismeOk, kausal })}
+          {domSetning(samlet, { guardrailOk, mekanismeOk })}
         </p>
       </output>
-
-      {!kausal && (
-        <p className="mal__verdikt-respons-advarsel">
-          <Tag variant="warning" size="small">
-            Responsgruppe
-          </Tag>
-          <span>
-            {SEGMENT_LABEL[segment]} valgte selv — forskjellen mot kontroll er
-            et mønster, ikke en bevist effekt.
-          </span>
-        </p>
-      )}
 
       <div className="mal__vfliser">
         {/* KR1 */}
         <a
           href="#kr-bevis"
           className={`mal__vflis ${tilstandKlasse(kr1Tilstand)}`}
-          aria-label={
-            kausal
-              ? `KR1: plan i tide. Pakke ${kr1Pakke} %, kontroll ${kr1Kontroll} %, gap +${kr1Pakke - kr1Kontroll} prosentpoeng vs. kontroll. ${kr1Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr1Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`
-              : `KR1: plan i tide. Pakke ${kr1Pakke} %, kontroll ${kr1Kontroll} %, ${kr1Pakke - kr1Kontroll} prosentpoeng over kontroll (mønster for selvvalgt gruppe, ikke effekt). ${kr1Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr1Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`
-          }
+          aria-label={`KR1: plan i tide. Pakke ${kr1Pakke} %, kontroll ${kr1Kontroll} %, gap +${kr1Pakke - kr1Kontroll} prosentpoeng vs. kontroll. ${kr1Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr1Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`}
         >
           <span className="mal__vflis-eyebrow">KR1</span>
           <span className="mal__vflis-label">Plan i tide</span>
@@ -216,39 +202,56 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
         </a>
 
         {/* KR2 */}
-        <a
-          href="#kr-bevis"
-          className={`mal__vflis ${tilstandKlasse(kr2Tilstand)}`}
-          aria-label={
-            kausal
-              ? `KR2: tar stilling til behov. Pakke ${kr2Pakke} %, kontroll ${kr2Kontroll} %, gap +${kr2Pakke - kr2Kontroll} prosentpoeng vs. kontroll. ${kr2Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr2Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`
-              : `KR2: tar stilling til behov. Pakke ${kr2Pakke} %, kontroll ${kr2Kontroll} %, ${kr2Pakke - kr2Kontroll} prosentpoeng over kontroll (mønster for selvvalgt gruppe, ikke effekt). ${kr2Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr2Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`
-          }
-        >
-          <span className="mal__vflis-eyebrow">KR2</span>
-          <span className="mal__vflis-label">Tar stilling til behov</span>
-          <span className="mal__vflis-tall">{kr2Pakke}%</span>
-          <span
-            className={`mal__vflis-pp ${kr2Pakke - kr2Kontroll >= 0 ? "" : "mal__vflis-pp--noytral"}`}
+        {kr2ErNA ? (
+          <span className="mal__vflis mal__vflis--noytral">
+            <span className="sr-only">
+              KR2: tar stilling til behov. Ikke aktuelt for dette segmentet.
+            </span>
+            <span className="mal__vflis-eyebrow" aria-hidden="true">
+              KR2
+            </span>
+            <span className="mal__vflis-label" aria-hidden="true">
+              Tar stilling til behov
+            </span>
+            <span className="mal__vflis-tall" aria-hidden="true">
+              N/A
+            </span>
+            <span
+              className="mal__vflis-sub mal__vflis-sub--faint"
+              aria-hidden="true"
+            >
+              Ikke aktuelt
+            </span>
+          </span>
+        ) : (
+          <a
+            href="#kr-bevis"
+            className={`mal__vflis ${tilstandKlasse(kr2Tilstand as KrTilstand)}`}
+            aria-label={`KR2: tar stilling til behov. Pakke ${kr2Pakke} %${kr2Kontroll !== null ? `, kontroll ${kr2Kontroll} %, gap +${kr2Pakke - kr2Kontroll} prosentpoeng vs. kontroll` : ""}. ${kr2Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr2Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`}
           >
-            <span className="mal__vflis-pp-lbl">vs. kontroll</span>{" "}
-            {kr2Pakke - kr2Kontroll >= 0 ? "+" : ""}
-            {kr2Pakke - kr2Kontroll} pp
-          </span>
-          <span className="mal__vflis-trend-chip">
-            vs. forrige uke {kr2Delta >= 0 ? "▲" : "▼"} {Math.abs(kr2Delta)}
-          </span>
-        </a>
+            <span className="mal__vflis-eyebrow">KR2</span>
+            <span className="mal__vflis-label">Tar stilling til behov</span>
+            <span className="mal__vflis-tall">{kr2Pakke} %</span>
+            {kr2Kontroll !== null && (
+              <span
+                className={`mal__vflis-pp ${kr2Pakke - kr2Kontroll >= 0 ? "" : "mal__vflis-pp--noytral"}`}
+              >
+                <span className="mal__vflis-pp-lbl">vs. kontroll</span>{" "}
+                {kr2Pakke - kr2Kontroll >= 0 ? "+" : ""}
+                {kr2Pakke - kr2Kontroll} pp
+              </span>
+            )}
+            <span className="mal__vflis-trend-chip">
+              vs. forrige uke {kr2Delta >= 0 ? "▲" : "▼"} {Math.abs(kr2Delta)}
+            </span>
+          </a>
+        )}
 
         {/* KR3 */}
         <a
           href="#kr-bevis"
           className={`mal__vflis ${tilstandKlasse(kr3Tilstand)}`}
-          aria-label={
-            kausal
-              ? `KR3: plan uten å vente på Nav. Pakke ${kr3Pakke} %, kontroll ${kr3Kontroll} %, gap +${kr3Pakke - kr3Kontroll} prosentpoeng vs. kontroll. ${kr3Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr3Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`
-              : `KR3: plan uten å vente på Nav. Pakke ${kr3Pakke} %, kontroll ${kr3Kontroll} %, ${kr3Pakke - kr3Kontroll} prosentpoeng over kontroll (mønster for selvvalgt gruppe, ikke effekt). ${kr3Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr3Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`
-          }
+          aria-label={`KR3: plan uten å vente på Nav. Pakke ${kr3Pakke} %, kontroll ${kr3Kontroll} %, gap +${kr3Pakke - kr3Kontroll} prosentpoeng vs. kontroll. ${kr3Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr3Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`}
         >
           <span className="mal__vflis-eyebrow">KR3</span>
           <span className="mal__vflis-label">Plan uten å vente på Nav</span>

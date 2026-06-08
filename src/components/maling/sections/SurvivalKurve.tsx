@@ -1,4 +1,4 @@
-import { TID_TIL_PLAN_UKER } from "../maling-data";
+import { SEGMENT_LABEL, TID_TIL_PLAN_UKER } from "../maling-data";
 
 // --- kurve-geometri (tid til første plan) ---
 const TW = 360;
@@ -48,13 +48,13 @@ export function SurvivalKurve({
         {visOptInSplitt && takketJaKurve && (
           <span className="mal__legend-item">
             <span className="mal__sw mal__sw--line mal__sw--split-ja" />
-            Takket ja
+            {SEGMENT_LABEL["takket-ja"]}
           </span>
         )}
         {visOptInSplitt && ikkeSvartKurve && (
           <span className="mal__legend-item">
             <span className="mal__sw mal__sw--line mal__sw--split-nei" />
-            Ikke svart
+            {SEGMENT_LABEL["ikke-svart"]}
           </span>
         )}
         <span className="mal__syn">Syntetiske tall</span>
@@ -125,18 +125,19 @@ export function SurvivalKurve({
 
       <table className="sr-only">
         <caption>
-          Kumulativ andel der planen er {kortLabel} (%) per uke. Pakke ={" "}
-          {pakkeLabel}.
-          {visOptInSplitt &&
-            " Inkluderer opt-in-splitt: «Takket ja» og «Ikke svart»."}
+          {`Kumulativ andel der planen er ${kortLabel} (%) per uke. Pakke = ${pakkeLabel}.${visOptInSplitt ? ` Inkluderer splitt: «${SEGMENT_LABEL["takket-ja"]}» og «${SEGMENT_LABEL["ikke-svart"]}».` : ""}`}
         </caption>
         <thead>
           <tr>
             <th>Uke</th>
             <th>Pakke</th>
             <th>Kontroll</th>
-            {visOptInSplitt && takketJaKurve && <th>Takket ja</th>}
-            {visOptInSplitt && ikkeSvartKurve && <th>Ikke svart</th>}
+            {visOptInSplitt && takketJaKurve && (
+              <th>{SEGMENT_LABEL["takket-ja"]}</th>
+            )}
+            {visOptInSplitt && ikkeSvartKurve && (
+              <th>{SEGMENT_LABEL["ikke-svart"]}</th>
+            )}
           </tr>
         </thead>
         <tbody>

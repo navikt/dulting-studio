@@ -6,8 +6,8 @@
 //
 // Modellen skiller bevisst to ting som ofte blandes sammen:
 //   1. ARM  — kontroll vs. tiltakspakke. Tildeles på underenhet (Lisa-allokering).
-//   2. RESPONS — takket ja / ikke svart på spørsmål om påminnelse. Dette er et
-//      analyse-/filterlag inni pakke-armen, ikke en egen randomisert arm.
+//   2. RESPONS — ønsker påminnelse / ikke svart på spørsmål om påminnelse.
+//      Dette er et analyse-/filterlag inni pakke-armen, ikke en egen randomisert arm.
 
 // ---- armer og segmenter ----
 
@@ -19,7 +19,7 @@ export const SEGMENTER: Segment[] = ["alle", "takket-ja", "ikke-svart"];
 
 export const SEGMENT_LABEL: Record<Segment, string> = {
   alle: "Alle i tiltakspakka",
-  "takket-ja": "Takket ja",
+  "takket-ja": "Ønsker påminnelse",
   "ikke-svart": "Ikke svart",
 };
 
@@ -36,7 +36,18 @@ export type SegmentTall = {
   "ikke-svart": number;
 };
 
+export type SegmentTallNullable = {
+  "takket-ja": number;
+  "ikke-svart": number | null;
+};
+
 const RESPONS_VERDIER: ResponsSegment[] = ["takket-ja", "ikke-svart"];
+
+export function erSammenlignbar(
+  s: SegmentTall | SegmentTallNullable,
+): s is SegmentTall {
+  return s["ikke-svart"] !== null;
+}
 
 export function parseSegmentParam(param: string | null): Segment {
   if (!param) return "alle";
@@ -56,6 +67,11 @@ export type ArmMetrikk = {
   pakke: SegmentTall;
 };
 
+export type ArmMetrikkNullable = {
+  kontroll: number | null;
+  pakke: SegmentTallNullable;
+};
+
 const W = {
   "takket-ja": SEGMENT_ANDEL["takket-ja"] / 100,
   "ikke-svart": SEGMENT_ANDEL["ikke-svart"] / 100,
@@ -70,7 +86,19 @@ export function poolTall(s: SegmentTall): number {
 
 /** Pakke-tall for valgt segment. «alle» gir vektet pool. */
 export function pakkeForSegment(m: ArmMetrikk, seg: Segment): number {
-  return seg === "alle" ? poolTall(m.pakke) : m.pakke[seg];
+  const pakke = m.pakke as SegmentTall | SegmentTallNullable;
+  if (erSammenlignbar(pakke)) {
+    return seg === "alle" ? poolTall(pakke) : pakke[seg];
+  }
+  return pakkeForSegmentNullbar({ kontroll: null, pakke }, seg) ?? 0;
+}
+
+export function pakkeForSegmentNullbar(
+  m: ArmMetrikkNullable,
+  seg: Segment,
+): number | null {
+  if (seg === "ikke-svart") return null;
+  return m.pakke["takket-ja"];
 }
 
 export function erResponsSegment(seg: Segment): boolean {
@@ -119,7 +147,7 @@ export const FORSOKSDESIGN = {
     tittel: "Respons på påminnelse: filterlag, ikke arm",
     punkter: [
       "Påminnelsen er ett tiltak inni pakka. Du tilhører pakka uansett om du takker ja.",
-      "Takket ja / ikke svart er selvvalgte responsgrupper. De viser mønster, ikke ren effekt.",
+      "Ønsker påminnelse / Ikke svart er selvvalgte responsgrupper. De viser mønster, ikke ren effekt.",
       "Responsgruppene brukes til å forstå mønstre, ikke som bevis for effekt.",
     ],
   },
@@ -132,9 +160,13 @@ export type Styringstall = {
   kr: string;
   tittel: string;
   enhet: "%";
-  metrikk: ArmMetrikk;
+  metrikk: ArmMetrikk | ArmMetrikkNullable;
   retning: "opp"; // høyere = bedre
   forklaring: MetrikkForklaring;
+};
+
+type StyringstallVisning = Omit<Styringstall, "metrikk"> & {
+  metrikk: ArmMetrikk;
 };
 
 export type PlanHendelseId =
@@ -147,7 +179,7 @@ export type PlanHendelse = {
   id: PlanHendelseId;
   label: string;
   kortLabel: string;
-  styringstall: Styringstall;
+  styringstall: StyringstallVisning;
   kurve: {
     kontroll: number[];
     pakke: SegmentKurve;
@@ -350,66 +382,65 @@ export function planHendelseById(id: PlanHendelseId): PlanHendelse {
   return PLAN_HENDELSER.find((h) => h.id === id) ?? PLAN_HENDELSER[0];
 }
 
-export const STYRINGSTALL_FASTE: Styringstall[] = [
-  {
-    id: "kr2",
-    kr: "KR2",
-    tittel: "Tar stilling til behov ≤ uke 4",
-    enhet: "%",
-    metrikk: {
-      kontroll: 29,
-      pakke: { "takket-ja": 60, "ikke-svart": 35 },
-    },
-    retning: "opp",
-    forklaring: {
-      definisjon:
-        "Andel forløp der behovet for oppfølging er aktivt vurdert innen uke 4 — også «ikke nå» med begrunnelse.",
-      krKobling: "KR2 — stilling til behov innen fristen.",
-      datakilde:
-        "Aggregat fra register: registrert behovsvurdering per forløp.",
-      tidsvindu: "Kalenderuke 1–4 etter sykmeldingsstart.",
-      segmenter: "Pakke vs. kontroll styrer. Filteret viser segment-detaljer.",
-      tolkning:
-        "Måler at folk faktisk tar et valg i tide, ikke bare at de lager papir.",
-      usikkerhet:
-        "95 % konfidensintervall. Celler under minste celletall undertrykkes.",
-    },
+const KR2_STYRINGSTALL: Styringstall = {
+  id: "kr2",
+  kr: "KR2",
+  tittel: "Tar stilling til behov ≤ uke 4",
+  enhet: "%",
+  metrikk: {
+    kontroll: null,
+    pakke: { "takket-ja": 88, "ikke-svart": null },
   },
-  {
-    id: "kr3",
-    kr: "KR3",
-    tittel: "Plan før Nav-purring",
-    enhet: "%",
-    metrikk: {
-      kontroll: 12,
-      pakke: { "takket-ja": 38, "ikke-svart": 16 },
-    },
-    retning: "opp",
-    forklaring: {
-      definisjon:
-        "Andel forløp der planen er laget før Nav-purring eller veilederforespørsel kom.",
-      krKobling: "KR3 — proaktiv planlegging uten å vente på Nav.",
-      datakilde:
-        "Aggregat fra register: plan-tidspunkt sammenlignet med forespørsel-tidspunkt.",
-      tidsvindu: "Hele forløpet fram til første forespørsel fra Nav.",
-      segmenter: "Pakke vs. kontroll styrer. Segment-splitt er analyse.",
-      tolkning:
-        "Distinkt proaktivitetssignal, hardt målbart. Sekundærsignal: andel som i det hele tatt får purring.",
-      usikkerhet: "95 % konfidensintervall.",
-      guardrail:
-        "Skal ikke drives av frykt for sanksjon — kobles mot opplevd press i Lumi.",
-    },
+  retning: "opp",
+  forklaring: {
+    definisjon:
+      "Andel forløp blant dem som ønsker påminnelse, der behovet for oppfølging er aktivt vurdert innen uke 4 — også «ikke nå» med begrunnelse.",
+    krKobling:
+      "KR2 — stilling til behov innen fristen (kun Ønsker påminnelse).",
+    datakilde: "Aggregat fra register: registrert behovsvurdering per forløp.",
+    tidsvindu: "Kalenderuke 1–4 etter sykmeldingsstart.",
+    segmenter:
+      "Gjelder kun dem som ønsker påminnelse. Kontroll og «Ikke svart» er ikke aktuelt.",
+    tolkning:
+      "Måler at de som ønsker påminnelse aktivt vurderer behovet innen fristen.",
+    usikkerhet:
+      "95 % konfidensintervall. Celler under minste celletall undertrykkes.",
   },
+};
+
+const KR3_STYRINGSTALL: StyringstallVisning = {
+  id: "kr3",
+  kr: "KR3",
+  tittel: "Plan før Nav-purring",
+  enhet: "%",
+  metrikk: {
+    kontroll: 12,
+    pakke: { "takket-ja": 38, "ikke-svart": 16 },
+  },
+  retning: "opp",
+  forklaring: {
+    definisjon:
+      "Andel forløp der planen er laget før Nav-purring eller veilederforespørsel kom.",
+    krKobling: "KR3 — proaktiv planlegging uten å vente på Nav.",
+    datakilde:
+      "Aggregat fra register: plan-tidspunkt sammenlignet med forespørsel-tidspunkt.",
+    tidsvindu: "Hele forløpet fram til første forespørsel fra Nav.",
+    segmenter: "Pakke vs. kontroll styrer. Segment-splitt er analyse.",
+    tolkning:
+      "Distinkt proaktivitetssignal, hardt målbart. Sekundærsignal: andel som i det hele tatt får purring.",
+    usikkerhet: "95 % konfidensintervall.",
+    guardrail:
+      "Skal ikke drives av frykt for sanksjon — kobles mot opplevd press i Lumi.",
+  },
+};
+
+export const STYRINGSTALL_FASTE: StyringstallVisning[] = [
+  {
+    ...KR2_STYRINGSTALL,
+    metrikk: KR2_STYRINGSTALL.metrikk as unknown as ArmMetrikk,
+  },
+  KR3_STYRINGSTALL,
 ];
-
-function styringstallForKr(id: "kr1" | "kr2" | "kr3"): Styringstall {
-  if (id === "kr1") return planHendelseById("opprettet").styringstall;
-
-  const styringstall = STYRINGSTALL_FASTE.find((s) => s.id === id);
-  if (styringstall) return styringstall;
-
-  throw new Error(`Mangler styringstall for ${id}`);
-}
 
 // Sekundærsignal til KR3 — lavere = bedre.
 export const PURRING_ANDEL: ArmMetrikk = {
@@ -440,11 +471,12 @@ export function pakkeKurveForSegment(
   return seg === "alle" ? poolKurve(pakke) : pakke[seg];
 }
 
-// ---- varsel-levering og adopsjon: nådde påminnelsen fram — og ble den brukt? ----
+// ---- varsel-levering og stilling til behov: nådde påminnelsen fram — og førte den til vurdering? ----
 //
 // Påminnelsen er deterministisk timet: den sendes når et forløp er på vei til å
 // passere uke 4 uten plan. Distribusjonen av "når den kom" gir ingen mening.
-// Det som teller er: ble den levert i tide? Ble den brukt? Ble urene varsler luket ut?
+// Det som teller er: ble den levert i tide? Førte den til stilling til behov?
+// Ble urene varsler luket ut?
 
 export type VarselLeveringRad = {
   /** Kortlabel for visning */
@@ -459,11 +491,11 @@ export type VarselLeveringRad = {
 
 export const VARSEL_LEVERING: VarselLeveringRad[] = [
   {
-    label: "Brukt (adopsjon)",
+    label: "Tok stilling til behov",
     andel: 61,
     retning: "ok",
     merknad:
-      "Av dem som fikk varselet, startet eller laget 61 % en plan etterpå. Dette er det faktiske dulte-signalet — vi ser om varselet faktisk utløste handling.",
+      "Av dem som fikk varselet, tok 61 % stilling til behovet sitt etterpå. Nevner: varsel-mottakere — en delmengde av dem som ønsker påminnelse. Dette er dulte-signalet: utløste varselet en aktiv vurdering?",
   },
   {
     label: "Levert i tide",
@@ -483,16 +515,17 @@ export const VARSEL_LEVERING: VarselLeveringRad[] = [
 
 export const VARSEL_LEVERING_FORKLARING: MetrikkForklaring = {
   definisjon:
-    "Adopsjon: andel som startet eller laget plan etter varselet. Levering: andel forløp som trengte et varsel og fikk det i tide. Guardrail: andel varsler som var for sene eller duplikate og ble luket ut.",
+    "Stilling til behov: andel varsel-mottakere som tok stilling til behovet etter varselet. Levering: andel forløp som trengte varsel og fikk det i tide. Guardrail: andel varsler som var for sene/duplikate og ble luket ut.",
   krKobling:
-    "Mekanisme bak KR1/KR2 — varselet er en forutsetning, men bare hvis det leveres i tide og faktisk tas i bruk.",
+    "Mekanisme bak KR1/KR2 — varselet er en forutsetning, men bare hvis det leveres i tide og fører til at folk tar stilling til behov.",
   datakilde:
-    "Aggregat fra register: varseltidspunkt, planstart/-opprettelse, og duplikat-sjekk mot eksisterende plan.",
-  tidsvindu: "Per forløp: uke 1–4 for levering, uke 1–6 for adopsjon.",
+    "Aggregat fra register: varseltidspunkt, registrert stilling til behov og duplikat-sjekk mot eksisterende varsel.",
+  tidsvindu:
+    "Per forløp: uke 1–4 for levering, uke 1–6 for stilling til behov.",
   segmenter:
-    "Gjelder opt-in-segmentet — de som takket ja og dermed er i scope for varselet.",
+    "Gjelder opt-in-segmentet — de som ønsker påminnelse og dermed er i scope for varselet.",
   tolkning:
-    "Høy adopsjon er hovedsignalet: varselet ser ut til å utløse handling. Levering er en teknisk sjekk i etterkant; lav levering peker mot gap. Høy guardrail-andel betyr at vi maser unødig.",
+    "Høy andel som tok stilling til behov etter varselet er hovedsignalet: varselet ser ut til å utløse en aktiv vurdering. Levering er en teknisk sjekk i etterkant; lav levering peker mot gap. Høy guardrail-andel betyr at vi maser unødig.",
   usikkerhet: "Andeler er syntetiske; reelt produkt ville hatt KI.",
   guardrail:
     "For sene/duplikate varsler skal lukes ut, ikke telles som dult. Opplevd press måles separat i Lumi.",
@@ -508,12 +541,12 @@ export type VarselValg = {
 
 export const VARSEL_VALG: VarselValg[] = [
   {
-    status: "Takket ja",
+    status: SEGMENT_LABEL["takket-ja"],
     andel: 55,
     forklaring: "Tok aktivt valg om å få påminnelse.",
   },
   {
-    status: "Ikke svart",
+    status: SEGMENT_LABEL["ikke-svart"],
     andel: 45,
     forklaring: "Har ikke svart på spørsmålet. Da sendes det ikke påminnelse.",
   },
@@ -524,7 +557,7 @@ export const VARSEL_ETIKK = {
     "Tidspunkt for valget logges som aggregat, så vi ser om folk velger tidlig eller presses sent.",
     "Valget kobles mot om det finnes en tidligere plan — vi vil ikke mase når jobben er gjort.",
     "Opplevd press/mas måles i Lumi som guardrail, ikke som suksessmål.",
-    "Responsgrupper framstilles aldri som ren effekt: hvem som takker ja kan være mer motivert fra før.",
+    "Responsgrupper framstilles aldri som ren effekt: hvem som ønsker påminnelse kan være mer motivert fra før.",
   ],
   pressFelt: { kontroll: 6, pakke: 9 }, // opplevd press (Lumi), lavere = bedre
 };
@@ -665,10 +698,14 @@ export type FunnelSteg = {
   label: string;
   sub: string;
   kontroll: number | null;
+  pakke: SegmentTall | SegmentTallNullable;
+};
+
+type FunnelStegVisning = Omit<FunnelSteg, "pakke"> & {
   pakke: SegmentTall;
 };
 
-export const FUNNEL: FunnelSteg[] = [
+export const FUNNEL: FunnelStegVisning[] = [
   {
     label: "Sykmelding mottatt",
     sub: "kohort-inngang",
@@ -677,9 +714,9 @@ export const FUNNEL: FunnelSteg[] = [
   },
   {
     label: "Behovsvurdering",
-    sub: "kun tiltakspakke",
+    sub: "kun Ønsker påminnelse",
     kontroll: null,
-    pakke: { "takket-ja": 88, "ikke-svart": 88 },
+    pakke: { "takket-ja": 88, "ikke-svart": null } as unknown as SegmentTall,
   },
   {
     label: "Lager plan",
@@ -809,10 +846,11 @@ export type MetrikkForklaring = {
 
 export const PERIODER = ["Uke 9", "Uke 10", "Uke 11", "Uke 12"] as const;
 
-// Syntetisk uke-historikk per KR (pakke-pool, alle-segment). Siste = dagens tall.
+// Syntetisk uke-historikk per KR. KR2 følger serien for «Ønsker påminnelse»,
+// siden «Ikke svart» ikke er aktuelt og «alle» viser samme serie.
 const KR_SERIE: Record<"kr1" | "kr2" | "kr3", number[]> = {
   kr1: [31, 34, 36, 38],
-  kr2: [40, 44, 47, 49],
+  kr2: [74, 79, 84, 88],
   kr3: [21, 24, 26, 28],
 };
 
@@ -823,20 +861,31 @@ export function krSerie(id: "kr1" | "kr2" | "kr3"): number[] {
 export function krSerieForSegment(
   id: "kr1" | "kr2" | "kr3",
   seg: Segment,
-): number[] {
+): number[] | null {
   const serie = krSerie(id);
+  if (id === "kr2") {
+    if (seg === "ikke-svart") return null;
+    return [...serie];
+  }
   if (seg === "alle") return [...serie];
 
   const poolSluttverdi = serie.at(-1) ?? 0;
   if (poolSluttverdi === 0) return serie.map(() => 0);
 
-  const segmentSluttverdi = styringstallForKr(id).metrikk.pakke[seg];
+  const metrikk =
+    id === "kr1"
+      ? planHendelseById("opprettet").styringstall.metrikk
+      : KR3_STYRINGSTALL.metrikk;
+  const segmentSluttverdi = metrikk.pakke[seg];
   const faktor = segmentSluttverdi / poolSluttverdi;
   return serie.map((verdi) => Math.round(verdi * faktor));
 }
 
-export function deltaForrigePeriode(serie: number[], periode: number): number {
-  if (periode <= 0) return 0;
+export function deltaForrigePeriode(
+  serie: number[] | null,
+  periode: number,
+): number {
+  if (!serie || periode <= 0) return 0;
   return serie[periode] - serie[periode - 1];
 }
 
@@ -866,9 +915,12 @@ export function guardrailOk(
 
 export function krStatus(x: {
   pakke: number;
-  kontroll: number;
+  kontroll: number | null;
   forrigeDelta: number;
 }): KrTilstand {
+  if (x.kontroll === null) {
+    return x.forrigeDelta < 0 ? "folg-med" : "paa-vei";
+  }
   if (x.pakke < x.kontroll) return "ikke-paa-vei";
   if (x.pakke - x.kontroll < MARGIN_TERSKEL || x.forrigeDelta < 0)
     return "folg-med";

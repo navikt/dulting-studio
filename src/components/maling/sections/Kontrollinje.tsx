@@ -1,7 +1,6 @@
 "use client";
-import { Select, Tag, ToggleGroup } from "@navikt/ds-react";
+import { Select, ToggleGroup } from "@navikt/ds-react";
 import {
-  erResponsSegment,
   PERIODER,
   SEGMENT_LABEL,
   SEGMENTER,
@@ -63,18 +62,6 @@ export function Kontrollinje({
           </option>
         ))}
       </Select>
-
-      {erResponsSegment(segment) && (
-        <span className="mal__kontrollinje-merknad">
-          <Tag variant="warning" size="small">
-            Responsgruppe
-          </Tag>
-          <span>
-            Disse valgte selv om de ville ha påminnelse, så forskjellen mot
-            kontroll er et <b>mønster — ikke en bevist effekt</b> av tiltaket.
-          </span>
-        </span>
-      )}
     </section>
   );
 }

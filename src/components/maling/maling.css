@@ -365,6 +365,13 @@
 .mal__kpi-sekundar b {
   color: var(--mal-ink-2);
 }
+.mal__kpi-na {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--mal-ink-faint);
+  margin: 12px 0;
+  font-style: italic;
+}
 
 /* ---- metric explainer ---- */
 .mal__explain {
@@ -1158,18 +1165,7 @@
   font-weight: 600;
   color: var(--kontroll-ink);
   white-space: nowrap;
-  margin-left: 4px;
-}
-.mal__kontrollinje-merknad {
-  flex-basis: 100%;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-top: 2px;
-  font-size: 12px;
-  line-height: 1.45;
-  color: var(--mal-ink-2);
-  max-width: 78ch;
+  margin-left: auto;
 }
 
 /* ---- verdikt-band ---- */
@@ -1206,17 +1202,6 @@
   margin: 0 0 22px;
   line-height: 1.25;
   max-width: 64ch;
-}
-.mal__verdikt-respons-advarsel {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin: 0 0 18px;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--mal-ink-2);
-  font-family: var(--mal-body);
-  max-width: 72ch;
 }
 .mal__verdikt-pille {
   display: inline-flex;
