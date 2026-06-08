@@ -1,4 +1,5 @@
 import {
+  erKausalKontekst,
   FUNNEL,
   pakkeForSegment,
   SEGMENT_LABEL,
@@ -24,7 +25,10 @@ const sc = (v: number) => (v / 100) * HALF;
 export function FunnelSection({ segment }: { segment: Segment }) {
   const steg = FUNNEL.map((s) => ({
     ...s,
-    pakke: pakkeForSegment({ kontroll: s.kontroll, pakke: s.pakke }, segment),
+    pakke: pakkeForSegment(
+      { kontroll: s.kontroll ?? 0, pakke: s.pakke },
+      segment,
+    ),
   }));
 
   // Steget med størst fall i pakke-andel mellom to påfølgende trinn.
@@ -48,10 +52,17 @@ export function FunnelSection({ segment }: { segment: Segment }) {
     ...steg.map((s, i) => `${CX - sc(s.pakke)},${barMid(i)}`),
     `${CX},${bottom}`,
   ].join(" ");
+
+  // Kontroll-silhuett: kun steg der kontroll !== null
+  const kontrollSteg = steg
+    .map((s, i) => ({ s, i }))
+    .filter(({ s }) => s.kontroll !== null);
   const høyrePoly = [
-    `${CX},${top}`,
-    ...steg.map((s, i) => `${CX + sc(s.kontroll)},${barMid(i)}`),
-    `${CX},${bottom}`,
+    `${CX},${barMid(kontrollSteg[0]?.i ?? 0) - BAR_H / 2}`,
+    ...kontrollSteg.map(
+      ({ s, i }) => `${CX + sc(s.kontroll as number)},${barMid(i)}`,
+    ),
+    `${CX},${barMid(kontrollSteg[kontrollSteg.length - 1]?.i ?? steg.length - 1) + BAR_H / 2}`,
   ].join(" ");
 
   return (
@@ -62,10 +73,13 @@ export function FunnelSection({ segment }: { segment: Segment }) {
         title="Hvor faller folk av?"
       >
         Pakke ({SEGMENT_LABEL[segment]}) vokser til venstre, kontroll til høyre
-        — gapet er pakkens løft, og det største fallet er der flyten stopper.{" "}
-        Funnelen viser andelen av kohorten som når hvert steg{" "}
-        <strong>uansett når</strong> i forløpet (totalt over forløpet) — ikke
-        «innen uke 4» slik KR-kortene gjør.
+        —{" "}
+        {erKausalKontekst(segment)
+          ? "gapet er pakkens løft"
+          : "gapet viser mønsteret for valgt responsgruppe (selvvalgt, ikke bevist effekt)"}
+        , og det største fallet er der flyten stopper. Funnelen viser andelen av
+        kohorten som når hvert steg <strong>uansett når</strong> i forløpet
+        (totalt over forløpet) — ikke «innen uke 4» slik KR-kortene gjør.
       </SectionHead>
 
       <div className="mal__panel">
@@ -111,7 +125,8 @@ export function FunnelSection({ segment }: { segment: Segment }) {
           {steg.map((s, i) => {
             const y = barMid(i);
             const pW = sc(s.pakke);
-            const kW = sc(s.kontroll);
+            const harKontroll = s.kontroll !== null;
+            const kW = harKontroll ? sc(s.kontroll as number) : 0;
             return (
               <g key={s.label}>
                 <text x={8} y={y - BAR_H / 2 - 7} className="mal__trakt-tlabel">
@@ -136,21 +151,33 @@ export function FunnelSection({ segment }: { segment: Segment }) {
                   {s.pakke}%
                 </text>
 
-                <rect
-                  x={CX}
-                  y={y - BAR_H / 2}
-                  width={kW}
-                  height={BAR_H}
-                  rx={5}
-                  className="mal__trakt-rekt mal__trakt-rekt--kontroll"
-                />
-                <text
-                  x={CX + kW + 7}
-                  y={y + 4}
-                  className="mal__trakt-tpct mal__trakt-tpct--kontroll"
-                >
-                  {s.kontroll}%
-                </text>
+                {harKontroll ? (
+                  <>
+                    <rect
+                      x={CX}
+                      y={y - BAR_H / 2}
+                      width={kW}
+                      height={BAR_H}
+                      rx={5}
+                      className="mal__trakt-rekt mal__trakt-rekt--kontroll"
+                    />
+                    <text
+                      x={CX + kW + 7}
+                      y={y + 4}
+                      className="mal__trakt-tpct mal__trakt-tpct--kontroll"
+                    >
+                      {s.kontroll}%
+                    </text>
+                  </>
+                ) : (
+                  <text
+                    x={CX + 12}
+                    y={y + 4}
+                    className="mal__trakt-tpct mal__trakt-tpct--kontroll"
+                  >
+                    Ikke aktuelt
+                  </text>
+                )}
 
                 {i === fallIdx && (
                   <text
@@ -183,7 +210,7 @@ export function FunnelSection({ segment }: { segment: Segment }) {
               <tr key={s.label}>
                 <td>{s.label}</td>
                 <td>{s.pakke}</td>
-                <td>{s.kontroll}</td>
+                <td>{s.kontroll !== null ? s.kontroll : "Ikke aktuelt"}</td>
               </tr>
             ))}
           </tbody>

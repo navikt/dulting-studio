@@ -145,12 +145,6 @@ export function LangHorisontSection() {
             </div>
           )}
       </article>
-
-      <p className="mal__gapnote">
-        Gradering trianguleres mot Lumi «fant tilrettelegging som funket».
-        Fraværslengde er foreløpig — forløpsdefinisjonen (v0.9) må faggodkjennes
-        før tallene kan brukes som fasit.
-      </p>
     </section>
   );
 }

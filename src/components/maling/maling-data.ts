@@ -77,6 +77,10 @@ export function erResponsSegment(seg: Segment): boolean {
   return seg !== "alle";
 }
 
+export function erKausalKontekst(seg: Segment): boolean {
+  return seg === "alle";
+}
+
 // ---- forsøksdesign ----
 
 export const FORSOKSDESIGN = {
@@ -398,6 +402,15 @@ export const STYRINGSTALL_FASTE: Styringstall[] = [
   },
 ];
 
+function styringstallForKr(id: "kr1" | "kr2" | "kr3"): Styringstall {
+  if (id === "kr1") return planHendelseById("opprettet").styringstall;
+
+  const styringstall = STYRINGSTALL_FASTE.find((s) => s.id === id);
+  if (styringstall) return styringstall;
+
+  throw new Error(`Mangler styringstall for ${id}`);
+}
+
 // Sekundærsignal til KR3 — lavere = bedre.
 export const PURRING_ANDEL: ArmMetrikk = {
   kontroll: 41,
@@ -446,18 +459,18 @@ export type VarselLeveringRad = {
 
 export const VARSEL_LEVERING: VarselLeveringRad[] = [
   {
-    label: "Levert i tide",
-    andel: 94,
-    retning: "ok",
-    merknad:
-      "Av forløp som trengte et varsel (på vei til å passere uke 4 uten plan), fikk 94 % det faktisk levert før fristen. Nær 100 % by design — avvik indikerer gap eller bugs.",
-  },
-  {
     label: "Brukt (adopsjon)",
     andel: 61,
     retning: "ok",
     merknad:
       "Av dem som fikk varselet, startet eller laget 61 % en plan etterpå. Dette er det faktiske dulte-signalet — vi ser om varselet faktisk utløste handling.",
+  },
+  {
+    label: "Levert i tide",
+    andel: 94,
+    retning: "ok",
+    merknad:
+      "Av forløp som trengte et varsel (på vei til å passere uke 4 uten plan), fikk 94 % det levert før fristen. Dette er en teknisk sjekk i etterkant: nivået skal ligge nær 100 %, og avvik peker mot gap eller bugs.",
   },
   {
     label: "Luket ut (guardrail)",
@@ -470,7 +483,7 @@ export const VARSEL_LEVERING: VarselLeveringRad[] = [
 
 export const VARSEL_LEVERING_FORKLARING: MetrikkForklaring = {
   definisjon:
-    "Levering: andel forløp som trengte et varsel og faktisk fikk det i tide. Adopsjon: andel som laget/startet plan etter varselet. Guardrail: andel varsler som var for sene eller duplikate og ble luket ut.",
+    "Adopsjon: andel som startet eller laget plan etter varselet. Levering: andel forløp som trengte et varsel og fikk det i tide. Guardrail: andel varsler som var for sene eller duplikate og ble luket ut.",
   krKobling:
     "Mekanisme bak KR1/KR2 — varselet er en forutsetning, men bare hvis det leveres i tide og faktisk tas i bruk.",
   datakilde:
@@ -479,7 +492,7 @@ export const VARSEL_LEVERING_FORKLARING: MetrikkForklaring = {
   segmenter:
     "Gjelder opt-in-segmentet — de som takket ja og dermed er i scope for varselet.",
   tolkning:
-    "Høy levering + høy adopsjon = varselet fungerer som tiltenkt. Lav levering = teknisk gap. Lav adopsjon = varselet treffer ikke riktig. Høy guardrail-andel = vi maser unødig.",
+    "Høy adopsjon er hovedsignalet: varselet ser ut til å utløse handling. Levering er en teknisk sjekk i etterkant; lav levering peker mot gap. Høy guardrail-andel betyr at vi maser unødig.",
   usikkerhet: "Andeler er syntetiske; reelt produkt ville hatt KI.",
   guardrail:
     "For sene/duplikate varsler skal lukes ut, ikke telles som dult. Opplevd press måles separat i Lumi.",
@@ -651,7 +664,7 @@ export function lumiPosisjon(score: number): number {
 export type FunnelSteg = {
   label: string;
   sub: string;
-  kontroll: number;
+  kontroll: number | null;
   pakke: SegmentTall;
 };
 
@@ -661,6 +674,12 @@ export const FUNNEL: FunnelSteg[] = [
     sub: "kohort-inngang",
     kontroll: 100,
     pakke: { "takket-ja": 100, "ikke-svart": 100 },
+  },
+  {
+    label: "Behovsvurdering",
+    sub: "kun tiltakspakke",
+    kontroll: null,
+    pakke: { "takket-ja": 88, "ikke-svart": 88 },
   },
   {
     label: "Lager plan",
@@ -681,8 +700,8 @@ export const FUNNEL: FunnelSteg[] = [
     pakke: { "takket-ja": 33, "ikke-svart": 19 },
   },
   {
-    label: "Evaluerer planen",
-    sub: "oppfølging valgt",
+    label: "Evaluerer og følger opp planen",
+    sub: "valgt oppfølging",
     kontroll: 11,
     pakke: { "takket-ja": 26, "ikke-svart": 14 },
   },
@@ -799,6 +818,21 @@ const KR_SERIE: Record<"kr1" | "kr2" | "kr3", number[]> = {
 
 export function krSerie(id: "kr1" | "kr2" | "kr3"): number[] {
   return KR_SERIE[id];
+}
+
+export function krSerieForSegment(
+  id: "kr1" | "kr2" | "kr3",
+  seg: Segment,
+): number[] {
+  const serie = krSerie(id);
+  if (seg === "alle") return [...serie];
+
+  const poolSluttverdi = serie.at(-1) ?? 0;
+  if (poolSluttverdi === 0) return serie.map(() => 0);
+
+  const segmentSluttverdi = styringstallForKr(id).metrikk.pakke[seg];
+  const faktor = segmentSluttverdi / poolSluttverdi;
+  return serie.map((verdi) => Math.round(verdi * faktor));
 }
 
 export function deltaForrigePeriode(serie: number[], periode: number): number {

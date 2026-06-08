@@ -5,7 +5,7 @@ import { useState } from "react";
 import {
   deltaForrigePeriode,
   erResponsSegment,
-  krSerie,
+  krSerieForSegment,
   PLAN_HENDELSER,
   type PlanHendelseId,
   PURRING_ANDEL,
@@ -67,7 +67,10 @@ export function KrBevisSection({
           const pakkeVerdi = pakkeForSegment(s.metrikk, segment);
           const delta = pakkeVerdi - s.metrikk.kontroll;
           const visRespons = erResponsSegment(segment);
-          const pd = deltaForrigePeriode(krSerie(s.id), periode);
+          const pd = deltaForrigePeriode(
+            krSerieForSegment(s.id, segment),
+            periode,
+          );
 
           return (
             <article

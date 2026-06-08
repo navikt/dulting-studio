@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   deltaForrigePeriode,
+  erKausalKontekst,
+  FUNNEL,
   guardrailOk,
   krSerie,
+  krSerieForSegment,
   krStatus,
   LUMI_MAX,
   LUMI_SKALA,
@@ -10,10 +13,27 @@ import {
   mekanismeOk,
   PERIODER,
   parseSegmentParam,
+  planHendelseById,
   SEGMENT_LABEL,
+  STYRINGSTALL_FASTE,
   samletVerdikt,
   segmentToParam,
 } from "./maling-data";
+
+function forventetStyringstallForKr(id: "kr1" | "kr2" | "kr3") {
+  if (id === "kr1") {
+    return planHendelseById("opprettet").styringstall;
+  }
+
+  const styringstall = STYRINGSTALL_FASTE.find(
+    (kandidat) => kandidat.id === id,
+  );
+  if (styringstall) {
+    return styringstall;
+  }
+
+  throw new Error(`Mangler styringstall for ${id}`);
+}
 
 describe("segment-param", () => {
   it("parser gyldig respons-param", () => {
@@ -34,6 +54,43 @@ describe("segment-param", () => {
   });
 });
 
+describe("funnel", () => {
+  it("har behovsvurdering som pakke-only steg på index 1", () => {
+    expect(FUNNEL[1]).toMatchObject({
+      label: "Behovsvurdering",
+      sub: "kun tiltakspakke",
+      kontroll: null,
+    });
+  });
+
+  it("har oppdatert siste steg-label", () => {
+    expect(FUNNEL.at(-1)).toMatchObject({
+      label: "Evaluerer og følger opp planen",
+      sub: "valgt oppfølging",
+    });
+  });
+
+  it("holder pakke-monotonitet for begge responsgrupper", () => {
+    for (const segment of ["takket-ja", "ikke-svart"] as const) {
+      for (let i = 1; i < FUNNEL.length; i++) {
+        expect(FUNNEL[i - 1].pakke[segment]).toBeGreaterThanOrEqual(
+          FUNNEL[i].pakke[segment],
+        );
+      }
+    }
+  });
+
+  it("hopper over steg uten kontroll i kontroll-monotoniteten", () => {
+    const kontrollSerie = FUNNEL.map((steg) => steg.kontroll).filter(
+      (kontroll): kontroll is number => kontroll !== null,
+    );
+
+    for (let i = 1; i < kontrollSerie.length; i++) {
+      expect(kontrollSerie[i - 1]).toBeGreaterThanOrEqual(kontrollSerie[i]);
+    }
+  });
+});
+
 describe("periode-delta", () => {
   it("regner differanse mot forrige periode", () => {
     expect(deltaForrigePeriode([30, 33, 36], 2)).toBe(3);
@@ -43,6 +100,37 @@ describe("periode-delta", () => {
     const s = krSerie("kr1");
     expect(s.length).toBe(PERIODER.length);
     expect(s.at(-1)).toBe(38); // matcher KR1 pakke-pool ved uke 4 (survival-kurve)
+  });
+
+  it("bruker samme serie for segmentet 'alle'", () => {
+    for (const id of ["kr1", "kr2", "kr3"] as const) {
+      const serieForAlle = krSerieForSegment(id, "alle");
+      expect(serieForAlle).toEqual(krSerie(id));
+      expect(serieForAlle).not.toBe(krSerie(id));
+    }
+  });
+
+  it("returnerer segment-serier med samme lengde for alle segmenter", () => {
+    for (const id of ["kr1", "kr2", "kr3"] as const) {
+      for (const segment of ["alle", "takket-ja", "ikke-svart"] as const) {
+        expect(krSerieForSegment(id, segment)).toHaveLength(krSerie(id).length);
+      }
+    }
+  });
+
+  it("lar responsgruppene ende på styringstallet og stige jevnt", () => {
+    for (const id of ["kr1", "kr2", "kr3"] as const) {
+      for (const segment of ["takket-ja", "ikke-svart"] as const) {
+        const serie = krSerieForSegment(id, segment);
+        expect(serie.at(-1)).toBe(
+          forventetStyringstallForKr(id).metrikk.pakke[segment],
+        );
+
+        for (let i = 1; i < serie.length; i++) {
+          expect(serie[i]).toBeGreaterThanOrEqual(serie[i - 1]);
+        }
+      }
+    }
   });
 });
 
@@ -97,5 +185,13 @@ describe("verdikt-vakter", () => {
   it("guardrailOk: press (lavere=bedre) skal ikke øke mer enn PRESS_TOLERANSE (0)", () => {
     expect(guardrailOk(5, 6)).toBe(true); // press falt (5 - 6 = -1 <= 0)
     expect(guardrailOk(9, 6)).toBe(false); // press økte (9 - 6 = 3 > 0)
+  });
+});
+
+describe("kausal kontekst", () => {
+  it("er bare kausal for segmentet 'alle'", () => {
+    expect(erKausalKontekst("alle")).toBe(true);
+    expect(erKausalKontekst("takket-ja")).toBe(false);
+    expect(erKausalKontekst("ikke-svart")).toBe(false);
   });
 });

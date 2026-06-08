@@ -31,20 +31,20 @@ export function PromptTimingSection() {
         Levering, adopsjon og guardrail for påminnelsen (opt-in-segmentet).
       </SectionHead>
 
-      <p className="mal__sec-note">
-        <Tag variant="neutral" size="small">
-          Bare for dem som takket ja
-        </Tag>
-        Tallene her gjelder påminnelsen. De endres derfor ikke når du velger
-        «Ikke svart» i filteret.
-      </p>
-
       <div className="mal__two">
         {/* levering + adopsjon + guardrail */}
         <div className="mal__mini">
           <h3 className="mal__mini-h">Levering og adopsjon</h3>
           <p className="mal__mini-lede">
-            Av forløp som trengte et varsel — ble det levert, og ble det brukt?
+            Av dem som takket ja til påminnelse — brukte de den? Adopsjon er
+            hovedsignalet; levert-i-tide er en retrospektiv sjekk.
+          </p>
+          <p className="mal__sec-note">
+            <Tag variant="neutral" size="small">
+              Bare for dem som takket ja
+            </Tag>
+            Tallene her gjelder påminnelsen. De endres ikke når du velger «Ikke
+            svart» i filteret.
           </p>
           <div
             className="mal__valg"
@@ -128,20 +128,6 @@ export function PromptTimingSection() {
             ))}
           </ul>
 
-          <div className="mal__guardstat">
-            <div>
-              <b className="mal__guardstat-num">
-                {VARSEL_ETIKK.pressFelt.pakke}%
-              </b>
-              <span>opplevd press i pakka (Lumi)</span>
-            </div>
-            <div>
-              <b className="mal__guardstat-num">
-                {VARSEL_ETIKK.pressFelt.kontroll}%
-              </b>
-              <span>opplevd press i kontroll</span>
-            </div>
-          </div>
           <ul className="mal__guard">
             {VARSEL_ETIKK.punkter.map((p) => (
               <li key={p}>{p}</li>

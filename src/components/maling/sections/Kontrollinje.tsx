@@ -64,7 +64,7 @@ export function Kontrollinje({
         ))}
       </Select>
 
-      {erResponsSegment(segment) ? (
+      {erResponsSegment(segment) && (
         <span className="mal__kontrollinje-merknad">
           <Tag variant="warning" size="small">
             Responsgruppe
@@ -74,10 +74,6 @@ export function Kontrollinje({
             kontroll er et <b>mønster — ikke en bevist effekt</b> av tiltaket.
           </span>
         </span>
-      ) : (
-        <Tag variant="neutral" size="small">
-          Hovedtall
-        </Tag>
       )}
     </section>
   );
