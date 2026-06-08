@@ -193,6 +193,26 @@ export function MetodeOgData() {
             T&amp;F er i pakka — og forløp (sykmeldte, «Sm») er nøstet under.
             Regionene sammenlignes som diff-in-diff. (Lisa eier allokeringen.)
           </p>
+          <p
+            style={{
+              margin: "10px 0 0",
+              padding: "10px 14px",
+              fontSize: "12px",
+              color: "var(--mal-ink-2)",
+              fontFamily: "var(--mal-body)",
+              lineHeight: 1.5,
+              background: "rgba(0, 103, 197, 0.04)",
+              borderRadius: "8px",
+              border: "1px solid var(--mal-line-soft)",
+            }}
+          >
+            <b>Regionalt forbehold:</b> Det finnes baseline-forskjeller i
+            sykefravær mellom Troms og Finnmark og resten av landet.
+            Diff-in-diff sammenligner <em>endring over tid</em> — ikke nivå — og
+            demper dermed baseline-forskjellene. Eventuell vekting, normering og
+            en T&amp;F-spesifikk «nåsituasjon»-baseline er en Data
+            Science-beslutning.
+          </p>
         </div>
 
         {/* ---- Forsøksdesign: to armer ---- */}

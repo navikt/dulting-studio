@@ -14,7 +14,7 @@ import { SectionHead } from "./SectionHead";
  * Påminnelsen er deterministisk timet — den sendes når et forløp er på vei til
  * å passere uke 4 uten plan. Det som måles er derfor IKKE «når kom den», men:
  *   1. Ble den levert i tide? (nær 100 % by design; avvik = gap/bugs)
- *   2. Ble den brukt? (adopsjonssignal — faktisk dult)
+ *   2. Tok mottakeren stilling til behov? (adopsjon — faktisk dult)
  *   3. Ble urene varsler luket ut? (guardrail: for sene / duplikate)
  *
  * Opt-in/opt-out spores separat og påvirkes ikke av segmentfilteret over.
@@ -26,25 +26,26 @@ export function PromptTimingSection() {
       <SectionHead
         num={3}
         headingId="mal-timing-h"
-        title="Nådde påminnelsen fram — og blir den brukt?"
+        title="Nådde påminnelsen fram — og tok du stilling til behovet?"
       >
-        Levering, adopsjon og guardrail for påminnelsen (opt-in-segmentet).
+        Levering, adopsjon og guardrail for påminnelsen (de som ønsker
+        påminnelse).
       </SectionHead>
-
-      <p className="mal__sec-note">
-        <Tag variant="neutral" size="small">
-          Bare for dem som takket ja
-        </Tag>
-        Tallene her gjelder påminnelsen. De endres derfor ikke når du velger
-        «Ikke svart» i filteret.
-      </p>
 
       <div className="mal__two">
         {/* levering + adopsjon + guardrail */}
         <div className="mal__mini">
           <h3 className="mal__mini-h">Levering og adopsjon</h3>
           <p className="mal__mini-lede">
-            Av forløp som trengte et varsel — ble det levert, og ble det brukt?
+            Adopsjon er andelen varselmottakere som tok stilling til behovet
+            sitt etter påminnelsen. Levert i tide er en teknisk sjekk i
+            etterkant.
+          </p>
+          <p className="mal__sec-note">
+            <Tag variant="neutral" size="small">
+              Kun for dem som ønsker påminnelse
+            </Tag>
+            Tallene gjelder påminnelsen. De endres ikke av segmentfilteret.
           </p>
           <div
             className="mal__valg"
@@ -128,20 +129,6 @@ export function PromptTimingSection() {
             ))}
           </ul>
 
-          <div className="mal__guardstat">
-            <div>
-              <b className="mal__guardstat-num">
-                {VARSEL_ETIKK.pressFelt.pakke}%
-              </b>
-              <span>opplevd press i pakka (Lumi)</span>
-            </div>
-            <div>
-              <b className="mal__guardstat-num">
-                {VARSEL_ETIKK.pressFelt.kontroll}%
-              </b>
-              <span>opplevd press i kontroll</span>
-            </div>
-          </div>
           <ul className="mal__guard">
             {VARSEL_ETIKK.punkter.map((p) => (
               <li key={p}>{p}</li>

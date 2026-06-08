@@ -5,11 +5,13 @@ import { useState } from "react";
 import {
   deltaForrigePeriode,
   erResponsSegment,
-  krSerie,
+  erSammenlignbar,
+  krSerieForSegment,
   PLAN_HENDELSER,
   type PlanHendelseId,
   PURRING_ANDEL,
   pakkeForSegment,
+  pakkeForSegmentNullbar,
   pakkeKurveForSegment,
   SEGMENT_LABEL,
   type Segment,
@@ -30,8 +32,10 @@ export function KrBevisSection({
     useState<PlanHendelseId>("opprettet");
   const [visOptInSplitt, setVisOptInSplitt] = useState(false);
 
-  const pakkeLabel =
-    segment === "alle" ? "Tiltakspakke samlet" : SEGMENT_LABEL[segment];
+  // A2: Lokal splitt-toggle vises bare når globalt filter = «alle»
+  const kanViseOptInSplitt = segment === "alle";
+
+  const pakkeLabel = SEGMENT_LABEL[segment];
 
   // KPI-listene: KR1 fra valgt hendelse (for kontekst), men compare-kortene
   // bruker PLAN_HENDELSER[0] for KR1 + STYRINGSTALL_FASTE for KR2/KR3
@@ -64,10 +68,59 @@ export function KrBevisSection({
       {/* KPI compare-kort */}
       <div className="mal__kpis">
         {alleKpier.map((s) => {
-          const pakkeVerdi = pakkeForSegment(s.metrikk, segment);
-          const delta = pakkeVerdi - s.metrikk.kontroll;
+          // A1: Bruk erSammenlignbar for å avgjøre riktig beregning per metrikk
+          const metrikk = s.metrikk as {
+            kontroll: number | null;
+            pakke: { "takket-ja": number; "ikke-svart": number | null };
+          };
+          let pakkeVerdi: number;
+          let erNA: boolean;
+
+          if (erSammenlignbar(metrikk.pakke)) {
+            // KR1/KR3: alltid sammenlignbar, «alle» gir vektet pool
+            pakkeVerdi = pakkeForSegment(
+              s.metrikk as {
+                kontroll: number;
+                pakke: { "takket-ja": number; "ikke-svart": number };
+              },
+              segment,
+            );
+            erNA = false;
+          } else {
+            // KR2/behovsvurdering: nullbar
+            const verdi = pakkeForSegmentNullbar(metrikk, segment);
+            erNA = verdi === null;
+            pakkeVerdi = verdi ?? 0;
+          }
+
+          const kontrollVerdi = metrikk.kontroll;
+          const delta = erNA ? 0 : pakkeVerdi - (kontrollVerdi ?? 0);
           const visRespons = erResponsSegment(segment);
-          const pd = deltaForrigePeriode(krSerie(s.id), periode);
+          const serie = krSerieForSegment(s.id, segment);
+          const pd = deltaForrigePeriode(serie, periode);
+
+          // KR2 er N/A når serie er null (segment = «ikke-svart»)
+          if (erNA) {
+            return (
+              <article
+                className={`mal__kpi ${visRespons ? "mal__kpi--filtered" : ""}`}
+                key={s.id}
+              >
+                <span className="mal__kpi-sub">{s.kr}</span>
+                <span className="mal__kpi-label">{s.tittel}</span>
+
+                <div
+                  className="mal__cmp"
+                  role="img"
+                  aria-label={`${s.tittel}: Ikke aktuelt for dette segmentet.`}
+                >
+                  <p className="mal__kpi-na">Ikke aktuelt</p>
+                </div>
+
+                <MetricExplainer forklaring={s.forklaring} />
+              </article>
+            );
+          }
 
           return (
             <article
@@ -80,7 +133,7 @@ export function KrBevisSection({
               <div
                 className="mal__cmp"
                 role="img"
-                aria-label={`${s.tittel}: ${pakkeLabel} ${pakkeVerdi} prosent mot kontroll ${s.metrikk.kontroll} prosent, forskjell ${delta >= 0 ? "pluss" : "minus"} ${Math.abs(delta)} prosentpoeng.`}
+                aria-label={`${s.tittel}: ${pakkeLabel} ${pakkeVerdi} prosent${kontrollVerdi !== null ? ` mot kontroll ${kontrollVerdi} prosent, forskjell ${delta >= 0 ? "pluss" : "minus"} ${Math.abs(delta)} prosentpoeng` : ""}.`}
               >
                 <div className="mal__cmp-row">
                   <span className="mal__cmp-name">{pakkeLabel}</span>
@@ -91,36 +144,42 @@ export function KrBevisSection({
                       aria-hidden="true"
                     />
                   </span>
-                  <b className="mal__cmp-val">{pakkeVerdi}%</b>
+                  <b className="mal__cmp-val">{pakkeVerdi} %</b>
                 </div>
-                <div className="mal__cmp-row">
-                  <span className="mal__cmp-name">Kontroll</span>
-                  <span className="mal__cmp-track">
-                    <span
-                      className="mal__cmp-fill mal__cmp-fill--kontroll"
-                      style={{ width: `${s.metrikk.kontroll}%` }}
-                      aria-hidden="true"
-                    />
-                  </span>
-                  <b className="mal__cmp-val">{s.metrikk.kontroll}%</b>
-                </div>
+                {kontrollVerdi !== null && (
+                  <div className="mal__cmp-row">
+                    <span className="mal__cmp-name">Kontroll</span>
+                    <span className="mal__cmp-track">
+                      <span
+                        className="mal__cmp-fill mal__cmp-fill--kontroll"
+                        style={{ width: `${kontrollVerdi}%` }}
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <b className="mal__cmp-val">{kontrollVerdi} %</b>
+                  </div>
+                )}
               </div>
 
-              <span className="mal__kpi-delta">
-                <span className="mal__kpi-delta-lbl">vs. kontroll</span>{" "}
-                {delta >= 0 ? "+" : ""}
-                {delta} pp
-              </span>
+              {kontrollVerdi !== null && (
+                <span className="mal__kpi-delta">
+                  <span className="mal__kpi-delta-lbl">vs. kontroll</span>{" "}
+                  {delta >= 0 ? "+" : ""}
+                  {delta} pp
+                </span>
+              )}
 
-              <span className="mal__kpi-trend-chip">
-                vs. forrige uke {pd >= 0 ? "▲" : "▼"} {Math.abs(pd)}
-              </span>
+              {serie !== null && (
+                <span className="mal__kpi-trend-chip">
+                  vs. forrige uke {pd >= 0 ? "▲" : "▼"} {Math.abs(pd)}
+                </span>
+              )}
 
               {s.id === "kr3" && (
                 <span className="mal__kpi-sekundar">
                   Får purring: {pakkeLabel.toLowerCase()}{" "}
-                  <b>{pakkeForSegment(PURRING_ANDEL, segment)}%</b> vs. kontroll{" "}
-                  <b>{PURRING_ANDEL.kontroll}%</b> (lavere er bedre)
+                  <b>{pakkeForSegment(PURRING_ANDEL, segment)} %</b> vs.
+                  kontroll <b>{PURRING_ANDEL.kontroll} %</b> (lavere er bedre)
                 </span>
               )}
 
@@ -165,22 +224,25 @@ export function KrBevisSection({
         <p className="mal__frist-callout">
           <b>Ved uke 4-frist:</b> {pakkeLabel}{" "}
           <b>
-            {pakkeVedFrist}% ({fristDelta >= 0 ? "+" : ""}
+            {pakkeVedFrist} % ({fristDelta >= 0 ? "+" : ""}
             {fristDelta} prosentpoeng)
           </b>{" "}
-          vs. kontroll <b>{kontrollVedFrist}%</b>
+          vs. kontroll <b>{kontrollVedFrist} %</b>
         </p>
 
-        {/* Opt-in-splitt toggle */}
-        <div className="mal__split-toggle">
-          <Switch
-            size="small"
-            checked={visOptInSplitt}
-            onChange={(e) => setVisOptInSplitt(e.target.checked)}
-          >
-            Del opp i «takket ja» og «ikke svart»
-          </Switch>
-        </div>
+        {/* A2: Opt-in-splitt toggle — kun synlig når globalt filter = «alle» */}
+        {kanViseOptInSplitt && (
+          <div className="mal__split-toggle">
+            <Switch
+              size="small"
+              checked={visOptInSplitt}
+              onChange={(e) => setVisOptInSplitt(e.target.checked)}
+            >
+              Del opp i «{SEGMENT_LABEL["takket-ja"]}» og «
+              {SEGMENT_LABEL["ikke-svart"]}»
+            </Switch>
+          </div>
+        )}
 
         {/* Survival curve */}
         <SurvivalKurve
@@ -188,7 +250,7 @@ export function KrBevisSection({
           kontrollKurve={kontrollKurve}
           pakkeLabel={pakkeLabel}
           kortLabel={valgtHendelse.kortLabel}
-          visOptInSplitt={visOptInSplitt}
+          visOptInSplitt={kanViseOptInSplitt && visOptInSplitt}
           takketJaKurve={valgtHendelse.kurve.pakke["takket-ja"]}
           ikkeSvartKurve={valgtHendelse.kurve.pakke["ikke-svart"]}
         />

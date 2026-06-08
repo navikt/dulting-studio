@@ -52,21 +52,18 @@ export function MalingView() {
         </span>
         <h1 className="mal__title">Er vi på rett vei?</h1>
         <p className="mal__lede">
-          Pakke vs. kontroll: ser vi de tidlige endringene vi hadde håpet på?
-        </p>
-        <p className="mal__frame">
-          <b>Les tallene slik:</b> pakke vs. kontroll er hovedsvaret;
-          responsgrupper viser mønster, ikke effekt.
+          Tiltakspakke vs. kontrollgruppe: ser vi de tidlige endringene vi hadde
+          håpet på?
         </p>
       </header>
 
-      <VerdiktBand segment={segment} periode={periode} />
       <Kontrollinje
         segment={segment}
         onSegment={setSegment}
         periode={periode}
         onPeriode={setPeriode}
       />
+      <VerdiktBand segment={segment} periode={periode} />
       <KrBevisSection segment={segment} periode={periode} />
       <LumiSection segment={segment} />
       <PromptTimingSection />

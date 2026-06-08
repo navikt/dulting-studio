@@ -1,6 +1,8 @@
 import {
+  erSammenlignbar,
   FUNNEL,
   pakkeForSegment,
+  pakkeForSegmentNullbar,
   SEGMENT_LABEL,
   type Segment,
 } from "../maling-data";
@@ -22,15 +24,43 @@ const sc = (v: number) => (v / 100) * HALF;
  * og at begge sider smalner nedover gir funnel-formen.
  */
 export function FunnelSection({ segment }: { segment: Segment }) {
-  const steg = FUNNEL.map((s) => ({
-    ...s,
-    pakke: pakkeForSegment({ kontroll: s.kontroll, pakke: s.pakke }, segment),
-  }));
+  const steg = FUNNEL.map((s) => {
+    // A5: Bruk erSammenlignbar for å avgjøre riktig beregning per steg
+    const pakkeTall = s.pakke as {
+      "takket-ja": number;
+      "ikke-svart": number | null;
+    };
+    let pakkeVerdi: number;
+    let pakkeErNA: boolean;
+    if (erSammenlignbar(pakkeTall)) {
+      // Sammenlignbart steg (alle unntatt Behovsvurdering): «alle» gir pool
+      pakkeVerdi = pakkeForSegment(
+        { kontroll: s.kontroll ?? 0, pakke: pakkeTall },
+        segment,
+      );
+      pakkeErNA = false;
+    } else {
+      // Nullbart steg (Behovsvurdering)
+      const verdi = pakkeForSegmentNullbar(
+        { kontroll: s.kontroll, pakke: pakkeTall },
+        segment,
+      );
+      pakkeErNA = verdi === null;
+      pakkeVerdi = verdi ?? 0;
+    }
 
-  // Steget med størst fall i pakke-andel mellom to påfølgende trinn.
+    return {
+      ...s,
+      pakke: pakkeVerdi,
+      pakkeErNA,
+    };
+  });
+
+  // Steget med størst fall i pakke-andel mellom to påfølgende trinn (ekskluder N/A).
   let fallIdx = -1;
   let fall = 0;
   for (let i = 1; i < steg.length; i++) {
+    if (steg[i].pakkeErNA || steg[i - 1].pakkeErNA) continue;
     const d = steg[i - 1].pakke - steg[i].pakke;
     if (d > fall) {
       fall = d;
@@ -40,18 +70,28 @@ export function FunnelSection({ segment }: { segment: Segment }) {
 
   const H = TOP + steg.length * ROW_H + 6;
   const barMid = (i: number) => TOP + i * ROW_H + 38;
-  const top = barMid(0) - BAR_H / 2;
-  const bottom = barMid(steg.length - 1) + BAR_H / 2;
+
+  // Pakke-polygon: hopp over N/A-steg (la silhuetten gå rett til neste reelle verdi)
+  const pakkeSteg = steg
+    .map((s, i) => ({ s, i }))
+    .filter(({ s }) => !s.pakkeErNA);
 
   const venstrePoly = [
-    `${CX},${top}`,
-    ...steg.map((s, i) => `${CX - sc(s.pakke)},${barMid(i)}`),
-    `${CX},${bottom}`,
+    `${CX},${barMid(pakkeSteg[0]?.i ?? 0) - BAR_H / 2}`,
+    ...pakkeSteg.map(({ s, i }) => `${CX - sc(s.pakke)},${barMid(i)}`),
+    `${CX},${barMid(pakkeSteg[pakkeSteg.length - 1]?.i ?? steg.length - 1) + BAR_H / 2}`,
   ].join(" ");
+
+  // Kontroll-silhuett: kun steg der kontroll !== null
+  const kontrollSteg = steg
+    .map((s, i) => ({ s, i }))
+    .filter(({ s }) => s.kontroll !== null);
   const høyrePoly = [
-    `${CX},${top}`,
-    ...steg.map((s, i) => `${CX + sc(s.kontroll)},${barMid(i)}`),
-    `${CX},${bottom}`,
+    `${CX},${barMid(kontrollSteg[0]?.i ?? 0) - BAR_H / 2}`,
+    ...kontrollSteg.map(
+      ({ s, i }) => `${CX + sc(s.kontroll as number)},${barMid(i)}`,
+    ),
+    `${CX},${barMid(kontrollSteg[kontrollSteg.length - 1]?.i ?? steg.length - 1) + BAR_H / 2}`,
   ].join(" ");
 
   return (
@@ -61,8 +101,8 @@ export function FunnelSection({ segment }: { segment: Segment }) {
         headingId="mal-funnel-h"
         title="Hvor faller folk av?"
       >
-        Pakke ({SEGMENT_LABEL[segment]}) vokser til venstre, kontroll til høyre
-        — gapet er pakkens løft, og det største fallet er der flyten stopper.{" "}
+        Pakke ({SEGMENT_LABEL[segment]}) vokser til venstre, kontroll til høyre.
+        Gapet viser forskjellen, og det største fallet er der flyten stopper.
         Funnelen viser andelen av kohorten som når hvert steg{" "}
         <strong>uansett når</strong> i forløpet (totalt over forløpet) — ikke
         «innen uke 4» slik KR-kortene gjør.
@@ -110,8 +150,61 @@ export function FunnelSection({ segment }: { segment: Segment }) {
 
           {steg.map((s, i) => {
             const y = barMid(i);
+            const harKontroll = s.kontroll !== null;
+            const kW = harKontroll ? sc(s.kontroll as number) : 0;
+
+            // A5: Pakke N/A rendres som «Ikke aktuelt»
+            if (s.pakkeErNA) {
+              return (
+                <g key={s.label}>
+                  <text
+                    x={8}
+                    y={y - BAR_H / 2 - 7}
+                    className="mal__trakt-tlabel"
+                  >
+                    {s.label}
+                    <tspan className="mal__trakt-tsub"> · {s.sub}</tspan>
+                  </text>
+                  <text
+                    x={CX - 12}
+                    y={y + 4}
+                    textAnchor="end"
+                    className="mal__trakt-tpct mal__trakt-tpct--pakke"
+                  >
+                    Ikke aktuelt
+                  </text>
+                  {harKontroll ? (
+                    <>
+                      <rect
+                        x={CX}
+                        y={y - BAR_H / 2}
+                        width={kW}
+                        height={BAR_H}
+                        rx={5}
+                        className="mal__trakt-rekt mal__trakt-rekt--kontroll"
+                      />
+                      <text
+                        x={CX + kW + 7}
+                        y={y + 4}
+                        className="mal__trakt-tpct mal__trakt-tpct--kontroll"
+                      >
+                        {s.kontroll} %
+                      </text>
+                    </>
+                  ) : (
+                    <text
+                      x={CX + 12}
+                      y={y + 4}
+                      className="mal__trakt-tpct mal__trakt-tpct--kontroll"
+                    >
+                      Ikke aktuelt
+                    </text>
+                  )}
+                </g>
+              );
+            }
+
             const pW = sc(s.pakke);
-            const kW = sc(s.kontroll);
             return (
               <g key={s.label}>
                 <text x={8} y={y - BAR_H / 2 - 7} className="mal__trakt-tlabel">
@@ -133,24 +226,36 @@ export function FunnelSection({ segment }: { segment: Segment }) {
                   textAnchor="end"
                   className="mal__trakt-tpct mal__trakt-tpct--pakke"
                 >
-                  {s.pakke}%
+                  {s.pakke} %
                 </text>
 
-                <rect
-                  x={CX}
-                  y={y - BAR_H / 2}
-                  width={kW}
-                  height={BAR_H}
-                  rx={5}
-                  className="mal__trakt-rekt mal__trakt-rekt--kontroll"
-                />
-                <text
-                  x={CX + kW + 7}
-                  y={y + 4}
-                  className="mal__trakt-tpct mal__trakt-tpct--kontroll"
-                >
-                  {s.kontroll}%
-                </text>
+                {harKontroll ? (
+                  <>
+                    <rect
+                      x={CX}
+                      y={y - BAR_H / 2}
+                      width={kW}
+                      height={BAR_H}
+                      rx={5}
+                      className="mal__trakt-rekt mal__trakt-rekt--kontroll"
+                    />
+                    <text
+                      x={CX + kW + 7}
+                      y={y + 4}
+                      className="mal__trakt-tpct mal__trakt-tpct--kontroll"
+                    >
+                      {s.kontroll} %
+                    </text>
+                  </>
+                ) : (
+                  <text
+                    x={CX + 12}
+                    y={y + 4}
+                    className="mal__trakt-tpct mal__trakt-tpct--kontroll"
+                  >
+                    Ikke aktuelt
+                  </text>
+                )}
 
                 {i === fallIdx && (
                   <text
@@ -169,7 +274,7 @@ export function FunnelSection({ segment }: { segment: Segment }) {
 
         <table className="sr-only">
           <caption>
-            Andel av kohorten per steg (%). Pakke = {SEGMENT_LABEL[segment]}.
+            {`Andel av kohorten per steg (%). Pakke = ${SEGMENT_LABEL[segment]}.`}
           </caption>
           <thead>
             <tr>
@@ -182,8 +287,8 @@ export function FunnelSection({ segment }: { segment: Segment }) {
             {steg.map((s) => (
               <tr key={s.label}>
                 <td>{s.label}</td>
-                <td>{s.pakke}</td>
-                <td>{s.kontroll}</td>
+                <td>{s.pakkeErNA ? "Ikke aktuelt" : s.pakke}</td>
+                <td>{s.kontroll !== null ? s.kontroll : "Ikke aktuelt"}</td>
               </tr>
             ))}
           </tbody>

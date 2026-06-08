@@ -3,7 +3,7 @@ import {
   deltaForrigePeriode,
   guardrailOk as guardrailOkFn,
   type KrTilstand,
-  krSerie,
+  krSerieForSegment,
   krStatus,
   LANG_HORISONT,
   LUMI_SPORSMAL,
@@ -12,6 +12,7 @@ import {
   PERIODER,
   PLAN_HENDELSER,
   pakkeForSegment,
+  pakkeForSegmentNullbar,
   type Segment,
   STYRINGSTALL_FASTE,
   samletVerdikt,
@@ -72,43 +73,59 @@ function domSetning(
 export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
   // KR1: første plan-hendelse = «opprettet»
   const kr1raw = PLAN_HENDELSER[0].styringstall;
-  const kr1Pakke = pakkeForSegment(kr1raw.metrikk, "alle");
+  const kr1Pakke = pakkeForSegment(kr1raw.metrikk, segment);
   const kr1Kontroll = kr1raw.metrikk.kontroll;
-  const kr1Delta = deltaForrigePeriode(krSerie("kr1"), periode);
+  const kr1Delta = deltaForrigePeriode(
+    krSerieForSegment("kr1", segment),
+    periode,
+  );
   const kr1Tilstand = krStatus({
     pakke: kr1Pakke,
     kontroll: kr1Kontroll,
     forrigeDelta: kr1Delta,
   });
 
-  // KR2
+  // KR2 — kan være N/A (null) for segmentet
   // biome-ignore lint/style/noNonNullAssertion: vi vet at kr2 finnes
   const kr2raw = STYRINGSTALL_FASTE.find((s) => s.id === "kr2")!;
-  const kr2Pakke = pakkeForSegment(kr2raw.metrikk, "alle");
-  const kr2Kontroll = kr2raw.metrikk.kontroll;
-  const kr2Delta = deltaForrigePeriode(krSerie("kr2"), periode);
-  const kr2Tilstand = krStatus({
-    pakke: kr2Pakke,
-    kontroll: kr2Kontroll,
-    forrigeDelta: kr2Delta,
-  });
+  const kr2PakkeNullbar = pakkeForSegmentNullbar(
+    kr2raw.metrikk as {
+      kontroll: number | null;
+      pakke: { "takket-ja": number; "ikke-svart": number | null };
+    },
+    segment,
+  );
+  const kr2ErNA = kr2PakkeNullbar === null;
+  const kr2Pakke = kr2PakkeNullbar ?? 0;
+  const kr2Kontroll = (kr2raw.metrikk as { kontroll: number | null }).kontroll;
+  const kr2Serie = krSerieForSegment("kr2", segment);
+  const kr2Delta = deltaForrigePeriode(kr2Serie, periode);
+  const kr2Tilstand: KrTilstand | null = kr2ErNA
+    ? null
+    : krStatus({
+        pakke: kr2Pakke,
+        kontroll: kr2Kontroll,
+        forrigeDelta: kr2Delta,
+      });
 
   // KR3
   // biome-ignore lint/style/noNonNullAssertion: vi vet at kr3 finnes
   const kr3raw = STYRINGSTALL_FASTE.find((s) => s.id === "kr3")!;
-  const kr3Pakke = pakkeForSegment(kr3raw.metrikk, "alle");
+  const kr3Pakke = pakkeForSegment(kr3raw.metrikk, segment);
   const kr3Kontroll = kr3raw.metrikk.kontroll;
-  const kr3Delta = deltaForrigePeriode(krSerie("kr3"), periode);
+  const kr3Delta = deltaForrigePeriode(
+    krSerieForSegment("kr3", segment),
+    periode,
+  );
   const kr3Tilstand = krStatus({
     pakke: kr3Pakke,
     kontroll: kr3Kontroll,
     forrigeDelta: kr3Delta,
   });
 
-  // Mekanisme: Lumi — alltid alle-pool, men KUN sammenlignbare spørsmål
-  // (kunPakke-spørsmål har ingen kontroll-arm og skal ikke påvirke snittet).
+  // Mekanisme: Lumi — segment-styrt pakke-snitt, kontroll er alltid hele kontrollen
   const sammenlignbare = LUMI_SPORSMAL.filter((s) => !s.kunPakke);
-  const mp = sammenlignbare.map((s) => lumiForSegment(s, "alle"));
+  const mp = sammenlignbare.map((s) => lumiForSegment(s, segment));
   const pakkeSnitt = mean(mp.flatMap((x) => [x.ag, x.sm]));
   const kontrollSnitt = mean(
     // biome-ignore lint/style/noNonNullAssertion: sammenlignbare har alltid kontroll
@@ -122,7 +139,13 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
     VARSEL_ETIKK.pressFelt.kontroll,
   );
 
-  const samlet = samletVerdikt([kr1Tilstand, kr2Tilstand, kr3Tilstand], {
+  // A4: Ekskluder KR2 fra verdiktet når det er N/A
+  const krTilstander: KrTilstand[] =
+    kr2Tilstand !== null
+      ? [kr1Tilstand, kr2Tilstand, kr3Tilstand]
+      : [kr1Tilstand, kr3Tilstand];
+
+  const samlet = samletVerdikt(krTilstander, {
     mekanismeOk,
     guardrailOk,
   });
@@ -179,25 +202,50 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
         </a>
 
         {/* KR2 */}
-        <a
-          href="#kr-bevis"
-          className={`mal__vflis ${tilstandKlasse(kr2Tilstand)}`}
-          aria-label={`KR2: tar stilling til behov. Pakke ${kr2Pakke} %, kontroll ${kr2Kontroll} %, gap +${kr2Pakke - kr2Kontroll} prosentpoeng vs. kontroll. ${kr2Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr2Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`}
-        >
-          <span className="mal__vflis-eyebrow">KR2</span>
-          <span className="mal__vflis-label">Tar stilling til behov</span>
-          <span className="mal__vflis-tall">{kr2Pakke}%</span>
-          <span
-            className={`mal__vflis-pp ${kr2Pakke - kr2Kontroll >= 0 ? "" : "mal__vflis-pp--noytral"}`}
+        {kr2ErNA ? (
+          <span className="mal__vflis mal__vflis--noytral">
+            <span className="sr-only">
+              KR2: tar stilling til behov. Ikke aktuelt for dette segmentet.
+            </span>
+            <span className="mal__vflis-eyebrow" aria-hidden="true">
+              KR2
+            </span>
+            <span className="mal__vflis-label" aria-hidden="true">
+              Tar stilling til behov
+            </span>
+            <span className="mal__vflis-tall" aria-hidden="true">
+              N/A
+            </span>
+            <span
+              className="mal__vflis-sub mal__vflis-sub--faint"
+              aria-hidden="true"
+            >
+              Ikke aktuelt
+            </span>
+          </span>
+        ) : (
+          <a
+            href="#kr-bevis"
+            className={`mal__vflis ${tilstandKlasse(kr2Tilstand as KrTilstand)}`}
+            aria-label={`KR2: tar stilling til behov. Pakke ${kr2Pakke} %${kr2Kontroll !== null ? `, kontroll ${kr2Kontroll} %, gap ${kr2Pakke - kr2Kontroll >= 0 ? "+" : ""}${kr2Pakke - kr2Kontroll} prosentpoeng vs. kontroll` : ""}. ${kr2Delta >= 0 ? "Opp" : "Ned"} ${Math.abs(kr2Delta)} prosentpoeng vs. forrige uke. Gå til bevis.`}
           >
-            <span className="mal__vflis-pp-lbl">vs. kontroll</span>{" "}
-            {kr2Pakke - kr2Kontroll >= 0 ? "+" : ""}
-            {kr2Pakke - kr2Kontroll} pp
-          </span>
-          <span className="mal__vflis-trend-chip">
-            vs. forrige uke {kr2Delta >= 0 ? "▲" : "▼"} {Math.abs(kr2Delta)}
-          </span>
-        </a>
+            <span className="mal__vflis-eyebrow">KR2</span>
+            <span className="mal__vflis-label">Tar stilling til behov</span>
+            <span className="mal__vflis-tall">{kr2Pakke} %</span>
+            {kr2Kontroll !== null && (
+              <span
+                className={`mal__vflis-pp ${kr2Pakke - kr2Kontroll >= 0 ? "" : "mal__vflis-pp--noytral"}`}
+              >
+                <span className="mal__vflis-pp-lbl">vs. kontroll</span>{" "}
+                {kr2Pakke - kr2Kontroll >= 0 ? "+" : ""}
+                {kr2Pakke - kr2Kontroll} pp
+              </span>
+            )}
+            <span className="mal__vflis-trend-chip">
+              vs. forrige uke {kr2Delta >= 0 ? "▲" : "▼"} {Math.abs(kr2Delta)}
+            </span>
+          </a>
+        )}
 
         {/* KR3 */}
         <a
@@ -237,7 +285,7 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
         <a
           href="#lang-horisont"
           className="mal__vflis mal__vflis--noytral mal__vflis--bekrefter"
-          aria-label={`Lang horisont: bekrefter senere. Foreløpige signaler: gradert andel pakke ${LANG_HORISONT.gradertAndel.pakke} % mot kontroll ${LANG_HORISONT.gradertAndel.kontroll} % (▲), fraværslengde pakke ${LANG_HORISONT.fraværslengde.pakke} dager mot kontroll ${LANG_HORISONT.fraværslengde.kontroll} dager (▼ kortere). Gå til lang horisont.`}
+          aria-label={`Lang horisont: bekrefter senere. Gjelder alle i tiltakspakka — endres ikke av responsfilteret. Foreløpige signaler: gradert andel pakke ${LANG_HORISONT.gradertAndel.pakke} % mot kontroll ${LANG_HORISONT.gradertAndel.kontroll} % (▲), fraværslengde pakke ${LANG_HORISONT.fraværslengde.pakke} dager mot kontroll ${LANG_HORISONT.fraværslengde.kontroll} dager (▼ kortere). Gå til lang horisont.`}
         >
           <span className="mal__vflis-label">Lang horisont</span>
           <span className="mal__vflis-sym mal__vflis-sym--muted">○</span>
@@ -247,6 +295,9 @@ export function VerdiktBand({ segment, periode }: VerdiktBandProps) {
           <span className="mal__vflis-lh-hint">
             ▲ gradert · ▼ fravær{" "}
             <span className="mal__vflis-lh-forlop">(foreløpig)</span>
+          </span>
+          <span className="mal__vflis-sub mal__vflis-sub--faint">
+            Alle i pakka · uendret av filteret
           </span>
         </a>
       </div>

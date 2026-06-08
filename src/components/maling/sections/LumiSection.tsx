@@ -1,5 +1,6 @@
 import { Tag } from "@navikt/ds-react";
 import {
+  erKausalKontekst,
   LUMI_MAX,
   LUMI_SKALA,
   LUMI_SPORSMAL,
@@ -127,8 +128,10 @@ export function LumiSection({ segment }: { segment: Segment }) {
 
       <div className="mal__panel">
         <p className="mal__lumi-scale">
-          Skala: {LUMI_SKALA}. Hver prikk er snittscore (1–5) per arm for{" "}
-          {SEGMENT_LABEL[segment].toLowerCase()}.
+          Skala: {LUMI_SKALA}.{" "}
+          {erKausalKontekst(segment)
+            ? `Hver prikk er snittscore (1–5) per arm for ${SEGMENT_LABEL[segment].toLowerCase()}.`
+            : `Blå prikk = pakke (${SEGMENT_LABEL[segment].toLowerCase()}); grå prikk = hele kontrollarmen (fast referanse, uendret av filteret).`}
         </p>
 
         <div className="mal__legend">
@@ -137,7 +140,7 @@ export function LumiSection({ segment }: { segment: Segment }) {
               className="mal__lk-dot mal__lk-dot--kontroll"
               aria-hidden="true"
             />
-            Kontroll
+            Kontroll{!erKausalKontekst(segment) && " (hele armen, fast)"}
           </span>
           <span className="mal__legend-item">
             <span
@@ -145,6 +148,8 @@ export function LumiSection({ segment }: { segment: Segment }) {
               aria-hidden="true"
             />
             Tiltakspakke
+            {!erKausalKontekst(segment) &&
+              ` · ${SEGMENT_LABEL[segment].toLowerCase()}`}
           </span>
           <span className="mal__syn">Lumi · syntetiske tall</span>
         </div>

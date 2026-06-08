@@ -122,20 +122,6 @@
   margin: 16px 0 0;
   font-family: var(--mal-body);
 }
-.mal__frame {
-  margin: 20px 0 0;
-  padding: 13px 16px 13px 18px;
-  border-left: 3px solid var(--pakke);
-  background: rgba(0, 103, 197, 0.06);
-  border-radius: 0 12px 12px 0;
-  font-size: 14.5px;
-  color: var(--mal-ink-2);
-  max-width: 72ch;
-  font-family: var(--mal-body);
-}
-.mal__frame b {
-  color: var(--mal-ink);
-}
 
 /* ---- section scaffolding ---- */
 .mal__sec {
@@ -378,6 +364,13 @@
 }
 .mal__kpi-sekundar b {
   color: var(--mal-ink-2);
+}
+.mal__kpi-na {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--mal-ink-faint);
+  margin: 12px 0;
+  font-style: italic;
 }
 
 /* ---- metric explainer ---- */
@@ -716,31 +709,6 @@
   font-style: italic;
 }
 
-.mal__guardstat {
-  display: flex;
-  gap: 24px;
-  margin: 14px 0 12px;
-  padding: 12px 0;
-  border-top: 1px solid var(--mal-line-soft);
-  border-bottom: 1px solid var(--mal-line-soft);
-}
-.mal__guardstat > div {
-  display: flex;
-  flex-direction: column;
-}
-.mal__guardstat-num {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--mal-ink);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-.mal__guardstat > div span {
-  font-size: 11.5px;
-  color: var(--mal-ink-faint);
-  font-family: var(--mal-body);
-  margin-top: 3px;
-}
 .mal__guard {
   margin: 0;
   padding-left: 18px;
@@ -1174,12 +1142,11 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  margin: 0 0 0;
-  padding: 12px 28px;
+  margin: 24px 0 0;
+  padding: 14px 28px;
   background: #f7f9fc;
   border: 1px solid #dde3ec;
-  border-top: none;
-  border-radius: 0 0 var(--mal-radius) var(--mal-radius);
+  border-radius: var(--mal-radius);
   font-family: var(--mal-body);
 }
 .mal__kontrollinje-label {
@@ -1198,25 +1165,14 @@
   font-weight: 600;
   color: var(--kontroll-ink);
   white-space: nowrap;
-  margin-left: 4px;
-}
-.mal__kontrollinje-merknad {
-  flex-basis: 100%;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-top: 2px;
-  font-size: 12px;
-  line-height: 1.45;
-  color: var(--mal-ink-2);
-  max-width: 78ch;
+  margin-left: auto;
 }
 
 /* ---- verdikt-band ---- */
 .mal__verdikt {
   margin: 24px 0 0;
   border: 1.5px solid var(--pakke);
-  border-radius: var(--mal-radius) var(--mal-radius) 0 0;
+  border-radius: var(--mal-radius);
   background: linear-gradient(170deg, var(--pakke-soft) 0%, #fff 60%);
   box-shadow:
     0 1px 2px rgba(10, 37, 64, 0.04),
@@ -1342,12 +1298,6 @@
 }
 .mal__vflis-pp--noytral {
   color: var(--mal-ink-faint);
-}
-.mal__vflis-delta {
-  font-size: 11.5px;
-  font-variant-numeric: tabular-nums;
-  color: var(--mal-ink-faint);
-  font-family: var(--mal-body);
 }
 .mal__vflis-sym {
   font-size: 22px;
